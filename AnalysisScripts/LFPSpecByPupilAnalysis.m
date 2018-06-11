@@ -1,19 +1,20 @@
-function [] = LFPSpecByPupilAnalysis(basePath,figfolder)
+function [specvarcorr,specbyvar,specvarcorr_meannorm,specbyvar_meannorm,...
+    pupilLFPcorr,LFPbypupil_meannorm,LFPbypupil] = LFPSpecByPupilAnalysis(basePath,figfolder)
 %UNTITLED5 Summary of this function goes here
 %   Detailed explanation goes here
 %%
-basePath = pwd;
+%basePath = pwd;
 baseName = bz_BasenameFromBasepath(basePath);
 figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/LFPSpecByPupilAnalysis';
 
 
 %%
-recparms = LoadParameters;
+recparms = bz_getSessionInfo(basePath,'noPrompts',true);
 
 
 
 %%
-bz_LoadBehavior('pupildiameter');
+pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 % pupildilation.timestamps = pupildilation.t_interp;
 % pupildilation.maxnormdata = pupildilation.puparea_pxl./max(pupildilation.puparea_pxl);
 % pupildilation.sf = 1./(diff(pupildilation.t_pulse([1 2])));
@@ -52,7 +53,7 @@ specparms.varnorm = 'percentile';
 specparms.specnorm = 'mean';
 
 figparms.figfolder = figfolder;
-[~,figparms.baseName] = fileparts(pwd);
+figparms.baseName = baseName;
 
 %Loop the LFP, sorted by depth
 numprobechannels = length(recparms.SpkGrps.Channels);
@@ -63,7 +64,7 @@ for ll = 1:numprobechannels
     specparms_loop.specnorm = 'mean';
     figparms_loop = figparms;
     figparms_loop.plotname = ['MeanNorm_Depth',num2str(ll),'_Channum',num2str(channum)];
-    lfp = bz_GetLFP(channum);
+    lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
     [specvarcorr_meannorm(ll),specbyvar_meannorm(ll)] = bz_LFPSpecToExternalVar(lfp,pupildilation,specparms_loop,figparms_loop);
     close all
     
@@ -170,142 +171,142 @@ suptitle(baseName)
         %colorbar
         %ColorbarWithAxis([0.6 1.4],'Power (mean^1)');
     end
-    
-%%
-lfp = bz_GetLFP(recparms.SpkGrps.Channels);
-
-%% Wavelet for Example channels
-
-%exchanidx = [2,17,29]; %By depth (not channum)
-
-%%
-for ee = 1:length(exchanidx)
-        [freqs,~,spec{ee}] = WaveSpec(single(lfp.data(:,exchanidx(ee))),...
-            specparms.frange,specparms.nfreqs,specparms.ncyc,...
-            1/lfp.samplingRate,specparms.space);
-    %spec{ee} = log(abs(spec{ee}));
-    spec{ee} = (abs(spec{ee}));
-    spec_meannorm{ee} = bsxfun(@(X,Y) X./Y,spec{ee},mean(spec{ee},2));
-    spec{ee} = log(spec{ee});
-    
-%         %Calculate the FFT spectrogram parameters - covert from s to sf
-%         winsize = specparms.winsize*lfp.samplingRate;
-%         noverlap = specparms.noverlap*lfp.samplingRate; %Might want to calaulte overlap based on pupil...?
-%         %Calculate the FFT spectrogram
-%         [FFTspec{ee},~,spectimestamps] = spectrogram(single(lfp.data(:,exchanidx(ee))),...
-%             winsize,noverlap,freqs,lfp.samplingRate);
-%         FFTspec{ee} = log(abs(FFTspec{ee}));
-    
-end
-
-%%
-figure
-plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
-%%
-winsize = 50;
-timewin = [635 655];
-%timewin = [600 700];
-timewin = [330 350];
-timewin = [1445 1495];
-timewin = 770+[0 winsize];
-% figure
-% subplot(3,1,1)
-% bz_MultiLFPPlot(lfp,'timewin',timewin,'channels',lfp.channels(1:2:end-2))
-% subplot(6,1,3)
-% plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
-% xlim(timewin)
+end    
+% %%
+% lfp = bz_GetLFP(recparms.SpkGrps.Channels);
+% 
+% %% Wavelet for Example channels
+% 
+% %exchanidx = [2,17,29]; %By depth (not channum)
 % 
 % %%
-depthnames = {'Superficial','Intermediate','Deep'};
-%timewin = [1445 1495];
-figure
-for ee = 1:length(exchanidx)
-subplot(10,1,(ee-1).*2+[1 2])
-colormap('jet')
-imagesc(lfp.timestamps,log2(freqs),(spec{ee}))
-xlim(timewin)
-axis xy
-LogScale('y',2)
-ylabel({depthnames{ee},'f (Hz)'});
-%SpecColorRange(spec{2},[1.4 1.5]);
-%SpecColorRange(spec{2},[1.4 1.7]);
-SpecColorRange(spec{2},[0.8 1.4]);
-%caxis([-3 3])
-set(gca,'xtick',[])
-%box off
-end
-subplot(12,1,8:10)
-    bz_MultiLFPPlot(lfp,'timewin',timewin,'channels',lfp.channels(exchanidx))
-        
-        set(gca,'xtick',[])
-        box off
-        ylabel({'LFP','by Depth'})
-        xlabel('')
-subplot(12,1,11:12)
-    plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
-    xlim(timewin)
-    xlabel('t (s)')
-    box off
-    ylabel({'Pupil', 'Diameter'})
-  NiceSave('ExampleDilation_Spec',figfolder,baseName,'tiff')  
-    NiceSave('ExampleDilation_Spec',figfolder,baseName,'pdf')  
-
-%% Sample zooms
-winsize=5;
-examplewins = [690+[0 winsize];712+[0 winsize];717+[0 winsize]]
-%examplewins = [1448 1453; 1469.5 1474.5; 1485 1490];
-for xx = 1:3
-    timewin = examplewins(xx,:);
-figure
-for ee = 1:length(exchanidx)
-%subplot(12,1,(ee-1).*2+[1 2])
-subplot(12,2,(ee-1).*4+[1 3])
-colormap('jet')
-imagesc(lfp.timestamps,log2(freqs),(spec{ee}))
-xlim(timewin)
-axis xy
-LogScale('y',2)
-
-%SpecColorRange(spec{2},[1.9 1.9]);
-SpecColorRange(spec{2},[0.8 1.4]);
-%caxis([-3 3])
-set(gca,'xtick',[])
-%box off
-end
-subplot(12,2,[13:2:19])
-    bz_MultiLFPPlot(lfp,'timewin',timewin,'channels',lfp.channels(1:end-2))
-        
-    %    set(gca,'xtick',[])
-        xlabel('')
-        box off
-% subplot(12,1,12)
+% for ee = 1:length(exchanidx)
+%         [freqs,~,spec{ee}] = WaveSpec(single(lfp.data(:,exchanidx(ee))),...
+%             specparms.frange,specparms.nfreqs,specparms.ncyc,...
+%             1/lfp.samplingRate,specparms.space);
+%     %spec{ee} = log(abs(spec{ee}));
+%     spec{ee} = (abs(spec{ee}));
+%     spec_meannorm{ee} = bsxfun(@(X,Y) X./Y,spec{ee},mean(spec{ee},2));
+%     spec{ee} = log(spec{ee});
+%     
+% %         %Calculate the FFT spectrogram parameters - covert from s to sf
+% %         winsize = specparms.winsize*lfp.samplingRate;
+% %         noverlap = specparms.noverlap*lfp.samplingRate; %Might want to calaulte overlap based on pupil...?
+% %         %Calculate the FFT spectrogram
+% %         [FFTspec{ee},~,spectimestamps] = spectrogram(single(lfp.data(:,exchanidx(ee))),...
+% %             winsize,noverlap,freqs,lfp.samplingRate);
+% %         FFTspec{ee} = log(abs(FFTspec{ee}));
+%     
+% end
+% 
+% %%
+% figure
+% plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
+% %%
+% winsize = 50;
+% timewin = [635 655];
+% %timewin = [600 700];
+% timewin = [330 350];
+% timewin = [1445 1495];
+% timewin = 770+[0 winsize];
+% % figure
+% % subplot(3,1,1)
+% % bz_MultiLFPPlot(lfp,'timewin',timewin,'channels',lfp.channels(1:2:end-2))
+% % subplot(6,1,3)
+% % plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
+% % xlim(timewin)
+% % 
+% % %%
+% depthnames = {'Superficial','Intermediate','Deep'};
+% %timewin = [1445 1495];
+% figure
+% for ee = 1:length(exchanidx)
+% subplot(10,1,(ee-1).*2+[1 2])
+% colormap('jet')
+% imagesc(lfp.timestamps,log2(freqs),(spec{ee}))
+% xlim(timewin)
+% axis xy
+% LogScale('y',2)
+% ylabel({depthnames{ee},'f (Hz)'});
+% %SpecColorRange(spec{2},[1.4 1.5]);
+% %SpecColorRange(spec{2},[1.4 1.7]);
+% SpecColorRange(spec{2},[0.8 1.4]);
+% %caxis([-3 3])
+% set(gca,'xtick',[])
+% %box off
+% end
+% subplot(12,1,8:10)
+%     bz_MultiLFPPlot(lfp,'timewin',timewin,'channels',lfp.channels(exchanidx))
+%         
+%         set(gca,'xtick',[])
+%         box off
+%         ylabel({'LFP','by Depth'})
+%         xlabel('')
+% subplot(12,1,11:12)
 %     plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
 %     xlim(timewin)
 %     xlabel('t (s)')
 %     box off
-
-subplot(12,2,[21 23])
-    plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
-    xlim(timewin)
-    xlabel('t (s)')
-    box off
-    ylabel({'Pupil', 'Diameter'})
-  NiceSave(['ExampleDilation_Spec',num2str(xx)],figfolder,baseName,'tiff')    
-    NiceSave(['ExampleDilation_Spec',num2str(xx)],figfolder,baseName,'pdf')     
-end
-    
-%%    
-figure
-subplot(3,1,1)
-imagesc(lfp.timestamps,[1 30], lfp.data')
-hold on
-colorbar
-caxis([-0.1e4 0.1e4])
-%plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
-xlim(timewin)
-    NiceSave('ExampleDilation',figfolder,baseName)    
-
-%%
-
-    
-end
+%     ylabel({'Pupil', 'Diameter'})
+%   NiceSave('ExampleDilation_Spec',figfolder,baseName,'tiff')  
+%     NiceSave('ExampleDilation_Spec',figfolder,baseName,'pdf')  
+% 
+% %% Sample zooms
+% winsize=5;
+% examplewins = [690+[0 winsize];712+[0 winsize];717+[0 winsize]]
+% %examplewins = [1448 1453; 1469.5 1474.5; 1485 1490];
+% for xx = 1:3
+%     timewin = examplewins(xx,:);
+% figure
+% for ee = 1:length(exchanidx)
+% %subplot(12,1,(ee-1).*2+[1 2])
+% subplot(12,2,(ee-1).*4+[1 3])
+% colormap('jet')
+% imagesc(lfp.timestamps,log2(freqs),(spec{ee}))
+% xlim(timewin)
+% axis xy
+% LogScale('y',2)
+% 
+% %SpecColorRange(spec{2},[1.9 1.9]);
+% SpecColorRange(spec{2},[0.8 1.4]);
+% %caxis([-3 3])
+% set(gca,'xtick',[])
+% %box off
+% end
+% subplot(12,2,[13:2:19])
+%     bz_MultiLFPPlot(lfp,'timewin',timewin,'channels',lfp.channels(1:end-2))
+%         
+%     %    set(gca,'xtick',[])
+%         xlabel('')
+%         box off
+% % subplot(12,1,12)
+% %     plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
+% %     xlim(timewin)
+% %     xlabel('t (s)')
+% %     box off
+% 
+% subplot(12,2,[21 23])
+%     plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
+%     xlim(timewin)
+%     xlabel('t (s)')
+%     box off
+%     ylabel({'Pupil', 'Diameter'})
+%   NiceSave(['ExampleDilation_Spec',num2str(xx)],figfolder,baseName,'tiff')    
+%     NiceSave(['ExampleDilation_Spec',num2str(xx)],figfolder,baseName,'pdf')     
+% end
+%     
+% %%    
+% figure
+% subplot(3,1,1)
+% imagesc(lfp.timestamps,[1 30], lfp.data')
+% hold on
+% colorbar
+% caxis([-0.1e4 0.1e4])
+% %plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
+% xlim(timewin)
+%     NiceSave('ExampleDilation',figfolder,baseName)    
+% 
+% %%
+% 
+%     
+% %end
