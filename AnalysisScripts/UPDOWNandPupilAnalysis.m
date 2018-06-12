@@ -248,11 +248,12 @@ for ss = 2:-1:1
     plot(SlowWaves.slowpup.phase.(states{ss}),log10(SlowWaves.dur.(states{ss})),'.','color',statecolors{ss})
     hold on
     plot(SlowWaves.slowpup.phase.(states{ss})+2.*pi,log10(SlowWaves.dur.(states{ss})),'.','color',statecolors{ss})
-    xlabel(['Phase: (',num2str(infraslowpup(1)),'-',num2str(infraslowpup(2)),' Hz)'])
+    xlabel(['Phase: (',num2str(slowpup(1)),'-',num2str(slowpup(2)),' Hz)'])
     ylabel('Duration')
 end
 axis tight
 box off
+LogScale('y',10)
 %end
 
 subplot(4,1,4)
