@@ -70,13 +70,19 @@ hold on
 plot(log10(SlowWaves.pupil.UP),log10(SlowWaves.dur.UP),'r.')
 xlabel('Pupil Area (med^-^1)');ylabel('Duration (s)')
 LogScale('xy',10)
+box off 
+axis tight
 
 subplot(3,2,3)
 plot((SlowWaves.dpdt.DOWN),log10(SlowWaves.dur.DOWN),'b.')
 hold on
 plot((SlowWaves.dpdt.UP),log10(SlowWaves.dur.UP),'r.')
+
 xlabel('dpdt (med^-^1s^-^1)');ylabel('Duration (s)')
 LogScale('y',10)
+box off
+axis tight
+plot([0 0],get(gca,'ylim'),'k--')
 
 subplot(6,1,6)
 plot(pupildilation.timestamps,(pupildilation.data),'k')
@@ -90,24 +96,28 @@ plot(SlowWaves.midpoint.DOWN ,log10(SlowWaves.dur.DOWN),'b.')
 hold on
 plot(SlowWaves.midpoint.UP ,log10(SlowWaves.dur.UP),'r.')
 xlim(samplewin)
+box off
 
 
-subplot(3,2,4)
+subplot(3,3,6)
 h = imagesc(bincenters,bincenters,pDOWNPUP');
 set(h,'AlphaData',pPUP'>1);
 hold on
 plot(log10(SlowWaves.pupil.DOWN),SlowWaves.dpdt.DOWN,'k.','markersize',2)
+plot(bincenters([1 end]),[0 0],'k--')
 axis xy
 colorbar
-caxis([0 3])
+caxis([0 2.5])
 xlabel('Pupil Area (med^-^1)')
 ylabel('dp/dt')
 LogScale('x',10)
 title('DOWN rate')
 
-subplot(3,2,2)
+subplot(3,3,3)
 h = imagesc(bincenters,bincenters,meanlogUPdur');
 set(h,'AlphaData',N'>1);
+hold on
+plot(bincenters([1 end]),[0 0],'k--')
 LogScale('x',10)
 axis xy
 colorbar
@@ -216,22 +226,32 @@ for ss = 1:length(states)
         SlowWaves.midpoint.(states{ss}),'nearest');
 end
 %% Slow Figure
+statecolors = {'r','b'};
+
 winsize = 100;
 samplewin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end])',winsize);
 
 figure
 subplot(3,2,1)
-    plot(log10(pupilwavespec.freqs),SlowWaves.phasedur.corr)
+    plot(log10(pupilwavespec.freqs),SlowWaves.phasedur.corr,'k')
     hold on
-    plot(log10(pupilwavespec.freqs(SlowWaves.phasedur.pval<0.05)),SlowWaves.phasedur.corr(SlowWaves.phasedur.pval<0.05),'o')
+    plot(log10(pupilwavespec.freqs(SlowWaves.phasedur.pval<0.05)),SlowWaves.phasedur.corr(SlowWaves.phasedur.pval<0.05),...
+        'ro','markersize',4)
     LogScale('x',10)
+    xlabel('Pupil f (Hz)');ylabel('Phase-Dur_U_P Corr')
     
-for ss = 1:length(states)
-subplot(3,2,ss.*2)
-    plot(SlowWaves.slowpup.phase.(states{ss}),log10(SlowWaves.dur.(states{ss})),'k.')
+%
+subplot(3,2,2)
+for ss = 2:-1:1
+    plot(SlowWaves.slowpup.phase.(states{ss}),log10(SlowWaves.dur.(states{ss})),'.','color',statecolors{ss})
     hold on
-    plot(SlowWaves.slowpup.phase.(states{ss})+2.*pi,log10(SlowWaves.dur.(states{ss})),'k.')
+    plot(SlowWaves.slowpup.phase.(states{ss})+2.*pi,log10(SlowWaves.dur.(states{ss})),'.','color',statecolors{ss})
+    xlabel(['Phase: (',num2str(infraslowpup(1)),'-',num2str(infraslowpup(2)),' Hz)'])
+    ylabel('Duration')
 end
+axis tight
+box off
+%end
 
 subplot(4,1,4)
     plot(pupildilation.timestamps,pupildilation.data,'k')
@@ -262,9 +282,9 @@ subplot(3,2,2)
 %caxis([0 3])
 
 subplot(6,2,6)
-    bar(islowhist.phasebins,islowhist.pDOWNPUP_marg)
+    bar(islowhist.phasebins,islowhist.pDOWNPUP_marg,'facecolor','b')
     hold on
-    bar(islowhist.phasebins+2.*pi,islowhist.pDOWNPUP_marg)
+    bar(islowhist.phasebins+2.*pi,islowhist.pDOWNPUP_marg,'facecolor','b')
     xlim(pi.*[-1 3])
     ylabel('DOWN rate (s^-^1)')
     
@@ -286,9 +306,9 @@ subplot(6,2,8)
     ylabel('Pupil Area (med^-^1)')
     
 subplot(3,2,1)
-    plot(log10(freqs),spikephasemag)
+    plot(log10(freqs),spikephasemag,'k')
     hold on
-    plot(log10(freqs(spikephasesig>3)),spikephasemag(spikephasesig>3),'o')
+    plot(log10(freqs(spikephasesig>3)),spikephasemag(spikephasesig>3),'bo','markersize',4)
     LogScale('x',10)
     xlabel('f (Hz)');ylabel('Pupil-DOWN state coupling')
 
@@ -309,7 +329,7 @@ lfp = bz_GetLFP(repchans,...
 winsize = 300;
 samplewin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end])',winsize);
 
-winsize = 15;
+winsize = 10;
 maxtime = pupildilation.timestamps(...
     (pupildilation.timestamps>samplewin(1) & pupildilation.timestamps<samplewin(2)) & pupildilation.data==...
     max(pupildilation.data(pupildilation.timestamps>samplewin(1) & pupildilation.timestamps<samplewin(2))));
@@ -342,11 +362,13 @@ figure
         plot(pupildilation.timestamps,pupildilation.data,'k','LineWidth',2)
         hold on
         plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k')
-        plot(islow.timestamps,islow.data,'r')
-        plot(slow.timestamps,slow.data,'g')    
-        plot(SlowWaves.timestamps,-ones(size(SlowWaves.timestamps)),'b.')
+        plot(islow.timestamps,islow.data-0.5,'r')
+        plot(slow.timestamps,slow.data-1,'g')    
+        plot(SlowWaves.timestamps,-2.*ones(size(SlowWaves.timestamps)),'b.')
+        plot(samplewin,[0 0],'k--')
         plot(subsamplewin,3.*ones(size(subsamplewin)),'r','linewidth',2)
         plot(subsamplewin2,3.*ones(size(subsamplewin2)),'r','linewidth',2)
+        axis tight
         xlim(samplewin)
         legend('Pupil Area','dp/dt','Filtered iSlow','Filtered Slow','DOWN states','location','eastoutside')
         box off
