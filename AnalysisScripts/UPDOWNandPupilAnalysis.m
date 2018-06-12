@@ -306,7 +306,7 @@ lfp = bz_GetLFP(repchans,...
     'basepath',basePath,'noPrompts',true);
 
 %%
-winsize = 400;
+winsize = 300;
 samplewin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end])',winsize);
 
 winsize = 15;
@@ -322,31 +322,35 @@ subsamplewin2 = mintime(1)+[-0.5 0.5].*winsize;
 
 
 figure
-    subplot(3,1,2)
+    subplot(3,4,5:7)
         bz_MultiLFPPlot(lfp,'timewin',samplewin)
         hold on
         plot(SlowWaves.timestamps,zeros(size(SlowWaves.timestamps)),'ob')
+        plot(slow.timestamps,10000.*slow.data,'g','linewidth',1)   
         ylabel('High Pupil')
         xlim(subsamplewin)
         
-    subplot(3,1,3)
+    subplot(3,4,9:11)
         bz_MultiLFPPlot(lfp,'timewin',subsamplewin2)
         hold on
         plot(SlowWaves.timestamps,zeros(size(SlowWaves.timestamps)),'ob')
+        plot(slow.timestamps,10000.*slow.data,'g','linewidth',1)    
         ylabel('Low Pupil')
         xlim(subsamplewin2)
         
     subplot(4,1,1)
         plot(pupildilation.timestamps,pupildilation.data,'k','LineWidth',2)
         hold on
-        plot(islow.timestamps,islow.data,'r')
         plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k')
-        plot(SlowWaves.timestamps,ones(size(SlowWaves.timestamps)),'b.')
+        plot(islow.timestamps,islow.data,'r')
+        plot(slow.timestamps,slow.data,'g')    
+        plot(SlowWaves.timestamps,-ones(size(SlowWaves.timestamps)),'b.')
         plot(subsamplewin,3.*ones(size(subsamplewin)),'r','linewidth',2)
         plot(subsamplewin2,3.*ones(size(subsamplewin2)),'r','linewidth',2)
         xlim(samplewin)
-        legend('Pupil Area','Filtered','dp/dt','DOWN states','location','northwest')
-        ylabel('Pupil Metrics')
+        legend('Pupil Area','dp/dt','Filtered iSlow','Filtered Slow','DOWN states','location','eastoutside')
+        box off
+        ylabel('Pupil')
 NiceSave('examples',figfolder,baseName)
 %%
 
