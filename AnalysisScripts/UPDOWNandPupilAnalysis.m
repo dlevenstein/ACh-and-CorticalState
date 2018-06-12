@@ -237,6 +237,8 @@ subplot(3,2,1)
     hold on
     plot(log10(pupilwavespec.freqs(SlowWaves.phasedur.pval<0.05)),SlowWaves.phasedur.corr(SlowWaves.phasedur.pval<0.05),...
         'ro','markersize',4)
+    axis tight
+    box off
     LogScale('x',10)
     xlabel('Pupil f (Hz)');ylabel('Phase-Dur_U_P Corr')
     
@@ -281,14 +283,16 @@ subplot(3,2,2)
     ylabel(['Power: (',num2str(infraslowpup(1)),'-',num2str(infraslowpup(2)),' Hz)'])
 %caxis([0 3])
 
-subplot(6,2,6)
+subplot(8,2,8)
     bar(islowhist.phasebins,islowhist.pDOWNPUP_marg,'facecolor','b')
     hold on
     bar(islowhist.phasebins+2.*pi,islowhist.pDOWNPUP_marg,'facecolor','b')
+    axis tight
     xlim(pi.*[-1 3])
     ylabel('DOWN rate (s^-^1)')
+    box off
     
-subplot(6,2,8)
+subplot(8,2,10)
     %plot(linspace(-pi,3.*pi,100),cos(linspace(-pi,3.*pi,100)),'k')
     plot(pupbyislow.phasebins,pupbyislow.meanpupbyphase,'k')
     hold on
@@ -301,6 +305,8 @@ subplot(6,2,8)
     %plot(pupbyislow.phasebins+2.*pi,pupbyislow.meandpdtbyphase,'k')
     
    % plot(pupbyislow.phasebins,pupbyislow.meanpupbyphaseamp(:,2:end-1),'k')
+   box off
+   axis tight
     xlim(pi.*[-1 3])
     xlabel(['Phase: (',num2str(infraslowpup(1)),'-',num2str(infraslowpup(2)),' Hz)'])
     ylabel('Pupil Area (med^-^1)')
@@ -309,8 +315,10 @@ subplot(3,2,1)
     plot(log10(freqs),spikephasemag,'k')
     hold on
     plot(log10(freqs(spikephasesig>3)),spikephasemag(spikephasesig>3),'bo','markersize',4)
+    axis tight
+    box off
     LogScale('x',10)
-    xlabel('f (Hz)');ylabel('Pupil-DOWN state coupling')
+    xlabel('Pupil f (Hz)');ylabel('Pupil-DOWN state coupling')
 
 subplot(4,1,4)
     plot(pupildilation.timestamps,pupildilation.data,'k')
@@ -345,16 +353,16 @@ figure
     subplot(3,4,5:7)
         bz_MultiLFPPlot(lfp,'timewin',samplewin)
         hold on
-        plot(SlowWaves.timestamps,zeros(size(SlowWaves.timestamps)),'ob')
-        plot(slow.timestamps,10000.*slow.data,'g','linewidth',1)   
+        plot(SlowWaves.timestamps,zeros(size(SlowWaves.timestamps)),'ob','markersize',5)
+       % plot(slow.timestamps,10000.*slow.data,'g','linewidth',1)   
         ylabel('High Pupil')
         xlim(subsamplewin)
         
     subplot(3,4,9:11)
         bz_MultiLFPPlot(lfp,'timewin',subsamplewin2)
         hold on
-        plot(SlowWaves.timestamps,zeros(size(SlowWaves.timestamps)),'ob')
-        plot(slow.timestamps,10000.*slow.data,'g','linewidth',1)    
+        plot(SlowWaves.timestamps,zeros(size(SlowWaves.timestamps)),'ob','markersize',5)
+       % plot(slow.timestamps,10000.*slow.data,'g','linewidth',1)    
         ylabel('Low Pupil')
         xlim(subsamplewin2)
         
@@ -362,7 +370,7 @@ figure
         plot(pupildilation.timestamps,pupildilation.data,'k','LineWidth',2)
         hold on
         plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k')
-        plot(islow.timestamps,islow.data-0.5,'r')
+        plot(islow.timestamps,islow.data-0.5,'m')
         plot(slow.timestamps,slow.data-1,'g')    
         plot(SlowWaves.timestamps,-2.*ones(size(SlowWaves.timestamps)),'b.')
         plot(samplewin,[0 0],'k--')
