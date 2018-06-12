@@ -19,9 +19,9 @@ CTXChans = recparms.SpkGrps.Channels(23:46);
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
 %pupildilation.dpdt = 
-smoothwin =1;%s
+smoothwin =2;%s
 pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
-pupildilation.dpdt = smooth(pupildt,smoothwin.*pupildilation.samplingRate,'moving');
+pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
 
 nantimes = isnan(pupildilation.data);
 pupildilation.interpdata = interp1(pupildilation.timestamps(~nantimes),...
@@ -37,52 +37,63 @@ end
 
 
 %% DOWN state probability as function of pupil
-numbins = 10;
-bins = linspace(-0.5,0.5,numbins);
-pDOWN = hist3([log10(SlowWaves.pupil.DOWN),SlowWaves.dpdt.DOWN],...
-    {bins,bins});
-pPUP = hist3([log10(pupildilation.data(1:end-1)),pupildilation.dpdt],...
-    {bins,bins})./pupildilation.samplingRate;
+numbins = 8;
+bins = linspace(-0.5,0.5,numbins+1);
+bincenters = bins(1:end-1)+0.5.*diff(bins([1 2]));
+bins([1 end])=[-Inf Inf];
+pDOWN = histcounts2(log10(SlowWaves.pupil.DOWN),SlowWaves.dpdt.DOWN,...
+    bins,bins);
+pPUP = histcounts2(log10(pupildilation.data(1:end-1)),pupildilation.dpdt,...
+    bins,bins)./pupildilation.samplingRate;
 pDOWNPUP = pDOWN./pPUP;
+
+%% UP state duration as function of pupil
+
+[N,~,~,BINX,BINY] = histcounts2(log10(SlowWaves.pupil.UP),SlowWaves.dpdt.UP,...
+    bins,bins);
+meanlogUPdur = zeros(size(pDOWN));
+for xx = 1:numbins
+    for yy = 1:numbins
+        meanlogUPdur(xx,yy) = nanmean(log10(SlowWaves.dur.UP(BINX==xx & BINY==yy)));
+    end
+end    
+
 
 %%
 winsize = 300;
 samplewin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end])',winsize);
 
 figure
-subplot(2,2,1)
+subplot(3,2,1)
 plot(log10(SlowWaves.pupil.DOWN),log10(SlowWaves.dur.DOWN),'b.')
 hold on
 plot(log10(SlowWaves.pupil.UP),log10(SlowWaves.dur.UP),'r.')
 xlabel('Pupil Area (med^-^1)');ylabel('Duration (s)')
 LogScale('xy',10)
 
-subplot(2,2,2)
+subplot(3,2,3)
 plot((SlowWaves.dpdt.DOWN),log10(SlowWaves.dur.DOWN),'b.')
 hold on
 plot((SlowWaves.dpdt.UP),log10(SlowWaves.dur.UP),'r.')
 xlabel('dpdt (med^-^1s^-^1)');ylabel('Duration (s)')
 LogScale('y',10)
 
-subplot(4,1,3)
-plot(pupildilation.timestamps,log10(pupildilation.data),'k')
+subplot(6,1,6)
+plot(pupildilation.timestamps,(pupildilation.data),'k')
 hold on
 plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'r')
+plot(samplewin,[0 0],'k--')
 xlim(samplewin)
 
-subplot(4,1,4)
+subplot(6,1,5)
 plot(SlowWaves.midpoint.DOWN ,log10(SlowWaves.dur.DOWN),'b.')
 hold on
 plot(SlowWaves.midpoint.UP ,log10(SlowWaves.dur.UP),'r.')
 xlim(samplewin)
 
 
-
-
-%%
-
-figure
-h = imagesc(bins,bins,pDOWNPUP');
+subplot(3,2,4)
+h = imagesc(bincenters,bincenters,pDOWNPUP');
 set(h,'AlphaData',pPUP'>1);
 hold on
 plot(log10(SlowWaves.pupil.DOWN),SlowWaves.dpdt.DOWN,'k.','markersize',2)
@@ -92,28 +103,42 @@ caxis([0 3])
 xlabel('Pupil Area (med^-^1)')
 ylabel('dp/dt')
 LogScale('x',10)
+title('DOWN rate')
+
+subplot(3,2,2)
+h = imagesc(bincenters,bincenters,meanlogUPdur');
+set(h,'AlphaData',N'>1);
+LogScale('x',10)
+axis xy
+colorbar
+xlabel('Pupil Area (med^-^1)')
+ylabel('dp/dt')
+LogScale('x',10)
+title('(log) UP duration')
+
+NiceSave('PupilandDpdt',figfolder,baseName)
 
 %% DOWN-Pupil Phase Coupling
 pupilwave = pupildilation;
-pupilwave.data = (pupilwave.interpdata);
-%pupilwave = bz_WaveSpec(pupilwave);
-%%
+pupilwave.data = log10(pupilwave.interpdata);
+pupilwavespec = bz_WaveSpec(pupilwave,'frange',[0.001 1],'ncyc',3);
+%% Wavelet Coupling with DOWN incidence
 [freqs,synchcoupling,ratepowercorr,...
     spikephasemag,spikephaseangle,popcellind,cellpopidx,...
     spikephasesig,ratepowersig]...
-    = GenSpikeLFPCoupling({SlowWaves.timestamps},log10(pupilwave.data),...
+    = GenSpikeLFPCoupling({SlowWaves.timestamps},(pupilwave.data),...
     'sf_LFP',pupilwave.samplingRate,'frange',[0.001 1],'ncyc',3);
 
-%%
+%% Filter in Infraslow
 infraslowpup = [0.005 0.05];
-filtered = bz_Filter(pupilwave,'passband',infraslowpup,...
+islow = bz_Filter(pupilwave,'passband',infraslowpup,...
     'filter','fir1','order',1);
-filtered.normamp = zscore(log10(filtered.amp));
+islow.normamp = zscore(log10(islow.amp));
 
 %% DOWN state by phase/power in infraslow
-SlowWaves.islowpup.phase.DOWN = interp1(filtered.timestamps,filtered.phase,...
+SlowWaves.islowpup.phase.DOWN = interp1(islow.timestamps,islow.phase,...
     SlowWaves.midpoint.DOWN,'nearest');
-SlowWaves.islowpup.amp.DOWN = interp1(filtered.timestamps,filtered.normamp,...
+SlowWaves.islowpup.amp.DOWN = interp1(islow.timestamps,islow.normamp,...
     SlowWaves.midpoint.DOWN,'nearest');
 
 numbins = 6;
@@ -123,12 +148,12 @@ islowhist.ampbins = linspace(-1.5,1.5,numbins);
 
 islowhist.pDOWN = hist3([SlowWaves.islowpup.phase.DOWN,(SlowWaves.islowpup.amp.DOWN)],...
     {islowhist.phasebins,islowhist.ampbins});
-islowhist.pPUP = hist3([filtered.phase,filtered.normamp],...
-    {islowhist.phasebins,islowhist.ampbins})./filtered.samplingRate;
+islowhist.pPUP = hist3([islow.phase,islow.normamp],...
+    {islowhist.phasebins,islowhist.ampbins})./islow.samplingRate;
 islowhist.pDOWNPUP = islowhist.pDOWN./islowhist.pPUP;
 
 islowhist.pDOWN_marg = hist(SlowWaves.islowpup.phase.DOWN,islowhist.phasebins);
-islowhist.pPUP_marg = hist(filtered.phase,islowhist.phasebins)./filtered.samplingRate;
+islowhist.pPUP_marg = hist(islow.phase,islowhist.phasebins)./islow.samplingRate;
 islowhist.pDOWNPUP_marg = islowhist.pDOWN_marg./islowhist.pPUP_marg;
 
 %% Mean Pupil as f'n of phase
@@ -137,10 +162,10 @@ pupbyislow.phasebins = linspace(-pi,pi,nphasebins);
 %pupbyislow.phasebins = pupbyislow.phasebins(1:end-1)+0.5.*diff(pupbyislow.phasebins([1 2]));
 pupbyislow.ampbins = islowhist.ampbins;
 
-filtered.nearestphasebin = interp1(pupbyislow.phasebins,pupbyislow.phasebins,...
-    filtered.phase,'nearest');
-filtered.nearestampbin = interp1(pupbyislow.ampbins,pupbyislow.ampbins,...
-    filtered.normamp,'nearest');
+islow.nearestphasebin = interp1(pupbyislow.phasebins,pupbyislow.phasebins,...
+    islow.phase,'nearest');
+islow.nearestampbin = interp1(pupbyislow.ampbins,pupbyislow.ampbins,...
+    islow.normamp,'nearest');
 
 pupbyislow.meanpupbyphase = zeros(size(pupbyislow.phasebins));
 pupbyislow.meandpdtbyphase = zeros(size(pupbyislow.phasebins));
@@ -149,23 +174,73 @@ pupbyislow.meanpupbyphaseamp = zeros(length(pupbyislow.phasebins),...
     length(pupbyislow.ampbins));
 for pp = 1:nphasebins
     pupbyislow.meanpupbyphase(pp) =...
-        nanmean(pupildilation.data(filtered.nearestphasebin==pupbyislow.phasebins(pp)));
+        nanmean(pupildilation.data(islow.nearestphasebin==pupbyislow.phasebins(pp)));
     pupbyislow.stdpupbyphase(pp) =...
-        nanstd(pupildilation.data(filtered.nearestphasebin==pupbyislow.phasebins(pp)));
+        nanstd(pupildilation.data(islow.nearestphasebin==pupbyislow.phasebins(pp)));
 
     pupbyislow.meandpdtbyphase(pp) =...
-        nanmean(pupildilation.dpdt(filtered.nearestphasebin(1:end-1)==pupbyislow.phasebins(pp)));
+        nanmean(pupildilation.dpdt(islow.nearestphasebin(1:end-1)==pupbyislow.phasebins(pp)));
     
     for aa = 1:length(pupbyislow.ampbins)
         pupbyislow.meanpupbyphaseamp(pp,aa) =...
             nanmean(pupildilation.data...
-            (filtered.nearestphasebin==pupbyislow.phasebins(pp) & ...
-            filtered.nearestampbin==pupbyislow.ampbins(aa)));
+            (islow.nearestphasebin==pupbyislow.phasebins(pp) & ...
+            islow.nearestampbin==pupbyislow.ampbins(aa)));
     end
     
 end
 
+%% Coupling with UP duration
+
+SlowWaves.pupphase.UP = zeros(length(SlowWaves.midpoint.UP),length(pupilwavespec.freqs));
+SlowWaves.phasedur.corr = zeros(size(pupilwavespec.freqs));
+SlowWaves.phasedur.pval = zeros(size(pupilwavespec.freqs));
+
+for ff = 1:length(pupilwavespec.freqs)
+    SlowWaves.pupphase.UP(:,ff) = interp1(pupilwavespec.timestamps,angle(pupilwavespec.data(:,ff)),...
+        SlowWaves.midpoint.UP,'nearest');
+    [SlowWaves.phasedur.corr(ff), SlowWaves.phasedur.pval(ff)] = circ_corrcl(SlowWaves.pupphase.UP(:,ff), log10(SlowWaves.dur.UP));
+end
+
+%% Slow Range
+slowpup = [0.05 0.5];
+slow = bz_Filter(pupilwave,'passband',slowpup,...
+    'filter','fir1','order',2);
+slow.normamp = zscore(log10(slow.amp));
+
 %%
+for ss = 1:length(states)
+    SlowWaves.slowpup.phase.(states{ss}) = interp1(slow.timestamps,slow.phase,...
+        SlowWaves.midpoint.(states{ss}),'nearest');
+    SlowWaves.slowpup.amp.(states{ss}) = interp1(slow.timestamps,slow.normamp,...
+        SlowWaves.midpoint.(states{ss}),'nearest');
+end
+%% Slow Figure
+winsize = 100;
+samplewin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end])',winsize);
+
+figure
+subplot(3,2,1)
+    plot(log10(pupilwavespec.freqs),SlowWaves.phasedur.corr)
+    hold on
+    plot(log10(pupilwavespec.freqs(SlowWaves.phasedur.pval<0.05)),SlowWaves.phasedur.corr(SlowWaves.phasedur.pval<0.05),'o')
+    LogScale('x',10)
+    
+for ss = 1:length(states)
+subplot(3,2,ss.*2)
+    plot(SlowWaves.slowpup.phase.(states{ss}),log10(SlowWaves.dur.(states{ss})),'k.')
+    hold on
+    plot(SlowWaves.slowpup.phase.(states{ss})+2.*pi,log10(SlowWaves.dur.(states{ss})),'k.')
+end
+
+subplot(4,1,4)
+    plot(pupildilation.timestamps,pupildilation.data,'k')
+    hold on
+    plot(slow.timestamps,5.*slow.data,'r')
+    plot(SlowWaves.timestamps,ones(size(SlowWaves.timestamps)),'b.')
+    xlim(samplewin)
+NiceSave('SlowPupil',figfolder,baseName)
+%% iSlow Figure
 winsize = 500;
 samplewin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end])',winsize);
 
@@ -220,7 +295,7 @@ subplot(3,2,1)
 subplot(4,1,4)
     plot(pupildilation.timestamps,pupildilation.data,'k')
     hold on
-    plot(filtered.timestamps,filtered.data,'r')
+    plot(islow.timestamps,islow.data,'r')
     plot(SlowWaves.timestamps,ones(size(SlowWaves.timestamps)),'b.')
     xlim(samplewin)
 
@@ -264,7 +339,7 @@ figure
     subplot(4,1,1)
         plot(pupildilation.timestamps,pupildilation.data,'k','LineWidth',2)
         hold on
-        plot(filtered.timestamps,filtered.data,'r')
+        plot(islow.timestamps,islow.data,'r')
         plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k')
         plot(SlowWaves.timestamps,ones(size(SlowWaves.timestamps)),'b.')
         plot(subsamplewin,3.*ones(size(subsamplewin)),'r','linewidth',2)
