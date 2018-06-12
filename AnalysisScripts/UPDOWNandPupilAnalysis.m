@@ -3,7 +3,8 @@ function [ output_args ] = UPDOWNandPupilAnalysis(basePath,figfolder)
 %   Detailed explanation goes here
 %%
 basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
-figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/UPDOWNandPupilAnalysis';
+%basePath = pwd;
+%figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/UPDOWNandPupilAnalysis';
 figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNandPupilAnalysis';
 
 %%
@@ -324,7 +325,7 @@ subplot(3,2,1)
 subplot(4,1,4)
     plot(pupildilation.timestamps,pupildilation.data,'k')
     hold on
-    plot(islow.timestamps,islow.data,'r')
+    plot(islow.timestamps,islow.data,'m')
     plot(SlowWaves.timestamps,ones(size(SlowWaves.timestamps)),'b.')
     xlim(samplewin)
 
