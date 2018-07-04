@@ -3,20 +3,167 @@ function [ output_args ] = LFPSlopeAndPupilAnalysis( basePath,figfolder )
 %   Detailed explanation goes here
 basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
 %basePath = pwd;
-%figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/UPDOWNandPupilAnalysis';
-figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndPupilAnalysis';
+figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/LFPSlopeAndPupilAnalysis';
+%figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndPupilAnalysis';
 
 %%
 sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
+%%
+pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
-%%
-channum = sessionInfo.SpkGrps.Channels(1);
-channum = 31;
-%%
-lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
+%pupildilation.dpdt = 
+smoothwin =2;%s
+pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
+pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
 
+nantimes = isnan(pupildilation.data);
+pupildilation.interpdata = interp1(pupildilation.timestamps(~nantimes),...
+    pupildilation.data(~nantimes),pupildilation.timestamps);
 %%
-[specslope,spec] = bz_PowerSpectrumSlope(lfp,dt,winsize)
+slopepupilcorr.p = zeros(size(sessionInfo.SpkGrps.Channels));
+slopepupilcorr.dpdt = zeros(size(sessionInfo.SpkGrps.Channels));
+for cc = 1:length(sessionInfo.SpkGrps.Channels)
+    cc
+    channum = sessionInfo.SpkGrps.Channels(cc);
+    %channum = 31;
+    %%
+    lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
+
+    %%
+    dt = 0.5;
+    insize = 2;
+    [specslope] = bz_PowerSpectrumSlope(lfp,winsize,dt,'showfig',false);
+
+    %%
+    specslope.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
+        specslope.timestamps,'nearest');
+    specslope.dpdt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,...
+        specslope.timestamps,'nearest');
+
+    %%
+    [slopepupilcorr.pup(cc),slopepupilcorr.pup_p(cc)] =...
+        corr(log10(specslope.pupilsize),specslope.data,'type','spearman','rows','complete');
+   [ slopepupilcorr.dpdt(cc),slopepupilcorr.dpdt_p(cc)] =...
+       corr(specslope.dpdt,specslope.data,'type','spearman','rows','complete');
+    clear lfp
+end
+%% Take a look at the channels with dpdt and p
+repchans = [16 42];
+lfp = bz_GetLFP(sessionInfo.SpkGrps.Channels(repchans),'basepath',basePath,'noPrompts',true);
+
+
+dt = 0.1;
+winsize = 2;
+[specslope] = bz_PowerSpectrumSlope(lfp,winsize,dt,'showfig',true);
+%NOTE TO SELF ADD SAVE FUNCTION ABOVE!
+
+specslope.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
+    specslope.timestamps,'nearest');
+specslope.dpdt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,...
+    specslope.timestamps,'nearest');
+
+%Check residuals
+
+    %%
+samplewin = bz_RandomWindowInIntervals(lfp.timestamps([1 end])',300);
+    
+
+winsize = 10;
+maxtime = pupildilation.timestamps(...
+    (pupildilation.timestamps>samplewin(1) & pupildilation.timestamps<samplewin(2)) & pupildilation.data==...
+    max(pupildilation.data(pupildilation.timestamps>samplewin(1) & pupildilation.timestamps<samplewin(2))));
+subsamplewin = maxtime+[-0.5 0.5].*winsize;
+
+mintime = pupildilation.timestamps(...
+    (pupildilation.timestamps>samplewin(1) & pupildilation.timestamps<samplewin(2)) & pupildilation.data==...
+    min(pupildilation.data(pupildilation.timestamps>samplewin(1) & pupildilation.timestamps<samplewin(2))));
+subsamplewin2 = mintime(1)+[-0.5 0.5].*winsize;
+
+figure
+% subplot(3,3,1)
+%     plot(slopepupilcorr.dpdt,'k','linewidth',0.5)
+%     hold on
+%     plot(slopepupilcorr.p,'k','linewidth',2)
+%     plot(repchans(1),slopepupilcorr.dpdt(repchans(1)),'o')
+%     plot(repchans(2),slopepupilcorr.p(repchans(2)),'o')
+%     xlabel('Channel (sorted by depth)')
+%     axis tight
+%     box off
+
+for cc = 1:2    
+subplot(6,6,12+cc)
+    plot(log10(specslope.pupilsize),specslope.data(:,cc),'k.','markersize',3)
+    xlabel('Pupil Area (med^-^1)');ylabel('Spectrum Slope')
+    box off
+    axis tight
+subplot(6,6,18+cc)
+    plot((specslope.dpdt),specslope.data(:,cc),'k.','markersize',1)
+    xlabel('dpdt (med^-^1s^-^1)');ylabel('Spectrum Slope')
+    box off
+    axis tight
+end
+    
+% subplot(6,1,4)
+%     bz_MultiLFPPlot(lfp,'timewin',samplewin)
+subplot(6,6,9:12)
+    plot(specslope.timestamps,specslope.data)
+    axis tight
+    xlim(samplewin)
+    box off
+    xlabel('t (s)')
+    ylabel('PSS')
+    
+subplot(6,6,3:6)
+    plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
+    hold on
+    plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k')
+    axis tight
+    xlim(samplewin)
+    box off
+    ylabel('Pupil')
+        plot(samplewin,[0 0],'k--')
+        plot(subsamplewin,3.*ones(size(subsamplewin)),'r','linewidth',2)
+        plot(subsamplewin2,3.*ones(size(subsamplewin2)),'r','linewidth',2)
+        
+        
+    subplot(6,3,11:12)
+        bz_MultiLFPPlot(lfp,'timewin',samplewin)
+        hold on
+       % plot(slow.timestamps,10000.*slow.data,'g','linewidth',1)   
+        ylabel('High Pupil')
+        xlim(subsamplewin)
+        
+    subplot(6,3,17:18)
+        bz_MultiLFPPlot(lfp,'timewin',subsamplewin2)
+        hold on
+       % plot(slow.timestamps,10000.*slow.data,'g','linewidth',1)    
+        ylabel('Low Pupil')
+        xlim(subsamplewin2)
+
+subplot(6,3,8:9)
+    plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
+    hold on
+    plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k')
+    plot(specslope.timestamps,specslope.data)
+    axis tight
+    xlim(subsamplewin)
+    box off
+    ylabel('Pupil')
+        plot(subsamplewin,[0 0],'k--')
+        
+        
+subplot(6,3,14:15)
+    plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
+    hold on
+    plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k')
+    plot(specslope.timestamps,specslope.data)
+    axis tight
+    xlim(subsamplewin2)
+    box off
+    ylabel('Pupil')
+        plot(subsamplewin2,[0 0],'k--')
+        
+NiceSave('PSSandPupil',figfold
 end
 
