@@ -3,6 +3,7 @@ function [ output_args ] = UPDOWNandPupilAnalysis(basePath,figfolder)
 %   Detailed explanation goes here
 %%
 basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
+basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
 %basePath = pwd;
 %figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/UPDOWNandPupilAnalysis';
 figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNandPupilAnalysis';
@@ -12,9 +13,9 @@ baseName = bz_BasenameFromBasepath(basePath);
 recparms = bz_getSessionInfo(basePath,'noPrompts',true);
 
 %% Detect Slow Waves
-CTXChans = recparms.SpkGrps.Channels(23:46);
+%CTXChans = recparms.SpkGrps.Channels(23:46);
 [SlowWaves] = DetectSlowWaves(basePath,'noSpikes',true,'noPrompts',true,...
-    'NREMInts',[0 Inf],'CTXChans',CTXChans);
+    'NREMInts',[0 Inf]);%,'CTXChans',CTXChans);
 
 %%
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
@@ -138,7 +139,8 @@ pupilwavespec = bz_WaveSpec(pupilwave,'frange',[0.001 1],'ncyc',3);
     spikephasemag,spikephaseangle,popcellind,cellpopidx,...
     spikephasesig,ratepowersig]...
     = GenSpikeLFPCoupling({SlowWaves.timestamps},(pupilwave.data),...
-    'sf_LFP',pupilwave.samplingRate,'frange',[0.001 1],'ncyc',3);
+    'sf_LFP',pupilwave.samplingRate,'frange',[0.001 1],'ncyc',3,...
+    'jittersig',true);
 
 %% Filter in Infraslow
 infraslowpup = [0.005 0.05];
@@ -331,7 +333,7 @@ subplot(4,1,4)
 
 NiceSave('InfraSlowPupil',figfolder,baseName)
 %% Example Window: 
-repchans = recparms.SpkGrps.Channels(5:5:45);
+repchans = recparms.AnatGrps.Channels(5:5:45);
 lfp = bz_GetLFP(repchans,...
     'basepath',basePath,'noPrompts',true);
 

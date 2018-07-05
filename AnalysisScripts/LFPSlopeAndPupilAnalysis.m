@@ -2,6 +2,8 @@ function [ output_args ] = LFPSlopeAndPupilAnalysis( basePath,figfolder )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
+basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
+
 %basePath = pwd;
 figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/LFPSlopeAndPupilAnalysis';
 %figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndPupilAnalysis';
@@ -21,11 +23,11 @@ nantimes = isnan(pupildilation.data);
 pupildilation.interpdata = interp1(pupildilation.timestamps(~nantimes),...
     pupildilation.data(~nantimes),pupildilation.timestamps);
 %%
-slopepupilcorr.p = zeros(size(sessionInfo.SpkGrps.Channels));
-slopepupilcorr.dpdt = zeros(size(sessionInfo.SpkGrps.Channels));
-for cc = 1:length(sessionInfo.SpkGrps.Channels)
+slopepupilcorr.pup = zeros(size(sessionInfo.AnatGrps.Channels));
+slopepupilcorr.dpdt = zeros(size(sessionInfo.AnatGrps.Channels));
+for cc = 1:length(sessionInfo.AnatGrps.Channels)
     cc
-    channum = sessionInfo.SpkGrps.Channels(cc);
+    channum = sessionInfo.AnatGrps.Channels(cc);
     %channum = 31;
     %%
     lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
@@ -48,10 +50,21 @@ for cc = 1:length(sessionInfo.SpkGrps.Channels)
        corr(specslope.dpdt,specslope.data,'type','spearman','rows','complete');
     clear lfp
 end
+%%
+figure
+subplot(2,2,1)
+plot(1:sessionInfo.nChannels,slopepupilcorr.pup,'k')
+hold on
+plot(1:sessionInfo.nChannels,slopepupilcorr.dpdt,'k--')
+xlabel('Channel (Sup-->Deep)');ylabel('Corr')
+axis tight
+legend('p','dpdt','location','southeast')
 %% Take a look at the channels with dpdt and p
-repchans = [16 42];
-repchans = 42;
-lfp = bz_GetLFP(sessionInfo.SpkGrps.Channels(repchans),'basepath',basePath,'noPrompts',true);
+[~, bestchans.pup] = max(slopepupilcorr.pup);
+[~, bestchans.dpdt] = max(slopepupilcorr.dpdt);
+repchans = [sessionInfo.AnatGrps.Channels(bestchans.pup) sessionInfo.AnatGrps.Channels(bestchans.dpdt)];
+%repchans = 42;
+lfp = bz_GetLFP(sessionInfo.AnatGrps.Channels(repchans(1)),'basepath',basePath,'noPrompts',true);
 
 
 dt = 0.2;
@@ -258,7 +271,7 @@ figure
 %     axis tight
 %     box off
 
-for cc = 1:2    
+for cc = 1%:2    
 subplot(6,6,12+cc)
     plot(log10(specslope.pupilsize),specslope.data(:,cc),'k.','markersize',3)
     xlabel('Pupil Area (med^-^1)');ylabel('Spectrum Slope')
