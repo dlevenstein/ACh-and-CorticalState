@@ -1,12 +1,12 @@
-function [ pupcycleUPDOWN,pupphaseUD,islowhist,pupbyislow ] = UPDOWNandPupilAnalysis(basePath,figfolder)
+function [ pupcycleUPDOWN,pupphaseUD,islowhist, ] = UPDOWNandPupilAnalysis(basePath,figfolder)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %%
-%basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
-%basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
+basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
+basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
 %basePath = pwd;
 %figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/UPDOWNandPupilAnalysis';
-%figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNandPupilAnalysis';
+figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNandPupilAnalysis';
 
 %%
 baseName = bz_BasenameFromBasepath(basePath);
@@ -318,9 +318,9 @@ subplot(8,2,10)
     ylabel('Pupil Area (med^-^1)')
     
 subplot(3,2,1)
-    plot(log10(pupphaseUD.freqs),pupphaseUD.phaseDN.mag,'k')
+    plot(log10(freqs),pupphaseUD.phaseDN.mag,'k')
     hold on
-    plot(log10(pupphaseUD.freqs(pupphaseUD.phaseDN.sig>3)),pupphaseUD.phaseDN.mag(pupphaseUD.phaseDN.sig>3),'bo','markersize',4)
+    plot(log10(freqs(pupphaseUD.phaseDN.sig>3)),pupphaseUD.phaseDN.mag(pupphaseUD.phaseDN.sig>3),'bo','markersize',4)
     axis tight
     box off
     LogScale('x',10)

@@ -1,11 +1,11 @@
-function [ output_args ] = LFPSlopeAndPupilAnalysis( basePath,figfolder )
+function [ slopepupilcorr,PSShist,pupcyclePSS ] = LFPSlopeAndPupilAnalysis( basePath,figfolder )
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
-basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
-basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
+%basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
+%basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
 
 %basePath = pwd;
-figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/LFPSlopeAndPupilAnalysis';
+%figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndPupilAnalysis';
 %figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndPupilAnalysis';
 baseName = bz_BasenameFromBasepath(basePath);
 %%
@@ -69,8 +69,8 @@ lfp = bz_GetLFP(sessionInfo.AnatGrps.Channels(repchans(1)),'basepath',basePath,'
 
 dt = 0.2;
 winsize = 2;
-[specslope,specgram] = bz_PowerSpectrumSlope(lfp,winsize,dt,'showfig',true);
-%NOTE TO SELF ADD SAVE FUNCTION ABOVE!
+[specslope,specgram] = bz_PowerSpectrumSlope(lfp,winsize,dt,'showfig',true,...
+    'saveMat',basePath);
 
 specslope.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
     specslope.timestamps,'nearest');
@@ -81,14 +81,14 @@ specslope.dpdt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,..
 %%
 numbins = 15;
 bins = linspace(-0.5,0.5,numbins+1);
-bincenters = bins(1:end-1)+0.5.*diff(bins([1 2]));
+pupcyclePSS.bincenters = bins(1:end-1)+0.5.*diff(bins([1 2]));
 bins([1 end])=[-Inf Inf];
 [N,~,~,BINX,BINY] = histcounts2(log10(specslope.pupilsize),specslope.dpdt,...
     bins,bins);
-meanPSS = zeros(size(N));
+pupcyclePSS.meanPSS = zeros(size(N));
 for xx = 1:numbins
     for yy = 1:numbins
-        meanPSS(xx,yy) = nanmean(specslope.data(BINX==xx & BINY==yy));
+        pupcyclePSS.meanPSS(xx,yy) = nanmean(specslope.data(BINX==xx & BINY==yy));
     end
 end
 
@@ -200,7 +200,7 @@ NiceSave('PSSexample',figfolder,baseName,'tiff')
 %%
 figure
 subplot(3,3,1)
-h = imagesc(bincenters,bincenters,meanPSS');
+h = imagesc(pupcyclePSS.bincenters,pupcyclePSS.bincenters,pupcyclePSS.meanPSS');
 set(h,'AlphaData',N'>10);
 hold on
 plot(bincenters([1 end]),[0 0],'k--')

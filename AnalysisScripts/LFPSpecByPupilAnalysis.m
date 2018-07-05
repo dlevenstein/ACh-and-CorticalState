@@ -5,7 +5,7 @@ function [specvarcorr,specbyvar,specvarcorr_meannorm,specbyvar_meannorm,...
 %%
 %basePath = pwd;
 baseName = bz_BasenameFromBasepath(basePath);
-figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/LFPSpecByPupilAnalysis';
+%figfolder = '/mnt/data1/Dropbox/research/Current Projects/S1State/AnalysisScripts/figures/LFPSpecByPupilAnalysis';
 
 
 %%

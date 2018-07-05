@@ -34,6 +34,10 @@ ln -s /mnt/proraidDL/Database/WMProbeData/180605_WT_M1M3_LFP_Layers_Pupil_EMG_Po
 
 # KO
 #180525
+ln -s /mnt/proraidDL/Database/WMProbeData/180525_EMX_M1M3_LFP_Layers_Pupil_EMG_Pole/180525_EMX_M1M3_LFP_Layers_Pupil_EMG_180525_100410/ .
+ln -s /mnt/proraidDL/Database/WMProbeData/180525_EMX_M1M3_LFP_Layers_Pupil_EMG_Pole/180525_EMX_M1M3_LFP_Layers_Pupil_EMG_180525_104418/ .
+ln -s /mnt/proraidDL/Database/WMProbeData/180525_EMX_M1M3_LFP_Layers_Pupil_EMG_Pole/180525_EMX_M1M3_LFP_Layers_Pupil_EMG_180525_111858/ .
+ln -s /mnt/proraidDL/Database/WMProbeData/180525_EMX_M1M3_LFP_Layers_Pupil_EMG_Pole/180525_EMX_M1M3_LFP_Layers_Pupil_EMG_180525_115350/ .
 
 #180530
 ln -s /mnt/proraidDL/Database/WMProbeData/180530_EMX_M1M3_LFP_Layers_Pupil_EMG_Pole/180530_EMX_M1M3_LFP_Layers_Pupil_EMG_180530_112846/ .
