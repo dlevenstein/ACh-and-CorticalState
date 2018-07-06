@@ -203,7 +203,7 @@ subplot(3,3,1)
 h = imagesc(pupcyclePSS.bincenters,pupcyclePSS.bincenters,pupcyclePSS.meanPSS');
 set(h,'AlphaData',N'>10);
 hold on
-plot(bincenters([1 end]),[0 0],'k--')
+plot(pupcyclePSS.bincenters([1 end]),[0 0],'k--')
 LogScale('x',10)
 axis xy
 colorbar
