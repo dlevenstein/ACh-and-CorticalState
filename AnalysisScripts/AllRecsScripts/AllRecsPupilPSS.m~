@@ -1,30 +1,115 @@
-analysisfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNandPupilAnalysis';
-UPDOWNPupilAll = GetMatResults(analysisfolder,'UPDOWNandPupilAnalysis');
+analysisfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndPupilAnalysis';
+PSSandPupilAll = GetMatResults(analysisfolder,'LFPSlopeAndPupilAnalysis');
 %genotype = {PupilWhiskAll.genotype};
 %[genotypes,~,genotypeidx] = unique(genotype);
 %%
-UPDOWNpupil = bz_CollapseStruct(UPDOWNPupilAll);
+PSSandPupil = bz_CollapseStruct(PSSandPupilAll);
 
 %%
-animalname = extractBefore(UPDOWNpupil.name, '_');
-genotype = extractBetween(UPDOWNpupil.name,'_','_');
+animalname = extractBefore(PSSandPupil.name, '_');
+genotype = extractBetween(PSSandPupil.name,'_','_');
 genotype = genotype(:,:,1);
 [genotypes,~,genotypeidx] = unique(genotype);
 %genotypes = char(genotypes);
 %%
-pupcycleUPDOWN.ALL = bz_CollapseStruct(UPDOWNpupil.pupcycleUPDOWN,3);
-pupcycleUPDOWN.bins = UPDOWNpupil.pupcycleUPDOWN.bincenters;
+slopepupilcorr.ALL = bz_CollapseStruct(PSSandPupil.slopepupilcorr,1,'justcat',1);
+slopepupilcorr.chans = 1:length(slopepupilcorr.ALL.dpdt);
 
-pupphaseUD.ALL = bz_CollapseStruct(UPDOWNpupil.pupphaseUD,1,'justcat',true);
-pupphaseUD.freqs = UPDOWNpupil.pupphaseUD.freqs;
+pupcyclePSS.ALL = bz_CollapseStruct(PSSandPupil.pupcyclePSS,3);
+pupcyclePSS.bins = PSSandPupil.pupcyclePSS.bincenters;
 
-islowhist.ALL = bz_CollapseStruct(UPDOWNpupil.islowhist,3);
-islowhist.phasebins = UPDOWNpupil.islowhist.phasebins;
-islowhist.ampbins = UPDOWNpupil.islowhist.ampbins;
+PSShist.ALL =  bz_CollapseStruct(PSSandPupil.PSShist,1);
+PSShist.bins = PSSandPupil.PSShist.bins;
 
-pupbyislow.ALL = bz_CollapseStruct(UPDOWNpupil.pupbyislow,3);
-pupbyislow.phasebins = UPDOWNpupil.pupbyislow.phasebins;
-pupbyislow.ampbins = UPDOWNpupil.pupbyislow.ampbins;
+for gg = 1:length(genotypes)
+    slopepupilcorr.dpdt.(genotypes{gg}) = mean(slopepupilcorr.ALL.dpdt(genotypeidx==gg,:),1);
+    slopepupilcorr.pup.(genotypes{gg}) = mean(slopepupilcorr.ALL.pup(genotypeidx==gg,:),1);
+    
+    pupcyclePSS.meanPSS.(genotypes{gg}) = nanmean(pupcyclePSS.ALL.meanPSS(:,:,genotypeidx==gg),3);
+    
+    PSShist.(genotypes{gg}) = mean(PSShist.ALL.hist(genotypeidx==gg,:),1);
+    
+end
+
+%%
+figure
+subplot(3,2,1)
+    plot(slopepupilcorr.chans,slopepupilcorr.pup.WT,'k','linewidth',2)
+    hold on
+    plot(slopepupilcorr.chans,slopepupilcorr.dpdt.WT,'k--','linewidth',1)
+    plot(slopepupilcorr.chans,slopepupilcorr.pup.EMX,'r','linewidth',2)
+    plot(slopepupilcorr.chans,slopepupilcorr.dpdt.EMX,'r--','linewidth',1)
+
+    xlim(slopepupilcorr.chans([1 end]));ylim([0 0.5])
+    box off
+    ylabel('Pup-PSS Corr');xlabel('Channel (Sup<---->Deep)')
+
+  for gg = 1:length(genotypes)
+    recs = find(genotypeidx==gg);
+    for rr = 1:length(recs)
+        subplot(6,3,rr+(gg)*6)
+        plot(slopepupilcorr.chans,slopepupilcorr.ALL.pup(recs(rr),:),'k','linewidth',2)
+        hold on
+        plot(slopepupilcorr.chans,slopepupilcorr.ALL.dpdt(recs(rr),:),'k','linewidth',0.5)
+        plot(slopepupilcorr.chans([1 end]),[0 0],'k--')
+        xlim(slopepupilcorr.chans([1 end]));ylim([-0.3 0.7])
+        title(animalname{recs(rr)})
+    end
+  end
+ NiceSave('PSSpupCorr',analysisfolder,'_')
+ 
+ 
+ %% FIgure: PSS and pup cycle
+ figure
+for gg = 1:length(genotypes)
+    subplot(2,2,gg)
+        h = imagesc(pupcyclePSS.bins,pupcyclePSS.bins,pupcyclePSS.meanPSS.(genotypes{gg})');
+        set(h,'AlphaData',~isnan(pupcyclePSS.meanPSS.(genotypes{gg})'))
+        colorbar
+        hold on
+        plot(pupcyclePSS.bins([1 end]),[0 0],'k--')
+        axis xy
+        caxis([-1.2 -0.5])
+        title(['PSS: ',genotypes{gg}])
+        %xlim([-0.6 0.5])
+        LogScale('x',10)
+        xlabel('Pupil Area');ylabel('dp/dt')
+        
+end
+    
+%%
+figure
+for gg = 1:length(genotypes)
+    recs = find(genotypeidx==gg);
+    for rr = 1:length(recs)
+        subplot(4,3,rr+(gg-1)*6)
+            h = imagesc(pupcyclePSS.bins,pupcyclePSS.bins,pupcyclePSS.ALL.meanPSS(:,:,recs(rr))');
+            set(h,'AlphaData',~isnan(pupcyclePSS.ALL.meanPSS(:,:,recs(rr))'))
+            colorbar
+            hold on
+            plot(pupcyclePSS.bins([1 end]),[0 0],'k--')
+            axis xy
+            caxis([-1.2 -0.5])
+            title(['DPSS: ',animalname{recs(rr)}])
+            %xlim([-0.6 0.5])
+            LogScale('x',10)
+            xlabel('Pupil Area');ylabel('dp/dt')
+    end
+end
+%%
+pupcycleUPDOWN.ALL = bz_CollapseStruct(PSSandPupil.pupcycleUPDOWN,3);
+pupcycleUPDOWN.bins = PSSandPupil.pupcycleUPDOWN.bincenters;
+
+pupphaseUD.ALL = bz_CollapseStruct(PSSandPupil.pupphaseUD,1,'justcat',true);
+pupphaseUD.freqs = PSSandPupil.pupphaseUD.freqs;
+
+islowhist.ALL = bz_CollapseStruct(PSSandPupil.islowhist,3);
+islowhist.phasebins = PSSandPupil.islowhist.phasebins;
+islowhist.ampbins = PSSandPupil.islowhist.ampbins;
+
+pupbyislow.ALL = bz_CollapseStruct(PSSandPupil.pupbyislow,3);
+pupbyislow.phasebins = PSSandPupil.pupbyislow.phasebins;
+pupbyislow.ampbins = PSSandPupil.pupbyislow.ampbins;
 
 %%
 for gg = 1:length(genotypes)
