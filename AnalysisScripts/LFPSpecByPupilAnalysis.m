@@ -56,10 +56,10 @@ figparms.figfolder = figfolder;
 figparms.baseName = baseName;
 
 %Loop the LFP, sorted by depth
-numprobechannels = length(recparms.SpkGrps.Channels);
+numprobechannels = length(recparms.AnatGrps.Channels);
 for ll = 1:numprobechannels
 %for ll = 1:2
-    channum = recparms.SpkGrps.Channels(ll);
+    channum = recparms.AnatGrps.Channels(ll);
     specparms_loop = specparms;
     specparms_loop.specnorm = 'mean';
     figparms_loop = figparms;
@@ -173,7 +173,7 @@ suptitle(baseName)
     end
 end    
 % %%
-% lfp = bz_GetLFP(recparms.SpkGrps.Channels);
+% lfp = bz_GetLFP(recparms.AnatGrps.Channels);
 % 
 % %% Wavelet for Example channels
 % 

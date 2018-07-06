@@ -49,6 +49,9 @@ pPUP = histcounts2(log10(pupildilation.data(1:end-1)),pupildilation.dpdt,...
     bins,bins)./pupildilation.samplingRate;
 pupcycleUPDOWN.pDOWN = pDOWN./pPUP;
 
+puptimethresh = 1; %s
+pupcycleUPDOWN.pDOWN(pPUP<puptimethresh)=nan;
+
 %% UP state duration as function of pupil
 
 [N,~,~,BINX,BINY] = histcounts2(log10(SlowWaves.pupil.UP),SlowWaves.dpdt.UP,...
@@ -60,6 +63,8 @@ for xx = 1:numbins
     end
 end    
 
+nUPthresh = 2;
+pupcycleUPDOWN.logUPdur(N<nUPthresh) = nan;
 
 %%
 winsize = 300;
@@ -103,7 +108,7 @@ box off
 
 subplot(3,3,6)
 h = imagesc(pupcycleUPDOWN.bincenters,pupcycleUPDOWN.bincenters,pupcycleUPDOWN.pDOWN');
-set(h,'AlphaData',pPUP'>1);
+set(h,'AlphaData',~isnan(pupcycleUPDOWN.pDOWN'));
 hold on
 plot(log10(SlowWaves.pupil.DOWN),SlowWaves.dpdt.DOWN,'k.','markersize',2)
 plot(pupcycleUPDOWN.bincenters([1 end]),[0 0],'k--')
@@ -117,7 +122,7 @@ title('DOWN rate')
 
 subplot(3,3,3)
 h = imagesc(pupcycleUPDOWN.bincenters,pupcycleUPDOWN.bincenters,pupcycleUPDOWN.logUPdur');
-set(h,'AlphaData',N'>1);
+set(h,'AlphaData',~isnan(pupcycleUPDOWN.logUPdur'));
 hold on
 plot(pupcycleUPDOWN.bincenters([1 end]),[0 0],'k--')
 LogScale('x',10)
