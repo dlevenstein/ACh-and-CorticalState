@@ -161,6 +161,7 @@ SlowWaves.islowpup.amp.DOWN = interp1(islow.timestamps,islow.normamp,...
     SlowWaves.midpoint.DOWN,'nearest');
 
 numbins = 6;
+islowhist.frange = infraslowpup;
 islowhist.phasebins = linspace(-pi,pi,numbins+1);
 islowhist.phasebins = islowhist.phasebins(1:end-1)+0.5.*diff(islowhist.phasebins([1 2]));
 islowhist.ampbins = linspace(-1.5,1.5,numbins);
@@ -174,6 +175,9 @@ islowhist.pDOWNPUP = islowhist.pDOWN./islowhist.pPUP;
 islowhist.pDOWN_marg = hist(SlowWaves.islowpup.phase.DOWN,islowhist.phasebins);
 islowhist.pPUP_marg = hist(islow.phase,islowhist.phasebins)./islow.samplingRate;
 islowhist.pDOWNPUP_marg = islowhist.pDOWN_marg./islowhist.pPUP_marg;
+
+puptimethresh = 1;
+islowhist.pDOWNPUP(islowhist.pPUP<puptimethresh) = nan;
 
 %% Mean Pupil as f'n of phase
 nphasebins = 25;
