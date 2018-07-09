@@ -92,6 +92,9 @@ for xx = 1:numbins
     end
 end
 
+nbinthresh = 10;  %Must have more than 10 time windows
+pupcyclePSS.meanPSS(N<nbinthresh) = nan;
+
 %% PSS and UP/DOWN
 
 SlowWaves = bz_LoadEvents(basePath,'SlowWaves');
@@ -201,7 +204,7 @@ NiceSave('PSSexample',figfolder,baseName,'tiff')
 figure
 subplot(3,3,1)
 h = imagesc(pupcyclePSS.bincenters,pupcyclePSS.bincenters,pupcyclePSS.meanPSS');
-set(h,'AlphaData',N'>10);
+set(h,'AlphaData',~isnan(pupcyclePSS.meanPSS'));
 hold on
 plot(pupcyclePSS.bincenters([1 end]),[0 0],'k--')
 LogScale('x',10)
