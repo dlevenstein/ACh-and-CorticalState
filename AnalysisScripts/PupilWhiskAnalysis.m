@@ -1,7 +1,8 @@
 function [puphist,pupACG,pupPSD,...
     EMGhist,Whdurhist,...
     pupilEMGdist,pupildynamicsEMG,...
-    pupilEMGcorr,pwCCG] = PupilWhiskAnalysis(basePath,figfolder)
+    pupilEMGcorr,pwCCG,...
+    pupilphaseEMG,WPcoupling] = PupilWhiskAnalysis(basePath,figfolder)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 %%
@@ -10,8 +11,8 @@ function [puphist,pupACG,pupPSD,...
 %basePath= '/mnt/proraidDL/Database/WMProbeData/170421_Layers_LFP_Pupil_EMG_Emx1M1M3/170421_Layers_LFP_Pupil_EMG_170421_180427';
 %basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
 
-basePath = pwd;
-figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/PupilWhiskAnalysis';
+%basePath = pwd;
+%figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/PupilWhiskAnalysis';
 
 
 
@@ -66,9 +67,10 @@ lowpupildata = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','ord
 %highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
 
 pupPSD.freqs = freqs;
-pupPSD.psd = log10(mean(spec,2));
+pupPSD.psd = mean(log10(spec),2);
 %% Figure: PUPIL
 winsize = 300; %s
+viewwin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize);
 figure
     subplot(6,4,1:3)
         plot(pupildilation.timestamps,pupildilation.data,'k')
@@ -80,11 +82,13 @@ figure
         plot(pupildilation.timestamps,pupildilation.interpdata,'k','linewidth',2)
         hold on
         box off
-        plot(lowpupildata.timestamps,lowpupildata.data+nanmean(pupildilation.data),'g')
+      %  scatter(lowpupildata.timestamps,lowpupildata.data+0.5.*nanmean(pupildilation.data),4,lowpupildata.phase)
       %  plot(highpupildata.timestamps,highpupildata.data+nanmean(pupildilation.data),'r')
+       % colormap(gca,hsv)
+        colorbar
         plot(get(gca,'xlim'),[0 0],'r-')
         plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k','linewidth',1)
-        xlim(100+[0 winsize])
+        xlim(viewwin)
         ylim([-1 4])
         ylabel('Pupil: Zoom')
         xlabel('t (s)')
@@ -128,7 +132,7 @@ figure
 % axis tight
  
     subplot(4,2,7)
-        plot(log10(freqs),log10(mean(spec,2)),'k','linewidth',2)
+        plot(log10(pupPSD.freqs),pupPSD.psd,'k','linewidth',2)
         hold on
         plot(log10(lowfilter),[-1 -1],'r')
         %plot(log10(highfilter),[0 0 ],'r')
@@ -148,6 +152,54 @@ figure
         
 NiceSave('PupilStats',figfolder,baseName)
 
+
+%% Pupil Space figure 
+viewwin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize);
+
+
+figure
+    subplot(6,1,1:2)
+        plot(pupildilation.timestamps,pupildilation.interpdata,'k','linewidth',2)
+        hold on
+        box off
+        scatter(lowpupildata.timestamps,lowpupildata.data,4,lowpupildata.phase)
+      %  plot(highpupildata.timestamps,highpupildata.data+nanmean(pupildilation.data),'r')
+        colormap(gca,hsv)
+        colorbar
+        %plot(get(gca,'xlim'),[0 0],'r-')
+        xlim(viewwin)
+        ylim([-1 4])
+        ylabel('Pupil: Zoom')
+        xlabel('t (s)')
+    subplot(2,3,4)
+        colormap(gca,hsv)
+        scatter(log10(pupildilation.data(1:end-1)),pupildilation.dpdt,0.2,lowpupildata.phase(1:end-1))
+        %plot(pupildilation.data(1:end-1),pupildilation.dpdt,'k.','markersize',2)
+        ylim([-0.7 0.7]);xlim([-0.5 0.5])
+        LogScale('x',10)
+        %
+        %colorbar
+        
+        ColorbarWithAxis([-pi pi],'Pupil Phase','location','northoutside')
+        xlabel('Pupil Diameter');ylabel('d/dt')
+        
+    subplot(2,3,5)
+        %colormap(gca,distcolor)
+        scatter(log10(pupildilation.data(1:end-1)),pupildilation.dpdt,0.2,lowpupildata.amp(1:end-1))
+        %plot(pupildilation.data(1:end-1),pupildilation.dpdt,'k.','markersize',2)
+        ylim([-0.7 0.7]);xlim([-0.5 0.5])
+        LogScale('x',10)
+        %
+        %colorbar
+        
+        ColorbarWithAxis([0 1.2],'Pupil Power','location','northoutside')
+        xlabel('Pupil Diameter');ylabel('d/dt')
+        
+%     subplot(2,2,3)
+%         hist3([lowpupildata.phase,log10(lowpupildata.amp)])
+%         
+        
+NiceSave('PupilSpace',figfolder,baseName)
 %% EMG %%
 EMGwhisk = bz_LoadStates( basePath,'EMGwhisk');
 if isempty(EMGwhisk)
@@ -234,8 +286,9 @@ NiceSave('EMGStats',figfolder,baseName)
 %% Relate EMG/Whisk with Pupil %%
 
 %Codistribution
-pupilEMGdist.bins = {linspace(-0.5,0.5,50),linspace(-1.5,1.5,150)};
+pupilEMGdist.bins = {linspace(-0.5,0.5,70),linspace(-1.5,1.5,70)};
 [pupilEMGdist.counts,pupilEMGdist.bins] = hist3([log10(pupildilation.data),log10(EMGwhisk.pupiltime)],pupilEMGdist.bins);
+pupilEMGdist.counts = pupilEMGdist.counts./sum(pupilEMGdist.counts(:));
 
 %XCovariance
 [pupilEMGcorr.xcorr,pupilEMGcorr.corrlags] = xcov(pupildilation.interpdata(~isnan(pupildilation.interpdata)),EMGwhisk.pupiltime(~isnan(pupildilation.interpdata)),'unbiased');
@@ -248,17 +301,38 @@ pupilEMGcorr.corrlags = pupilEMGcorr.corrlags.*(1./pupildilation.samplingRate);
 [pwCCG.EMG.WhOn,t_lag,~,alltrans.EMG.WhOn] = EventVsContinousCCG(EMGwhisk.pupiltime,pupildilation.timestamps,EMGwhisk.ints.Wh(:,1),20);
 
 %% Histogram: Whisking by Pupil Dynamics
-[pupildynamicsEMG,pupildynamicsEMG.bins]=PairMatHist(log10(EMGwhisk.pupiltime(1:end-1)),[log10(pupildilation.data(1:end-1)),pupildilation.dpdt],20,[-0.5 0.5]);
+[pupildynamicsEMG,pupildynamicsEMG.bins]=PairMatHist(log10(EMGwhisk.pupiltime(1:end-1)),...
+    [log10(pupildilation.data(1:end-1)),pupildilation.dpdt],10,[-0.5 0.5]);
 
-[~,EMGwhisk.IDXvec] = RestrictInts(pupildilation.timestamps,EMGwhisk.ints.Wh);
-[pWhisk]=PairMatHist(single(EMGwhisk.IDXvec(1:end-1)),[log10(pupildilation.data(1:end-1)),pupildilation.dpdt],20,[-0.5 0.5]);
+[~,pupildilation.iswhisk] = RestrictInts(pupildilation.timestamps,EMGwhisk.ints.Wh);
+[pWhisk]=PairMatHist(single(pupildilation.iswhisk(1:end-1)),[log10(pupildilation.data(1:end-1)),pupildilation.dpdt],pupildynamicsEMG.binedges);
 pupildynamicsEMG.pWhisk = pWhisk.mean;
+
+
+[pupilphaseEMG,pupilphaseEMG.bins]=PairMatHist(log10(EMGwhisk.pupiltime),...
+    [log10(lowpupildata.amp),lowpupildata.phase],15,[-pi pi]);
+[pWhisk]=PairMatHist(single(pupildilation.iswhisk),[log10(lowpupildata.amp),lowpupildata.phase],pupilphaseEMG.binedges);
+pupilphaseEMG.pWhisk = pWhisk.mean;
+
 
 %Wh onsets/offsets in pupil space
 whints_pupil = interp1(pupildilation.timestamps,pupildilation.data,EMGwhisk.ints.Wh);
 whints_pupildt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,EMGwhisk.ints.Wh);
 whints_pupilphase = interp1(lowpupildata.timestamps,lowpupildata.phase,EMGwhisk.ints.Wh);
 whints_pupilamp = interp1(lowpupildata.timestamps,lowpupildata.amp,EMGwhisk.ints.Wh);
+
+[pWhiskStart]=PairMatHist(EMGwhisk.Whdurs(:,1),[log10(whints_pupil(:,1)),whints_pupildt(:,1)],pupildynamicsEMG.binedges);
+pupildynamicsEMG.meanWhdur = pWhiskStart.mean;
+pupildynamicsEMG.numWhstarts = pWhiskStart.num;
+pupildynamicsEMG.occupancy = pupildynamicsEMG.num./pupildilation.samplingRate;
+pupildynamicsEMG.Whstartrate = pupildynamicsEMG.numWhstarts./pupildynamicsEMG.occupancy;
+
+
+[pWhiskStart]=PairMatHist(EMGwhisk.Whdurs(:,1),[log10(whints_pupilamp(:,1)),whints_pupilphase(:,1)],pupilphaseEMG.binedges);
+pupilphaseEMG.meanWhdur = pWhiskStart.mean;
+pupilphaseEMG.numWhstarts = pWhiskStart.num;
+pupilphaseEMG.occupancy = pupilphaseEMG.num./pupildilation.samplingRate;
+pupilphaseEMG.Whstartrate = pupilphaseEMG.numWhstarts./pupilphaseEMG.occupancy;
 
 %%
 figure
@@ -280,12 +354,193 @@ NiceSave('PupilandWhiskDur',figfolder,baseName)
 PhaseAmpCouplingByAmp( lowpupildata.phase,log10(lowpupildata.amp),...
     log10(EMGwhisk.pupiltime),10 );
 
-%lowpupildata.phase,lowpupildata.amp,0.2,log10(EMGwhisk.pupiltime
+%% Figure WHisk in pupil space
+emgcolor = [1 1 1;makeColorMap([0.5 0.5 0.5],[0 0 0.8])];
+
+
+figure
+
+    subplot(4,2,1)
+        
+        imagesc(pupildynamicsEMG.bins,pupildynamicsEMG.bins,(pupildynamicsEMG.mean)');
+        colormap(gca,emgcolor)
+        axis xy
+        xlim([-0.5 0.5]);ylim([-0.5 0.5])
+        %caxis([-0.01 1])
+        %colormap(gca)
+        colorbar
+        %ColorbarWithAxis([-0.1 1],'EMG Envelope')
+        xlabel('Pupil Diameter');ylabel('d/dt')
+        title('EMG')
+        hold on
+        caxis([-0.75 0.5])
+        LogScale('c',10)
+        %colormap(x,emgcolor)
+        %colormap(y,'jet')
+        plot(log10(whints_pupil(:,1)),whints_pupildt(:,1),'g.','markersize',0.1)
+        %plot(whints_pupil(:,2),whints_pupildt(:,2),'r.')
+        plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color',0.5.*[1 1 1])
+    subplot(4,2,3)
+        
+        imagesc(pupildynamicsEMG.bins,pupildynamicsEMG.bins,pupildynamicsEMG.pWhisk');
+        colormap(gca,emgcolor)
+        axis xy
+        xlim([-0.5 0.5]);ylim([-0.5 0.5])
+        caxis([-0.01 1])
+        colorbar
+        %ColorbarWithAxis([-0.1 1],'EMG Envelope')
+        xlabel('Pupil Diameter');ylabel('d/dt')
+        title('Probability of Whisking')
+        hold on
+        %colormap(x,emgcolor)
+        %colormap(y,'jet')
+        plot(log10(whints_pupil(:,1)),whints_pupildt(:,1),'g.','markersize',0.1)
+        %plot(whints_pupil(:,2),whints_pupildt(:,2),'r.')
+        plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color',0.5.*[1 1 1])
+        
+    subplot(4,2,5)
+        
+        imagesc(pupildynamicsEMG.bins,pupildynamicsEMG.bins,(pupildynamicsEMG.Whstartrate)');
+        colormap(gca,emgcolor)
+        axis xy
+        xlim([-0.5 0.5]);ylim([-0.5 0.5])
+        %caxis([-0.01 1])
+        %colormap(gca)
+        colorbar
+        %ColorbarWithAxis([-0.1 1],'EMG Envelope')
+        xlabel('Pupil Diameter');ylabel('d/dt')
+        title('p(WhiskStart)')
+        hold on
+        caxis([-0.1 1])
+       % LogScale('c',10)
+        %colormap(x,emgcolor)
+        %colormap(y,'jet')
+        plot(log10(whints_pupil(:,1)),whints_pupildt(:,1),'g.','markersize',0.1)
+        %plot(whints_pupil(:,2),whints_pupildt(:,2),'r.')
+        plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color',0.5.*[1 1 1])
+        
+    subplot(4,2,7)
+        
+        imagesc(pupildynamicsEMG.bins,pupildynamicsEMG.bins,log10(pupildynamicsEMG.meanWhdur)');
+        %colormap(gca,emgcolor)
+        axis xy
+        xlim([-0.5 0.5]);ylim([-0.5 0.5])
+        %caxis([-0.01 1])
+        %colormap(gca)
+        colorbar
+        %ColorbarWithAxis([-0.1 1],'EMG Envelope')
+        xlabel('Pupil Diameter');ylabel('d/dt')
+        title('Whisk Duration')
+        hold on
+        caxis([-1 0.5])
+        LogScale('c',10)
+        %colormap(x,emgcolor)
+        %colormap(y,'jet')
+        plot(log10(whints_pupil(:,1)),whints_pupildt(:,1),'g.','markersize',0.1)
+        %plot(whints_pupil(:,2),whints_pupildt(:,2),'r.')
+        plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color',0.5.*[1 1 1])
+        
+        
+        
+    subplot(4,2,2)
+        
+        imagesc(pupilphaseEMG.bins,pupilphaseEMG.bins,(pupilphaseEMG.mean));
+        hold on
+        imagesc(pupilphaseEMG.bins+2*pi,pupilphaseEMG.bins,(pupilphaseEMG.mean));
+
+        colormap(gca,emgcolor)
+        axis xy
+        ylim([-2 1]);xlim([-pi 3*pi])
+        %caxis([-0.01 1])
+        %colormap(gca)
+        colorbar
+        %ColorbarWithAxis([-0.1 1],'EMG Envelope')
+        xlabel('Pupil Phase');ylabel('Power')
+        title('EMG')
+        hold on
+        caxis([-0.75 0.5])
+        LogScale('c',10)
+        %colormap(x,emgcolor)
+        %colormap(y,'jet')
+        %plot(whints_pupil(:,2),whints_pupildt(:,2),'r.')
+        plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color',0.5.*[1 1 1])
+        
+        
+    subplot(4,2,4)
+        
+        imagesc(pupilphaseEMG.bins,pupilphaseEMG.bins,(pupilphaseEMG.pWhisk));
+        hold on
+        imagesc(pupilphaseEMG.bins+2*pi,pupilphaseEMG.bins,(pupilphaseEMG.pWhisk));
+
+        colormap(gca,emgcolor)
+        axis xy
+        ylim([-2 1]);xlim([-pi 3*pi])
+        %caxis([-0.01 1])
+        %colormap(gca)
+        colorbar
+        %ColorbarWithAxis([-0.1 1],'EMG Envelope')
+        xlabel('Pupil Phase');ylabel('Power')
+        title('Probability of Whisking')
+        hold on
+        caxis([-0.01 1])
+
+        %LogScale('c',10)
+        %colormap(x,emgcolor)
+        %colormap(y,'jet')
+        %plot(whints_pupil(:,2),whints_pupildt(:,2),'r.')
+        plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color',0.5.*[1 1 1])
+        
+    subplot(4,2,6)
+        
+        imagesc(pupilphaseEMG.bins,pupilphaseEMG.bins,(pupilphaseEMG.Whstartrate));
+        hold on
+        imagesc(pupilphaseEMG.bins+2*pi,pupilphaseEMG.bins,(pupilphaseEMG.Whstartrate));
+        colormap(gca,emgcolor)
+        axis xy
+        ylim([-2 1]);xlim([-pi 3*pi])
+        %caxis([-0.01 1])
+        %colormap(gca)
+        colorbar
+        %ColorbarWithAxis([-0.1 1],'EMG Envelope')
+        xlabel('Pupil Diameter');ylabel('d/dt')
+        title('p(WhiskStart)')
+        hold on
+        caxis([-0.1 1])
+       % LogScale('c',10)
+        %colormap(x,emgcolor)
+        %colormap(y,'jet')
+        %plot(whints_pupil(:,2),whints_pupildt(:,2),'r.')
+        plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color',0.5.*[1 1 1])
+        
+    subplot(4,2,8)
+        
+        imagesc(pupilphaseEMG.bins,pupilphaseEMG.bins,log10(pupilphaseEMG.meanWhdur));
+        hold on
+        imagesc(pupilphaseEMG.bins+2*pi,pupilphaseEMG.bins,log10(pupilphaseEMG.meanWhdur));
+        %colormap(gca,emgcolor)
+        axis xy
+        ylim([-2 1]);xlim([-pi 3*pi])
+        %caxis([-0.01 1])
+        %colormap(gca)
+        colorbar
+        %ColorbarWithAxis([-0.1 1],'EMG Envelope')
+        xlabel('Pupil Diameter');ylabel('d/dt')
+        title('Whisk Duration')
+        hold on
+        caxis([-1 0.5])
+        LogScale('c',10)
+        %colormap(x,emgcolor)
+        %colormap(y,'jet')
+        %plot(whints_pupil(:,2),whints_pupildt(:,2),'r.')
+        plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color',0.5.*[1 1 1])
+        
+NiceSave('EMGinPupilSpace',figfolder,baseName)
 %% Figure: Whisk/EMG and Pupil
 lagwin = [-5 5];
 distcolor = [1 1 1; makeColorMap([0.7 0.7 0.7],[0 0.5 0],[0.7 0.6,0])];
-emgcolor = [1 1 1;makeColorMap([0.5 0.5 0.5],[0 0 0.8])];
-viewrange = [400 600];
+windur = 200;
+viewrange = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),windur);
+%viewrange = [400 600];
 figure
     subplot(6,3,9)
         plot(pupilEMGcorr.corrlags,pupilEMGcorr.xcorr','k')
@@ -408,47 +663,16 @@ xlabel('Phase');ylabel('Amplitude')
 subplot(4,3,12)
 colormap(gca,emgcolor(2:end,:))
 %scatter(pupildilation.data(~isnan(pupildilation.interpdata)),pupildilation.dpdt(~isnan(pupildilation.interpdata)),0.2,lowpupildata.phase)
-scatter(lowpupildata.phase,log10(lowpupildata.amp),0.2,(EMGwhisk.IDXvec(~isnan(pupildilation.interpdata))))
+scatter(lowpupildata.phase,log10(lowpupildata.amp),0.2,(pupildilation.iswhisk(~isnan(pupildilation.interpdata))))
 hold on
-scatter(lowpupildata.phase+2*pi,log10(lowpupildata.amp),0.2,(EMGwhisk.IDXvec(~isnan(pupildilation.interpdata))))
+scatter(lowpupildata.phase+2*pi,log10(lowpupildata.amp),0.2,(pupildilation.iswhisk(~isnan(pupildilation.interpdata))))
 axis tight 
 xlabel('Phase');ylabel('Amplitude')
 
         
 NiceSave('WhiskAndPupil',figfolder,baseName)
 
-%%
-figure
-    %subplot(6,4,10)
-    subplot(2,3,1)
-        colormap(gca,hsv)
-        scatter(log10(pupildilation.data(1:end-1)),pupildilation.dpdt,0.2,lowpupildata.phase(1:end-1))
-        %plot(pupildilation.data(1:end-1),pupildilation.dpdt,'k.','markersize',2)
-        ylim([-0.7 0.7]);xlim([-0.5 0.5])
-        LogScale('x',10)
-        %
-        %colorbar
-        
-        ColorbarWithAxis([-pi pi],'Pupil Phase','location','northoutside')
-        xlabel('Pupil Diameter');ylabel('d/dt')
-        
-    subplot(2,3,2)
-        %colormap(gca,distcolor)
-        scatter(log10(pupildilation.data(1:end-1)),pupildilation.dpdt,0.2,lowpupildata.amp(1:end-1))
-        %plot(pupildilation.data(1:end-1),pupildilation.dpdt,'k.','markersize',2)
-        ylim([-0.7 0.7]);xlim([-0.5 0.5])
-        LogScale('x',10)
-        %
-        %colorbar
-        
-        ColorbarWithAxis([0 1.2],'Pupil Power','location','northoutside')
-        xlabel('Pupil Diameter');ylabel('d/dt')
-        
-%     subplot(2,2,3)
-%         hist3([lowpupildata.phase,log10(lowpupildata.amp)])
-%         
-        
-NiceSave('PupilSpace',figfolder,baseName)
+
 
 %% Pupil-Whisk Phase coupling
 
@@ -472,7 +696,8 @@ coupling(ff) = abs(mean(whpow.*exp(1i.*angle(wavespec.data(:,ff)))));
 
 %close all
 end
-
+WPcoupling.coupling = coupling;
+WPcoupling.freqs = wavespec.freqs;
 %%
 figure
 plot(log10(wavespec.freqs),coupling)
@@ -481,11 +706,11 @@ xlabel('f (Hz)')
 ylabel('Pupil Phase - Whisk Coupling')
 NiceSave('PupilWhiskCoupling',figfolder,baseName)
 %%
-figure
-imagesc(log10(wavespec.freqs),ampbins,sig2powerskew)
-LogScale('x',10)
-axis xy
-colorbar
+% figure
+% imagesc(log10(wavespec.freqs),ampbins,sig2powerskew)
+% LogScale('x',10)
+% axis xy
+% colorbar
 %%
 % 
 % %Find frames closest to WHon, NWHon transitions
