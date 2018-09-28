@@ -1,4 +1,4 @@
-function [puphist,pupACG,pupPSD,...
+function [puphist,pupACG,pupPSD,pupdthist,...
     EMGhist,Whdurhist,...
     pupilEMGdist,pupildynamicsEMG,...
     pupilEMGcorr,pwCCG,...
@@ -224,9 +224,9 @@ EMGwhisk.InterWhdurs = EMGwhisk.ints.Wh(2:end,1)-EMGwhisk.ints.Wh(1:end-1,2);
 
 Whdurhist.bins = linspace(-1,2,20);
 Whdurhist.Whdurs = hist(log10(EMGwhisk.Whdurs),Whdurhist.bins);
-Whdurhist.Whdurs = Whdurhist.Whdurs./sum(Whdurhist.Whdurs);
+Whdurhist.Whdurs = Whdurhist.Whdurs./diff(EMGwhisk.t([1 end])); %Units: whisks/s
 Whdurhist.InterWhdurs = hist(log10(EMGwhisk.InterWhdurs),Whdurhist.bins);
-Whdurhist.InterWhdurs = Whdurhist.InterWhdurs./sum(Whdurhist.InterWhdurs);
+Whdurhist.InterWhdurs = Whdurhist.InterWhdurs./diff(EMGwhisk.t([1 end])); %Units: whisks/s
 
 
 
