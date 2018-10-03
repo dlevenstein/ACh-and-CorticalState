@@ -304,7 +304,7 @@ pwCCG.t_lag = t_lag;
 %% Histogram: Whisking by Pupil Dynamics
 
 [pupildynamicsEMG,pupildynamicsEMG.bins]=PairMatHist(log10(EMGwhisk.pupiltime(1:end-1)),...
-    [log10(pupildilation.data(1:end-1)),pupildilation.dpdt],10,[-0.5 0.5]);
+    [log10(pupildilation.data(1:end-1)),pupildilation.dpdt],15,[-0.5 0.5]);
 
 [~,pupildilation.iswhisk] = RestrictInts(pupildilation.timestamps,EMGwhisk.ints.Wh);
 [pWhisk]=PairMatHist(single(pupildilation.iswhisk(1:end-1)),[log10(pupildilation.data(1:end-1)),pupildilation.dpdt],pupildynamicsEMG.binedges);
@@ -340,6 +340,8 @@ pupilphaseEMG.Whstartrate = pupilphaseEMG.numWhstarts./pupilphaseEMG.occupancy;
 
 
 occupancythresh = 1; %s (don't count bins with less than 1s total time)
+pupildynamicsEMG.meanWhdur(pupildynamicsEMG.occupancy<=occupancythresh)=nan;
+pupilphaseEMG.meanWhdur(pupilphaseEMG.occupancy<=occupancythresh)=nan;
 pupildynamicsEMG.Whstartrate(pupildynamicsEMG.occupancy<=occupancythresh)=nan;
 pupilphaseEMG.Whstartrate(pupilphaseEMG.occupancy<=occupancythresh)=nan;
 
