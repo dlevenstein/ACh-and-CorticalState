@@ -339,12 +339,15 @@ pupilphaseEMG.occupancy = pupilphaseEMG.num./pupildilation.samplingRate;
 pupilphaseEMG.Whstartrate = pupilphaseEMG.numWhstarts./pupilphaseEMG.occupancy;
 
 
-occupancythresh = 1; %s (don't count bins with less than 1s total time)
+occupancythresh = 2; %s (don't count bins with less than 1s total time)
+whthresh = 2;
 pupildynamicsEMG.mean(pupildynamicsEMG.occupancy<=occupancythresh)=nan;
 pupilphaseEMG.mean(pupilphaseEMG.occupancy<=occupancythresh)=nan;
 pupildynamicsEMG.Whstartrate(pupildynamicsEMG.occupancy<=occupancythresh)=nan;
 pupilphaseEMG.Whstartrate(pupilphaseEMG.occupancy<=occupancythresh)=nan;
 
+pupildynamicsEMG.meanWhdur(pupildynamicsEMG.numWhstarts<=whthresh)=nan;
+pupilphaseEMG.meanWhdur(pupilphaseEMG.numWhstarts<=whthresh)=nan;
 %%
 figure
 subplot(2,2,1)
