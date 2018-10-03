@@ -312,7 +312,7 @@ pupildynamicsEMG.pWhisk = pWhisk.mean;
 
 
 [pupilphaseEMG,pupilphaseEMG.bins]=PairMatHist(log10(EMGwhisk.pupiltime),...
-    [log10(lowpupildata.amp),lowpupildata.phase],15,[-pi pi]);
+    [log10(lowpupildata.amp),lowpupildata.phase],20,[-pi pi]);
 [pWhisk]=PairMatHist(single(pupildilation.iswhisk),[log10(lowpupildata.amp),lowpupildata.phase],pupilphaseEMG.binedges);
 pupilphaseEMG.pWhisk = pWhisk.mean;
 
@@ -340,8 +340,8 @@ pupilphaseEMG.Whstartrate = pupilphaseEMG.numWhstarts./pupilphaseEMG.occupancy;
 
 
 occupancythresh = 1; %s (don't count bins with less than 1s total time)
-pupildynamicsEMG.meanWhdur(pupildynamicsEMG.occupancy<=occupancythresh)=nan;
-pupilphaseEMG.meanWhdur(pupilphaseEMG.occupancy<=occupancythresh)=nan;
+pupildynamicsEMG.mean(pupildynamicsEMG.occupancy<=occupancythresh)=nan;
+pupilphaseEMG.mean(pupilphaseEMG.occupancy<=occupancythresh)=nan;
 pupildynamicsEMG.Whstartrate(pupildynamicsEMG.occupancy<=occupancythresh)=nan;
 pupilphaseEMG.Whstartrate(pupilphaseEMG.occupancy<=occupancythresh)=nan;
 
