@@ -218,6 +218,7 @@ EMGhist.logbins = linspace(-1.5,1.5,20);
 EMGhist.logcounts = hist(log10(EMGwhisk.EMGsm),EMGhist.logbins);
 EMGhist.logcounts =EMGhist.logcounts./sum(EMGhist.logcounts);
 
+EMGhist.threshold = EMGwhisk.detectorparms.Whthreshold;
 %% Whisk Durations
 EMGwhisk.Whdurs = diff(EMGwhisk.ints.Wh,1,2);
 EMGwhisk.InterWhdurs = EMGwhisk.ints.Wh(2:end,1)-EMGwhisk.ints.Wh(1:end-1,2);
@@ -286,7 +287,7 @@ NiceSave('EMGStats',figfolder,baseName)
 %% Relate EMG/Whisk with Pupil %%
 
 %Codistribution
-pupilEMGdist.bins = {linspace(-0.5,0.5,70),linspace(-1.5,1.5,70)};
+pupilEMGdist.bins = {linspace(-0.5,0.5,70),linspace(-1.5,1,70)};
 [pupilEMGdist.counts,pupilEMGdist.bins] = hist3([log10(pupildilation.data),log10(EMGwhisk.pupiltime)],pupilEMGdist.bins);
 pupilEMGdist.counts = pupilEMGdist.counts./sum(pupilEMGdist.counts(:));
 
@@ -299,8 +300,9 @@ pupilEMGcorr.corrlags = pupilEMGcorr.corrlags.*(1./pupildilation.samplingRate);
 [pwCCG.pupilxy.WhOn(:,1),t_lag,~,~] = EventVsContinousCCG(pupildilation.pupilxy(:,1),pupildilation.timestamps,EMGwhisk.ints.Wh(:,1),20);
 [pwCCG.pupilxy.WhOn(:,2),t_lag,~,~] = EventVsContinousCCG(pupildilation.pupilxy(:,2),pupildilation.timestamps,EMGwhisk.ints.Wh(:,1),20);
 [pwCCG.EMG.WhOn,t_lag,~,alltrans.EMG.WhOn] = EventVsContinousCCG(EMGwhisk.pupiltime,pupildilation.timestamps,EMGwhisk.ints.Wh(:,1),20);
-
+pwCCG.t_lag = t_lag;
 %% Histogram: Whisking by Pupil Dynamics
+
 [pupildynamicsEMG,pupildynamicsEMG.bins]=PairMatHist(log10(EMGwhisk.pupiltime(1:end-1)),...
     [log10(pupildilation.data(1:end-1)),pupildilation.dpdt],10,[-0.5 0.5]);
 
@@ -324,6 +326,7 @@ whints_pupilamp = interp1(lowpupildata.timestamps,lowpupildata.amp,EMGwhisk.ints
 [pWhiskStart]=PairMatHist(EMGwhisk.Whdurs(:,1),[log10(whints_pupil(:,1)),whints_pupildt(:,1)],pupildynamicsEMG.binedges);
 pupildynamicsEMG.meanWhdur = pWhiskStart.mean;
 pupildynamicsEMG.numWhstarts = pWhiskStart.num;
+pupildynamicsEMG.pWhstarts = pupildynamicsEMG.numWhstarts./sum(pupildynamicsEMG.numWhstarts(:));
 pupildynamicsEMG.occupancy = pupildynamicsEMG.num./pupildilation.samplingRate;
 pupildynamicsEMG.Whstartrate = pupildynamicsEMG.numWhstarts./pupildynamicsEMG.occupancy;
 
@@ -331,8 +334,14 @@ pupildynamicsEMG.Whstartrate = pupildynamicsEMG.numWhstarts./pupildynamicsEMG.oc
 [pWhiskStart]=PairMatHist(EMGwhisk.Whdurs(:,1),[log10(whints_pupilamp(:,1)),whints_pupilphase(:,1)],pupilphaseEMG.binedges);
 pupilphaseEMG.meanWhdur = pWhiskStart.mean;
 pupilphaseEMG.numWhstarts = pWhiskStart.num;
+pupilphaseEMG.pWhstarts = pupilphaseEMG.numWhstarts./sum(pupilphaseEMG.numWhstarts(:));
 pupilphaseEMG.occupancy = pupilphaseEMG.num./pupildilation.samplingRate;
 pupilphaseEMG.Whstartrate = pupilphaseEMG.numWhstarts./pupilphaseEMG.occupancy;
+
+
+occupancythresh = 1; %s (don't count bins with less than 1s total time)
+pupildynamicsEMG.Whstartrate(pupildynamicsEMG.occupancy<=occupancythresh)=nan;
+pupilphaseEMG.Whstartrate(pupilphaseEMG.occupancy<=occupancythresh)=nan;
 
 %%
 figure
