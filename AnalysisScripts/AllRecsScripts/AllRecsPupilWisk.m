@@ -82,13 +82,13 @@ WPcoupling = CollapseStruct(pupilwhisk.WPcoupling);
 WPcoupling.freqs = pupilwhisk.WPcoupling.freqs;
 
 for gg = 1:length(genotypes)
-    pupilEMGdist.(genotypes{gg}) = mean(pupilEMGdist.counts(:,:,genotypeidx==gg),3);
+    pupilEMGdist.(genotypes{gg}) = nanmean(pupilEMGdist.counts(:,:,genotypeidx==gg),3);
 
-    pwCCG.(genotypes{gg}).EMG = mean(pwCCG.EMG.WhOn(:,genotypeidx==gg),2);
-    pwCCG.(genotypes{gg}).pupil = mean(pwCCG.pupil.WhOn(:,genotypeidx==gg),2);
+    pwCCG.(genotypes{gg}).EMG = nanmean(pwCCG.EMG.WhOn(:,genotypeidx==gg),2);
+    pwCCG.(genotypes{gg}).pupil = nanmean(pwCCG.pupil.WhOn(:,genotypeidx==gg),2);
     
-    pwCCG.std.(genotypes{gg}).EMG = std(pwCCG.EMG.WhOn(:,genotypeidx==gg),[],2);
-    pwCCG.std.(genotypes{gg}).pupil = std(pwCCG.pupil.WhOn(:,genotypeidx==gg),[],2);
+    pwCCG.std.(genotypes{gg}).EMG = nanstd(pwCCG.EMG.WhOn(:,genotypeidx==gg),[],2);
+    pwCCG.std.(genotypes{gg}).pupil = nanstd(pwCCG.pupil.WhOn(:,genotypeidx==gg),[],2);
     
     pupildynamicsEMG.(genotypes{gg}).meanEMG = nanmean(pupildynamicsEMG.mean(:,:,genotypeidx==gg),3);
     pupildynamicsEMG.(genotypes{gg}).startrate = nanmean(pupildynamicsEMG.Whstartrate(:,:,genotypeidx==gg),3);
@@ -108,27 +108,17 @@ end
 
 %% PupiWhisk: Coupling
 figure
-subplot(2,2,1)
-    hold on
-        for gg = 1:length(genotypes)
-            plot(log10(WPcoupling.freqs),WPcoupling.(genotypes{gg}).coupling,...
-                'color',genotypecolors{gg},'linewidth',1)
-            errorshade(log10(WPcoupling.freqs),WPcoupling.(genotypes{gg}).coupling,...
-                WPcoupling.std.(genotypes{gg}).coupling,WPcoupling.std.(genotypes{gg}).coupling ,genotypecolors{gg},'scalar')
-        end
-      
-       LogScale('x',10)
-       % ylim([0 0.35])
-        xlabel('Pupil freq (Hz)');ylabel('Pupil-EMG Coupling')
+
 
 %% PupilWhisk: PupilSpace
+cosx=linspace(-pi,3*pi,100);
 figure
     for gg = 1:length(genotypes)   
     subplot(4,4,gg+2)
         imagesc((pupilphaseEMG.bins),pupilphaseEMG.bins,pupilphaseEMG.(genotypes{gg}).meanEMG)
         hold on
         imagesc((pupilphaseEMG.bins)+2*pi,pupilphaseEMG.bins,pupilphaseEMG.(genotypes{gg}).meanEMG)
-
+        plot(cosx,cos(cosx)./2-0.5,'k','LineWidth',1)
         colorbar
         title(genotypes{gg})
         axis xy
@@ -144,7 +134,7 @@ figure
         imagesc((pupilphaseEMG.bins),pupilphaseEMG.bins,pupilphaseEMG.(genotypes{gg}).startrate)
         hold on
         imagesc((pupilphaseEMG.bins)+2*pi,pupilphaseEMG.bins,pupilphaseEMG.(genotypes{gg}).startrate)
-
+        plot(cosx,cos(cosx)./2-0.5,'k','LineWidth',1)
         colorbar
         title(genotypes{gg})
         axis xy
@@ -160,7 +150,7 @@ figure
         imagesc((pupilphaseEMG.bins),pupilphaseEMG.bins,log10(pupilphaseEMG.(genotypes{gg}).Whdur))
         hold on
         imagesc((pupilphaseEMG.bins)+2*pi,pupilphaseEMG.bins,log10(pupilphaseEMG.(genotypes{gg}).Whdur))
-
+        plot(cosx,cos(cosx)./2-0.5,'k','LineWidth',1)
         colorbar
         title(genotypes{gg})
         axis xy
@@ -176,7 +166,7 @@ figure
         imagesc((pupilphaseEMG.bins),pupilphaseEMG.bins,log10(pupilphaseEMG.(genotypes{gg}).pstart))
         hold on
         imagesc((pupilphaseEMG.bins)+2*pi,pupilphaseEMG.bins,log10(pupilphaseEMG.(genotypes{gg}).pstart))
-
+        plot(cosx,cos(cosx)./2-0.5,'k','LineWidth',1)
         colorbar
         title(genotypes{gg})
         axis xy
@@ -201,11 +191,11 @@ figure
 
     for gg = 1:length(genotypes)   
     subplot(4,4,gg+4)
-        imagesc((pupildynamicsEMG.bins),pupildynamicsEMG.bins,pupildynamicsEMG.(genotypes{gg}).startrate')
+        imagesc((pupildynamicsEMG.bins),pupildynamicsEMG.bins,(pupildynamicsEMG.(genotypes{gg}).startrate)')
         colorbar
         title(genotypes{gg})
         axis xy
-        caxis([0 1])
+        caxis([0 0.9])
         LogScale('x',10)
         %LogScale('c',10)
         xlabel('Pupil Area');ylabel('dpdt')
@@ -241,7 +231,7 @@ NiceSave('PWPupilSpace',analysisfolder,[])
 %% Figure Pupil-Whisk
 figure
     for gg = 1:length(genotypes)   
-    subplot(3,3,gg+6)
+    subplot(3,3,gg+7)
         imagesc((pupilEMGdist.bins{1}),pupilEMGdist.bins{2},log10(pupilEMGdist.(genotypes{gg}))')
         colorbar
         title(genotypes{gg})
@@ -253,7 +243,7 @@ figure
     end
 
     
-    subplot(4,3,1)
+    subplot(4,3,2)
     hold on
         for gg = 1:length(genotypes)
             plot(pwCCG.t,pwCCG.(genotypes{gg}).EMG,...
@@ -279,7 +269,7 @@ figure
        % ylim([0 0.35])
         xlabel('t (s)');ylabel('EMG')
         
-    subplot(4,3,2)
+    subplot(4,3,4)
     hold on
         for gg = 1:length(genotypes)
             plot(pwCCG.t,pwCCG.(genotypes{gg}).pupil,...
@@ -293,6 +283,19 @@ figure
        % ylim([0 0.35])
         xlabel('t (s)');ylabel('Pupil')
         
+subplot(4,3,7)
+    hold on
+        for gg = 1:length(genotypes)
+            plot(log10(WPcoupling.freqs),WPcoupling.(genotypes{gg}).coupling,...
+                'color',genotypecolors{gg},'linewidth',2)
+            errorshade(log10(WPcoupling.freqs),WPcoupling.(genotypes{gg}).coupling,...
+                WPcoupling.std.(genotypes{gg}).coupling,WPcoupling.std.(genotypes{gg}).coupling ,genotypecolors{gg},'scalar')
+        end
+      
+       LogScale('x',10)
+       % ylim([0 0.35])
+        xlabel('Pupil freq (Hz)');ylabel('Pupil-EMG Coupling')
+NiceSave('PWCoupling',analysisfolder,[])
 
 %% Figure : Whisk stats
 figure
@@ -376,7 +379,7 @@ figure
         end
         axis tight
         xlabel('t lag (s)');ylabel('XCorr')
-        xlim([-150 150])
+        xlim([-200 200])
         
     for gg = 1:length(genotypes)   
     subplot(3,3,6+gg)
@@ -406,7 +409,7 @@ end
 subplot(3,2,4)
 hold on
 for gg = 1:length(genotypes)
-    plot(acg_t,pupilacg.ACG(:,genotypeidx==gg),'linewidth',2,'color',colors{gg})
+    plot(pupilacg.tlag,pupilacg.ACG(:,genotypeidx==gg),'linewidth',2,'color',colors{gg})
     xlim([-60 60])
 end
 subplot(3,2,6)
