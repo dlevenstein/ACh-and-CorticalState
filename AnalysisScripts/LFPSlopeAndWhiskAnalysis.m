@@ -62,12 +62,21 @@ plot(EMGwhisk.phase+2*pi,EMGwhisk.power,'.')
 WhiskPSScorr.corr = zeros(size(sessionInfo.AnatGrps.Channels));
 WhiskPSScorr.pup = zeros(size(sessionInfo.AnatGrps.Channels));
 WhiskPSScorr.dpdt = zeros(size(sessionInfo.AnatGrps.Channels));
+WhiskPSScorr.phasecoupling = zeros(size(sessionInfo.AnatGrps.Channels));
+
+nbins = 50;
+PSSstatsdepth.bins = linspace(-2,0,nbins);
+PSSstatsdepth.dist = zeros(length(sessionInfo.AnatGrps.Channels),nbins);
+
 for cc = 1:length(sessionInfo.AnatGrps.Channels)
     cc
     channum = sessionInfo.AnatGrps.Channels(cc);
     %channum = 31;
     WhiskPSScorr.channum(cc) = channum;
     WhiskPSScorr.chanpos(cc) = cc;
+    
+    PSSstatsdepth.channum(cc) = channum;
+    PSSstatsdepth.chanpos(cc) = cc;
     %%
     lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
 
@@ -75,13 +84,18 @@ for cc = 1:length(sessionInfo.AnatGrps.Channels)
     dt = 0.2;
     winsize = 1;
     [PSS] = bz_PowerSpectrumSlope(lfp,winsize,dt,'showfig',false);
-
+    
+    PSSstatsdepth.dist(cc,:) = hist(PSS.data,PSSstatsdepth.bins);
+    PSSstatsdepth.dist(cc,:)./sum(PSSstatsdepth.dist(cc,:));
     %%
     PSS.EMG = interp1(EMGwhisk.t,EMGwhisk.EMGenvelope,PSS.timestamps);
     PSS.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
         PSS.timestamps,'nearest');
     PSS.dpdt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,...
         PSS.timestamps,'nearest');
+    PSS.pupilphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
+        PSS.timestamps,'nearest');
+
 
     %%
     [WhiskPSScorr.EMG(cc),WhiskPSScorr.EMG_p(cc)] =...
@@ -93,6 +107,9 @@ for cc = 1:length(sessionInfo.AnatGrps.Channels)
     [WhiskPSScorr.dpdt(cc),WhiskPSScorr.dpdt_p(cc)] =...
        corr(PSS.dpdt,PSS.data,...
        'type','spearman','rows','complete');
+    WhiskPSScorr.phasecoupling(cc) = ...
+        abs(mean((PSS.data./mean(PSS.data)).*exp(1i.*PSS.pupilphase)));
+
    
     clear lfp
 end
@@ -103,16 +120,20 @@ bestchans.EMG = WhiskPSScorr.channum(bestchans.EMG);
 
 %%
 figure
-subplot(2,3,1:2)
+subplot(2,3,2:3)
 plot(WhiskPSScorr.EMG,-WhiskPSScorr.chanpos,'b','linewidth',2)
 hold on
 plot(WhiskPSScorr.pup,-WhiskPSScorr.chanpos,'k','linewidth',2)
 plot(WhiskPSScorr.dpdt,-WhiskPSScorr.chanpos,'k--','linewidth',1)
 legend('EMG','Pupil Area','dpdt','location','eastoutside')
-xlabel('PSS Correlation');ylabel('Channel by Depth')
+xlabel('PSS Correlation');
 axis tight
 box off
 
+subplot(2,3,1)
+imagesc(PSSstatsdepth.bins,PSSstatsdepth.chanpos,PSSstatsdepth.dist)
+xlabel('PSS')
+ylabel('Channel by Depth')
 NiceSave('PSSCorrbyDepth',figfolder,baseName)
 
 %% Finding best params for PSS
@@ -123,6 +144,9 @@ dt = 0.05;
 winsize = 1;
 [PSS] = bz_PowerSpectrumSlope(lfp,winsize,dt,'showfig',true);
 
+%% Distribution of PSS
+figure
+hist(PSS.data)
 
 %% 
 PSS.EMG = interp1(EMGwhisk.t,EMGwhisk.EMGenvelope,PSS.timestamps);
