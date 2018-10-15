@@ -23,7 +23,7 @@ pupildilation.interpdata = interp1(pupildilation.timestamps(~nantimes),...
     pupildilation.data(~nantimes),pupildilation.timestamps);
 
 %% Load the PSS
-load([basePath,filesep,baseName,'.PowerSpectrumSlope.lfp.mat'])
+%load([basePath,filesep,baseName,'.PowerSpectrumSlope.lfp.mat'])
 
 %% Load Whisks
 EMGwhisk = bz_LoadStates(basePath,'EMGwhisk');
@@ -164,7 +164,7 @@ PSS.pupphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
 PSS.pupmag = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
     PSS.timestamps);
 
-PSS.pupthresh = -0.75;
+PSS.pupthresh = nanmedian(PSS.pupmag);% -0.75;
 PSS.highpup = PSS.pupmag>PSS.pupthresh;
 %%
 
@@ -175,6 +175,8 @@ pupildist.joint = pupildist.counts./sum(pupildist.counts(:));
 
 pupildist.conditional = bsxfun(@rdivide,...
     pupildist.counts,sum(pupildist.counts,2));
+
+cosx = linspace(-pi,3*pi,100);
 
 figure
 subplot(2,2,1)
@@ -218,7 +220,6 @@ pupilPSSdist.conditional_high = bsxfun(@rdivide,...
 pupilPSSdist.counts_low = bsxfun(@rdivide,...
     pupilPSSdist.counts_low,sum(pupilPSSdist.counts_low,2));
 %% Figure: PSS by pupil phase
-cosx = linspace(-pi,3*pi,100);
 figure
 subplot(2,2,1)
 imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.joint')
@@ -488,7 +489,7 @@ colorbar
 axis xy
 caxis([-1.4 -0.5])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
-title('Low Power Pupil')
+title('High Power Pupil')
 
 
 subplot(2,2,2)
@@ -571,6 +572,19 @@ subplot(2,2,3)
 
 NiceSave('PSSallWHisks',figfolder,baseName)
    
+
+
+
+
+%% OLD STUFF BELOW
+
+
+
+
+
+
+
+
 %% Take a look at the channels with dpdt and p
 [~, bestchans.pup] = max(WhiskPSScorr.pup);
 [~, bestchans.dpdt] = max(WhiskPSScorr.dpdt);
