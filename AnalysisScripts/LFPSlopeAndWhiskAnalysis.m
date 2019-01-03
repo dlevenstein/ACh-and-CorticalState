@@ -11,6 +11,9 @@ baseName = bz_BasenameFromBasepath(basePath);
 sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 %%
+
+
+
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
 %pupildilation.dpdt = 
