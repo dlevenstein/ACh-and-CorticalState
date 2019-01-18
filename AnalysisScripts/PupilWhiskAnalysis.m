@@ -10,10 +10,10 @@ function [puphist,pupACG,pupPSD,pupdthist,...
 %basePath = '/mnt/proraidDL/Database/WMProbeData/170606_Layers_LFP_Pupil_EMG_Emx1M2M4/170606_Layers_LFP_Pupil_EMG_170606_204730/';
 %basePath= '/mnt/proraidDL/Database/WMProbeData/170421_Layers_LFP_Pupil_EMG_Emx1M1M3/170421_Layers_LFP_Pupil_EMG_170421_180427';
 %basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
-basePath = 'R:\rudylab\archive\William\181205_ChrmKO_Layers_Analysis\180706_WT_EM1M3';
+%basePath = 'R:\rudylab\archive\William\181205_ChrmKO_Layers_Analysis\180706_WT_EM1M3';
 %basePath = 'R:\rudylab\archive\William\181205_ChrmKO_Layers_Analysis\180525_KO_EM1M3\Spont2';
-reporoot = 'H:\Personal\GitHub\ACh-and-CorticalState';
-figfolder = [reporoot,'/AnalysisScripts/AnalysisFigs/PupilWhiskAnalysis'];
+%reporoot = 'H:\Personal\GitHub\ACh-and-CorticalState';
+%figfolder = [reporoot,'/AnalysisScripts/AnalysisFigs/PupilWhiskAnalysis'];
 
 %basePath = pwd;
 %figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/PupilWhiskAnalysis';
@@ -62,6 +62,7 @@ pupilspec = bz_WaveSpec(pupildilation.interpdata(~isnan(pupildilation.interpdata
 freqs = pupilspec.freqs;
 spec = pupilspec.data;
 spec = (abs(spec));
+clear pupilspec
 %%
 lowfilter = [0.01 0.1];
 highfilter = [0.3 0.8];
@@ -75,6 +76,7 @@ lowpupildata = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','ord
 
 pupPSD.freqs = freqs;
 pupPSD.psd = mean(log10(spec),1);
+clear spec
 %% Figure: PUPIL
 winsize = 300; %s
 viewwin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize);
@@ -591,7 +593,7 @@ figure
         hold on
         plot(pupildilation.timestamps,EMGwhisk.pupiltime,'b','linewidth',2)
         plot(EMGwhisk.ints.Wh',...
-            EMGwhisk.detectorparms.Whthreshold.*ones(size(EMGwhisk.ints.Wh))',...
+            ones(size(EMGwhisk.ints.Wh))',...
             'g-','linewidth',1)
         axis tight
         xlim(viewrange);
@@ -713,7 +715,7 @@ powbins = 10;
 %sig2powerskew = zeros(powbins,wavespec.nfreqs);
 coupling = zeros(wavespec.nfreqs,1);
 for ff = 1:wavespec.nfreqs
-ff
+%ff
 % [ ampbins,phasebins,sig2powerskew(:,ff),~,~ ] = ...
 %     PhaseAmpCouplingByAmp( angle(wavespec.data(:,ff)),log10(abs(wavespec.data(:,ff))),...
 %     log10(EMGwhisk.pupiltime),powbins );
