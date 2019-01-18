@@ -10,9 +10,10 @@ function [puphist,pupACG,pupPSD,pupdthist,...
 %basePath = '/mnt/proraidDL/Database/WMProbeData/170606_Layers_LFP_Pupil_EMG_Emx1M2M4/170606_Layers_LFP_Pupil_EMG_170606_204730/';
 %basePath= '/mnt/proraidDL/Database/WMProbeData/170421_Layers_LFP_Pupil_EMG_Emx1M1M3/170421_Layers_LFP_Pupil_EMG_170421_180427';
 %basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
-basePath = 'R:\rudylab\archive\William\181205_ChrmKO_Layers_Analysis\180706_WT_EM1M3';
-reporoot = 'H:\Personal\GitHub\ACh-and-CorticalState';
-figfolder = [reporoot,'/AnalysisScripts/AnalysisFigs/PupilWhiskAnalysis'];
+%basePath = 'R:\rudylab\archive\William\181205_ChrmKO_Layers_Analysis\180706_WT_EM1M3';
+%basePath = 'R:\rudylab\archive\William\181205_ChrmKO_Layers_Analysis\180525_KO_EM1M3\Spont2';
+%reporoot = 'H:\Personal\GitHub\ACh-and-CorticalState';
+%figfolder = [reporoot,'/AnalysisScripts/AnalysisFigs/PupilWhiskAnalysis'];
 
 %basePath = pwd;
 %figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/PupilWhiskAnalysis';
@@ -61,6 +62,7 @@ pupilspec = bz_WaveSpec(pupildilation.interpdata(~isnan(pupildilation.interpdata
 freqs = pupilspec.freqs;
 spec = pupilspec.data;
 spec = (abs(spec));
+clear pupilspec
 %%
 lowfilter = [0.01 0.1];
 highfilter = [0.3 0.8];
@@ -74,6 +76,7 @@ lowpupildata = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','ord
 
 pupPSD.freqs = freqs;
 pupPSD.psd = mean(log10(spec),1);
+clear spec
 %% Figure: PUPIL
 winsize = 300; %s
 viewwin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize);
@@ -116,8 +119,9 @@ figure
         ylabel('Pupil Autocov.')
 
     subplot(2,2,4)
-    colormap(gca,[1 1 1;colormap])
         imagesc(pupdthist.bins{1},pupdthist.bins{2},pupdthist.counts')
+            colormap(gca,[1 1 1;colormap])
+
         hold on
         plot(get(gca,'xlim'),[0 0],'r-')
         colorbar
@@ -207,13 +211,13 @@ figure
         
 NiceSave('PupilSpace',figfolder,baseName)
 %% EMG %%
-EMGwhisk = bz_LoadStates( basePath,'EMGwhisk');
+EMGwhisk = bz_LoadBehavior( basePath,'EMGwhisk');
 if isempty(EMGwhisk)
     EMGwhisk = GetWhiskFromEMG(basePath);
 end
 
 %%
-EMGwhisk.pupiltime = interp1(EMGwhisk.t,EMGwhisk.EMGsm,pupildilation.timestamps);
+EMGwhisk.pupiltime = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,pupildilation.timestamps);
 
 %% Histogram
 EMGhist.bins = linspace(0,20,20);
@@ -231,22 +235,24 @@ EMGwhisk.InterWhdurs = EMGwhisk.ints.Wh(2:end,1)-EMGwhisk.ints.Wh(1:end-1,2);
 
 Whdurhist.bins = linspace(-1,2,20);
 Whdurhist.Whdurs = hist(log10(EMGwhisk.Whdurs),Whdurhist.bins);
-Whdurhist.Whdurs = Whdurhist.Whdurs./diff(EMGwhisk.t([1 end])); %Units: whisks/s
+Whdurhist.Whdurs = Whdurhist.Whdurs./diff(EMGwhisk.timestamps([1 end])); %Units: whisks/s
 Whdurhist.InterWhdurs = hist(log10(EMGwhisk.InterWhdurs),Whdurhist.bins);
-Whdurhist.InterWhdurs = Whdurhist.InterWhdurs./diff(EMGwhisk.t([1 end])); %Units: whisks/s
+Whdurhist.InterWhdurs = Whdurhist.InterWhdurs./diff(EMGwhisk.timestamps([1 end])); %Units: whisks/s
 
 
 
 %% Figure: EMG/WHISK
 figure
     subplot(4,1,1)
-        plot(EMGwhisk.t,EMGwhisk.EMG,'color',[0.5 0.5 0.5],'linewidth',0.5)
+        plot(EMGwhisk.timestamps,EMGwhisk.EMG,'color',[0.5 0.5 0.5],'linewidth',0.5)
         hold on
         plot(pupildilation.timestamps,EMGwhisk.pupiltime,'b','linewidth',2)
         plot(EMGwhisk.ints.Wh',...
-            EMGwhisk.detectorparms.Whthreshold.*ones(size(EMGwhisk.ints.Wh))',...
+            ones(size(EMGwhisk.ints.Wh))',...
             'g-','linewidth',1)
-        %plot(EMGwhisk.t,EMGwhisk.EMGsm,'b')
+%             EMGwhisk.detectorparms.Whthreshold.*ones(size(EMGwhisk.ints.Wh))',...
+%             'g-','linewidth',1)
+        %plot(EMGwhisk.timestamps,EMGwhisk.EMGsm,'b')
         ylabel('EMG: All')
         axis tight
         xlabel('t (s)')
@@ -254,13 +260,15 @@ figure
         xlim(pupildilation.timestamps([1 end]))
         ylim([-20 40])
     subplot(4,1,2)
-        plot(EMGwhisk.t,EMGwhisk.EMG,'color',[0.5 0.5 0.5],'linewidth',0.5)
+        plot(EMGwhisk.timestamps,EMGwhisk.EMG,'color',[0.5 0.5 0.5],'linewidth',0.5)
         hold on
         plot(pupildilation.timestamps,EMGwhisk.pupiltime,'b','linewidth',2)
         plot(EMGwhisk.ints.Wh',...
-            EMGwhisk.detectorparms.Whthreshold.*ones(size(EMGwhisk.ints.Wh))',...
+            ones(size(EMGwhisk.ints.Wh))',...
             'g-','linewidth',1)
-        %plot(EMGwhisk.t,EMGwhisk.EMGsm,'b')
+%             EMGwhisk.detectorparms.Whthreshold.*ones(size(EMGwhisk.ints.Wh))',...
+%             'g-','linewidth',1)
+        %plot(EMGwhisk.timestamps,EMGwhisk.EMGsm,'b')
         axis tight
         ylabel('EMG: zoom')
         xlabel('t (s)')
@@ -581,11 +589,11 @@ figure
         set(gca,'xticklabel',[])
 
     subplot(6,3,4:5)
-        plot(EMGwhisk.t,EMGwhisk.EMG,'color',[0.5 0.5 0.5],'linewidth',0.5)
+        plot(EMGwhisk.timestamps,EMGwhisk.EMG,'color',[0.5 0.5 0.5],'linewidth',0.5)
         hold on
         plot(pupildilation.timestamps,EMGwhisk.pupiltime,'b','linewidth',2)
         plot(EMGwhisk.ints.Wh',...
-            EMGwhisk.detectorparms.Whthreshold.*ones(size(EMGwhisk.ints.Wh))',...
+            ones(size(EMGwhisk.ints.Wh))',...
             'g-','linewidth',1)
         axis tight
         xlim(viewrange);
@@ -707,7 +715,7 @@ powbins = 10;
 %sig2powerskew = zeros(powbins,wavespec.nfreqs);
 coupling = zeros(wavespec.nfreqs,1);
 for ff = 1:wavespec.nfreqs
-ff
+%ff
 % [ ampbins,phasebins,sig2powerskew(:,ff),~,~ ] = ...
 %     PhaseAmpCouplingByAmp( angle(wavespec.data(:,ff)),log10(abs(wavespec.data(:,ff))),...
 %     log10(EMGwhisk.pupiltime),powbins );
