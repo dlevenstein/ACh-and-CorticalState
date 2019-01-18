@@ -56,10 +56,10 @@ pupdthist.counts = pupdthist.counts./sum(pupdthist.counts(:));
 
 %% Calculate FFT of the pupil
 frange = [0.001 1];
-pupilspec = bz_WaveSpec(pupildilation.interpdata(~isnan(pupildilation.interpdata)),...
-    'frange',frange,'nfreqs',200,'ncyc',3,'samplingRate',pupildilation.samplingRate);
-freqs = pupilspec.freqs;
-spec = pupilspec.data;
+[freqs,t,spec] = bz_WaveSpec(pupildilation.interpdata(~isnan(pupildilation.interpdata)),...
+    'frange',frange,'nfreqs',200,'ncyc',3,'samplingRate',pupildilation.samplingRate,'log');
+
+[freqs,t,spec] = WaveSpec(pupildilation.interpdata(~isnan(pupildilation.interpdata)),frange,200,3,1/pupildilation.samplingRate,'log');
 spec = (abs(spec));
 %%
 lowfilter = [0.01 0.1];
@@ -73,7 +73,7 @@ lowpupildata = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','ord
 %highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
 
 pupPSD.freqs = freqs;
-pupPSD.psd = mean(log10(spec),1);
+pupPSD.psd = mean(log10(spec),2);
 %% Figure: PUPIL
 winsize = 300; %s
 viewwin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize);
