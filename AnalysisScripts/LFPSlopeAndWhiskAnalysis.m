@@ -4,8 +4,8 @@ function [] = LFPSlopeAndWhiskAnalysis( basePath,figfolder )
 %basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
 %basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
 
-basePath = pwd;
-figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndWhiskAnalysis';
+%basePath = pwd;
+%figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndWhiskAnalysis';
 baseName = bz_BasenameFromBasepath(basePath);
 %%
 sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
