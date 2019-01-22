@@ -56,6 +56,13 @@ gammafilter = [100 400];
 gammaLFP = bz_Filter(datlfp,'passband',gammafilter,'filter','fir1','order',4);
 
 %%
+%TO DO: vary lower and upper - quantify correlation with EMGfromLFP
+%(calculate EMGfromLFP)
+
+%%
+%Threshold crossings?  Time window?
+%
+%%
 gammasmoothwin = 0.08; %s
 gammaLFP.smoothamp = smooth(gammaLFP.amp,round(gammasmoothwin.*gammaLFP.samplingRate),'moving' );
 %%
