@@ -90,7 +90,7 @@ if movingNorm
 % MUALFP.amp_mov1000 = abs(MUALFP.hilb);
 else
 
-    MUALFP.data = NormToInt(MUALFP.data,'modZ',[0 Inf],MUALFP.samplingRate,'moving',0);
+    MUALFP.data = NormToInt(MUALFP.data,'modZ',[0 Inf],MUALFP.samplingRate);
     MUALFP.hilb = hilbert(MUALFP.data);
     MUALFP.amp = abs(MUALFP.hilb);
 end
@@ -104,6 +104,7 @@ MUALFP.smoothamp = smooth(MUALFP.amp,round(MUAsmoothwin.*MUALFP.samplingRate),'m
 % plot(MUALFP.smoothamp,MUALFP.data,'.')
 
 MUA = MUALFP.smoothamp;
+
 
 
 %%
@@ -133,20 +134,8 @@ if SHOWFIG
     hold on
     plot(MUALFP.timestamps(timewin),MUALFP.amp(timewin),'b')
     plot(MUALFP.timestamps(timewin),MUALFP.smoothamp(timewin),'r')
-    plot(MUALFP.peaktimes,-MUALFP.peakmags,'.')
-    plot(MUAspks.timestamps,MUAspks.data,'g')
-    legend(['MUA (',num2str(MUAfilter(1)),'-',num2str(MUAfilter(2)),'Hz)'],...
-        'Amplitude',['Smooth: ',num2str(MUAsmoothwin.*1000),'ms'])
-    xlim(showwin)
-
-
-    subplot(3,1,3)
-    plot(MUALFP.timestamps(timewin),MUALFP.data_mov200(timewin),'k')
-    hold on
-    plot(MUALFP.timestamps(timewin),MUALFP.amp_mov200(timewin),'b')
-    plot(MUALFP.timestamps(timewin),MUALFP.smoothamp_mov200(timewin),'r')
-    plot(MUALFP.peaktimes_mov200,-MUALFP.peakmags_mov200,'.')
-    plot(MUAspks_mov200.timestamps,MUAspks_mov200.data,'g')
+   % plot(MUALFP.peaktimes,-MUALFP.peakmags,'.')
+    %plot(MUAspks.timestamps,MUAspks.data,'g')
     legend(['MUA (',num2str(MUAfilter(1)),'-',num2str(MUAfilter(2)),'Hz)'],...
         'Amplitude',['Smooth: ',num2str(MUAsmoothwin.*1000),'ms'])
     xlim(showwin)
