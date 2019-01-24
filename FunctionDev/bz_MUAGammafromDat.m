@@ -93,9 +93,9 @@ if movingNorm
 % MUALFP.amp_mov1000 = abs(MUALFP.hilb);
 else
 
-    MUALFP.data = NormToInt(MUALFP.data,'modZ',[0 Inf],MUALFP.samplingRate);
-    MUALFP.hilb = hilbert(MUALFP.data);
-    MUALFP.amp = abs(MUALFP.hilb);
+    %MUALFP.data = NormToInt(MUALFP.data,'modZ',[0 Inf],MUALFP.samplingRate);
+    %MUALFP.hilb = hilbert(MUALFP.data);
+    %MUALFP.amp = abs(MUALFP.hilb);
 end
 %% Smooth the MUA
 MUALFP.smoothamp = smooth(MUALFP.amp,round(MUAsmoothwin.*MUALFP.samplingRate),'moving' );
