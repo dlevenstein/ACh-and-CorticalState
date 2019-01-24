@@ -1,4 +1,4 @@
-function [ MUA ] = bz_MUAGammafromDat( basePath,varargin )
+function [ f, pspec, MUA ] = bz_MUAGammafromDat( basePath,varargin )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -61,7 +61,7 @@ end
 downfactor = 1;
 datlfp.data = bz_LoadBinary(datfilename,...
               'frequency',datSampleRate,'nchannels',sessionInfo.nChannels,...
-              'channels',channels+1,'downsample',downfactor);
+              'channels',channels,'downsample',downfactor);
 
 datlfp.samplingRate = datSampleRate./downfactor;
 datlfp.timestamps = [0:(length(datlfp.data)-1)]'/datlfp.samplingRate;  %To be overwritten later...
@@ -70,6 +70,9 @@ datlfp.channels = channels;
 %%
 %oldlfp = bz_GetLFP(channels,'basepath',basePath);
 
+%% 
+[pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[1 5000],'FrequencyResolution',25);
+pspec = pow2db(pxx);
 %%
 % gammafilter = [100 400];
 % gammaLFP = bz_Filter(datlfp,'passband',gammafilter,'filter','fir1','order',4);
