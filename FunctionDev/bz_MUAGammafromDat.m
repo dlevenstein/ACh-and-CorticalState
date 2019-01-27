@@ -34,10 +34,12 @@ MUAsmoothwin = p.Results.MUAsmoothwin;
 usepeaks = p.Results.usepeaks;
 SHOWFIG = p.Results.SHOWFIG;
 compareEMG = p.Results.compareEMG;
+
 %% DEV
 %basePath = '/mnt/proraidDL/Database/WMProbeData/180211_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180211_WT_M1M3_LFP_Layers_Pupil_EMG_180211_130605';
 %channels = 10;
 %note: after 180211 good grounding
+
 %%
 sessionInfo = bz_getSessionInfo(basePath, 'noPrompts', true);
 datSampleRate = sessionInfo.rates.wideband;
@@ -46,8 +48,10 @@ downfactor = datSampleRate./lfpSampleRate;
 
 %%
 baseName = bz_BasenameFromBasepath(basePath);
+
 %%
 datfilename = fullfile(basePath,[baseName,'.dat']);
+
 %%
 
 if isequal(channels,'all')
@@ -71,14 +75,16 @@ datlfp.channels = channels;
 %oldlfp = bz_GetLFP(channels,'basepath',basePath);
 
 %% 
-[pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[1 5000],'FrequencyResolution',25);
+% [pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[0.5 100],'FrequencyResolution',1);
+% [pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[100 10000],'FrequencyResolution',25);
+[pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[0.5 10000],'FrequencyResolution',25);
 pspec = pow2db(pxx);
+
 %%
 % gammafilter = [100 400];
 % gammaLFP = bz_Filter(datlfp,'passband',gammafilter,'filter','fir1','order',4);
 
 %%
-
 MUALFP = bz_Filter(datlfp,'passband',MUAfilter,'filter','fir1','order',3);
 MUALFP.channels = channels;
 
@@ -97,6 +103,7 @@ else
     %MUALFP.hilb = hilbert(MUALFP.data);
     %MUALFP.amp = abs(MUALFP.hilb);
 end
+
 %% Smooth the MUA
 MUALFP.smoothamp = smooth(MUALFP.amp,round(MUAsmoothwin.*MUALFP.samplingRate),'moving' );
 % MUALFP.smoothamp_mov200 = smooth(MUALFP.amp_mov200,round(MUAsmoothwin.*MUALFP.samplingRate),'moving' );
@@ -108,8 +115,6 @@ MUALFP.smoothamp = smooth(MUALFP.amp,round(MUAsmoothwin.*MUALFP.samplingRate),'m
 
 MUA = MUALFP.smoothamp;
 
-
-
 %%
 if usepeaks
     thresh = 3;
@@ -119,11 +124,10 @@ if usepeaks
     MUAspks = bz_SpktToSpkmat({MUALFP.peaktimes},'binsize',0.02);
 
 end
+
 %%
 % figure
 % hist(MUALFP.peakmags)
-
-
 
 %%
 if SHOWFIG
@@ -150,6 +154,7 @@ if SHOWFIG
     bz_ScaleBar('s')
     xlim(showwin)
 end
+
 %% Get the EMG
 if compareEMG
     [EMGFromLFP] = bz_EMGFromLFP(basePath,'samplingFrequency',10,'fromDat',true);
@@ -192,7 +197,6 @@ if compareEMG
     end 
 end
 
-
 %%
 %TO DO: vary lower and upper - quantify correlation with EMGfromLFP
 %(calculate EMGfromLFP)
@@ -219,5 +223,6 @@ end
 % plot(gammaLFP_fromlfpcheb.timestamps,gammaLFP_fromlfpcheb.amp(:,1),'r--')
 % plot(gammaLFP.timestamps,gammaLFP.smoothamp(:,1),'k','linewidth',2)
 % xlim(showwin)
+
 end
 
