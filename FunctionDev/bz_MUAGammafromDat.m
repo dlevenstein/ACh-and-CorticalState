@@ -1,4 +1,4 @@
-function [ f, pspec, MUA ] = bz_MUAGammafromDat( basePath,varargin )
+function [ lof, lospec, hif, hispec, MUA ] = bz_MUAGammafromDat( basePath,varargin )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -75,10 +75,50 @@ datlfp.channels = channels;
 %oldlfp = bz_GetLFP(channels,'basepath',basePath);
 
 %% 
-% [pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[0.5 100],'FrequencyResolution',1);
-% [pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[100 10000],'FrequencyResolution',25);
-[pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[0.5 10000],'FrequencyResolution',25);
-pspec = pow2db(pxx);
+lfp = bz_GetLFP(1,'basepath',basePath,'noPrompts',true);
+
+%%
+freqlist = logspace(log10(0.5),log10(100),100);
+window = 1;
+noverlap = 0.8;
+window = window*datlfp.samplingRate;
+noverlap = noverlap*datlfp.samplingRate;
+
+[spec,lof,t_FFT] = spectrogram(single(datlfp.data),window,noverlap,freqlist,datlfp.samplingRate);
+lospec = log10(abs(spec));
+lospec = mean(lospec,2);
+
+freqlist = logspace(log10(100),log10(10000),1000);
+window = 10;
+noverlap = 5;
+window = window*datlfp.samplingRate;
+noverlap = noverlap*datlfp.samplingRate;
+
+[spec,hif,t_FFT] = spectrogram(single(datlfp.data),window,noverlap,freqlist,datlfp.samplingRate);
+hispec = log10(abs(spec));
+hispec = mean(hispec,2);
+
+%%
+% viewwin = bz_RandomWindowInIntervals(lfp.timestamps([1 end]),500);
+% figure
+% subplot(4,1,1)
+% imagesc(T,log10(F),amp)
+% axis xy
+% LogScale('y',10)
+% xlim(viewwin)
+% subplot(4,1,2)
+% plot(lfp.timestamps,lfp.data,'k')
+% xlim(viewwin)
+% 
+% subplot(2,2,3)
+% plot(log10(freqs),PSD,'k')
+% LogScale('x',10)
+
+%%
+%pxx = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[0.5 100],'FrequencyResolution',1);
+%[pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[100 10000],'FrequencyResolution',25);
+%[pxx,f] = pspectrum(single(datlfp.data),datlfp.samplingRate,'FrequencyLimits',[0.5 10000],'FrequencyResolution',25);
+%pspec = pow2db(pxx);
 
 %%
 % gammafilter = [100 400];
@@ -113,7 +153,10 @@ MUALFP.smoothamp = smooth(MUALFP.amp,round(MUAsmoothwin.*MUALFP.samplingRate),'m
 % figure
 % plot(MUALFP.smoothamp,MUALFP.data,'.')
 
-MUA = MUALFP.smoothamp;
+%% Interpolate to lfp timestamps
+
+MUA.data = interp1(datlfp.timestamps,MUALFP.smoothamp,lfp.timestamps);
+MUA.timestamps = lfp.timestamps;
 
 %%
 if usepeaks
