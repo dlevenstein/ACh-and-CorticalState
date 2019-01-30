@@ -1,4 +1,4 @@
-function [ lof, lospec, hif, hispec, MUA ] = bz_MUAGammafromDat( basePath,varargin )
+function [ lof, lospec, t_lo, hif, hispec, t_hi, MUA ] = bz_MUAGammafromDat( basePath,varargin )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -84,19 +84,19 @@ noverlap = 0.8;
 window = window*datlfp.samplingRate;
 noverlap = noverlap*datlfp.samplingRate;
 
-[spec,lof,t_FFT] = spectrogram(single(datlfp.data),window,noverlap,freqlist,datlfp.samplingRate);
+[spec,lof,t_lo] = spectrogram(single(datlfp.data),window,noverlap,freqlist,datlfp.samplingRate);
 lospec = log10(abs(spec));
-lospec = mean(lospec,2);
+%lospec = mean(lospec,2);
 
 freqlist = logspace(log10(100),log10(10000),1000);
-window = 10;
-noverlap = 5;
+window = 0.2;
+noverlap = 0.16;
 window = window*datlfp.samplingRate;
 noverlap = noverlap*datlfp.samplingRate;
 
-[spec,hif,t_FFT] = spectrogram(single(datlfp.data),window,noverlap,freqlist,datlfp.samplingRate);
+[spec,hif,t_hi] = spectrogram(single(datlfp.data),window,noverlap,freqlist,datlfp.samplingRate);
 hispec = log10(abs(spec));
-hispec = mean(hispec,2);
+%hispec = mean(hispec,2);
 
 %%
 % viewwin = bz_RandomWindowInIntervals(lfp.timestamps([1 end]),500);
