@@ -14,4 +14,4 @@ LayerID.hispec = hispec;
 LayerID.t_hi = t_hi;
 LayerID.MUA = MUA;
 
-save(savefile,'LayerID');
+save(savefile,'LayerID','-v7.3');

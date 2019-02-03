@@ -145,7 +145,7 @@ MUA.channels = channels;
 MUA.samplingRate = lfp.samplingRate;
 
 if saveMat
-    save(savefile,'MUA');
+    save(savefile,'MUA','-v7.3');
 end
 
 
