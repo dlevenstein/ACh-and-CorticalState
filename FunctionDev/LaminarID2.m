@@ -3,7 +3,7 @@ basePath = pwd;
 [baseFolder,baseName] = fileparts(basePath);
 savefile = fullfile(basePath,[baseName,'.',num2str(i),'.LayerID.lfp.mat']);
 
-[lof,lospec,t_lo,hif,hispec,t_hi,MUA] = bz_MUAGammafromDat(basePath,'channels',i);
+[lof,lospec,t_lo,hif,hispec,t_hi,MUA] = MUAGammafromDat(basePath,'channels',i);
 
 %% Saving laminar pspectrum
 LayerID.lof = lof;

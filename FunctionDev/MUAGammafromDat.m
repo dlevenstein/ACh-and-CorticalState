@@ -1,4 +1,4 @@
-function [ lof, lospec, t_lo, hif, hispec, t_hi, MUA ] = bz_MUAGammafromDat( basePath,varargin )
+function [ lof, lospec, t_lo, hif, hispec, t_hi, MUA ] = MUAGammafromDat( basePath,varargin )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %
