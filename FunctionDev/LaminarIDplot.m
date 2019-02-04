@@ -5,14 +5,15 @@ basePath = pwd;
 % baseName = '171209_WT_EM1M3';
 
 %%
+savefile = fullfile(basePath,[baseName,'.LaminarPowerSpec.lfp.mat']);
 figfolder = fullfile(basePath,'AnalysisFigures');
 
 %%
 load(fullfile(basePath,[baseName,'.sessionInfo.mat']));
 channels = sessionInfo.channels;
 usechannels = sessionInfo.AnatGrps.Channels;
-% badchannels = sessionInfo.badchannels;
-% usechannels(ismember(usechannels,badchannels))=[];
+badchannels = sessionInfo.badchannels;
+usechannels(ismember(usechannels,badchannels))=[];
 
 %%
 mergefile = fullfile(basePath,[baseName,'.MergePoints.events.mat']);
@@ -47,6 +48,18 @@ for i = 1:length(usechannels)
         tMUAdepth = cat(2,tMUAdepth,mean(LayerID.MUA.data(tempsidx)));
     end
 end
+
+%% Saving 
+lamimarpspec.LOdata = LOSPEC;
+lamimarpspec.HIdata = HISPEC;
+lamimarpspec.MUAdata = MUAdepth;
+lamimarpspec.tLOdata = tLOSPEC;
+lamimarpspec.tHIdata = tHISPEC;
+lamimarpspec.tMUAdata = tMUAdepth;
+lamimarpspec.LOfreqs = LayerID.lof;
+lamimarpspec.HIfreqs = LayerID.hif;
+
+save(savefile,'lamimarpspec');
 
 %% Spatial/temporal smoothening
 % smlopspec = zeros(size(LOSPEC,1),size(LOSPEC,2));
@@ -89,9 +102,9 @@ figure;
 subplot(2,6,1); hold on;
 stairs((MUAdepth-MUAdepth(1))./max(MUAdepth-MUAdepth(1)),[1:size(MUAdepth,2)],'Color','k');
 set(gca,'YDir','reverse');
-xlim([0 1]); ylim([1 size(MUAdepth,2)]);
+xlim([0 1]); ylim([0 size(MUAdepth,2)]);
 xlabel('norm. MUA power (0.5-5 KHz)'); ylabel('channel');
-set(gca,'Ytick',[1:1:size(MUAdepth,2)]);
+set(gca,'Ytick',[0.5:1:size(MUAdepth,2)-0.5]);
 set(gca,'Yticklabels',usechannels,'FontSize',4);
 set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
 box on;
@@ -114,10 +127,10 @@ stairs((muapow4-muapow4(1))./max(muapow4-muapow4(1)),[1:size(smhipspec,2)],'Colo
 stairs((muapow5-muapow5(1))./max(muapow5-muapow5(1)),[1:size(smhipspec,2)],'Color','m');
 
 set(gca,'YDir','reverse');
-xlim([0 1]); ylim([1 size(smhipspec,2)]);
+xlim([0 1]); ylim([0 size(smhipspec,2)]);
 legend({'100-200 Hz','300-500 Hz','600-900 Hz','1-5 KHz','5-10 KHz'},'Location','southwest');
 xlabel('norm. power');
-set(gca,'Ytick',[1:1:size(smhipspec,2)]);
+set(gca,'Ytick',[0.5:1:size(smhipspec,2)-0.5]);
 set(gca,'Yticklabel',{});
 set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
 box on;
@@ -135,10 +148,10 @@ set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100'});
 xlim([log10([0.5 100])]);
 xtickangle(45);
 xlabel('frequency (Hz)');
-set(gca,'Ytick',[1:1:size(smlopspec,2)]);
+set(gca,'Ytick',[0.5:1:size(smlopspec,2)-0.5]);
 set(gca,'Yticklabel',{});
 set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-ylim([1 size(smlopspec,2)]);
+ylim([0 size(smlopspec,2)]);
 
 subplot(2,6,5:6);
 imagesc(log10(LayerID.hif),[1:size(smhipspec,2)],smhipspec')
@@ -153,10 +166,10 @@ set(gca,'Xticklabel',{'100','250','500','1000','2500','5000','10000'});
 xlim([log10([100 10000])]);
 xtickangle(45);
 xlabel('frequency (Hz)');
-set(gca,'Ytick',[1:1:size(smhipspec,2)]);
+set(gca,'Ytick',[0.5:1:size(smhipspec,2)-0.5]);
 set(gca,'Yticklabel',{});
 set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-ylim([1 size(smhipspec,2)]);
+ylim([0 size(smhipspec,2)]);
 
 subplot(2,6,8);hold on;
 tempidx = find(LayerID.hif > 100 & LayerID.hif < 200);
@@ -176,10 +189,10 @@ stairs((muapow4-muapow4(1))./max(muapow4-muapow4(1)),[1:size(zsmhipspec,2)],'Col
 stairs((muapow5-muapow5(1))./max(muapow5-muapow5(1)),[1:size(zsmhipspec,2)],'Color','m');
 
 set(gca,'YDir','reverse');
-xlim([0 1]); ylim([1 size(zsmhipspec,2)]);
+xlim([0 1]); ylim([0 size(zsmhipspec,2)]);
 legend({'100-200 Hz','300-500 Hz','600-900 Hz','1-5 KHz','5-10 KHz'},'Location','southwest');
 xlabel('norm. power');
-set(gca,'Ytick',[1:1:size(zsmhipspec,2)]);
+set(gca,'Ytick',[0.5:1:size(zsmhipspec,2)-0.5]);
 set(gca,'Yticklabel',{});
 set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
 box on;
@@ -197,10 +210,10 @@ set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100'});
 xlim([log10([0.5 100])]);
 xtickangle(45);
 xlabel('frequency (Hz)');
-set(gca,'Ytick',[1:1:size(zsmlopspec,2)]);
+set(gca,'Ytick',[0.5:1:size(zsmlopspec,2)-0.5]);
 set(gca,'Yticklabel',{});
 set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-ylim([1 size(zsmlopspec,2)]);
+ylim([0 size(zsmlopspec,2)]);
 
 subplot(2,6,11:12);
 imagesc(log10(LayerID.hif),[1:size(zsmhipspec,2)],zsmhipspec')
@@ -215,16 +228,16 @@ set(gca,'Xticklabel',{'100','250','500','1000','2500','5000','10000'});
 xlim([log10([100 10000])]);
 xtickangle(45);
 xlabel('frequency (Hz)');
-set(gca,'Ytick',[1:1:size(zsmhipspec,2)]);
+set(gca,'Ytick',[0.5:1:size(zsmhipspec,2)-0.5]);
 set(gca,'Yticklabel',{});
 set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-ylim([1 size(zsmhipspec,2)]);
+ylim([0 size(zsmhipspec,2)]);
 
-NiceSave('LaminarID_Spont_BadChannels',figfolder,baseName);
+%NiceSave('LaminarID_Spont_BadChannels',figfolder,baseName);
+%close all;
+
+NiceSave('LaminarID_Spont_GoodChannels',figfolder,baseName);
 close all;
-
-% NiceSave('LaminarID_Spont_GoodChannels',figfolder,baseName);
-% close all;
 
 %%
 if spontendsample < MergePoints.timestamps_samples(end,end)+1
@@ -269,9 +282,9 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     subplot(2,6,1); hold on;
     stairs((tMUAdepth-tMUAdepth(1))./max(tMUAdepth-tMUAdepth(1)),[1:size(tMUAdepth,2)],'Color','k');
     set(gca,'YDir','reverse');
-    xlim([0 1]); ylim([1 size(tMUAdepth,2)]);
+    xlim([0 1]); ylim([0 size(tMUAdepth,2)]);
     xlabel('norm. MUA power (0.5-5 KHz)'); ylabel('channel');
-    set(gca,'Ytick',[1:1:size(tMUAdepth,2)]);
+    set(gca,'Ytick',[0.5:1:size(tMUAdepth,2)-0.5]);
     set(gca,'Yticklabels',usechannels,'FontSize',4);
     set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
     box on;
@@ -294,10 +307,10 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     stairs((muapow5-muapow5(1))./max(muapow5-muapow5(1)),[1:size(smhipspec,2)],'Color','m');
     
     set(gca,'YDir','reverse');
-    xlim([0 1]); ylim([1 size(smhipspec,2)]);
+    xlim([0 1]); ylim([0 size(smhipspec,2)]);
     legend({'100-200 Hz','300-500 Hz','600-900 Hz','1-5 KHz','5-10 KHz'},'Location','southwest');
     xlabel('norm. power');
-    set(gca,'Ytick',[1:1:size(smhipspec,2)]);
+    set(gca,'Ytick',[0.5:1:size(smhipspec,2)-0.5]);
     set(gca,'Yticklabel',{});
     set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
     box on;
@@ -315,10 +328,10 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     xlim([log10([0.5 100])]);
     xtickangle(45);
     xlabel('frequency (Hz)');
-    set(gca,'Ytick',[1:1:size(smlopspec,2)]);
+    set(gca,'Ytick',[0.5:1:size(smlopspec,2)-0.5]);
     set(gca,'Yticklabel',{});
     set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-    ylim([1 size(smlopspec,2)]);
+    ylim([0 size(smlopspec,2)]);
     
     subplot(2,6,5:6);
     imagesc(log10(LayerID.hif),[1:size(smhipspec,2)],smhipspec')
@@ -333,10 +346,10 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     xlim([log10([100 10000])]);
     xtickangle(45);
     xlabel('frequency (Hz)');
-    set(gca,'Ytick',[1:1:size(smhipspec,2)]);
+    set(gca,'Ytick',[0.5:1:size(smhipspec,2)-0.5]);
     set(gca,'Yticklabel',{});
     set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-    ylim([1 size(smhipspec,2)]);
+    ylim([0 size(smhipspec,2)]);
     
     subplot(2,6,8);hold on;
     tempidx = find(LayerID.hif > 100 & LayerID.hif < 200);
@@ -356,10 +369,10 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     stairs((muapow5-muapow5(1))./max(muapow5-muapow5(1)),[1:size(zsmhipspec,2)],'Color','m');
     
     set(gca,'YDir','reverse');
-    xlim([0 1]); ylim([1 size(zsmhipspec,2)]);
+    xlim([0 1]); ylim([0 size(zsmhipspec,2)]);
     legend({'100-200 Hz','300-500 Hz','600-900 Hz','1-5 KHz','5-10 KHz'},'Location','southwest');
     xlabel('norm. power');
-    set(gca,'Ytick',[1:1:size(zsmhipspec,2)]);
+    set(gca,'Ytick',[0.5:1:size(zsmhipspec,2)-0.5]);
     set(gca,'Yticklabel',{});
     set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
     box on;
@@ -377,10 +390,10 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     xlim([log10([0.5 100])]);
     xtickangle(45);
     xlabel('frequency (Hz)');
-    set(gca,'Ytick',[1:1:size(zsmlopspec,2)]);
+    set(gca,'Ytick',[0.5:1:size(zsmlopspec,2)-0.5]);
     set(gca,'Yticklabel',{});
     set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-    ylim([1 size(zsmlopspec,2)]);
+    ylim([0 size(zsmlopspec,2)]);
     
     subplot(2,6,11:12);
     imagesc(log10(LayerID.hif),[1:size(zsmhipspec,2)],zsmhipspec')
@@ -395,14 +408,14 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     xlim([log10([100 10000])]);
     xtickangle(45);
     xlabel('frequency (Hz)');
-    set(gca,'Ytick',[1:1:size(zsmhipspec,2)]);
+    set(gca,'Ytick',[0.5:1:size(zsmhipspec,2)-0.5]);
     set(gca,'Yticklabel',{});
     set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-    ylim([1 size(zsmhipspec,2)]);
+    ylim([0 size(zsmhipspec,2)]);
     
-    NiceSave('LaminarID_Touch_BadChannels',figfolder,baseName);
-    close all;
+    %NiceSave('LaminarID_Touch_BadChannels',figfolder,baseName);
+    %close all;
     
-    % NiceSave('LaminarID_Touch_GoodChannels',figfolder,baseName);
-    % close all;    
+    NiceSave('LaminarID_Touch_GoodChannels',figfolder,baseName);
+    close all;    
 end
