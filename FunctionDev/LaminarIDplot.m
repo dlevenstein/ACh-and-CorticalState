@@ -136,7 +136,7 @@ set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
 box on;
 
 subplot(2,6,3:4);
-imagesc(log10(LayerID.lof),[1:size(smlopspec,2)],smlopspec')
+imagesc(log10(LayerID.lof),[0.5:size(smlopspec,2)-0.5],smlopspec')
 axis xy
 LogScale('x',10)
 colormap('jet'); caxis([min(min(smlopspec)) max(max(smlopspec))]);
@@ -154,7 +154,7 @@ set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
 ylim([0 size(smlopspec,2)]);
 
 subplot(2,6,5:6);
-imagesc(log10(LayerID.hif),[1:size(smhipspec,2)],smhipspec')
+imagesc(log10(LayerID.hif),[0.5:size(smhipspec,2)-0.5],smhipspec')
 axis xy
 LogScale('x',10)
 colormap('jet'); caxis([min(min(smhipspec)) max(max(smhipspec))]);
@@ -198,7 +198,7 @@ set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
 box on;
 
 subplot(2,6,9:10);
-imagesc(log10(LayerID.lof),[1:size(zsmlopspec,2)],zsmlopspec')
+imagesc(log10(LayerID.lof),[0.5:size(zsmlopspec,2)-0.5],zsmlopspec')
 axis xy
 LogScale('x',10)
 colormap('jet'); caxis([max(max(zsmlopspec))*-1 max(max(zsmlopspec))]);
@@ -216,7 +216,7 @@ set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
 ylim([0 size(zsmlopspec,2)]);
 
 subplot(2,6,11:12);
-imagesc(log10(LayerID.hif),[1:size(zsmhipspec,2)],zsmhipspec')
+imagesc(log10(LayerID.hif),[0.5:size(zsmhipspec,2)-0.5],zsmhipspec')
 axis xy
 LogScale('x',10)
 colormap('jet'); caxis([max(max(zsmhipspec))*-1 max(max(zsmhipspec))]);
@@ -316,7 +316,7 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     box on;
     
     subplot(2,6,3:4);
-    imagesc(log10(LayerID.lof),[1:size(smlopspec,2)],smlopspec')
+    imagesc(log10(LayerID.lof),[0.5:size(smlopspec,2)-0.5],smlopspec')
     axis xy
     LogScale('x',10)
     colormap('jet'); caxis([min(min(smlopspec)) max(max(smlopspec))]);
@@ -334,7 +334,7 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     ylim([0 size(smlopspec,2)]);
     
     subplot(2,6,5:6);
-    imagesc(log10(LayerID.hif),[1:size(smhipspec,2)],smhipspec')
+    imagesc(log10(LayerID.hif),[0.5:size(smhipspec,2)-0.5],smhipspec')
     axis xy
     LogScale('x',10)
     colormap('jet'); caxis([min(min(smhipspec)) max(max(smhipspec))]);
@@ -378,7 +378,7 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     box on;
     
     subplot(2,6,9:10);
-    imagesc(log10(LayerID.lof),[1:size(zsmlopspec,2)],zsmlopspec')
+    imagesc(log10(LayerID.lof),[0.5:size(zsmlopspec,2)-0.5],zsmlopspec')
     axis xy
     LogScale('x',10)
     colormap('jet'); caxis([max(max(zsmlopspec))*-1 max(max(zsmlopspec))]);
@@ -396,7 +396,7 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     ylim([0 size(zsmlopspec,2)]);
     
     subplot(2,6,11:12);
-    imagesc(log10(LayerID.hif),[1:size(zsmhipspec,2)],zsmhipspec')
+    imagesc(log10(LayerID.hif),[0.5:size(zsmhipspec,2)-0.5],zsmhipspec')
     axis xy
     LogScale('x',10)
     colormap('jet'); caxis([max(max(zsmhipspec))*-1 max(max(zsmhipspec))]);
