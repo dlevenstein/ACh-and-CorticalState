@@ -1,4 +1,4 @@
 basePath = pwd;
 [baseFolder,baseName] = fileparts(basePath);
 
-KiloSortWrapper(basePath,baseName,'McKenzie');
+KiloSortWrapper_cluster(basePath,baseName,'McKenzie');
