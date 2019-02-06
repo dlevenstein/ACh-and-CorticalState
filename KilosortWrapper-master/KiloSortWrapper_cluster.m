@@ -164,10 +164,10 @@ Kilosort2Neurosuite(rez);
 delete(ops.fproc);
 disp('Kilosort Processing complete')
 %catch ME
-disp('Kilosort failed')
+%disp('Kilosort failed')
 %delete temporary file
-delete(ops.fproc)
-rethrow(ME)
+%delete(ops.fproc)
+%rethrow(ME)
 end
 %end
 
