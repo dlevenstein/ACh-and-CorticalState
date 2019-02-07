@@ -27,8 +27,8 @@ spontendsample = MergePoints.timestamps_samples(spontidx(end),2)+1;
 LOSPEC = []; HISPEC = []; MUAdepth = [];
 tLOSPEC = []; tHISPEC = []; tMUAdepth = [];
 for i = 1:length(usechannels)
-    savefile = fullfile(basePath,[baseName,'.',num2str(usechannels(i)),'.LayerID.lfp.mat']);
-    load(savefile,'LayerID');
+    savfile = fullfile(basePath,[baseName,'.',num2str(usechannels(i)),'.LayerID.lfp.mat']);
+    load(savfile,'LayerID');
     
     tempsidx = find(LayerID.t_lo < sponttimes(2));
     LOSPEC = cat(2,LOSPEC,mean(LayerID.lospec(:,tempsidx),2));
@@ -50,16 +50,16 @@ for i = 1:length(usechannels)
 end
 
 %% Saving 
-lamimarpspec.LOdata = LOSPEC;
-lamimarpspec.HIdata = HISPEC;
-lamimarpspec.MUAdata = MUAdepth;
-lamimarpspec.tLOdata = tLOSPEC;
-lamimarpspec.tHIdata = tHISPEC;
-lamimarpspec.tMUAdata = tMUAdepth;
-lamimarpspec.LOfreqs = LayerID.lof;
-lamimarpspec.HIfreqs = LayerID.hif;
+laminarpspec.LOdata = LOSPEC;
+laminarpspec.HIdata = HISPEC;
+laminarpspec.MUAdata = MUAdepth;
+laminarpspec.tLOdata = tLOSPEC;
+laminarpspec.tHIdata = tHISPEC;
+laminarpspec.tMUAdata = tMUAdepth;
+laminarpspec.LOfreqs = LayerID.lof;
+laminarpspec.HIfreqs = LayerID.hif;
 
-save(savefile,'lamimarpspec');
+save(savefile,'laminarpspec');
 
 %% Spatial/temporal smoothening
 % smlopspec = zeros(size(LOSPEC,1),size(LOSPEC,2));

@@ -80,7 +80,7 @@ lfp = bz_GetLFP(1,'basepath',basePath,'noPrompts',true);
 %%
 freqlist = logspace(log10(0.5),log10(100),100);
 window = 8;
-noverlap = 4;
+noverlap = 6.4;
 window = window*datlfp.samplingRate;
 noverlap = noverlap*datlfp.samplingRate;
 
@@ -90,7 +90,7 @@ lospec = log10(abs(spec));
 
 freqlist = logspace(log10(100),log10(10000),1000);
 window = 0.04;
-noverlap = 0.02;
+noverlap = 0.032;
 window = window*datlfp.samplingRate;
 noverlap = noverlap*datlfp.samplingRate;
 
