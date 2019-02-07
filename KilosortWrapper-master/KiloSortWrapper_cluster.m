@@ -148,6 +148,7 @@ disp('Saving rez file')
 % rez = merge_posthoc2(rez);
 save(fullfile(savepath,  'rez.mat'), 'rez', '-v7.3');
 
+clearvars -except rez ops
 %% save python results file for Phy
 disp('Converting to Phy format')
 rezToPhy_KSW(rez);
