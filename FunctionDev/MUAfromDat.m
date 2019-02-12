@@ -9,6 +9,8 @@ function [ MUA ] = MUAfromDat( basePath,varargin )
 %       'channels'      (default: all)   (0-indexed, like neuroscope)
 %       'saveMat'       (default: true) save a .mat file
 %                                   basePath/baseName.MUAGamma.lfp.mat
+%       'forceRedetect' (default: false)
+%       'peakthresh'    (default: 3.5std)
 %       'filterbounds'  (default: [500 5000])
 %       'movingNorm'    (default: false)
 %       'MUAsmoothwin'  (default: 0.005)
@@ -30,6 +32,7 @@ addParameter(p,'usepeaks',true);
 addParameter(p,'SHOWFIG',false);
 addParameter(p,'compareEMG',false);
 addParameter(p,'peakthresh',4);
+addParameter(p,'forceRedetect',false);
 
 parse(p,varargin{:})
 
@@ -42,6 +45,7 @@ usepeaks = p.Results.usepeaks;
 SHOWFIG = p.Results.SHOWFIG;
 compareEMG = p.Results.compareEMG;
 peakthresh = p.Results.peakthresh;
+forceRedetect = p.Results.forceRedetect;
 
 %% DEV
 %basePath = '/mnt/proraidDL/Database/WMProbeData/180211_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180211_WT_M1M3_LFP_Layers_Pupil_EMG_180211_130605';
@@ -60,7 +64,7 @@ baseName = bz_BasenameFromBasepath(basePath);
 %%
 datfilename = fullfile(basePath,[baseName,'.dat']);
 savefile = fullfile(basePath,[baseName,'.MUA.lfp.mat']);
-if exist(savefile,'file')
+if exist(savefile,'file') && ~forceRedetect
    load(savefile)
    return
 end
