@@ -109,7 +109,7 @@ csd_temp = nan(twin(1)+twin(2)+1,length(channels)-2,length(events));
 for e = 1:length(events)
     if events(e)-twin(1) > 0 && events(e)+twin(2) < size(data,1)
         temp = data(events(e)-twin(1):events(e)+twin(2),chanidx)*-1;
-        lfp_temp(:,:,e) = temp;
+        lfp_temp(:,:,e) = temp; 
         csd_temp(:,:,e) = diff(temp,2,2);
     else
     end
@@ -122,11 +122,15 @@ CSD = nanmean(csd_temp,3);
 
 % detrend
 if doDetrend
+    lfp_avg = detrend(lfp_avg')';
     CSD = detrend(CSD')';
 end
 
 % temporal smoothing
 if temp_sm > 0
+    for ch = 1:size(lfp_avg,2)
+        lfp_avg(:,ch) = smooth(lfp_avg(:,ch),temp_sm,'sgolay');
+    end
     for ch = 1:size(CSD,2)
         CSD(:,ch) = smooth(CSD(:,ch),temp_sm,'sgolay');
     end
@@ -134,6 +138,9 @@ end
 
 % spatial smoothing
 if spat_sm > 0
+    for t = 1:size(lfp_avg,1)
+        lfp_avg(t,:) = smooth(lfp_avg(t,:),spat_sm,'lowess');
+    end
     for t = 1:size(CSD,1)
         CSD(t,:) = smooth(CSD(t,:),spat_sm,'lowess');
     end
