@@ -103,7 +103,7 @@ subplot(2,6,1); hold on;
 stairs((MUAdepth-MUAdepth(1))./max(MUAdepth-MUAdepth(1)),[1:size(MUAdepth,2)],'Color','k');
 set(gca,'YDir','reverse');
 xlim([0 1]); ylim([0 size(MUAdepth,2)]);
-xlabel('norm. MUA power (0.5-5 KHz)'); ylabel('channel');
+xlabel('norm. MUA power (0.15-2 KHz)'); ylabel('channel');
 set(gca,'Ytick',[0.5:1:size(MUAdepth,2)-0.5]);
 set(gca,'Yticklabels',usechannels,'FontSize',4);
 set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
@@ -143,9 +143,9 @@ colormap('jet'); caxis([min(min(smlopspec)) max(max(smlopspec))]);
 c = colorbar;
 c.Label.String = 'power (dB)';
 set(gca,'YDir','reverse');
-set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100])]);
-set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100'});
-xlim([log10([0.5 100])]);
+set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100 250])]);
+set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100','250'});
+xlim([log10([0.5 250])]);
 xtickangle(45);
 xlabel('frequency (Hz)');
 set(gca,'Ytick',[0.5:1:size(smlopspec,2)-0.5]);
@@ -205,9 +205,9 @@ colormap('jet'); caxis([max(max(zsmlopspec))*-1 max(max(zsmlopspec))]);
 c = colorbar;
 c.Label.String = 'power (z score)';
 set(gca,'YDir','reverse');
-set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100])]);
-set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100'});
-xlim([log10([0.5 100])]);
+set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100 250])]);
+set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100','250'});
+xlim([log10([0.5 250])]);
 xtickangle(45);
 xlabel('frequency (Hz)');
 set(gca,'Ytick',[0.5:1:size(zsmlopspec,2)-0.5]);
@@ -233,10 +233,7 @@ set(gca,'Yticklabel',{});
 set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
 ylim([0 size(zsmhipspec,2)]);
 
-%NiceSave('LaminarID_Spont_BadChannels',figfolder,baseName);
-%close all;
-
-NiceSave('LaminarID_Spont_GoodChannels',figfolder,baseName);
+NiceSave('LaminarID_Spont',figfolder,baseName);
 close all;
 
 %%
@@ -283,7 +280,7 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     stairs((tMUAdepth-tMUAdepth(1))./max(tMUAdepth-tMUAdepth(1)),[1:size(tMUAdepth,2)],'Color','k');
     set(gca,'YDir','reverse');
     xlim([0 1]); ylim([0 size(tMUAdepth,2)]);
-    xlabel('norm. MUA power (0.5-5 KHz)'); ylabel('channel');
+    xlabel('norm. MUA power (0.15-2 KHz)'); ylabel('channel');
     set(gca,'Ytick',[0.5:1:size(tMUAdepth,2)-0.5]);
     set(gca,'Yticklabels',usechannels,'FontSize',4);
     set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
@@ -323,9 +320,9 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     c = colorbar;
     c.Label.String = 'power (dB)';
     set(gca,'YDir','reverse');
-    set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100])]);
-    set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100'});
-    xlim([log10([0.5 100])]);
+    set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100 250])]);
+    set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100','250'});
+    xlim([log10([0.5 250])]);
     xtickangle(45);
     xlabel('frequency (Hz)');
     set(gca,'Ytick',[0.5:1:size(smlopspec,2)-0.5]);
@@ -385,9 +382,9 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     c = colorbar;
     c.Label.String = 'power (z score)';
     set(gca,'YDir','reverse');
-    set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100])]);
-    set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100'});
-    xlim([log10([0.5 100])]);
+    set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100 250])]);
+    set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100','250'});
+    xlim([log10([0.5 250])]);
     xtickangle(45);
     xlabel('frequency (Hz)');
     set(gca,'Ytick',[0.5:1:size(zsmlopspec,2)-0.5]);
@@ -413,9 +410,6 @@ if spontendsample < MergePoints.timestamps_samples(end,end)+1
     set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
     ylim([0 size(zsmhipspec,2)]);
     
-    %NiceSave('LaminarID_Touch_BadChannels',figfolder,baseName);
-    %close all;
-    
-    NiceSave('LaminarID_Touch_GoodChannels',figfolder,baseName);
+    NiceSave('LaminarID_Touch',figfolder,baseName);
     close all;    
 end
