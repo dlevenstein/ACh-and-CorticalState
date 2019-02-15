@@ -78,19 +78,20 @@ datlfp.channels = channels;
 lfp = bz_GetLFP(channels+1,'basepath',basePath,'noPrompts',true);
 
 %%
-% freqlist = logspace(log10(0.5),log10(250),250);
-% window = 8;
-% noverlap = 4;
-% window = window*datlfp.samplingRate;
-% noverlap = noverlap*datlfp.samplingRate;
-% 
-% [spec,lof,t_lo] = spectrogram(single(datlfp.data),window,noverlap,freqlist,datlfp.samplingRate);
+freqlist = logspace(log10(0.5),log10(250),250);
+window = 8;
+noverlap = 4;
+window = window*datlfp.samplingRate;
+noverlap = noverlap*datlfp.samplingRate;
 
-[wavespec] = bz_WaveSpec(lfp,'frange',[0.5 250],'nfreqs',250,'ncyc',10,...
-    'samplingRate',lfp.samplingRate,'space','log');
-lospec = log10(abs(wavespec.data));
-lof = wavespec.freqs;
-t_lo = wavespec.timestamps;
+[spec,lof,t_lo] = spectrogram(single(datlfp.data),window,noverlap,freqlist,datlfp.samplingRate);
+lospec = log10(abs(spec));
+
+%[wavespec] = bz_WaveSpec(lfp,'frange',[0.5 250],'nfreqs',250,'ncyc',10,...
+%    'samplingRate',lfp.samplingRate,'space','log');
+%lof = wavespec.freqs;
+%t_lo = wavespec.timestamps;
+%lospec = log10(abs(wavespec.data)');
 %lospec = mean(lospec,2);
 
 freqlist = logspace(log10(100),log10(10000),1000);
