@@ -18,4 +18,5 @@ load(mergefile,'MergePoints');
 spontidx = find(startsWith(MergePoints.foldernames,"Spont"));
 sponttimes = [MergePoints.timestamps(spontidx(1),1) MergePoints.timestamps(spontidx(end),2)];
 
-DetectSlowWaves(basePath,'NREMInts',sponttimes,'CTXChans',dtchan,'filterparms',filterparms,'noSpikes',true,'forceReload',true,'noPrompts',true);
+DetectSlowWaves(basePath,'NREMInts',sponttimes,'CTXChans',dtchan,'filterparms',...
+    filterparms,'noSpikes',true,'showFig',true,'forceReload',true,'noPrompts',true);
