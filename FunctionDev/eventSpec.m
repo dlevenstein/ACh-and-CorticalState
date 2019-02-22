@@ -74,9 +74,9 @@ if isempty(lfp)
     lfp = bz_GetLFP('all','noPrompts',true);
 end
 
-lotwin = p.Results.twin*(1/4);
+lotwin = round(p.Results.twin*(1/4));
 loevents = round(events*(1/4));
-hitwin = p.Results.twin*(1/0.02);
+hitwin = round(p.Results.twin*(1/0.02));
 hievents = round(events*(1/0.02));
 
 %% Conpute event-triggered spectrogram
