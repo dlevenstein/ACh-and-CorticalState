@@ -74,13 +74,14 @@ if isempty(lfp)
     lfp = bz_GetLFP('all','noPrompts',true);
 end
 
-lotwin = round(p.Results.twin*(1/4));
-loevents = round(events*(1/4));
+% lotwin = round(p.Results.twin*(1/4));
+% loevents = round(events*(1/4));
 hitwin = round(p.Results.twin*(1/0.02));
 hievents = round(events*(1/0.02));
 
 %% Conpute event-triggered spectrogram
-LOspec = []; HIspec = [];
+% LOspec = []; 
+HIspec = [];
 
 [~,chanidx] = ismember(channels,lfp.channels);
 clear lfp
@@ -90,26 +91,26 @@ for i = chanidx
     %%
     load(fullfile(basePath,[baseName,'.',num2str(i),'.LayerID.lfp.mat']),'LayerID');
     
-    lof = LayerID.lof;
-    lospec = LayerID.lospec;
-    t_lo = LayerID.t_lo;
+%     lof = LayerID.lof;
+%     lospec = LayerID.lospec;
+%     t_lo = LayerID.t_lo;
     
     hif = LayerID.hif;
     hispec = LayerID.hispec;
     t_hi = LayerID.t_hi;
     
     %%
-    lospec_temp = nan(lotwin(1)+lotwin(2)+1,size(lospec,1),length(loevents));
+%     lospec_temp = nan(lotwin(1)+lotwin(2)+1,size(lospec,1),length(loevents));
     hispec_temp = nan(hitwin(1)+hitwin(2)+1,size(hispec,1),length(hievents));
      
     %%
     
-    for e = 1:length(loevents)
-        if loevents(e)-lotwin(1) > 0 && loevents(e)+lotwin(2) < size(lospec,2)
-            lospec_temp(:,:,e) = lospec(:,loevents(e)-lotwin(1):loevents(e)+lotwin(2))';
-        else
-        end
-    end
+%     for e = 1:length(loevents)
+%         if loevents(e)-lotwin(1) > 0 && loevents(e)+lotwin(2) < size(lospec,2)
+%             lospec_temp(:,:,e) = lospec(:,loevents(e)-lotwin(1):loevents(e)+lotwin(2))';
+%         else
+%         end
+%     end
     
     for e = 1:length(hievents)
         if hievents(e)-hitwin(1) > 0 && hievents(e)+hitwin(2) < size(hispec,2)
@@ -119,12 +120,12 @@ for i = chanidx
     end
     
     %%
-    LOspec = cat(LOspec,nanmean(lospec_temp,3),3); 
+%     LOspec = cat(LOspec,nanmean(lospec_temp,3),3); 
     HIspec = cat(HIspec,nanmean(hispec_temp,3),3); 
     
 end
 
-lospec = nanmean(LOspec,3);
+% lospec = nanmean(LOspec,3);
 hispec = nanmean(HIspec,3);
 
 %% Smoothening
