@@ -41,10 +41,12 @@ addParameter(p,'doDetrend',false,@islogical);
 addParameter(p,'plotCSD',true,@islogical);
 addParameter(p,'plotLFP',true,@islogical);
 addParameter(p,'cwin',[]);
+addParameter(p,'lfp',[]);
 addParameter(p,'saveMat',true,@islogical)
 addParameter(p,'saveName','eventCSD')
 
 parse(p,varargin{:});
+lfp = p.Results.lfp;
 channels = p.Results.channels;
 spat_sm = p.Results.spat_sm;
 temp_sm = p.Results.temp_sm;
