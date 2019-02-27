@@ -10,9 +10,17 @@ sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 %%
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
-smoothwin =2; %s
+smoothwin = 0.5; %s
+pupildilation.data = smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving');
 nantimes = isnan(pupildilation.data);
 pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
+
+if length(pupildilation.data) < 1
+    warning('Not enough pupil data >)'); 
+    return
+end
+
+smoothwin = 2; %s
 pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
 pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
 pupildilation.timestamps = pupildilation.timestamps(~nantimes);
@@ -49,13 +57,16 @@ end
 
 %%
 figure;
+
 subplot(2,2,1);
 plot(1:sessionInfo.nChannels,slopepupilcorr.pup,'k')
 hold on
 plot(1:sessionInfo.nChannels,slopepupilcorr.dpdt,'k--')
 xlabel('Channel (Sup-->Deep)');ylabel('Corr')
 axis tight
-legend('p','dpdt','location','southeast')
+legend('p','dpdt','location','southeast');
+
+NiceSave('Pupil_dpdt_corr_depth',figfolder,baseName)
 
 %% Take a look at the channels with dpdt and p
 [~, bestchans.pup] = max(slopepupilcorr.pup);
@@ -113,7 +124,7 @@ PSShist.hist = hist(specslope.data,PSShist.bins);
 
 %%
 exwinsize = 300;
-exwin = bz_RandomWindowInIntervals(specslope.timestamps([1 end])',exwinsize);
+exwin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end])',exwinsize);
 
 winsize = 8;
 maxtime = pupildilation.timestamps(...
@@ -239,7 +250,7 @@ axis tight
 NiceSave('PSSandUPDOWN',figfolder,baseName)
 
 %%
-samplewin = bz_RandomWindowInIntervals(lfp.timestamps([1 end])',300);
+samplewin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end])',300);
 winsize = 10;
 maxtime = pupildilation.timestamps(...
     (pupildilation.timestamps>samplewin(1) & pupildilation.timestamps<samplewin(2)) & pupildilation.data==...
