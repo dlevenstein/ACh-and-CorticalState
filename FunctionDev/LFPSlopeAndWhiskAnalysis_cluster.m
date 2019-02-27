@@ -21,7 +21,7 @@ pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 %load([basePath,filesep,baseName,'.PowerSpectrumSlope.lfp.mat'])
 
 %% Load Whisks
-EMGwhisk = bz_LoadStates(basePath,'EMGwhisk');
+EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
 
 %% Get the pupil phase at each point in time
 lowfilter = [0.01 0.1];
