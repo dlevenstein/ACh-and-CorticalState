@@ -1,4 +1,4 @@
-function [WhiskPSScorr] = LFPSlopeAndWhiskAnalysis( basePath,figfolder )
+function [WhiskPSScorr] = LFPSlopeAndWhiskAnalysis_cluster( basePath,figfolder )
 %UNTITLED3 Summary of this function goes here
 %
 %
@@ -698,7 +698,7 @@ NiceSave('PSSallWhisks',figfolder,baseName)
 % ylabel('Pupil')
 % plot(subsamplewin2,[0 0],'k--')
 % 
-% NiceSave('PSSexample',figfolder,baseName,'tiff')
+% NiceSave('PSSexample',figfolder,baseName)
 % 
 % %%
 % figure
@@ -744,7 +744,7 @@ NiceSave('PSSallWhisks',figfolder,baseName)
 % box off
 % axis tight
 % 
-% NiceSave('PSSandUPDOWN',figfolder,baseName,'tiff')
+% NiceSave('PSSandUPDOWN',figfolder,baseName)
 % 
 % %%
 % samplewin = bz_RandomWindowInIntervals(lfp.timestamps([1 end])',300);

@@ -1,4 +1,4 @@
-function [slopepupilcorr,PSShist,pupcyclePSS] = LFPSlopeAndPupilAnalysis( basePath,figfolder )
+function [slopepupilcorr,PSShist,pupcyclePSS] = LFPSlopeAndPupilAnalysis_cluster( basePath,figfolder )
 %UNTITLED3 Summary of this function goes here
 %
 %
@@ -190,7 +190,7 @@ box off
 ylabel('Pupil')
 plot(subsamplewin2,[0 0],'k--')
 
-NiceSave('PSSexample',figfolder,baseName,'tiff')
+NiceSave('PSSexample',figfolder,baseName)
 
 %%
 figure
@@ -236,7 +236,7 @@ xlabel('dpdt (med^-^1s^-^1)');ylabel('PSS')
 box off
 axis tight
 
-NiceSave('PSSandUPDOWN',figfolder,baseName,'tiff')
+NiceSave('PSSandUPDOWN',figfolder,baseName)
 
 %%
 samplewin = bz_RandomWindowInIntervals(lfp.timestamps([1 end])',300);
