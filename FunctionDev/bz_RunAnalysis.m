@@ -48,10 +48,12 @@ numresults = nargout(analysisfunction);
 %% Make a figure folder
 functionpath = which(analysisfunction);
 functionpath = fileparts(functionpath);
-figfolder = [fullfile(functionpath,'AnalysisFigs',analysisfunction),'/'];
-if ~exist(figfolder,'dir')
-    mkdir(figfolder)
-end
+% figfolder = [fullfile(functionpath,'AnalysisFigures',analysisfunction),'/'];
+% if ~exist(figfolder,'dir')
+%     mkdir(figfolder)
+% end
+
+figfolder = fullfile(basePath,'AnalysisFigures');
 
 %% Loop through the recordings and run the analysis
 
