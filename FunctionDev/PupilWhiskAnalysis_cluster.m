@@ -13,9 +13,17 @@ baseName = bz_BasenameFromBasepath(basePath);
 %% PUPIL %%
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
-smoothwin =2; %s
+smoothwin = 0.5; %s
+pupildilation.data = smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving');
 nantimes = isnan(pupildilation.data);
 pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
+
+if length(pupildilation.data) < 1
+    warning('Not enough pupil data >)'); 
+    return
+end
+
+smoothwin = 2; %s
 pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
 pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
 pupildilation.timestamps = pupildilation.timestamps(~nantimes);
@@ -61,14 +69,17 @@ clear spec
 %% Figure: PUPIL
 winsize = 300; %s
 viewwin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize);
-figure
-%     subplot(6,4,1:3)
-%         plot(pupildilation.timestamps,pupildilation.data,'k')
-%         hold on
-%         xlim(pupildilation.timestamps([1 end]))
-%         ylabel('Pupil: All')
-%         box off
-subplot(6,1,2:3)
+
+figure;
+
+subplot(6,4,1:3);
+plot(pupildilation.timestamps,pupildilation.data,'k')
+hold on
+xlim(pupildilation.timestamps([1 end]))
+ylabel('Pupil: All')
+box off
+
+subplot(6,1,2:3);
 plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
 hold on
 box off
@@ -83,14 +94,14 @@ ylim([-1 4])
 ylabel('Pupil: Zoom')
 xlabel('t (s)')
 
-subplot(6,4,4)
+subplot(6,4,4);
 bar(puphist.bins,puphist.counts,'facecolor','k')
 xlim([0 5])
 box off
 axis tight
 xlabel('Pupil Diameter');title('Pupil Diameter Distribution')
 
-subplot(4,2,5)
+subplot(4,2,5);
 plot(pupACG.tlag,pupACG.ACG,'k','linewidth',2)
 hold on
 axis tight
@@ -99,7 +110,7 @@ plot(get(gca,'xlim'),[0 0])
 xlabel('t lag (s)')
 ylabel('Pupil Autocov.')
 
-subplot(2,2,4)
+subplot(2,2,4);
 imagesc(pupdthist.bins{1},pupdthist.bins{2},pupdthist.counts')
 colormap(gca,[1 1 1;colormap])
 hold on
@@ -119,7 +130,7 @@ LogScale('x',10)
 % xlabel('f (Hz)');ylabel('power')
 % axis tight
 
-subplot(4,2,7)
+subplot(4,2,7);
 plot(log10(pupPSD.freqs),pupPSD.psd,'k','linewidth',2)
 hold on
 plot(log10(lowfilter),[-1 -1],'r')
@@ -142,8 +153,9 @@ NiceSave('PupilStats',figfolder,baseName)
 %% Pupil Space figure
 viewwin = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize);
 
-figure
-subplot(6,1,1:2)
+figure;
+
+subplot(6,1,1:2);
 plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
 hold on
 box off
@@ -168,7 +180,7 @@ LogScale('x',10)
 ColorbarWithAxis([-pi pi],'Pupil Phase','location','northoutside')
 xlabel('Pupil Diameter');ylabel('d/dt')
 
-subplot(2,3,5)
+subplot(2,3,6);
 %colormap(gca,distcolor)
 scatter(log10(pupildilation.data(1:end-1)),pupildilation.dpdt,0.2,lowpupildata.amp(1:end-1))
 %plot(pupildilation.data(1:end-1),pupildilation.dpdt,'k.','markersize',2)
@@ -217,8 +229,9 @@ Whdurhist.InterWhdurs = hist(log10(EMGwhisk.InterWhdurs),Whdurhist.bins);
 Whdurhist.InterWhdurs = Whdurhist.InterWhdurs./diff(EMGwhisk.timestamps([1 end])); %Units: whisks/s
 
 %% Figure: EMG/WHISK
-figure
-subplot(4,1,1)
+figure;
+
+subplot(4,1,1);
 plot(EMGwhisk.timestamps,EMGwhisk.EMG,'color',[0.5 0.5 0.5],'linewidth',0.5)
 hold on
 plot(pupildilation.timestamps,EMGwhisk.pupiltime,'b','linewidth',2)
@@ -254,7 +267,7 @@ bar(EMGhist.bins,EMGhist.counts,'facecolor','b')
 axis tight
 xlabel('EMG');title('EMG Distribution(linear)')
 
-subplot(4,2,7)
+subplot(4,2,7);
 bar(EMGhist.logbins,EMGhist.logcounts,'facecolor','b')
 axis tight
 hold on
@@ -264,7 +277,7 @@ plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],get(gca,'ylim'),'g--')
 LogScale('x',10)
 xlabel('EMG');title('EMG Distribution(log)')
 
-subplot(4,2,8)
+subplot(4,2,8);
 plot(Whdurhist.bins,Whdurhist.Whdurs,'g','linewidth',2)
 hold on
 plot(Whdurhist.bins,Whdurhist.InterWhdurs,'r','linewidth',2)
@@ -335,13 +348,14 @@ pupildynamicsEMG.meanWhdur(pupildynamicsEMG.numWhstarts<=whthresh)=nan;
 pupilphaseEMG.meanWhdur(pupilphaseEMG.numWhstarts<=whthresh)=nan;
 
 %%
-figure
-subplot(2,2,1)
+figure;
+
+subplot(2,2,1);
 scatter(log10(whints_pupil(:,1)),whints_pupildt(:,1),1,log10(EMGwhisk.Whdurs))
 xlabel('Pupil Diameter');ylabel('d/dt')
 LogScale('x',10)
 
-subplot(2,2,2)
+subplot(2,2,2);
 scatter(whints_pupilphase(:,1),log10(whints_pupilamp(:,1)),1,log10(EMGwhisk.Whdurs))
 hold on
 scatter(whints_pupilphase(:,1)+2*pi,log10(whints_pupilamp(:,1)),1,log10(EMGwhisk.Whdurs))
@@ -354,10 +368,13 @@ NiceSave('PupilandWhiskDur',figfolder,baseName)
 PhaseAmpCouplingByAmp(lowpupildata.phase,log10(lowpupildata.amp),...
     log10(EMGwhisk.pupiltime),10);
 
+NiceSave('PupilWhiskPhaseAmpCoupling',figfolder,baseName)
+
 %% Figure WHisk in pupil space
 emgcolor = [1 1 1;makeColorMap([0.5 0.5 0.5],[0 0 0.8])];
 
 figure;
+
 subplot(4,2,1);
 imagesc(pupildynamicsEMG.bins,pupildynamicsEMG.bins,(pupildynamicsEMG.mean)');
 colormap(gca,emgcolor)
@@ -530,7 +547,8 @@ viewrange = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),windur)
 %viewrange = [400 600];
 
 figure;
-subplot(6,3,9)
+
+subplot(6,3,9);
 plot(pupilEMGcorr.corrlags,pupilEMGcorr.xcorr','k')
 hold on
 box off
@@ -561,7 +579,7 @@ xlabel('t (s)')
 ylabel('EMG')
 box off
 
-subplot(3,3,7)
+subplot(3,3,7);
 %colormap(gca,distcolor)
 colormap(gca,[1 1 1;colormap])
 imagesc(pupilEMGdist.bins{1},pupilEMGdist.bins{2},...
@@ -577,7 +595,7 @@ caxis([0 0.6])
 %xlim([0 1])
 xlabel('Pupil Diameter (0-1)');ylabel('EMG Envelope')
 
-subplot(6,3,3)
+subplot(6,3,3);
 plot(t_lag,pwCCG.pupil.WhOn,'k','linewidth',2)
 axis tight
 box off
@@ -588,7 +606,7 @@ xlim(lagwin)
 ylabel('Pupil')
 set(gca,'xticklabel',[])
 
-subplot(6,3,6)
+subplot(6,3,6);
 plot(t_lag,pwCCG.EMG.WhOn,'b','linewidth',2)
 axis tight
 box off
@@ -616,7 +634,7 @@ plot(log10(whints_pupil(:,1)),whints_pupildt(:,1),'g.','markersize',0.1)
 %plot(whints_pupil(:,2),whints_pupildt(:,2),'r.')
 plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color',0.5.*[1 1 1])
 
-subplot(6,4,10)
+subplot(3,3,4);
 %colormap(gca,emgcolor)
 scatter(log10(pupildilation.data(1:end-1)),pupildilation.dpdt,0.2,log10(EMGwhisk.pupiltime(1:end-1)))
 %plot(pupildilation.data(1:end-1),pupildilation.dpdt,'k.','markersize',2)
@@ -636,7 +654,7 @@ xlabel('Pupil Diameter');ylabel('d/dt')
 %         ColorbarWithAxis([-1.5 1.5],'EMG Envelope')
 %         xlabel('Pupil Diameter');ylabel('d/dt')
 
-subplot(4,3,9)
+subplot(4,3,9);
 %scatter(pupildilation.data(~isnan(pupildilation.interpdata)),pupildilation.dpdt(~isnan(pupildilation.interpdata)),0.2,lowpupildata.phase)
 scatter(lowpupildata.phase,log10(lowpupildata.amp),0.2,log10(EMGwhisk.pupiltime))
 hold on
@@ -645,7 +663,7 @@ axis tight
 caxis([-1.5 1.8])
 xlabel('Phase');ylabel('Amplitude')
 
-subplot(4,3,12)
+subplot(4,3,12);
 colormap(gca,emgcolor(2:end,:))
 %scatter(pupildilation.data(~isnan(pupildilation.interpdata)),pupildilation.dpdt(~isnan(pupildilation.interpdata)),0.2,lowpupildata.phase)
 scatter(lowpupildata.phase,log10(lowpupildata.amp),0.2,pupildilation.iswhisk)
@@ -681,8 +699,8 @@ WPcoupling.coupling = coupling;
 WPcoupling.freqs = wavespec.freqs;
 
 %%
-figure
-plot(log10(wavespec.freqs),coupling)
+figure;
+plot(log10(wavespec.freqs),coupling,'r','LineWidth',2)
 LogScale('x',10)
 xlabel('f (Hz)')
 ylabel('Pupil Phase - Whisk Coupling')
