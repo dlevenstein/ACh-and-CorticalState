@@ -152,7 +152,7 @@ winsize = 1;
 [PSS] = bz_PowerSpectrumSlope(lfp,winsize,dt,'showfig',true);
 
 %%
-PSS.EMG = interp1(EMGwhisk.t,EMGwhisk.EMGenvelope,PSS.timestamps);
+PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,PSS.timestamps);
 PSS.pupphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
     PSS.timestamps,'nearest');
 PSS.pupmag = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
@@ -409,15 +409,15 @@ EMGwhisk.longwhisks = EMGwhisk.dur>1;
 % plot(pupildilation.timestamps,pupildilation.data,'k','LineWidth',2)
 % hold on
 % ylim([0 2.5])
-% plot(EMGwhisk.t,EMGwhisk.EMG./20,'b')
+% plot(EMGwhisk.timestamps,EMGwhisk.EMG./20,'b')
 % box off
 % xlim(viewwin)
 % ylabel('Pupil')
 
 % subplot(6,1,5)
-% plot(EMGwhisk.t,EMGwhisk.EMG,'k')
+% plot(EMGwhisk.timestamps,EMGwhisk.EMG,'k')
 % hold on
-% plot(EMGwhisk.t,EMGwhisk.EMGenvelope,'b','linewidth',2)
+% plot(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,'b','linewidth',2)
 % axis tight
 % box off
 % xlim(viewwin)
@@ -445,9 +445,9 @@ plot(PSS.timestamps,PSS.data)
 xlim(viewwin)
 
 subplot(6,1,5);
-plot(EMGwhisk.t,EMGwhisk.EMG,'k')
+plot(EMGwhisk.timestamps,EMGwhisk.EMG,'k')
 hold on
-plot(EMGwhisk.t,EMGwhisk.EMGenvelope,'b')
+plot(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,'b')
 xlim(viewwin)
 
 NiceSave('ExWhisk',figfolder,baseName)
