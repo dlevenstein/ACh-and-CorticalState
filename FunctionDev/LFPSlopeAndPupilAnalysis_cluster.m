@@ -1,28 +1,22 @@
 function [slopepupilcorr,PSShist,pupcyclePSS] = LFPSlopeAndPupilAnalysis( basePath,figfolder )
 %UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
-%basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
-%basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
-
-%basePath = pwd;
-%figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndPupilAnalysis';
-%figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopeAndPupilAnalysis';
-baseName = bz_BasenameFromBasepath(basePath);
-
+%   
+%
+%
 %%
+baseName = bz_BasenameFromBasepath(basePath);
 sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 %%
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
-%pupildilation.dpdt = 
-smoothwin =2;%s
+smoothwin =2; %s
+nantimes = isnan(pupildilation.data);
+pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
 pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
 pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
+pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 
-nantimes = isnan(pupildilation.data);
-pupildilation.interpdata = interp1(pupildilation.timestamps(~nantimes),...
-    pupildilation.data(~nantimes),pupildilation.timestamps);
 %%
 slopepupilcorr.pup = zeros(size(sessionInfo.AnatGrps.Channels));
 slopepupilcorr.dpdt = zeros(size(sessionInfo.AnatGrps.Channels));
@@ -50,23 +44,25 @@ for cc = 1:length(sessionInfo.AnatGrps.Channels)
    [ slopepupilcorr.dpdt(cc),slopepupilcorr.dpdt_p(cc)] =...
        corr(specslope.dpdt,specslope.data,'type','spearman','rows','complete');
     clear lfp
+    
 end
+
 %%
-figure
-subplot(2,2,1)
-plot(1:sessionInfo.nChannels,slopepupilcorr.pup,'k')
-hold on
-plot(1:sessionInfo.nChannels,slopepupilcorr.dpdt,'k--')
-xlabel('Channel (Sup-->Deep)');ylabel('Corr')
-axis tight
-legend('p','dpdt','location','southeast')
+figure;
+    subplot(2,2,1);
+        plot(1:sessionInfo.nChannels,slopepupilcorr.pup,'k')
+        hold on
+        plot(1:sessionInfo.nChannels,slopepupilcorr.dpdt,'k--')
+        xlabel('Channel (Sup-->Deep)');ylabel('Corr')
+        axis tight
+        legend('p','dpdt','location','southeast')
+        
 %% Take a look at the channels with dpdt and p
 [~, bestchans.pup] = max(slopepupilcorr.pup);
 [~, bestchans.dpdt] = max(slopepupilcorr.dpdt);
 repchans = [sessionInfo.AnatGrps.Channels(bestchans.pup) sessionInfo.AnatGrps.Channels(bestchans.dpdt)];
 %repchans = 42;
 lfp = bz_GetLFP(sessionInfo.AnatGrps.Channels(repchans(1)),'basepath',basePath,'noPrompts',true);
-
 
 dt = 0.2;
 winsize = 2;
@@ -79,6 +75,7 @@ specslope.dpdt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,..
     specslope.timestamps,'nearest');
 
 %Check residuals
+
 %%
 numbins = 15;
 bins = linspace(-0.5,0.5,numbins+1);
@@ -87,6 +84,7 @@ bins([1 end])=[-Inf Inf];
 [N,~,~,BINX,BINY] = histcounts2(log10(specslope.pupilsize),specslope.dpdt,...
     bins,bins);
 pupcyclePSS.meanPSS = zeros(size(N));
+
 for xx = 1:numbins
     for yy = 1:numbins
         pupcyclePSS.meanPSS(xx,yy) = nanmean(specslope.data(BINX==xx & BINY==yy));
@@ -97,9 +95,7 @@ nbinthresh = 10;  %Must have more than 10 time windows
 pupcyclePSS.meanPSS(N<nbinthresh) = nan;
 
 %% PSS and UP/DOWN
-
 SlowWaves = bz_LoadEvents(basePath,'SlowWaves');
-
 
 %%
 updown = {'DOWN','UP'};
@@ -113,7 +109,6 @@ end
 %%
 numbins = 30;
 PSShist.bins = linspace(-2,0,numbins);
-
 PSShist.hist = hist(specslope.data,PSShist.bins);
 
 %%
@@ -146,6 +141,7 @@ subplot(6,1,3)
     box off
     xlabel('t (s)')
     ylabel('PSS')
+    
 subplot(6,1,4)
     plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
     hold on
@@ -157,12 +153,7 @@ subplot(6,1,4)
         plot(exwin,[0 0],'k--')
         plot(subsamplewin,3.*ones(size(subsamplewin)),'r','linewidth',2)
         plot(subsamplewin2,3.*ones(size(subsamplewin2)),'r','linewidth',2)
-        
-        
-    
-
-        
-        
+            
     subplot(6,2,11)
         bz_MultiLFPPlot(lfp,'timewin',subsamplewin)
         hold on
@@ -203,56 +194,52 @@ NiceSave('PSSexample',figfolder,baseName,'tiff')
 
 %%
 figure
-subplot(3,3,1)
-h = imagesc(pupcyclePSS.bincenters,pupcyclePSS.bincenters,pupcyclePSS.meanPSS');
-set(h,'AlphaData',~isnan(pupcyclePSS.meanPSS'));
-hold on
-plot(pupcyclePSS.bincenters([1 end]),[0 0],'k--')
-LogScale('x',10)
-axis xy
-colorbar
-xlabel('Pupil Area (med^-^1)')
-ylabel('dp/dt')
-LogScale('x',10)
-title('PSS')
+    subplot(3,3,1)
+        h = imagesc(pupcyclePSS.bincenters,pupcyclePSS.bincenters,pupcyclePSS.meanPSS');
+        set(h,'AlphaData',~isnan(pupcyclePSS.meanPSS'));
+        hold on
+        plot(pupcyclePSS.bincenters([1 end]),[0 0],'k--')
+        LogScale('x',10)
+        axis xy
+        colorbar
+        xlabel('Pupil Area (med^-^1)')
+        ylabel('dp/dt')
+        LogScale('x',10)
+        title('PSS')
 
-subplot(6,3,12)
-plot(PSShist.bins,PSShist.hist,'k','linewidth',2)
-box off
-xlabel('PSS')
-    axis tight
-    xlim([-1.75 -0.25])
+    subplot(6,3,12)
+        plot(PSShist.bins,PSShist.hist,'k','linewidth',2)
+        box off
+        xlabel('PSS')
+        axis tight
+        xlim([-1.75 -0.25])
     
-subplot(3,2,2)
-for ss = 1:2
-    plot(SlowWaves.PSS.(updown{ss}),log10(SlowWaves.dur.(updown{ss})),'.','color',UDcolor{ss},'markersize',3)
-    hold on
-end
-xlabel('PSS');ylabel('Dur (s)')
-axis tight
-box off
-LogScale('y',10)
-legend(updown{:},'location','eastoutside')
+    subplot(3,2,2)
+        for ss = 1:2
+            plot(SlowWaves.PSS.(updown{ss}),log10(SlowWaves.dur.(updown{ss})),'.','color',UDcolor{ss},'markersize',3)
+            hold on
+        end
+        xlabel('PSS');ylabel('Dur (s)')
+        axis tight
+        box off
+        LogScale('y',10)
+        legend(updown{:},'location','eastoutside')
 
-
-subplot(3,3,4)
-    plot(log10(specslope.pupilsize),specslope.data,'k.','markersize',1)
-    xlabel('Pupil Area (med^-^1)');ylabel('PSS')
-    box off
-    axis tight
-subplot(3,3,5)
-    plot((specslope.dpdt),specslope.data,'k.','markersize',1)
-    xlabel('dpdt (med^-^1s^-^1)');ylabel('PSS')
-    box off
-    axis tight
+    subplot(3,3,4)
+            plot(log10(specslope.pupilsize),specslope.data,'k.','markersize',1)
+            xlabel('Pupil Area (med^-^1)');ylabel('PSS')
+            box off
+            axis tight
+    subplot(3,3,5)
+        plot((specslope.dpdt),specslope.data,'k.','markersize',1)
+        xlabel('dpdt (med^-^1s^-^1)');ylabel('PSS')
+        box off
+        axis tight
 
 NiceSave('PSSandUPDOWN',figfolder,baseName,'tiff')
 
-
-    %%
+%%
 samplewin = bz_RandomWindowInIntervals(lfp.timestamps([1 end])',300);
-    
-
 winsize = 10;
 maxtime = pupildilation.timestamps(...
     (pupildilation.timestamps>samplewin(1) & pupildilation.timestamps<samplewin(2)) & pupildilation.data==...
@@ -309,8 +296,7 @@ subplot(6,6,3:6)
         plot(samplewin,[0 0],'k--')
         plot(subsamplewin,3.*ones(size(subsamplewin)),'r','linewidth',2)
         plot(subsamplewin2,3.*ones(size(subsamplewin2)),'r','linewidth',2)
-        
-        
+            
     subplot(6,3,11:12)
         bz_MultiLFPPlot(lfp,'timewin',samplewin)
         hold on
@@ -335,8 +321,7 @@ subplot(6,3,8:9)
     box off
     ylabel('Pupil')
         plot(subsamplewin,[0 0],'k--')
-        
-        
+          
 subplot(6,3,14:15)
     plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2)
     hold on
@@ -349,5 +334,5 @@ subplot(6,3,14:15)
         plot(subsamplewin2,[0 0],'k--')
         
 NiceSave('PSSandPupil',figfolder,baseName)
-end
 
+end
