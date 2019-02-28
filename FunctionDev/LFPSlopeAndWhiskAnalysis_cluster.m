@@ -33,6 +33,23 @@ pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 %% Load Whisks
 EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
 
+%Specifying SPONT whisking
+load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
+sidx = find(startsWith(MergePoints.foldernames,"Spont"));
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+
+spontidx = find(EMGwhisk.ints.Wh(:,2) < sponttimes(2));
+EMGwhisk.ints.Wh = EMGwhisk.ints.Wh(spontidx,:);
+
+spontidx = find(EMGwhisk.ints.NWh(:,2) < sponttimes(2));
+EMGwhisk.ints.NWh = EMGwhisk.ints.NWh(spontidx,:);
+
+spontidx = find(EMGwhisk.timestamps < sponttimes(2));
+EMGwhisk.timestamps = EMGwhisk.timestamps(spontidx);
+EMGwhisk.EMGenvelope = EMGwhisk.EMGenvelope(spontidx);
+EMGwhisk.EMG = EMGwhisk.EMG(spontidx);
+EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
+
 %% Get the pupil phase at each point in time
 lowfilter = [0.01 0.1];
 pupil4filter = pupildilation;
