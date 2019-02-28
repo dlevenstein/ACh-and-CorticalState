@@ -1,4 +1,6 @@
-function [WhiskPSScorr] = LFPSlopeAndWhiskAnalysis_cluster( basePath,figfolder )
+function [WhiskPSScorr,PSSstatsdepth,PSS,pupildist,...
+    pupilPSSdist,pupilEMGdist,PSSEMGdist,whiskPETH,...
+    timelockedPSS] = LFPSlopeAndWhiskAnalysis_cluster( basePath,figfolder )
 %UNTITLED3 Summary of this function goes here
 %
 %
@@ -10,9 +12,17 @@ sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 %% Load Pupil
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
-smoothwin =2; %s
+smoothwin = 0.5; %s
+pupildilation.data = smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving');
 nantimes = isnan(pupildilation.data);
 pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
+
+if length(pupildilation.data) < 1
+    warning('Not enough pupil data >)'); 
+    return
+end
+
+smoothwin = 2; %s
 pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
 pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
 pupildilation.timestamps = pupildilation.timestamps(~nantimes);
@@ -22,6 +32,23 @@ pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 
 %% Load Whisks
 EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
+
+%Specifying SPONT whisking
+load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
+sidx = find(startsWith(MergePoints.foldernames,"Spont"));
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+
+spontidx = find(EMGwhisk.ints.Wh(:,2) < sponttimes(2));
+EMGwhisk.ints.Wh = EMGwhisk.ints.Wh(spontidx,:);
+
+spontidx = find(EMGwhisk.ints.NWh(:,2) < sponttimes(2));
+EMGwhisk.ints.NWh = EMGwhisk.ints.NWh(spontidx,:);
+
+spontidx = find(EMGwhisk.timestamps < sponttimes(2));
+EMGwhisk.timestamps = EMGwhisk.timestamps(spontidx);
+EMGwhisk.EMGenvelope = EMGwhisk.EMGenvelope(spontidx);
+EMGwhisk.EMG = EMGwhisk.EMG(spontidx);
+EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 
 %% Get the pupil phase at each point in time
 lowfilter = [0.01 0.1];
@@ -72,15 +99,15 @@ for cc = 1:length(sessionInfo.AnatGrps.Channels)
     
     PSSstatsdepth.dist(cc,:) = hist(PSS.data,PSSstatsdepth.bins);
     PSSstatsdepth.dist(cc,:)./sum(PSSstatsdepth.dist(cc,:));
+    
     %%
-    PSS.EMG = interp1(EMGwhisk.t,EMGwhisk.EMGenvelope,PSS.timestamps);
+    PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,PSS.timestamps);
     PSS.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
         PSS.timestamps,'nearest');
     PSS.dpdt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,...
         PSS.timestamps,'nearest');
     PSS.pupilphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
         PSS.timestamps,'nearest');
-    
     
     %%
     [WhiskPSScorr.EMG(cc),WhiskPSScorr.EMG_p(cc)] =...
@@ -96,6 +123,7 @@ for cc = 1:length(sessionInfo.AnatGrps.Channels)
         abs(nanmean((PSS.data./nanmean(PSS.data)).*exp(1i.*PSS.pupilphase)));
     
     clear lfp
+    
 end
 
 %%
@@ -106,8 +134,9 @@ bestchans.EMG = WhiskPSScorr.channum(bestchans.EMG);
 bestchans.pup = WhiskPSScorr.channum(bestchans.pup);
 
 %%
-figure
-subplot(2,3,2:3)
+figure;
+
+subplot(2,3,2:3);
 plot(WhiskPSScorr.EMG,-WhiskPSScorr.chanpos,'b','linewidth',2)
 hold on
 plot(WhiskPSScorr.pup,-WhiskPSScorr.chanpos,'k','linewidth',2)
@@ -118,12 +147,12 @@ axis tight
 %xlim([0 0.6])
 box off
 
-subplot(2,3,1)
+subplot(2,3,1);
 imagesc(PSSstatsdepth.bins,PSSstatsdepth.chanpos,PSSstatsdepth.dist)
 xlabel('PSS')
 ylabel('Channel by Depth')
 
-subplot(2,3,4)
+subplot(2,3,4);
 plot(WhiskPSScorr.phasecoupling,-WhiskPSScorr.chanpos,'k','linewidth',2)
 xlabel('Phase Coupling');
 axis tight
@@ -140,7 +169,7 @@ winsize = 1;
 [PSS] = bz_PowerSpectrumSlope(lfp,winsize,dt,'showfig',true);
 
 %%
-PSS.EMG = interp1(EMGwhisk.t,EMGwhisk.EMGenvelope,PSS.timestamps);
+PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,PSS.timestamps);
 PSS.pupphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
     PSS.timestamps,'nearest');
 PSS.pupmag = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
@@ -160,13 +189,14 @@ pupildist.conditional = bsxfun(@rdivide,...
 
 cosx = linspace(-pi,3*pi,100);
 
-figure
-subplot(2,2,1)
+figure;
+
+subplot(2,2,1);
 hist(PSS.pupmag)
 hold on
 plot(PSS.pupthresh.*[1 1],get(gca,'ylim'))
 
-subplot(2,2,2)
+subplot(2,2,2);
 imagesc(pupildist.bins{1},pupildist.bins{2},pupildist.joint')
 hold on
 imagesc(pupildist.bins{1}+2*pi,pupildist.bins{2},pupildist.joint')
@@ -176,7 +206,7 @@ xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil Phase');ylabel('Pupil Power')
 
-subplot(2,2,3)
+subplot(2,2,3);
 imagesc(pupildist.bins{1},pupildist.bins{2},pupildist.conditional')
 hold on
 imagesc(pupildist.bins{1}+2*pi,pupildist.bins{2},pupildist.conditional')
@@ -208,8 +238,9 @@ pupilPSSdist.counts_low = bsxfun(@rdivide,...
     pupilPSSdist.counts_low,sum(pupilPSSdist.counts_low,2));
 
 %% Figure: PSS by pupil phase
-figure
-subplot(2,2,1)
+figure;
+
+subplot(2,2,1);
 imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.joint')
 hold on
 imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.joint')
@@ -218,7 +249,7 @@ xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil Phase');ylabel('PSS')
 
-subplot(2,2,3)
+subplot(2,2,3);
 imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional')
 hold on
 imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.conditional')
@@ -227,7 +258,7 @@ xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil Phase');ylabel('PSS')
 
-subplot(3,3,6)
+subplot(3,3,6);
 imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.counts_high')
 hold on
 imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.counts_high')
@@ -236,7 +267,7 @@ xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil Phase');ylabel('PSS')
 
-subplot(3,3,9)
+subplot(3,3,9);
 imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.counts_low')
 hold on
 imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.counts_low')
@@ -268,8 +299,10 @@ pupilEMGdist.counts_low = bsxfun(@rdivide,...
 
 %% Figure: EMG by pupil phase
 cosx = linspace(-pi,3*pi,100);
-figure
-subplot(2,2,1)
+
+figure;
+
+subplot(2,2,1);
 imagesc(pupilEMGdist.bins{1},pupilEMGdist.bins{2},pupilEMGdist.joint')
 hold on
 imagesc(pupilEMGdist.bins{1}+2*pi,pupilEMGdist.bins{2},pupilEMGdist.joint')
@@ -280,7 +313,7 @@ axis xy
 xlabel('Pupil Phase');ylabel('EMG')
 title('P(EMG,phase)')
 
-subplot(2,2,3)
+subplot(2,2,3);
 imagesc(pupilEMGdist.bins{1},pupilEMGdist.bins{2},pupilEMGdist.conditional')
 hold on
 imagesc(pupilEMGdist.bins{1}+2*pi,pupilEMGdist.bins{2},pupilEMGdist.conditional')
@@ -291,7 +324,7 @@ axis xy
 xlabel('Pupil Phase');ylabel('EMG')
 title('P(EMG|phase)')
 
-subplot(3,3,6)
+subplot(3,3,6);
 imagesc(pupilEMGdist.bins{1},pupilEMGdist.bins{2},pupilEMGdist.counts_high')
 hold on
 imagesc(pupilEMGdist.bins{1}+2*pi,pupilEMGdist.bins{2},pupilEMGdist.counts_high')
@@ -302,7 +335,7 @@ axis xy
 xlabel('Pupil Phase');ylabel('EMG')
 %title('High Pupil')
 
-subplot(3,3,9)
+subplot(3,3,9);
 imagesc(pupilEMGdist.bins{1},pupilEMGdist.bins{2},pupilEMGdist.counts_low')
 hold on
 imagesc(pupilEMGdist.bins{1}+2*pi,pupilEMGdist.bins{2},pupilEMGdist.counts_low')
@@ -322,8 +355,9 @@ PSSEMGdist.edges = {linspace(-2,1,50),linspace(-2,0,50)};
 PSSEMGdist.joint = PSSEMGdist.counts./sum(PSSEMGdist.counts(:));
 
 %%
-figure
-subplot(2,2,1)
+figure;
+
+subplot(2,2,1);
 imagesc(PSSEMGdist.edges{1},PSSEMGdist.edges{2},PSSEMGdist.joint')
 hold on
 plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],get(gca,'ylim'),'r--')
@@ -333,11 +367,13 @@ xlabel('EMG');ylabel('PSS')
 NiceSave('EMGPSS',figfolder,baseName)
 
 %%
-figure
-subplot(2,2,1)
+figure;
+
+subplot(2,2,1);
 plot(log10(PSS.EMG),PSS.data,'k.')
-xlabel('EMG');ylabel('PSS')
-subplot(2,2,2)
+xlabel('EMG');ylabel('PSS');
+
+subplot(2,2,2);
 scatter(PSS.pupphase,PSS.data,3,log10(PSS.EMG))
 hold on
 scatter(PSS.pupphase+2*pi,PSS.data,3,log10(PSS.EMG))
@@ -346,7 +382,8 @@ xlabel('Pupil Phase');ylabel('PSS')
 % subplot(2,2,3)
 %     plot(PSS.pupmag,PSS.data,'k.')
 %     xlabel('Pupil Magnitude');ylabel('PSS')
-subplot(2,2,4)
+
+subplot(2,2,4);
 scatter(PSS.pupphase(~PSS.highpup),log10(PSS.EMG(~PSS.highpup)),2,PSS.data(~PSS.highpup))
 hold on
 scatter(PSS.pupphase(~PSS.highpup)+2*pi,log10(PSS.EMG(~PSS.highpup)),2,PSS.data(~PSS.highpup))
@@ -355,13 +392,12 @@ ylim([-2 1]);xlim([-pi 3*pi])
 caxis([-1.5 0])
 xlabel('Pupil Phase');ylabel('EMG')
 
-subplot(2,2,3)
+subplot(2,2,3);
 scatter(PSS.pupphase(PSS.highpup),log10(PSS.EMG(PSS.highpup)),2,PSS.data(PSS.highpup))
 hold on
 scatter(PSS.pupphase(PSS.highpup)+2*pi,log10(PSS.EMG(PSS.highpup)),2,PSS.data(PSS.highpup))
 colorbar
 caxis([-1.5 0])
-
 ylim([-2 1]);xlim([-pi 3*pi])
 xlabel('Pupil Phase');ylabel('EMG')
 
@@ -390,15 +426,15 @@ EMGwhisk.longwhisks = EMGwhisk.dur>1;
 % plot(pupildilation.timestamps,pupildilation.data,'k','LineWidth',2)
 % hold on
 % ylim([0 2.5])
-% plot(EMGwhisk.t,EMGwhisk.EMG./20,'b')
+% plot(EMGwhisk.timestamps,EMGwhisk.EMG./20,'b')
 % box off
 % xlim(viewwin)
 % ylabel('Pupil')
 
 % subplot(6,1,5)
-% plot(EMGwhisk.t,EMGwhisk.EMG,'k')
+% plot(EMGwhisk.timestamps,EMGwhisk.EMG,'k')
 % hold on
-% plot(EMGwhisk.t,EMGwhisk.EMGenvelope,'b','linewidth',2)
+% plot(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,'b','linewidth',2)
 % axis tight
 % box off
 % xlim(viewwin)
@@ -410,24 +446,25 @@ winsize = 3;
 exwhisk = randsample(EMGwhisk.ints.Wh(EMGwhisk.longwhisks,1),1);
 viewwin = exwhisk + winsize.*[-1 1];
 
-figure
-subplot(3,1,1)
+figure;
+
+subplot(3,1,1);
 imagesc(PSS.timestamps,log10(PSS.freqs),PSS.specgram)
 axis xy
 xlim(viewwin)
 
-subplot(6,1,3)
+subplot(6,1,3);
 plot(lfp.timestamps,lfp.data)
 xlim(viewwin)
 
-subplot(6,1,4)
+subplot(6,1,4);
 plot(PSS.timestamps,PSS.data)
 xlim(viewwin)
 
-subplot(6,1,5)
-plot(EMGwhisk.t,EMGwhisk.EMG,'k')
+subplot(6,1,5);
+plot(EMGwhisk.timestamps,EMGwhisk.EMG,'k')
 hold on
-plot(EMGwhisk.t,EMGwhisk.EMGenvelope,'b')
+plot(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,'b')
 xlim(viewwin)
 
 NiceSave('ExWhisk',figfolder,baseName)
@@ -443,16 +480,18 @@ timelockedPSS.data = zeros(length(whiskPETH.timestamps),EMGwhisk.numwhisks);
 for ww = 1:EMGwhisk.numwhisks
     PSS.whidx(ww) = find(PSS.timestamps==interp1(PSS.timestamps,PSS.timestamps,EMGwhisk.ints.Wh(ww,1),'nearest'));
     
-    timelockedPSS.data(:,ww) = PSS.data(PSS.whidx(ww)-whiskPETH.windex:PSS.whidx(ww)+whiskPETH.windex);
-    timelockedPSS.timestamps(:,ww) = whiskPETH.timestamps;
-    timelockedPSS.phases(:,ww) = ones(size(whiskPETH.timestamps)).*EMGwhisk.phase(ww);
-    timelockedPSS.highpupil(:,ww) = true(size(whiskPETH.timestamps)).*EMGwhisk.highpupil(ww);
-    %NEED TO TAKE OUT OTHER WHISKS!?
-    %     prevwhisk = EMGwhisk.ints.Wh(ww-1,2) - EMGwhisk.ints.Wh(ww,1);
-    %     nextwhisk = EMGwhisk.ints.Wh(ww+1,1) - EMGwhisk.ints.Wh(ww,2);
-    %     timelockedPSS.otherwhisks(:,ww) = ...
-    %         timelockedPSS.timestamps(:,ww)<prevwhisk |...
-    %         timelockedPSS.timestamps(:,ww)>nextwhisk;
+    if PSS.whidx(ww)-whiskPETH.windex > 0 && PSS.whidx(ww)+whiskPETH.windex < length(PSS.data)
+        timelockedPSS.data(:,ww) = PSS.data(PSS.whidx(ww)-whiskPETH.windex:PSS.whidx(ww)+whiskPETH.windex);
+        timelockedPSS.timestamps(:,ww) = whiskPETH.timestamps;
+        timelockedPSS.phases(:,ww) = ones(size(whiskPETH.timestamps)).*EMGwhisk.phase(ww);
+        timelockedPSS.highpupil(:,ww) = true(size(whiskPETH.timestamps)).*EMGwhisk.highpupil(ww);
+        %NEED TO TAKE OUT OTHER WHISKS!?
+        %     prevwhisk = EMGwhisk.ints.Wh(ww-1,2) - EMGwhisk.ints.Wh(ww,1);
+        %     nextwhisk = EMGwhisk.ints.Wh(ww+1,1) - EMGwhisk.ints.Wh(ww,2);
+        %     timelockedPSS.otherwhisks(:,ww) = ...
+        %         timelockedPSS.timestamps(:,ww)<prevwhisk |...
+        %         timelockedPSS.timestamps(:,ww)>nextwhisk;
+    end
     
 end
 timelockedPSS.highpupil = logical(timelockedPSS.highpupil); %Why?
@@ -468,8 +507,9 @@ timelockedPSS.highpupil = logical(timelockedPSS.highpupil); %Why?
     60,[-pi 5]);
 
 %%
-figure
-subplot(2,2,1)
+figure;
+
+subplot(2,2,1);
 imagesc(phasePETH.high.bincenters,phasePETH.high.bincenters,phasePETH.high.mean')
 hold on
 imagesc(phasePETH.high.bincenters,phasePETH.high.bincenters+2*pi,phasePETH.high.mean')
@@ -484,7 +524,7 @@ caxis([-1.4 -0.5])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
 title('High Power Pupil')
 
-subplot(2,2,2)
+subplot(2,2,2);
 imagesc(phasePETH.low.bincenters,phasePETH.low.bincenters,phasePETH.low.mean')
 hold on
 imagesc(phasePETH.low.bincenters,phasePETH.low.bincenters+2*pi,phasePETH.low.mean')
@@ -502,8 +542,9 @@ title('Low Power Pupil')
 NiceSave('PETHbyPhase',figfolder,baseName)
 
 %%
-figure
-subplot(2,2,1)
+figure;
+
+subplot(2,2,1);
 scatter(timelockedPSS.timestamps(timelockedPSS.highpupil),...
     timelockedPSS.phases(timelockedPSS.highpupil),2,timelockedPSS.data(timelockedPSS.highpupil))
 hold on
@@ -518,7 +559,7 @@ colorbar
 axis xy
 caxis([-1.5 0])
 
-subplot(2,2,2)
+subplot(2,2,2);
 scatter(timelockedPSS.timestamps(~timelockedPSS.highpupil),...
     timelockedPSS.phases(~timelockedPSS.highpupil),2,timelockedPSS.data(~timelockedPSS.highpupil))
 hold on
@@ -533,13 +574,16 @@ colorbar
 caxis([-1.5 0])
 axis xy
 
+NiceSave('TimelockedPSS',figfolder,baseName)
+
 %% Whisk Sorts
 [~,whisksorts.phase] = sort(EMGwhisk.phase);
 [~,whisksorts.dur] = sort(EMGwhisk.dur);
 
 %%
-figure
-subplot(2,2,1)
+figure;
+
+subplot(2,2,1);
 imagesc(whiskPETH.timestamps,[1 EMGwhisk.numwhisks],timelockedPSS.data')
 hold on
 plot([0 0],[1 EMGwhisk.numwhisks],'b')
@@ -547,14 +591,16 @@ plot(EMGwhisk.dur,1:EMGwhisk.numwhisks,'.r','markersize',1)
 xlim([-2 5])
 colorbar
 %caxis([-1.5 -0.5])
-subplot(2,2,2)
+
+subplot(2,2,2);
 imagesc(whiskPETH.timestamps,[1 EMGwhisk.numwhisks],timelockedPSS.data(:,whisksorts.phase)')
 hold on
 plot(EMGwhisk.dur(whisksorts.phase),1:EMGwhisk.numwhisks,'.r','markersize',1)
 plot([0 0],[0 1],'b')
 xlim([-2 5])
 colorbar
-subplot(2,2,3)
+
+subplot(2,2,3);
 imagesc(whiskPETH.timestamps,[1 EMGwhisk.numwhisks],timelockedPSS.data(:,whisksorts.dur)')
 hold on
 plot(EMGwhisk.dur(whisksorts.dur),1:EMGwhisk.numwhisks,'.r','markersize',1)
@@ -845,4 +891,3 @@ NiceSave('PSSallWhisks',figfolder,baseName)
 % NiceSave('PSSandPupil',figfolder,baseName)
 
 end
-
