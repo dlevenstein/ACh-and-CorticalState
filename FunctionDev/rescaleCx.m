@@ -1,26 +1,51 @@
-function [normdata] = rescaleCx( basePath,analysisname )
-%UNTITLED Summary of this function goes here
+function [rescaled] = rescaleCx( basePath,varargin )
 %
+%   RESCALES laminar .lfp data according to normalized cortical column, as in
+%   Munoz et al. 2017 Science Sst IN paper. Assumes H3 Cambridge NeuroTech
+%   probe.
 %
+%   INPUTS
+%    'basePath'           - folder in which .lfp.mat file will be found (default
+%                           is pwd)
+%                           folder should follow buzcode standard:
+%                           whateverPath/baseName
+%                           and contain file baseName.lfp
+%    'analysisName'       - name of analysis results to be rescaled (no
+%                           default
+%    'BADOUT'             - to indicate if bad channels had to be excluded 
+%                           for analysis, as in laminar CSD analysis (default: false)
+%   OUTPUT
+%     rescaled       struct of lfp data. 
+%    .depth          [1 x Nd] vector of absolute distance to match LFP data
+%    .ndepth         [1 x Nd] vector of normalized depth (0-1) to match LFP data
+%    .channels       [1 x Nd] vector of channel ID's
 %
 % WMunoz - 02/28/2019
-%% Scales according to H3 probe
+%
+%% Parse the inputs!
+% parse args
+p = inputParser;
+addParameter(p,'basePath',pwd,@isstr);
+addParameter(p,'BADOUT',false,@islogical);
+
+parse(p,varargin{:})
+basePath = p.Results.basePath;
+BADOUT = p.Results.BADOUT;
+
+%% Scales according to Cambridge NeuroTech H3 probe
 chandist = [0:20:1275];
 lnorm = [0 0.1 0.35 0.5 0.6 0.75 0.9 1];
 
-%%
+%% Loading data
 [baseFolder,baseName] = fileparts(basePath);
-load(fullfile(basePath,[baseName,'.',analysisname,'.lfp.mat']));
+%data = load(fullfile(basePath,[baseName,'.',analysisName,'.lfp.mat']));
 
-%%
 load(fullfile(basePath,[baseName,'.sessionInfo.mat']));
-channels = sessionInfo.channels;
 usechannels = sessionInfo.AnatGrps.Channels;
+lborders = [NaN 20 18 62 16 36 33 32];
+%lborders = sessionInfo.layerborders;
 
-%lborders = [NaN 20 18 62 16 36 33 32];
-lborders = sessionInfo.layerborders;
-
-%%
+%% Rescaling...
 truelayer1 = chandist(usechannels == lborders(end))*lnorm(2);
 chandist = chandist-(chandist(usechannels == lborders(2))-truelayer1); 
 truecolumn = chandist(usechannels == lborders(end));
@@ -46,103 +71,16 @@ lfactor2 = lnorm(2);
 temp = (([0 chandist(lb1(1):lb2)] - 0).* (lfactor2 - lfactor1))./(chandist(lb2) - 0) + lfactor1;
 normdepth(lb1(1):lb2) = temp(2:end);
 
-%% CONSIDER BELOW!!!
-%%
-badchannels = sessionInfo.badchannels;
-badidx = ismember(usechannels,badchannels);
-usechannels(badidx) = [];
-chandist(badidx) = [];
-normdepth(badidx) = [];
-
-%%
-smlopspec = laminarpspec.LOdata;
-lof = laminarpspec.LOfreqs;
-wm = find(usechannels == lborders(end));
-
-figure;
-imagesc(log10(lof),normdepth(2:wm),smlopspec(:,2:wm)')
-axis xy
-LogScale('x',10)
-colormap('jet'); caxis([min(min(smlopspec)) max(max(smlopspec))]);
-c = colorbar;
-c.Label.String = 'power (dB)';
-set(gca,'YDir','reverse');
-set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100 250])]);
-set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100','250'});
-xlim([log10([0.5 250])]);
-xtickangle(45);
-xlabel('frequency (Hz)');
-set(gca,'Ytick',lnorm);
-set(gca,'Yticklabel',{'pia','L1/2','L3/4','L4/5a','L5a-5b','L5b-6a','L6a-6b','WM'});
-set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-ylim([0 1]);
-
-%%
-nanchans = isnan(normdepth);
-normdepth = normdepth(~nanchans);
-
-%%
-numberchans = 30;
-normcolumn = [0:1/numberchans:1];
-
-[bincounts,ind]=histc(normdepth,normcolumn);
-
-normpspec = NaN(size(smlopspec,1),ind(end));
-for i = 1:ind(end) 
-    tempidx = find(ind == i);
-    normpspec(:,i) = nanmean(smlopspec(:,tempidx),2);  
-end
-    
-figure;
-imagesc(log10(lof),normcolumn,normpspec')
-axis xy
-LogScale('x',10)
-colormap('jet'); caxis([min(min(normpspec)) max(max(normpspec))]);
-c = colorbar;
-c.Label.String = 'power (dB)';
-set(gca,'YDir','reverse');
-set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100 250])]);
-set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100','250'});
-xlim([log10([0.5 250])]);
-xtickangle(45);
-xlabel('frequency (Hz)');
-set(gca,'Ytick',lnorm);
-set(gca,'Yticklabel',{'pia','L1/2','L3/4','L4/5a','L5a-5b','L5b-6a','L6a-6b','WM'});
-set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-ylim([0 1]);
-    
-
-%%
-zsmlopspec1 = zeros(size(normpspec1,1),size(normpspec1,2));
-for n = 1:size(normpspec1,1)
-    zsmlopspec1(n,:) = (normpspec1(n,:)-nanmean(normpspec1(n,:)))./nanstd(normpspec1(n,:));
+%% Excluding bad channels, if needed
+if BADOUT
+    badchannels = sessionInfo.badchannels;
+    badidx = ismember(usechannels,badchannels);
+    usechannels(badidx) = [];
+    chandist(badidx) = [];
+    normdepth(badidx) = [];
 end
 
-zsmlopspec = zeros(size(normpspec,1),size(normpspec,2));
-for n = 1:size(normpspec,1)
-    zsmlopspec(n,:) = (normpspec(n,:)-nanmean(normpspec(n,:)))./nanstd(normpspec(n,:));
-end
-
-collectspec = cat(3,zsmlopspec,zsmlopspec1);
-
-collectspec = cat(3,normpspec,normpspec1);
-mnormpspec = nanmean(collectspec,3);
-
-figure;
-imagesc(log10(lof),normcolumn,mnormpspec')
-axis xy
-LogScale('x',10)
-colormap('jet'); caxis([min(min(mnormpspec)) max(max(mnormpspec))]);
-c = colorbar;
-c.Label.String = 'power (dB)';
-set(gca,'YDir','reverse');
-set(gca,'Xtick',[log10([0.5 1 5 10 25 50 100 250])]);
-set(gca,'Xticklabel',{'0.5','1','5','10','25','50','100','250'});
-xlim([log10([0.5 250])]);
-xtickangle(45);
-xlabel('frequency (Hz)');
-set(gca,'Ytick',lnorm);
-set(gca,'Yticklabel',{'pia','L1/2','L3/4','L4/5a','L5a-5b','L5b-6a','L6a-6b','WM'});
-set(gca,'YGrid','on','Layer','top','GridColor',[0 0 0]);
-ylim([0 1]);
-
+%% Rescaled data to struct
+rescaled.depth = chandist;
+rescaled.ndepth = normdepth;
+rescaled.channels = usechannels;

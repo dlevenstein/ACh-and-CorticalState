@@ -51,66 +51,67 @@ EMGwhisk.EMG = EMGwhisk.EMG(spontidx);
 EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 
 %%
-grandWhiskPSScorr.EMG = zeros(20,100);
-grandWhiskPSScorr.pup = zeros(20,100);
-grandWhiskPSScorr.dpdt = zeros(20,100);
-grandWhiskPSScorr.phasecoupling = zeros(20,100);
+lowfilter = [0.01 0.1];
+pupil4filter = pupildilation;
 
-for f = 1:20
-    for ff = 20:120
-        
-        WhiskPSScorr.EMG = zeros(size(sessionInfo.AnatGrps.Channels));
-        WhiskPSScorr.pup = zeros(size(sessionInfo.AnatGrps.Channels));
-        WhiskPSScorr.dpdt = zeros(size(sessionInfo.AnatGrps.Channels));
-        WhiskPSScorr.phasecoupling = zeros(size(sessionInfo.AnatGrps.Channels));
-        
-        %%
-        lfp = bz_GetLFP('all','basepath',basePath,'noPrompts',true);
-        
-        %%
-        dt = 0.5;
-        winsize = 2;
-        [PSS] = bz_PowerSpectrumSlope(lfp,winsize,dt,'frange',[f ff],...
-            'channels',usechannels,'Redetect',true);
-        
-        clear lfp
-        
-        %%
-        PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,PSS.timestamps);
-        PSS.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
-            PSS.timestamps,'nearest');
-        PSS.dpdt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,...
-            PSS.timestamps,'nearest');
-        PSS.pupilphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
-            PSS.timestamps,'nearest');
-        
-        %%
-        [WhiskPSScorr.EMG,WhiskPSScorr.EMG_p] =...
-            corr(log10(PSS.EMG),PSS.data,...
-            'type','spearman','rows','complete');
-        [WhiskPSScorr.pup,WhiskPSScorr.pup_p] =...
-            corr(log10(PSS.pupilsize),PSS.data,...
-            'type','spearman','rows','complete');
-        [WhiskPSScorr.dpdt,WhiskPSScorr.dpdt_p] =...
-            corr(PSS.dpdt,PSS.data,...
-            'type','spearman','rows','complete');
-        WhiskPSScorr.phasecoupling = ...
-            abs(nanmean((PSS.data./nanmean(PSS.data)).*exp(1i.*PSS.pupilphase)));
-        
-        %%
-        grandWhiskPSScorr.EMG(f,ff) = max(WhiskPSScorr.EMG);
-        grandWhiskPSScorr.pup(f,ff) = max(WhiskPSScorr.pup);
-        grandWhiskPSScorr.dpdt(f,ff) = max(WhiskPSScorr.dpdt);
-        grandWhiskPSScorr.phasecoupling(f,ff) = max(WhiskPSScorr.phasecoupling);
-        
-    end
-end
+lowpupildata = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',3);
+%highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
 
-%% FIGURE:
+%Get the pupil phase/power of each whisk start
+EMGwhisk.phase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
+    EMGwhisk.ints.Wh(:,1),'nearest');
+EMGwhisk.power = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
+    EMGwhisk.ints.Wh(:,1),'nearest');
+%Get the closest PSS timepoint to each whisk... (dt issue...)
 
-figure;
+%%
+lowerbound = [1:20];
+upperbound = [60:120];
 
-subplot(1,4,1);
+WhiskPSScorr.EMG = zeros(size(sessionInfo.AnatGrps.Channels));
+WhiskPSScorr.pup = zeros(size(sessionInfo.AnatGrps.Channels));
+WhiskPSScorr.dpdt = zeros(size(sessionInfo.AnatGrps.Channels));
+WhiskPSScorr.phasecoupling = zeros(size(sessionInfo.AnatGrps.Channels));
 
+%%
+lfp = bz_GetLFP('all','basepath',basePath,'noPrompts',true);
 
+%%
+dt = 0.5;
+winsize = 2;
+[PSS] = bz_PowerSpectrumSlope(lfp,winsize,dt,'frange',[lowerbound(f) upperbound(ff)],...
+    'channels',usechannels,'Redetect',true);
 
+clear lfp
+
+%%
+PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,PSS.timestamps);
+PSS.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
+    PSS.timestamps,'nearest');
+PSS.dpdt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,...
+    PSS.timestamps,'nearest');
+PSS.pupilphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
+    PSS.timestamps,'nearest');
+
+%%
+[WhiskPSScorr.EMG,WhiskPSScorr.EMG_p] =...
+    corr(log10(PSS.EMG),PSS.data,...
+    'type','spearman','rows','complete');
+[WhiskPSScorr.pup,WhiskPSScorr.pup_p] =...
+    corr(log10(PSS.pupilsize),PSS.data,...
+    'type','spearman','rows','complete');
+[WhiskPSScorr.dpdt,WhiskPSScorr.dpdt_p] =...
+    corr(PSS.dpdt,PSS.data,...
+    'type','spearman','rows','complete');
+WhiskPSScorr.phasecoupling = ...
+    abs(nanmean((PSS.data./nanmean(PSS.data)).*exp(1i.*PSS.pupilphase)));
+
+%%
+load(fullfile(basePath,[baseName,'.grandWhiskPSScorr.lfp.mat']),'grandWhiskPSScorr');
+
+grandWhiskPSScorr.EMG(f,ff) = max(WhiskPSScorr.EMG);
+grandWhiskPSScorr.pup(f,ff) = max(WhiskPSScorr.pup);
+grandWhiskPSScorr.dpdt(f,ff) = max(WhiskPSScorr.dpdt);
+grandWhiskPSScorr.phasecoupling(f,ff) = max(WhiskPSScorr.phasecoupling);
+
+save(fullfile(basePath,[baseName,'.grandWhiskPSScorr.lfp.mat']),'grandWhiskPSScorr');
