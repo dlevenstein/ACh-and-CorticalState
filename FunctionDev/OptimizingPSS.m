@@ -9,6 +9,9 @@ usechannels(badidx) = [];
 
 %Pending cortical channels
 
+%%
+figfolder = fullfile(basePath,'PSSstructs');
+
 %% Load Pupil
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
@@ -106,12 +109,16 @@ PSS.pupilphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
 WhiskPSScorr.phasecoupling = ...
     abs(nanmean((PSS.data./nanmean(PSS.data)).*exp(1i.*PSS.pupilphase)));
 
+save(fullfile(figfolder,[baseName,'.',num2str(f),'.',num2str(ff),'.WhiskPSScorr.lfp.mat']),'WhiskPSScorr');
+
 %%
-load(fullfile(basePath,[baseName,'.grandWhiskPSScorr.lfp.mat']),'grandWhiskPSScorr');
-
-grandWhiskPSScorr.EMG(f,ff) = max(WhiskPSScorr.EMG);
-grandWhiskPSScorr.pup(f,ff) = max(WhiskPSScorr.pup);
-grandWhiskPSScorr.dpdt(f,ff) = max(WhiskPSScorr.dpdt);
-grandWhiskPSScorr.phasecoupling(f,ff) = max(WhiskPSScorr.phasecoupling);
-
-save(fullfile(basePath,[baseName,'.grandWhiskPSScorr.lfp.mat']),'grandWhiskPSScorr');
+% pause(rand(1,1)*10);
+% load(fullfile(basePath,[baseName,'.grandWhiskPSScorr.lfp.mat']),'grandWhiskPSScorr');
+% 
+% grandWhiskPSScorr.EMG(f,ff) = max(WhiskPSScorr.EMG);
+% grandWhiskPSScorr.pup(f,ff) = max(WhiskPSScorr.pup);
+% grandWhiskPSScorr.dpdt(f,ff) = max(WhiskPSScorr.dpdt);
+% grandWhiskPSScorr.phasecoupling(f,ff) = max(WhiskPSScorr.phasecoupling);
+% 
+% pause(rand(1,1)*10);
+% save(fullfile(basePath,[baseName,'.grandWhiskPSScorr.lfp.mat']),'grandWhiskPSScorr');
