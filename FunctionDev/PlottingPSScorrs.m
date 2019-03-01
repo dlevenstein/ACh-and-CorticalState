@@ -7,7 +7,6 @@ lowerbound = [1:20];
 upperbound = [60:120];
 
 %%
-
 grandWhiskPSScorr.EMG = zeros(length(lowerbound),length(upperbound));
 grandWhiskPSScorr.pup = zeros(length(lowerbound),length(upperbound));
 grandWhiskPSScorr.dpdt = zeros(length(lowerbound),length(upperbound));
@@ -24,5 +23,4 @@ for f = 1:length(lowerbound)
         
     end
 end
-
 save(fullfile(basePath,[baseName,'win2.dt0.5.grandWhiskPSScorr.lfp.mat']),'grandWhiskPSScorr');
