@@ -1,4 +1,4 @@
-function [rescaled] = rescaleCx( basePath,varargin )
+function [rescaled] = rescaleCx( varargin )
 %
 %   RESCALES laminar .lfp data according to normalized cortical column, as in
 %   Munoz et al. 2017 Science Sst IN paper. Assumes H3 Cambridge NeuroTech
@@ -10,8 +10,6 @@ function [rescaled] = rescaleCx( basePath,varargin )
 %                           folder should follow buzcode standard:
 %                           whateverPath/baseName
 %                           and contain file baseName.lfp
-%    'analysisName'       - name of analysis results to be rescaled (no
-%                           default
 %    'BADOUT'             - to indicate if bad channels had to be excluded 
 %                           for analysis, as in laminar CSD analysis (default: false)
 %   OUTPUT
