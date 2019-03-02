@@ -16,10 +16,10 @@ for f = 1:length(lowerbound)
     for ff = 1:length(upperbound)
         load(fullfile(figfolder,[baseName,'.',num2str(f),'.',num2str(ff),'.WhiskPSScorr.lfp.mat']),'WhiskPSScorr');
         
-        grandWhiskPSScorr.EMG(f,ff) = mean(WhiskPSScorr.EMG);
-        grandWhiskPSScorr.pup(f,ff) = mean(WhiskPSScorr.pup);
-        grandWhiskPSScorr.dpdt(f,ff) = mean(WhiskPSScorr.dpdt);
-        grandWhiskPSScorr.phasecoupling(f,ff) = mean(WhiskPSScorr.phasecoupling);
+        grandWhiskPSScorr.EMG(f,ff) = max(WhiskPSScorr.EMG);
+        grandWhiskPSScorr.pup(f,ff) = max(WhiskPSScorr.pup);
+        grandWhiskPSScorr.dpdt(f,ff) = max(WhiskPSScorr.dpdt);
+        grandWhiskPSScorr.phasecoupling(f,ff) = max(WhiskPSScorr.phasecoupling);
         
     end
 end
