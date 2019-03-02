@@ -86,7 +86,7 @@ subplot(2,1,1);
 loglog(Frac.freq,mean(Frac.mixd,2),'b'); hold on
 loglog(Frac.freq,mean(Frac.frac,2),'r');
 subplot(2,1,2);
-plot(Frac.freq, mean(Frac.osci,2));
+plot(Frac.freq, log10(mean(Frac.osci,2)));
 
 % show dynamic fractal power spectrum
 figure;

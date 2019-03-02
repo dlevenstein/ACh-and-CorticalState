@@ -3,10 +3,10 @@
 %
 % Usage
 %   spec = amri_sig_plawfit(spec, frange)
-% 
+%
 % Inputs
 %   spec   - spec.freq: frequency points
-%          - spec.frac: the scale-free power spectrum. 
+%          - spec.frac: the scale-free power spectrum.
 %   frange - given frequency range for power-law fitting
 %
 % Outputs
@@ -15,17 +15,18 @@
 %           .Plaw = power-law spectrum
 %           .Beta = the power-law exponent within the given frequency range
 %           .Cons = the power intersect of power-law line in log-log scale.
+%           .rsq
 %
 % Version
 %   0.01
-% 
+%
 % Reference
-%   -Wen H. and Liu Z. (2015) Separating Fractal and Oscillatory Components in 
+%   -Wen H. and Liu Z. (2015) Separating Fractal and Oscillatory Components in
 %    the Power Spectrum of Neurophysiological Signals
 %
 %% History
 % 0.01 - HGWEN - 12/20/2013 - original file
-% 
+%
 
 %%
 function spec = amri_sig_plawfit(spec, frange)
@@ -47,6 +48,7 @@ y2 = interp1(logfreq,y1,x2);
 Nt = size(y2,2);
 Nc = size(y2,3);
 beta = zeros(Nt,Nc);
+rsq = zeros(Nt,Nc);
 cons = zeros(Nt,Nc);
 plaw = zeros(size(frac));
 
@@ -55,6 +57,13 @@ for j = 1 : Nc
         % ordinary least square
         p = polyfit(x2,y2(:,i,j),1);
         
+        %Calculate the residuals
+        yfit =  p(1) * x2 + p(2);
+        yresid = y2 - yfit;
+        %Calculate the rsquared value
+        SSresid = sum(yresid.^2);
+        SStotal = (length(y2)-1) * var(y2);
+        rsq(i,j) = 1 - SSresid/SStotal;
         beta(i,j) = -p(1);
         cons(i,j) = p(2);
         powlaw = 10.^(polyval(p,logfreq));
@@ -67,5 +76,5 @@ spec.Beta = beta;
 spec.Cons = cons;
 spec.Plaw = plaw;
 spec.Freq = freq;
-
+spec.rsq = rsq;
 end
