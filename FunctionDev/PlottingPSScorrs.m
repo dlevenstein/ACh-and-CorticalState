@@ -32,7 +32,7 @@ rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
 figure;
 
 subplot(2,2,1);
-imagesc(lowerbound,upperbound,grandWhiskPSScorr.EMG)
+imagesc(lowerbound,upperbound,grandWhiskPSScorr.EMG')
 colormap(gca,rwbcolormap)
 axis xy
 axis tight
@@ -42,7 +42,7 @@ xlabel('lower f bound (Hz)');ylabel('upper f bound (Hz)');
 title('PSS-EMG');
 
 subplot(2,2,2);
-imagesc(lowerbound,upperbound,grandWhiskPSScorr.pup)
+imagesc(lowerbound,upperbound,grandWhiskPSScorr.pup')
 colormap(gca,rwbcolormap)
 axis xy
 axis tight
@@ -52,7 +52,7 @@ xlabel('lower f bound (Hz)');ylabel('upper f bound (Hz)');
 title('PSS-Pupil diameter');
 
 subplot(2,2,3);
-imagesc(lowerbound,upperbound,grandWhiskPSScorr.dpdt)
+imagesc(lowerbound,upperbound,grandWhiskPSScorr.dpdt')
 colormap(gca,rwbcolormap)
 axis xy
 axis tight
@@ -62,7 +62,7 @@ xlabel('lower f bound (Hz)');ylabel('upper f bound (Hz)');
 title('PSS-dPdt');
 
 subplot(2,2,4);
-imagesc(lowerbound,upperbound,grandWhiskPSScorr.phasecoupling)
+imagesc(lowerbound,upperbound,grandWhiskPSScorr.phasecoupling')
 colormap(gca,rwbcolormap)
 axis xy
 axis tight
