@@ -72,7 +72,7 @@ cd(basepath)
 %% Creates a channel map file
 disp('Creating ChannelMapFile')
 XMLFilePath = fullfile(basepath, [basename '.xml']);
-createChannelMapFile_KSW(basepath,'staggered',XMLFilePath);
+createChannelMapFile_KS2W(basepath,'staggered',XMLFilePath);
 
 %% Loading configurations
 
