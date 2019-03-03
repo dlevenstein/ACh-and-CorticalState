@@ -171,7 +171,7 @@ fprintf('\nComplete!')
         memallocated = ops.ForceMaxRAMforDat;
         nint16s      = memallocated/2;
         
-        NTbuff      = NT + 4*ops.ntbuff;
+        NTbuff      = NT + 4*rez.ops.ntbuff;
         Nbatch      = ceil(d.bytes/2/NchanTOT /(NT-ops.ntbuff));
         Nbatch_buff = floor(4/5 * nint16s/ops.Nchan /(NT-ops.ntbuff)); % factor of 4/5 for storing PCs of spikes
         Nbatch_buff = min(Nbatch_buff, Nbatch);
@@ -187,13 +187,13 @@ fprintf('\nComplete!')
         if isfield(ops,'xml')
             disp('Loading xml from rez for probe layout')
             xml = ops.xml;
-        elseif exist(fullfile(ops.root,[ops.basename,'.xml']))==2
+        elseif exist(fullfile(rez.ops.basepath,[rez.ops.basename,'.xml']))==2
             disp('Loading xml for probe layout from root folder')
-            xml = LoadXml(fullfile(ops.root,[ops.basename,'.xml']));
+            xml = LoadXml(fullfile(rez.ops.basepath,[rez.ops.basename,'.xml']));
             ops.xml = xml;
         end
         
-        fid = fopen(ops.fbinary, 'r');
+        fid = fopen(rez.ops.fbinary, 'r');
         
         waveforms_all = [];
        
@@ -202,7 +202,7 @@ fprintf('\nComplete!')
         indicesTokeep = {};
         for i = 1:length(kcoords2)
             kcoords3 = kcoords2(i);
-            waveforms_all{i} = zeros(sum(kcoords==kcoords3),ops.nt0,size(rez.ia{i},1));
+            waveforms_all{i} = zeros(sum(kcoords==kcoords3),rez.ops.nt0,size(rez.ia{i},1));
             if exist('xml')
                 channel_order{i} = xml.AnatGrps(i).Channels+1;
                 ch_subset = find(kcoords==kcoords3);
@@ -220,7 +220,7 @@ fprintf('\nComplete!')
                 fprintf('%d percent complete', round(100*ibatch/Nbatch));
             end
             
-            offset = max(0, 2*NchanTOT*((NT - ops.ntbuff) * (ibatch-1) - 2*ops.ntbuff));
+            offset = max(0, 2*NchanTOT*((NT - rez.ops.ntbuff) * (ibatch-1) - 2*rez.ops.ntbuff));
             if ibatch==1
                 ioffset = 0;
             else
@@ -258,14 +258,14 @@ fprintf('\nComplete!')
             for i = 1:length(kcoords2)
                 kcoords3 = kcoords2(i);
                 ch_subset = find(kcoords==kcoords3);
-                temp = find(ismember(spikeTimes(ia{i}), [ops.nt0/2+1:size(DATA,1)-ops.nt0/2] + dat_offset));
+                temp = find(ismember(spikeTimes(ia{i}), [rez.ops.nt0/2+1:size(DATA,1)-rez.ops.nt0/2] + dat_offset));
                 temp2 = spikeTimes(ia{i}(temp))-dat_offset;
                 
-                startIndicies = temp2-ops.nt0/2+1;
-                stopIndicies = temp2+ops.nt0/2;
+                startIndicies = temp2-rez.ops.nt0/2+1;
+                stopIndicies = temp2+rez.ops.nt0/2;
                 X = cumsum(accumarray(cumsum([1;stopIndicies(:)-startIndicies(:)+1]),[startIndicies(:);0]-[0;stopIndicies(:)]-1)+1);
                 X = X(1:end-1);
-                waveforms_all{i}(:,:,temp) = reshape(DATA(X,ch_subset(indicesTokeep{i}))',length(ch_subset),ops.nt0,[]);
+                waveforms_all{i}(:,:,temp) = reshape(DATA(X,ch_subset(indicesTokeep{i}))',length(ch_subset),rez.ops.nt0,[]);
             end
         end
     end
