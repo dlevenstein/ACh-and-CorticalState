@@ -127,6 +127,8 @@ rez = preprocessDataSub(ops); % preprocess data and extract spikes for initializ
 disp('Pre-clustering to re-order batches by depth')
 rez = clusterSingleBatches(rez);
 
+%NiceSave('Kilosort2_Separation',basepath,basename)
+
 disp('Main optimization... LearnAndSolve8')
 rez = learnAndSolve8b(rez);
 
@@ -141,6 +143,8 @@ rez = splitAllClusters(rez, 0);
 
 disp('Decide on cutoff')
 rez = set_cutoff(rez);
+
+%NiceSave('Kilosort2_Spikedetectionbydepth',basepath,basename)
 
 %% posthoc merge templates (under construction)
 % save matlab results file
@@ -165,10 +169,10 @@ save(fullfile(savepath,  'rez.mat'), 'rez', '-v7.3');
 clearvars -except rez ops
 %% save python results file for Phy
 disp('Converting to Phy format')
-rezToPhy_KSW(rez);
+rezToPhy_KS2W(rez);
 
 %% save res/clu/fet/spk
-Kilosort2Neurosuite(rez);
+Kilosort22Neurosuite(rez);
 
 %% save python results file for Klusters
 % disp('Converting to Klusters format')
