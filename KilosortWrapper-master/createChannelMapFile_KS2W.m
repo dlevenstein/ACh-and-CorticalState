@@ -135,7 +135,7 @@ chanMap0ind = chanMap - 1;
 chanMap     = chanMap';
 [~,I] =  sort(horzcat(tgroups{:}));
 xcoords = xcoords(I);
-ycoords  = ycoords(I);
+ycoords  = ycoords(I).*-1;
 kcoords = kcoords';
 
 save(fullfile(basepath,'chanMap.mat'), ...
