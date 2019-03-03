@@ -1,11 +1,11 @@
 function savepath = KiloSortWrapper2_cluster(basepath,basename,config_version,varargin)
-% Creates channel map from Neuroscope xml files, runs KiloSort and
+% Creates channel map from Neuroscope xml files, runs KiloSort2 and
 % writes output data in the Neuroscope/Klusters format.
 % StandardConfig.m should be in the path or copied to the local folder
 %
 %  USAGE
 %
-%    KiloSortWrapper()
+%    KiloSort2Wrapper()
 %    Should be run from the data folder, and file basenames are the
 %    same as the name as current directory
 %
@@ -15,7 +15,7 @@ function savepath = KiloSortWrapper2_cluster(basepath,basename,config_version,va
 %    basepath       path to the folder containing the data
 %    basename       file basenames (of the dat and xml files)
 %
-%    Dependencies:  KiloSort (https://github.com/cortex-lab/KiloSort)
+%    Dependencies:  KiloSort2 (https://github.com/cortex-lab/KiloSort)
 
 % Copyright (C) 2016 Brendon Watson and the Buzsakilab
 %
@@ -26,7 +26,7 @@ function savepath = KiloSortWrapper2_cluster(basepath,basename,config_version,va
 disp('Running Kilosort2 spike sorting with the Buzsaki lab wrapper')
 
 %% Addpath if needed
-% addpath(genpath('gitrepositories/KiloSort')) % path to kilosort folder
+% addpath(genpath('gitrepositories/KiloSort2')) % path to kilosort folder
 % addpath(genpath('gitrepositories/npy-matlab')) % path to npy-matlab scripts
 
 %% If function is called without argument
