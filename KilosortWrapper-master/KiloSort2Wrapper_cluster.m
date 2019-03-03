@@ -1,4 +1,4 @@
-function savepath = KiloSortWrapper2_cluster(basepath,basename,config_version,varargin)
+function savepath = KiloSort2Wrapper_cluster(basepath,basename,config_version,varargin)
 % Creates channel map from Neuroscope xml files, runs KiloSort2 and
 % writes output data in the Neuroscope/Klusters format.
 % StandardConfig.m should be in the path or copied to the local folder
