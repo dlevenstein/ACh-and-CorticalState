@@ -12,8 +12,8 @@ ops.showfigures         = 0; % whether to plot figures during optimization
 ops.datatype            = 'dat';  % binary ('dat', 'bin') or 'openEphys'
 ops.fbinary             = [XMLfile(1:end-3) 'dat']; % will be created for 'openEphys'
 ops.trange              = [0 Inf]; % TIME RANGE IN SECONDS TO PROCESS
-
-ops.rootZ                = rootpath; % 'openEphys' only: where raw files are
+ops.useRAM              = 0; % not yet available
+ops.rootZ               = rootpath; % 'openEphys' only: where raw files are
 ops.fs                  = xml.SampleRate;        % sampling rate
 
 load(fullfile(rootpath,'chanMap.mat'))
@@ -51,7 +51,6 @@ ops.fslow            = 8000;   % frequency for low pass filtering (optional)
 ops.ntbuff           = 64;    % samples of symmetrical buffer for whitening and spike detection
 ops.scaleproc        = 200;   % int16 scaling of whitened data
 ops.NT               =  1*32*1028+ ops.ntbuff;% this is the batch size (try decreasing if out of memory) for GPU should be multiple of 32  + ntbuff
-ops.sorting     = 1; % type of sorting, 2 is by rastermap, 1 is old
 
 % the following options can improve/deteriorate results.
 % when multiple values are provided for an option, the first two are beginning and ending anneal values,
@@ -73,6 +72,16 @@ ops.long_range      = [30  6]; % ranges to detect isolated peaks ([30 6])
 ops.maskMaxChannels = 8;       % how many channels to mask up/down ([5])
 ops.crit            = .65;     % upper criterion for discarding spike repeates (0.65)
 ops.nFiltMax        = 80000;   % maximum "unique" spikes to consider (10000)
+
+%New on Kilosort2
+ops.sigmaMask = 30; % spatial constant in um for computing residual variance of spike
+ops.ThPre = 8; % threshold crossings for pre-clustering (in PCA projection space)
+ops.minfr_goodchannels = 0; % minimum firing rate on a "good" channel (0 to skip)
+ops.AUCsplit = 0.9; % splitting a cluster at the end requires at least this much isolation for each sub-cluster (max = 1)
+ops.minFR = 1/100; % minimum spike rate (Hz), if a cluster falls below this for too long it gets removed
+ops.nfilt_factor        = 4; % max number of clusters per good channel (even temporary ones)
+ops.nPCs                = 3; % how many PCs to project the spikes into
+ops.sorting     = 1; % type of sorting, 2 is by rastermap, 1 is old
 
 % load predefined principal components (visualization only (Phy): used for features)
 dd                  = load('PCspikes2.mat'); % you might want to recompute this from your own data
