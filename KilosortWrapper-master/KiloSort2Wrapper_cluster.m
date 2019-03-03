@@ -156,6 +156,7 @@ end
 rez.ops.basepath = basepath;
 rez.ops.basename = basename;
 rez.ops.savepath = savepath;
+fullfile(basepath, [basename 'chanMap.mat']);
 rez.connected = connected;
 disp('Saving rez file')
 % rez = merge_posthoc2(rez);
