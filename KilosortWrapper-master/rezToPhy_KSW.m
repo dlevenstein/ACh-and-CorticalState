@@ -54,7 +54,7 @@ W = rez.W;
 
 templates = zeros(Nchan, nt0, rez.ops.Nfilt, 'single');
 for iNN = 1:rez.ops.Nfilt
-   templates(:,:,iNN) = squeeze(U(:,iNN,:)) * squeeze(W(:,iNN,:))'; 
+   templates(:,:,iNN) = gather(squeeze(U(:,iNN,:)) * squeeze(W(:,iNN,:))'); 
 end
 templates = permute(templates, [3 2 1]); % now it's nTemplates x nSamples x nChannels
 templatesInds = repmat([0:size(templates,3)-1], size(templates,1), 1); % we include all channels so this is trivial
@@ -110,7 +110,7 @@ if ~isempty(savepath)
         fid = fopen(fullfile(savepath,'params.py'), 'w');
         
         [~, fname, ext] = fileparts(rez.ops.fbinary);
-        if strcmp(savepath,rez.ops.root) 
+        if strcmp(savepath,rez.ops.rootZ) 
             fprintf(fid,['dat_path = ''', fname ext, '''\n']);
         else 
             fprintf(fid,['dat_path = ''../', fname ext, '''\n']); % Peter: Added '..\' to the path to fit the custom Kilosort folder structure
