@@ -78,7 +78,7 @@ ops.sigmaMask = 30; % spatial constant in um for computing residual variance of 
 ops.ThPre = 8; % threshold crossings for pre-clustering (in PCA projection space)
 ops.minfr_goodchannels = 0; % minimum firing rate on a "good" channel (0 to skip)
 ops.AUCsplit = 0.9; % splitting a cluster at the end requires at least this much isolation for each sub-cluster (max = 1)
-ops.minFR = 1/100; % minimum spike rate (Hz), if a cluster falls below this for too long it gets removed
+ops.minFR = 0; % minimum spike rate (Hz), if a cluster falls below this for too long it gets removed
 ops.nfilt_factor        = 4; % max number of clusters per good channel (even temporary ones)
 ops.nPCs                = 3; % how many PCs to project the spikes into
 ops.sorting     = 1; % type of sorting, 2 is by rastermap, 1 is old
