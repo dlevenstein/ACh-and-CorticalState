@@ -85,7 +85,7 @@ for i = 1:2:size(varargin,2)
 end
 
 %% preprocessing
-sig = double(sig);
+sig = gpuArray(double(sig));
 if isvector(sig)
     sig = sig(:);
 end
@@ -96,7 +96,7 @@ if flag_detrend >= 1
 end
 
 %% apply IRASA method to separate fractal and oscillatory components
-[Smixd, Sfrac, freq] = irasa(sig,srate,hset,flag_filter);
+[Smixd, Sfrac, freq] = irasa(sig,srate,hset,flag_filter,flag_detrend);
 
 %% only keep the given frequency range
 ff = (freq>=fmin & freq<=fmax & freq>0);
@@ -115,11 +115,10 @@ end
 
 %% IRASA Irregular-Resampling Auto-Spectral Analysis
 
-function [Smixd, Sfrac, freq] = irasa(sig,srate,hset,flag_filter)
+function [Smixd, Sfrac, freq] = irasa(sig,srate,hset,flag_filter,flag_detrend)
 % Given a discrete time series (sig) of length (Ntotal)
 Ntotal = size(sig,1);
 dim = size(sig,2);
-sig = gpuArray(sig);
 % Ndata is the power of 2 that does not exceed 90% of Ntotal.
 Ndata = 2^floor(log2(Ntotal*0.9));
 
@@ -152,7 +151,12 @@ Smixd = Smixd/Nsubset;
 if flag_filter == 1
     sig_filtered = sig;
     for i = 1 : size(sig,2)
-        sig_filtered(:,i) = amri_sig_filtfft(sig(:,i),srate,0,srate/(2*ceil(hset(end))));
+        if flag_detrend == 1
+            amri_sig_filtfft_noDetrend(sig(:,i),srate,0,srate/(2*ceil(hset(end))));
+        else
+            amri_sig_filtfft(sig(:,i),srate,0,srate/(2*ceil(hset(end))));
+        end
+        
     end
 end
 
