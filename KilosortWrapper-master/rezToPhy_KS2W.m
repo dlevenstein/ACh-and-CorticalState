@@ -51,9 +51,9 @@ W = rez.W;
 %     chanMap0(i) = chanMap0(i) - sum(chanMap0(i) > chanMap(connected<1e-6));
 % end
 % [~, invchanMap0] = sort(chanMap0);
-
-templates = zeros(Nchan, nt0, rez.ops.Nfilt, 'single');
-for iNN = 1:rez.ops.Nfilt
+nm = min(size(U,2),size(W,2));
+templates = zeros(Nchan, nt0, nm, 'single');
+for iNN = 1:nm
    templates(:,:,iNN) = gather(squeeze(U(:,iNN,:)) * squeeze(W(:,iNN,:))'); 
 end
 templates = permute(templates, [3 2 1]); % now it's nTemplates x nSamples x nChannels

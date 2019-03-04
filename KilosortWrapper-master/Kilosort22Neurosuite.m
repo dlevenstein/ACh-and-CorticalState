@@ -26,8 +26,9 @@ basename = rez.ops.basename;
 Nchan = rez.ops.Nchan;
 samples = rez.ops.nt0;
 
-templates = zeros(Nchan, size(rez.W,1), rez.ops.Nfilt, 'single');
-for iNN = 1:rez.ops.Nfilt
+nm = min(size(U,2),size(W,2));
+templates = zeros(Nchan, size(rez.W,1), nm, 'single');
+for iNN = 1:nm
     templates(:,:,iNN) = gather(squeeze(rez.U(:,iNN,:)) * squeeze(rez.W(:,iNN,:))');
 end
 amplitude_max_channel = [];
