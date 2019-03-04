@@ -127,7 +127,7 @@ rez = preprocessDataSub(ops); % preprocess data and extract spikes for initializ
 disp('Pre-clustering to re-order batches by depth')
 rez = clusterSingleBatches(rez);
 
-%NiceSave('Kilosort2_Separation',basepath,basename)
+NiceSave('Kilosort2_Batch_Separation',basepath,basename)
 
 disp('Main optimization... LearnAndSolve8')
 rez = learnAndSolve8b(rez);
@@ -144,7 +144,7 @@ rez = splitAllClusters(rez, 0);
 disp('Decide on cutoff')
 rez = set_cutoff(rez);
 
-%NiceSave('Kilosort2_Spikedetectionbydepth',basepath,basename)
+NiceSave('Kilosort2_SpkDetectionbydepth',basepath,basename)
 
 %% posthoc merge templates (under construction)
 % save matlab results file
