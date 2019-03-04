@@ -26,7 +26,7 @@ basename = rez.ops.basename;
 Nchan = rez.ops.Nchan;
 samples = rez.ops.nt0;
 
-nm = min(size(U,2),size(W,2));
+nm = min(size(rez.U,2),size(rez.W,2));
 templates = zeros(Nchan, size(rez.W,1), nm, 'single');
 for iNN = 1:nm
     templates(:,:,iNN) = gather(squeeze(rez.U(:,iNN,:)) * squeeze(rez.W(:,iNN,:))');
