@@ -65,7 +65,8 @@ for x = 1:size(movingwin,1)
     end
     
     Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
-    Frac.timestamps = (1:movingwin(x,2)/srate:movingwin(x,2)*(nwin+1)/srate)';
+    st = movingwin(x,1)/(srate*2);
+    Frac.timestamps = st + ((0:nwin-1) * movingwin(x,2)/srate);
     
     % Interpolating...
     PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,Frac.timestamps);
@@ -81,16 +82,14 @@ for x = 1:size(movingwin,1)
             Frange = [lowerbound(f), upperbound(ff)]; % define frequency range for power-law fitting
             Frac = amri_sig_plawfit(Frac,Frange);
             
-            FracEMGrho(f,ff) = corr(Frac.Beta.*-1,PSS.EMG,'Type','Spearman');
-            FracPupilrho(f,ff) = corr(Frac.Beta.*-1,PSS.pupilsize,'Type','Spearman');
+            FracEMGrho(f,ff) = corr(log10(PSS.EMG),Frac.Beta.*-1,'Type','Spearman');
+            FracPupilrho(f,ff) = corr(log10(PSS.pupilsize),Frac.Beta.*-1,'Type','Spearman');
         end
     end
     
     CorrFracEMG = cat(3,CorrFracEMG,FracEMGrho);
     CorrFracPupil = cat(3,CorrFracPupil,FracPupilrho);
 end
-
-%use log 10 for corr....
 
 %% FIGURE
 rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
