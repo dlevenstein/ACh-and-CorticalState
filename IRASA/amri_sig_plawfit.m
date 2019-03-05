@@ -56,18 +56,21 @@ for j = 1 : Nc
     for i = 1 : Nt
         % ordinary least square
         p = polyfit(x2,y2(:,i,j),1);
+        y = squeeze(y2(:,i,j));
         
         %Calculate the residuals
         yfit =  p(1) * x2 + p(2);
-        yresid = y2 - yfit;
+        yresid = y - yfit;
+        
         %Calculate the rsquared value
         SSresid = sum(yresid.^2);
-        SStotal = (length(y2)-1) * var(y2);
+        SStotal = (length(y)-1) * var(y);
         rsq(i,j) = 1 - SSresid/SStotal;
         beta(i,j) = -p(1);
         cons(i,j) = p(2);
         powlaw = 10.^(polyval(p,logfreq));
         plaw(:,i,j) = powlaw(:);
+        
     end
 end
 
