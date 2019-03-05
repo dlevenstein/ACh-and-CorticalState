@@ -102,23 +102,27 @@ rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
 
 figure;
 for x = 1:size(movingwin,1)
-    subplot(x,2,(x*2)-1);
-    imagesc(lowerbound,upperbound,CorrFracEMG(:,:,x)')
+    subplot(size(movingwin,1),2,(x*2)-1); hold on;
+    imagesc(log10(lowerbound),log10(upperbound),CorrFracEMG(:,:,x)')
     colormap(gca,rwbcolormap)
-    LogScale('x',10);
+    LogScale('x',10); LogScale('y',10);
+    %xticks(log10(lowerbound(1:3:end)));
+    %xticklabels({num2str(lowerbound(1:5:end))});
     axis tight
-    ColorbarWithAxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))],['Spearman corr'])
-    caxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))])
+    ColorbarWithAxis([min(min(min(CorrFracEMG))) max(max(max(CorrFracEMG)))],['Spearman corr'])
+    caxis([min(min(min(CorrFracEMG))) max(max(max(CorrFracEMG)))])
     xlabel('lower f bound (Hz)');ylabel('upper f bound (Hz)');
-    title(['Frac-EMG correlation win =',num2str(movingwin(x,1)),'dt=',num2str(movingwin(x,2))]);
+    title(['Frac-EMG correlation win =',num2str(movingwin(x,1)/srate),'dt=',num2str(movingwin(x,2)/srate)]);
     
-    subplot(x,2,x*2);
-    imagesc(lowerbound,upperbound,CorrFracPupil(:,:,x)')
+    subplot(size(movingwin,1),2,x*2); hold on;
+    imagesc(log10(lowerbound),log10(upperbound),CorrFracPupil(:,:,x)')
     colormap(gca,rwbcolormap)
-    LogScale('x',10);
+    LogScale('x',10); LogScale('y',10);
+    %xticks(lowerbound(1:5:end));
+    %xticklabels({num2str(lowerbound(1:5:end))});
     axis tight
-    ColorbarWithAxis([min(min(CorrFracPupil(:,:,x))) max(max(CorrFracPupil(:,:,x)))],['Spearman corr'])
-    caxis([min(min(CorrFracPupil(:,:,x))) max(max(CorrFracPupil(:,:,x)))])
+    ColorbarWithAxis([min(min(min(CorrFracPupil))) max(max(max(CorrFracPupil)))],['Spearman corr'])
+    caxis([min(min(min(CorrFracPupil))) max(max(max(CorrFracPupil)))])
     xlabel('lower f bound (Hz)'); ylabel('upper f bound (Hz)');
     title('Frac-Pupil diameter correlation');
 end
@@ -141,18 +145,18 @@ Frange = [10, 100]; % define frequency range for power-law fitting
 % Now calculating corrs...
 PSS = []; Osci = [];
 
-PSScorr.EMG = zeros(length(usechannels));
-PSScorr.EMG_p = zeros(length(usechannels));
-PSScorr.Pup = zeros(length(usechannels));
-PSScorr.Pup_p = zeros(length(usechannels));
+PSScorr.EMG = zeros(length(usechannels),1);
+PSScorr.EMG_p = zeros(length(usechannels),1);
+PSScorr.Pup = zeros(length(usechannels),1);
+PSScorr.Pup_p = zeros(length(usechannels),1);
 
 Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
 Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
 Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
 Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
 
-nbins = 50;
-PSSstatsdepth.bins = linspace(-2,0,nbins);
+nbins = 100;
+PSSstatsdepth.bins = linspace(-5,0,nbins);
 PSSstatsdepth.dist = zeros(length(usechannels),nbins);
 
 for cc = 1:length(usechannels)
@@ -193,10 +197,10 @@ for cc = 1:length(usechannels)
     
     for x = 1:size(Frac.osci,1)
         [Oscicorr.EMG(x,cc),Oscicorr.EMG_p(x,cc)] =...
-            corr(log10(temp_EMG)',Frac.osci(x,:),...
+            corr(log10(temp_EMG)',Frac.osci(x,:)',...
             'type','spearman','rows','complete');
         [Oscicorr.Pup(x,cc),Oscicorr.Pup_p(x,cc)] =...
-            corr(log10(temp_Pup)',Frac.osci(x,:),...
+            corr(log10(temp_Pup)',Frac.osci(x,:)',...
             'type','spearman','rows','complete');
     end
 end
@@ -206,26 +210,30 @@ savefile = fullfile(basePath,[baseName,'.PSS.lfp.mat']);
 save(savefile,'PSS','Osci','PSScorr','Oscicorr','usechannels','PSSstatsdepth','-v7.3');
 
 %% FIGURE
+rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
+
 figure;
-subplot(1,4,1);
+subplot(2,2,1);
 imagesc(PSSstatsdepth.bins,1:length(usechannels),PSSstatsdepth.dist)
 ColorbarWithAxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))],['counts'])
 caxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))])
 xlabel('PSS distributions (au)')
+xlim([-4 -1]);
 ylabel('channel no. (depth-aligned)')
 colormap(gca,'jet')
 axis tight
 
-subplot(1,4,2);
+subplot(2,2,2);
 plot(PSScorr.EMG,1:length(usechannels),'k','linewidth',2)
 hold on;
-plot(PSScorr.pup,1:length(usechannels),'r','linewidth',2)
+plot(PSScorr.Pup,1:length(usechannels),'r','linewidth',2)
 legend('PSS-EMG corr','PSS-pupil diameter corr','location','eastoutside')
 xlabel('PSS-Behavior correlation');
+set(gca,'ydir','reverse')
 axis tight
 
-subplot(1,4,3);
-imagesc(1:length(usechannels),log10(Frac.freq),Oscicorr.EMG')
+subplot(2,2,3);
+imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.EMG')
 LogScale('x',10);
 colormap(gca,rwbcolormap)
 ColorbarWithAxis([min(min(Oscicorr.EMG)) max(max(Oscicorr.EMG))],['Spearman corr'])
@@ -233,8 +241,8 @@ caxis([min(min(Oscicorr.EMG)) max(max(Oscicorr.EMG))])
 xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
 title('Oscillatory LFP-EMG correlation');
 
-subplot(1,4,4);
-imagesc(1:length(usechannels),log10(Frac.freq),Oscicorr.Pup')
+subplot(2,2,4);
+imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.Pup')
 LogScale('x',10);
 colormap(gca,rwbcolormap)
 ColorbarWithAxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))],['Spearman corr'])
@@ -268,23 +276,25 @@ savefile = fullfile(basePath,[baseName,'.PSSOsciXCorr.PSS.lfp.mat']);
 save(savefile,'PSSxcorr','PSSxcorr_p','Oscixcorr','Oscixcorr_p');
 
 %% FIGURE
+rwbcolormap = makeColorMap([0.8 0 0],[1 1 1],[0 0 0.8]);
+
 figure;
 
 subplot(1,2,1);
 imagesc(1:length(usechannels),1:length(usechannels),PSSxcorr);
 colormap(gca,rwbcolormap)
-axis xy
-axis tight
+axis square
+%set(gca,'ydir','reverse')
 ColorbarWithAxis([min(min(PSSxcorr)) max(max(PSSxcorr))],['Spearman corr'])
 caxis([min(min(PSSxcorr)) max(max(PSSxcorr))])
 xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
 title('PSS-PSS xcorr by depth');
 
-subplot(1,2,1);
+subplot(1,2,2);
 imagesc(1:length(usechannels),1:length(usechannels),Oscixcorr);
 colormap(gca,rwbcolormap)
-axis xy
-axis tight
+axis square
+%set(gca,'ydir','reverse')
 ColorbarWithAxis([min(min(Oscixcorr)) max(max(Oscixcorr))],['Spearman corr'])
 caxis([min(min(Oscixcorr)) max(max(Oscixcorr))])
 xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
