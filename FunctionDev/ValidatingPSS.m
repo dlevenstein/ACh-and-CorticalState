@@ -2,6 +2,7 @@ basePath = pwd;
 baseName = bz_BasenameFromBasepath(basePath);
 sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
+savefile = fullfile(basePath,[baseName,'.PSS.lfp.mat']);
 figfolder = fullfile(basePath,'DetectionFigures');
 
 %% Loading behavior...
@@ -41,11 +42,14 @@ EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 
 %% Optimizing lower/upper frequency bounds as a function of window/dt
 % Loading LFP for SlowWave detection channel
-%channel = 2; specify slow detection channel
+load(fullfile(basePath,[baseName,'.SlowWaves.events.mat']),'SlowWaves');
+channel = SlowWaves.detectorinfo.detectionchannel; 
+clear SlowWaves;
+
 lfp = bz_GetLFP(channel,'basepath',basePath,'noPrompts',true);
 
 % Separate fractal and oscillatory components using sliding window
-%srate = 1250; % sampling frequency SPECIFY...
+srate = lfp.samplingRate; % sampling frequency SPECIFY...
 movingwin = [0.5 0.125; 2 0.5; 5 1.25].*srate; % [window size, sliding step]
 lowerbound = [1:30];
 upperbound = [40:120];
@@ -86,6 +90,8 @@ for x = 1:size(movingwin,1)
     CorrFracPupil = cat(3,CorrFracPupil,FracPupilrho);
 end
 
+%use log 10 for corr....
+
 %% FIGURE
 rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
 
@@ -115,6 +121,9 @@ end
 NiceSave('Frac_EMG_Pupil_lower_upperbound_Optimization',figfolder,baseName);
 
 %% Correlating PSS/Oscillatory component to EMG/Pupil diameter by depth
+% Take only good channels
+
+%
 PSS = [];
 Osci = [];
 
@@ -174,13 +183,14 @@ for cc = 1:length(sessionInfo.AnatGrps.Channels)
     
 end
 
+%
 % Saving structs
-
 
 %% FIGURE
 figure;
 subplot(1,3,1);
 imagesc(PSSstatsdepth.bins,PSSstatsdepth.chanpos,PSSstatsdepth.dist)
+ColorbarWithAxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))],['Spearman corr'])
 xlabel('PSS')
 ylabel('Channel by Depth')
 colormap(gca,'jet')
