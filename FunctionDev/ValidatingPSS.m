@@ -50,8 +50,8 @@ lfp = bz_GetLFP(channel,'basepath',basePath,'noPrompts',true);
 % Separate fractal and oscillatory components using sliding window
 srate = lfp.samplingRate; % sampling frequency SPECIFY...
 movingwin = [0.5 0.125; 2 0.5; 5 1.25].*srate; % [window size, sliding step]
-lowerbound = [1:30];
-upperbound = [40:120];
+lowerbound = logspace(log10(1),log10(30),20);
+upperbound = logspace(log10(40),log10(120),20);
 
 CorrFracEMG = [];
 CorrFracPupil = [];
@@ -105,7 +105,7 @@ for x = 1:size(movingwin,1)
     subplot(x,2,(x*2)-1);
     imagesc(lowerbound,upperbound,CorrFracEMG(:,:,x)')
     colormap(gca,rwbcolormap)
-    axis xy
+    LogScale('x',10);
     axis tight
     ColorbarWithAxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))],['Spearman corr'])
     caxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))])
@@ -115,7 +115,7 @@ for x = 1:size(movingwin,1)
     subplot(x,2,x*2);
     imagesc(lowerbound,upperbound,CorrFracPupil(:,:,x)')
     colormap(gca,rwbcolormap)
-    axis xy
+    LogScale('x',10);
     axis tight
     ColorbarWithAxis([min(min(CorrFracPupil(:,:,x))) max(max(CorrFracPupil(:,:,x)))],['Spearman corr'])
     caxis([min(min(CorrFracPupil(:,:,x))) max(max(CorrFracPupil(:,:,x)))])
