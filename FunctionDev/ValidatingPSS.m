@@ -82,8 +82,10 @@ for x = 1:size(movingwin,1)
             Frange = [lowerbound(f), upperbound(ff)]; % define frequency range for power-law fitting
             Frac = amri_sig_plawfit(Frac,Frange);
             
-            FracEMGrho(f,ff) = corr(log10(PSS.EMG),Frac.Beta.*-1,'Type','Spearman');
-            FracPupilrho(f,ff) = corr(log10(PSS.pupilsize),Frac.Beta.*-1,'Type','Spearman');
+            nanidx = isnan(PSS.EMG);
+            FracEMGrho(f,ff) = corr(log10(PSS.EMG(~nanidx))',Frac.Beta(~nanidx).*-1,'Type','Spearman');
+            nanidx = isnan(PSS.pupilsize);
+            FracPupilrho(f,ff) = corr(log10(PSS.pupilsize(~nanidx))',Frac.Beta(~nanidx).*-1,'Type','Spearman');
         end
     end
     
