@@ -64,7 +64,7 @@ for x = 1:size(movingwin,1)
         sig(:,i) = lfp.data(ceil((i-1)*movingwin(x,2))+1 : ceil((i-1)*movingwin(x,2))+movingwin(x,1));
     end
     
-    Frac = amri_sig_fractal(sig,srate,'detrend',1);
+    Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
     Frac.timestamps = (1:movingwin(x,2)/srate:movingwin(x,2)*(nwin+1)/srate)';
     
     % Interpolating...

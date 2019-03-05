@@ -107,9 +107,9 @@ Sfrac = Sfrac(ff,:);
 %% outputs
 spec.freq  = freq;
 spec.srate = srate;
-spec.mixd  = Smixd;
-spec.frac  = Sfrac;
-spec.osci  = Smixd - Sfrac;
+spec.mixd  = gather(Smixd);
+spec.frac  = gather(Sfrac);
+spec.osci  = gather(Smixd - Sfrac);
 
 end
 
