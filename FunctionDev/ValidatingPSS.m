@@ -2,7 +2,6 @@ basePath = pwd;
 baseName = bz_BasenameFromBasepath(basePath);
 sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
-savefile = fullfile(basePath,[baseName,'.PSS.lfp.mat']);
 figfolder = fullfile(basePath,'DetectionFigures');
 
 %% Loading behavior...
@@ -81,17 +80,22 @@ for x = 1:size(movingwin,1)
         for ff = 1:length(upperbound)
             Frange = [lowerbound(f), upperbound(ff)]; % define frequency range for power-law fitting
             Frac = amri_sig_plawfit(Frac,Frange);
+           
+            FracEMGrho(f,ff) = corr(log10(PSS.EMG)',...
+                Frac.Beta.*-1,'type','spearman','rows','complete');
             
-            nanidx = isnan(PSS.EMG);
-            FracEMGrho(f,ff) = corr(log10(PSS.EMG(~nanidx))',Frac.Beta(~nanidx).*-1,'Type','Spearman');
-            nanidx = isnan(PSS.pupilsize);
-            FracPupilrho(f,ff) = corr(log10(PSS.pupilsize(~nanidx))',Frac.Beta(~nanidx).*-1,'Type','Spearman');
+            FracPupilrho(f,ff) = corr(log10(PSS.pupilsize)',...
+                Frac.Beta.*-1,'type','spearman','rows','complete');
         end
     end
     
     CorrFracEMG = cat(3,CorrFracEMG,FracEMGrho);
     CorrFracPupil = cat(3,CorrFracPupil,FracPupilrho);
 end
+
+% Saving data...
+savefile = fullfile(basePath,[baseName,'.FracCorr.Optimization.PSS.lfp.mat']);
+save(savefile,'CorrFracEMG','CorrFracPupil');
 
 %% FIGURE
 rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
@@ -115,143 +119,175 @@ for x = 1:size(movingwin,1)
     axis tight
     ColorbarWithAxis([min(min(CorrFracPupil(:,:,x))) max(max(CorrFracPupil(:,:,x)))],['Spearman corr'])
     caxis([min(min(CorrFracPupil(:,:,x))) max(max(CorrFracPupil(:,:,x)))])
-    xlabel('lower f bound (Hz)');ylabel('upper f bound (Hz)');
+    xlabel('lower f bound (Hz)'); ylabel('upper f bound (Hz)');
     title('Frac-Pupil diameter correlation');
 end
 
 NiceSave('Frac_EMG_Pupil_lower_upperbound_Optimization',figfolder,baseName);
 
 %% Correlating PSS/Oscillatory component to EMG/Pupil diameter by depth
-% Take only good channels
+badchannels = sessionInfo.badchannels;
+usechannels = sessionInfo.AnatGrps.Channels;
+usechannels(ismember(usechannels,badchannels))=[];
 
-%
-PSS = [];
-Osci = [];
+% Assuming that LFP still remains loaded from prior analysis...
+movingwin = [2 0.5].*srate;
+nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
+st = movingwin(1)/(srate*2);
 
-PSScorr.EMG = zeros(size(sessionInfo.AnatGrps.Channels));
-PSScorr.Pup = zeros(size(sessionInfo.AnatGrps.Channels));
+% Selected from prior analysis
+Frange = [10, 100]; % define frequency range for power-law fitting
+            
+% Now calculating corrs...
+PSS = []; Osci = [];
 
-Oscicorr.EMG = zeros(size(sessionInfo.AnatGrps.Channels));
-PSScorr.Pup = zeros(size(sessionInfo.AnatGrps.Channels));
+PSScorr.EMG = zeros(length(usechannels));
+PSScorr.EMG_p = zeros(length(usechannels));
+PSScorr.Pup = zeros(length(usechannels));
+PSScorr.Pup_p = zeros(length(usechannels));
+
+Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
 
 nbins = 50;
 PSSstatsdepth.bins = linspace(-2,0,nbins);
-PSSstatsdepth.dist = zeros(length(sessionInfo.AnatGrps.Channels),nbins);
+PSSstatsdepth.dist = zeros(length(usechannels),nbins);
 
-for cc = 1:length(sessionInfo.AnatGrps.Channels)
+for cc = 1:length(usechannels)
     cc
-    channum = sessionInfo.AnatGrps.Channels(cc);
-    %channum = 31;
-    WhiskPSScorr.channum(cc) = channum;
-    WhiskPSScorr.chanpos(cc) = cc;
-    
-    PSSstatsdepth.channum(cc) = channum;
-    PSSstatsdepth.chanpos(cc) = cc;
-    %%
+    channum = usechannels(cc);
     lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
     
-    %%
-    dt = 0.2;
-    winsize = 1;
-    [PSS] = bz_PowerSpectrumSlope(lfp,winsize,dt,'showfig',false);
-    
-    PSSstatsdepth.dist(cc,:) = hist(PSS.data,PSSstatsdepth.bins);
-    PSSstatsdepth.dist(cc,:)./sum(PSSstatsdepth.dist(cc,:));
-    
-    %%
-    PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,PSS.timestamps);
-    PSS.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
-        PSS.timestamps,'nearest');
-    PSS.dpdt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,...
-        PSS.timestamps,'nearest');
-    PSS.pupilphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
-        PSS.timestamps,'nearest');
-    
-    %%
-    [WhiskPSScorr.EMG(cc),WhiskPSScorr.EMG_p(cc)] =...
-        corr(log10(PSS.EMG),PSS.data,...
-        'type','spearman','rows','complete');
-    [WhiskPSScorr.pup(cc),WhiskPSScorr.pup_p(cc)] =...
-        corr(log10(PSS.pupilsize),PSS.data,...
-        'type','spearman','rows','complete');
-    [WhiskPSScorr.dpdt(cc),WhiskPSScorr.dpdt_p(cc)] =...
-        corr(PSS.dpdt,PSS.data,...
-        'type','spearman','rows','complete');
-    WhiskPSScorr.phasecoupling(cc) = ...
-        abs(nanmean((PSS.data./nanmean(PSS.data)).*exp(1i.*PSS.pupilphase)));
-    
+    %% Deconstruction
+    sig = zeros(movingwin(1),nwin);
+    for i = 1 : nwin
+        sig(:,i) = lfp.data(ceil((i-1)*movingwin(2))+1 : ceil((i-1)*movingwin(2))+movingwin(1));
+    end
     clear lfp
     
+    Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+    Frac.timestamps = st + ((0:nwin-1) * movingwin(2)/srate);
+    Frac = amri_sig_plawfit(Frac,Frange);
+    
+    PSS = cat(2,PSS,Frac.Beta.*-1);
+    Osci = cat(2,Osci,mean(Frac.osci,2));
+    
+    %% Histos
+    PSSstatsdepth.dist(cc,:) = hist(Frac.Beta.*-1,PSSstatsdepth.bins);
+    PSSstatsdepth.dist(cc,:)./sum(PSSstatsdepth.dist(cc,:));
+    
+    %% Interpolating...
+    temp_EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,Frac.timestamps);
+    temp_Pup = interp1(pupildilation.timestamps,pupildilation.data,...
+        Frac.timestamps,'nearest');
+    
+    %% Corrsss
+    [PSScorr.EMG(cc),PSScorr.EMG_p(cc)] =...
+        corr(log10(temp_EMG)',Frac.Beta.*-1,...
+        'type','spearman','rows','complete');
+    [PSScorr.Pup(cc),PSScorr.Pup_p(cc)] =...
+        corr(log10(temp_Pup)',Frac.Beta.*-1,...
+        'type','spearman','rows','complete');
+    
+    for x = 1:size(Frac.osci,1)
+        [Oscicorr.EMG(x,cc),Oscicorr.EMG_p(x,cc)] =...
+            corr(log10(temp_EMG)',Frac.osci(x,:),...
+            'type','spearman','rows','complete');
+        [Oscicorr.Pup(x,cc),Oscicorr.Pup_p(x,cc)] =...
+            corr(log10(temp_Pup)',Frac.osci(x,:),...
+            'type','spearman','rows','complete');
+    end
 end
 
-%
-% Saving structs
+% Saving data...
+savefile = fullfile(basePath,[baseName,'.PSS.lfp.mat']);
+save(savefile,'PSS','Osci','PSScorr','Oscicorr','usechannels','PSSstatsdepth','-v7.3');
 
 %% FIGURE
 figure;
-subplot(1,3,1);
-imagesc(PSSstatsdepth.bins,PSSstatsdepth.chanpos,PSSstatsdepth.dist)
-ColorbarWithAxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))],['Spearman corr'])
-xlabel('PSS')
-ylabel('Channel by Depth')
+subplot(1,4,1);
+imagesc(PSSstatsdepth.bins,1:length(usechannels),PSSstatsdepth.dist)
+ColorbarWithAxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))],['counts'])
+caxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))])
+xlabel('PSS distributions (au)')
+ylabel('channel no. (depth-aligned)')
 colormap(gca,'jet')
 axis tight
 
-subplot(1,3,2);
-plot(WhiskPSScorr.EMG,-WhiskPSScorr.chanpos,'b','linewidth',2)
-hold on
-plot(WhiskPSScorr.pup,-WhiskPSScorr.chanpos,'k','linewidth',2)
-legend('EMG','Pupil Area','dpdt','location','eastoutside')
-xlabel('PSS Correlation');
+subplot(1,4,2);
+plot(PSScorr.EMG,1:length(usechannels),'k','linewidth',2)
+hold on;
+plot(PSScorr.pup,1:length(usechannels),'r','linewidth',2)
+legend('PSS-EMG corr','PSS-pupil diameter corr','location','eastoutside')
+xlabel('PSS-Behavior correlation');
 axis tight
-%xlim([0 0.6])
 
-subplot(1,3,3);
-imagesc(lowerbound,upperbound,CorrFracPupil(:,:,x)')
+subplot(1,4,3);
+imagesc(1:length(usechannels),log10(Frac.freq),Oscicorr.EMG')
+LogScale('x',10);
 colormap(gca,rwbcolormap)
-axis tight
-ColorbarWithAxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))],['Spearman corr'])
-caxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))])
-xlabel('lower f bound (Hz)');ylabel('upper f bound (Hz)');
-title(['Frac-EMG correlation win =',num2str(movingwin(x,1)),'dt=',num2str(movingwin(x,2))]);
+ColorbarWithAxis([min(min(Oscicorr.EMG)) max(max(Oscicorr.EMG))],['Spearman corr'])
+caxis([min(min(Oscicorr.EMG)) max(max(Oscicorr.EMG))])
+xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
+title('Oscillatory LFP-EMG correlation');
 
-NiceSave('PSSCorrbyDepth',figfolder,baseName)
+subplot(1,4,4);
+imagesc(1:length(usechannels),log10(Frac.freq),Oscicorr.Pup')
+LogScale('x',10);
+colormap(gca,rwbcolormap)
+ColorbarWithAxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))],['Spearman corr'])
+caxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))])
+xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
+title('Oscillatory LFP-Pupil diameter correlation');
+
+NiceSave('PSS_Behavior_CorrbyDepth',figfolder,baseName)
 
 %% Xcorr PSS/Oscillatory component by depth
-PSSxcorr = zeros(size(PSS,1),size(PSS,1));
-for x = 1:size(PSS,1)
-    for y = 1:size(PSS,1)
-        PSSxcorr(x,y) = corr(PSS(x,:),PSS(y,:),'Type','Spearman');
+PSSxcorr = zeros(size(PSS,2),size(PSS,2));
+PSSxcorr_p = zeros(size(PSS,2),size(PSS,2));
+for x = 1:size(PSS,2)
+    for y = 1:size(PSS,2)
+        [PSSxcorr(x,y),PSSxcorr_p(x,y)] = corr(PSS(:,x),PSS(:,y),...
+            'type','spearman','rows','complete');
     end
 end
 
-Oscixcorr = zeros(size(PSS,1),size(PSS,1));
-for x = 1:size(Osci,1)
-    for y = 1:size(Osci,1)
-        Oscixcorr(x,y) = corr(Osci(x,:),Osci(y,:),'Type','Spearman');
+Oscixcorr = zeros(size(Osci,2),size(Osci,2));
+Oscixcorr_p = zeros(size(Osci,2),size(Osci,2));
+for x = 1:size(Osci,2)
+    for y = 1:size(Osci,2)
+        [Oscixcorr(x,y),Oscixcorr_p(x,y)] = corr(Osci(:,x),Osci(:,y),...
+            'type','spearman','rows','complete');
     end
 end
+
+% Saving data...
+savefile = fullfile(basePath,[baseName,'.PSSOsciXCorr.PSS.lfp.mat']);
+save(savefile,'PSSxcorr','PSSxcorr_p','Oscixcorr','Oscixcorr_p');
 
 %% FIGURE
 figure;
+
 subplot(1,2,1);
-imagesc(lowerbound,upperbound,CorrFracEMG(:,:,x)')
+imagesc(1:length(usechannels),1:length(usechannels),PSSxcorr);
 colormap(gca,rwbcolormap)
 axis xy
 axis tight
-ColorbarWithAxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))],['Spearman corr'])
-caxis([min(min(CorrFracEMG(:,:,x))) max(max(CorrFracEMG(:,:,x)))])
-xlabel('lower f bound (Hz)');ylabel('upper f bound (Hz)');
-title(['Frac-EMG correlation win =',num2str(movingwin(x,1)),'dt=',num2str(movingwin(x,2))]);
+ColorbarWithAxis([min(min(PSSxcorr)) max(max(PSSxcorr))],['Spearman corr'])
+caxis([min(min(PSSxcorr)) max(max(PSSxcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('PSS-PSS xcorr by depth');
 
-subplot(1,2,2);
-imagesc(lowerbound,upperbound,CorrFracPupil(:,:,x)')
+subplot(1,2,1);
+imagesc(1:length(usechannels),1:length(usechannels),Oscixcorr);
 colormap(gca,rwbcolormap)
 axis xy
 axis tight
-ColorbarWithAxis([min(min(CorrFracPupil(:,:,x))) max(max(CorrFracPupil(:,:,x)))],['Spearman corr'])
-caxis([min(min(CorrFracPupil(:,:,x))) max(max(CorrFracPupil(:,:,x)))])
-xlabel('lower f bound (Hz)');ylabel('upper f bound (Hz)');
-title('Frac-Pupil diameter correlation');
+ColorbarWithAxis([min(min(Oscixcorr)) max(max(Oscixcorr))],['Spearman corr'])
+caxis([min(min(Oscixcorr)) max(max(Oscixcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('Oscillatory-Oscillatory LFP xcorr by depth');
 
-NiceSave('Frac_Osci_Xcorr',figfolder,baseName);
+NiceSave('Frac_Osci_Xcorrbydepth',figfolder,baseName);
