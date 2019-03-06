@@ -11,6 +11,8 @@ lfp = bz_GetLFP('all','noPrompts',true);
 
 savfile = fullfile(basePath,[baseName,'.SlowWaves.events.mat']);
 load(savfile,'SlowWaves');
+
+SlowWaves.SWpeakmag
 eventCSD(lfp,SlowWaves.ints.UP(:,1),'channels',usechannels,'twin',[0.25 0.25],'spat_sm',8,'saveName','SlowWavesCSD');
 
 % savfile = fullfile(basePath,[baseName,'.EMGwhisk.behavior.mat']);
