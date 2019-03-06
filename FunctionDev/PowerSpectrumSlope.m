@@ -51,7 +51,7 @@ spontidx = find(lfp.timestamps < sponttimes(2));
 lfp.data = lfp.data(spontidx);
 lfp.timestamps = lfp.timestamps(spontidx);
 
-downsamplefactor = 2;
+downsamplefactor = 3;
 lfp.samplingRate = lfp.samplingRate./downsamplefactor;
 lfp.data = downsample(lfp.data,downsamplefactor);
 lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
