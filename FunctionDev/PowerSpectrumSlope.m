@@ -51,9 +51,9 @@ spontidx = find(lfp.timestamps < sponttimes(2));
 lfp.data = lfp.data(spontidx);
 lfp.timestamps = lfp.timestamps(spontidx);
 
-downsamplefactor = 4;
+downsamplefactor = 3;
 lfp.samplingRate = lfp.samplingRate./downsamplefactor;
-lfp.data = downsample(lfp.data,downsamplefactor);
+lfp.data = downsample(double(lfp.data),downsamplefactor);
 lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
 
 % Separate fractal and oscillatory components using sliding window
@@ -298,7 +298,7 @@ for cc = 1:length(usechannels)
     lfp.timestamps = lfp.timestamps(spontidx);
     
     lfp.samplingRate = lfp.samplingRate./downsamplefactor;
-    lfp.data = downsample(lfp.data,downsamplefactor);
+    lfp.data = downsample(double(lfp.data),downsamplefactor);
     lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
     
     %% Deconstruction
@@ -433,7 +433,7 @@ lfp.data = lfp.data(spontidx);
 lfp.timestamps = lfp.timestamps(spontidx);
 
 lfp.samplingRate = lfp.samplingRate./downsamplefactor;
-lfp.data = downsample(lfp.data,downsamplefactor);
+lfp.data = downsample(double(lfp.data),downsamplefactor);
 lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
 
 movingwin = round([15 3.75].*srate);
@@ -479,7 +479,7 @@ for cc = 1:length(usechannels)
     lfp.timestamps = lfp.timestamps(spontidx);
     
     lfp.samplingRate = lfp.samplingRate./downsamplefactor;
-    lfp.data = downsample(lfp.data,downsamplefactor);
+    lfp.data = downsample(double(lfp.data),downsamplefactor);
     lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
     
     %% Deconstruction
