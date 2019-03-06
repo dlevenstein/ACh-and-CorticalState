@@ -51,7 +51,7 @@ spontidx = find(lfp.timestamps < sponttimes(2));
 lfp.data = lfp.data(spontidx);
 lfp.timestamps = lfp.timestamps(spontidx);
 
-downsamplefactor = 3;
+downsamplefactor = 4;
 lfp.samplingRate = lfp.samplingRate./downsamplefactor;
 lfp.data = downsample(lfp.data,downsamplefactor);
 lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
@@ -255,10 +255,20 @@ usechannels = sessionInfo.AnatGrps.Channels;
 usechannels(ismember(usechannels,badchannels))=[];
 
 % Assuming that LFP still remains loaded from prior analysis...
-movingwin = [1 0.25].*srate;
+movingwin = round([1 0.25].*srate);
 nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
 st = movingwin(1)/(srate*2);
 
+sig = zeros(movingwin(1),nwin);
+for i = 1 : nwin
+    sig(:,i) = lfp.data(ceil((i-1)*movingwin(2))+1 : ceil((i-1)*movingwin(2))+movingwin(1));
+end
+clear lfp
+
+Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+Frac.timestamps = st + ((0:nwin-1) * movingwin(2)/srate);
+Frac = amri_sig_plawfit(Frac,Frange);
+    
 % Selected from prior analysis
 Frange = [5, 100]; % define frequency range for power-law fitting
 
@@ -270,15 +280,10 @@ PSScorr.EMG_p = zeros(length(usechannels),1);
 PSScorr.Pup = zeros(length(usechannels),1);
 PSScorr.Pup_p = zeros(length(usechannels),1);
 
-% Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
-% Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
-% Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
-% Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
-
-Oscicorr.EMG = zeros(512,length(usechannels));
-Oscicorr.EMG_p = zeros(512,length(usechannels));
-Oscicorr.Pup = zeros(512,length(usechannels));
-Oscicorr.Pup_p = zeros(512,length(usechannels));
+Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
 
 nbins = 100;
 PSSstatsdepth.bins = linspace(-5,0,nbins);
@@ -431,9 +436,19 @@ lfp.samplingRate = lfp.samplingRate./downsamplefactor;
 lfp.data = downsample(lfp.data,downsamplefactor);
 lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
 
-movingwin = [15 3.75].*srate;
+movingwin = round([15 3.75].*srate);
 nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
 st = movingwin(1)/(srate*2);
+
+sig = zeros(movingwin(1),nwin);
+for i = 1 : nwin
+    sig(:,i) = lfp.data(ceil((i-1)*movingwin(2))+1 : ceil((i-1)*movingwin(2))+movingwin(1));
+end
+clear lfp
+
+Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+Frac.timestamps = st + ((0:nwin-1) * movingwin(2)/srate);
+Frac = amri_sig_plawfit(Frac,Frange);
 
 % Selected from prior analysis
 Frange = [2.5, 100]; % define frequency range for power-law fitting
@@ -446,15 +461,10 @@ PSScorr.EMG_p = zeros(length(usechannels),1);
 PSScorr.Pup = zeros(length(usechannels),1);
 PSScorr.Pup_p = zeros(length(usechannels),1);
 
-% Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
-% Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
-% Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
-% Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
-
-Oscicorr.EMG = zeros(8192,length(usechannels));
-Oscicorr.EMG_p = zeros(8192,length(usechannels));
-Oscicorr.Pup = zeros(8192,length(usechannels));
-Oscicorr.Pup_p = zeros(8192,length(usechannels));
+Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
 
 nbins = 100;
 PSSstatsdepth.bins = linspace(-5,0,nbins);
