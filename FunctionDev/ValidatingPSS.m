@@ -101,7 +101,7 @@ save(savefile,'CorrFracEMG','CorrFracPupil');
 figure;
 for x = 1:size(movingwin,1)
     subplot(size(movingwin,1),2,(x*2)-1); hold on;
-    imagesc(log10(lowerbound),log10(upperbound),CorrFracEMG(:,:,x)')
+    imagesc(log10(lowerbound),log10(upperbound),squeeze(CorrFracEMG(:,:,x))')
     colormap(gca,'jet')
     LogScale('x',10); LogScale('y',10);
     %xticks(log10(lowerbound(1:3:end)));
@@ -113,7 +113,7 @@ for x = 1:size(movingwin,1)
     title(['Frac-EMG correlation win =',num2str(movingwin(x,1)/srate),'dt=',num2str(movingwin(x,2)/srate)]);
     
     subplot(size(movingwin,1),2,x*2); hold on;
-    imagesc(log10(lowerbound),log10(upperbound),CorrFracPupil(:,:,x)')
+    imagesc(log10(lowerbound),log10(upperbound),squeeze(CorrFracPupil(:,:,x))')
     colormap(gca,'jet')
     LogScale('x',10); LogScale('y',10);
     %xticks(lowerbound(1:5:end));
@@ -137,8 +137,8 @@ lfp = bz_GetLFP(channel,'basepath',basePath,'noPrompts',true);
 
 % Separate fractal and oscillatory components using sliding window
 srate = lfp.samplingRate; % sampling frequency SPECIFY...
-movingwin = round(([logspace(log10(0.25),log10(30),30); logspace(log10(0.25),log10(30),30)./4].*srate)'); % [window size, sliding step]
-lowerbound = logspace(log10(1),log10(80),30);
+movingwin = round(([logspace(log10(0.25),log10(100),10); logspace(log10(0.25),log10(100),10)./4].*srate)'); % [window size, sliding step]
+lowerbound = logspace(log10(0.5),log10(80),10);
 
 FracEMGrho = zeros(length(lowerbound),size(movingwin,1));
 FracPupilrho = zeros(length(lowerbound),size(movingwin,1));
@@ -178,13 +178,13 @@ save(savefile,'FracEMGrho','FracPupilrho');
 %% FIGURE:
 figure;
 subplot(1,2,1); hold on;
-imagesc(log10(lowerbound),log10(movingwin(:,1)./srate),FracEMGrho)
+imagesc(log10(lowerbound),log10(movingwin(:,1)./srate),FracEMGrho')
 colormap(gca,'jet')
 LogScale('x',10); LogScale('y',10);
-xticks(log10([1 2.5 5 10 20 30 40 50 60]));
-xticklabels({'1','2.5','5','10','20','30','40','50','60'});
-yticks(log10([0.25 0.5 1 2.5 5 15 30]));
-yticklabels({'0.25','0.5','1','2.5','5','15','30'});
+xticks(log10([1 2.5 5 10 20 40 80]));
+xticklabels({'1','2.5','5','10','20','40','80'});
+yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
+yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
 axis square
 axis tight
 ColorbarWithAxis([min(min(FracEMGrho)) max(max(FracEMGrho))],['Spearman corr'])
@@ -193,13 +193,13 @@ xlabel('lower f bound (Hz)');ylabel('interval window (s)');
 title(['Frac-EMG correlation']);
 
 subplot(1,2,2); hold on;
-imagesc(log10(lowerbound),log10(movingwin(:,1)./srate),FracPupilrho)
+imagesc(log10(lowerbound),log10(movingwin(:,1)./srate),FracPupilrho')
 colormap(gca,'jet')
 LogScale('x',10); LogScale('y',10);
-xticks(log10([1 2.5 5 10 20 30 40 50 60]));
-xticklabels({'1','2.5','5','10','20','30','40','50','60'});
-yticks(log10([0.25 0.5 1 2.5 5 15 30]));
-yticklabels({'0.25','0.5','1','2.5','5','15','30'});
+xticks(log10([1 2.5 5 10 20 40 80]));
+xticklabels({'1','2.5','5','10','20','40','80'});
+yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
+yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
 axis square
 axis tight
 ColorbarWithAxis([min(min(FracPupilrho)) max(max(FracPupilrho))],['Spearman corr'])

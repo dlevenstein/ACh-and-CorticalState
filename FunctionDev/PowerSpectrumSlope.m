@@ -1,217 +1,559 @@
-function [specslope,spec] = bz_PowerSpectrumSlope(lfp,winsize,dt,varargin)
-%[specslope,spec] = bz_PowerSpectrumSlope(lfp,winsize,dt) calculates the
-%slope of the power spectrum, a metric of cortical state and E/I balance
-%see He Neuron 2010;
-%
-%INPUTS
-%   lfp         a buzcode-formatted lfp structure (use bz_GetLFP)
-%               needs fields: lfp.data, lfp.timestamps, lfp.samplingRate
-%   winsize     size of the silding time window (s, 2-4 recommended)
-%   dt          sliding time interval (s)
-%
-%   (optional)
-%       'frange'    (default: [4 100])
-%       'channels'  subset of channels to calculate PowerSpectrumSlope
-%                   (default: all)
-%       'showfig'   true/false - show a summary figure of the results
-%                   (default:false)
-%       'saveMat'   put your basePath here to save/load
-%                   baseName.PowerSpectrumSlope.lfp.mat  (default: false)
-%       'Redetect'  (default: false) to force redetection even if saved
-%                   file exists
-%
-%OUTPUTS
-%   specslope
-%       .data
-%       .timestamps
-%       .intercept
-%   specgram
-%       .data       complex-valued spectrogram
-%       .timestamps
-%       .amp        log10-transformed amplitude of the spectrogram
-%
-%
-%DLevenstein, WMunoz 2019
-%%
-p = inputParser;
-addParameter(p,'showfig',false,@islogical)
-addParameter(p,'saveMat',false)
-addParameter(p,'channels',[])
-addParameter(p,'frange',[4 100])
-addParameter(p,'Redetect',false)
-parse(p,varargin{:})
-SHOWFIG = p.Results.showfig;
-saveMat = p.Results.saveMat;
-channels = p.Results.channels;
-frange = p.Results.frange;
-REDETECT = p.Results.Redetect;
+basePath = pwd;
+baseName = bz_BasenameFromBasepath(basePath);
+sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
+figfolder = fullfile(basePath,'DetectionFigures');
 
-%%
-if saveMat
-    basePath = saveMat;
-    baseName = bz_BasenameFromBasepath(basePath);
-    savename = fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']);
-    
-    if exist(savename,'file') && ~REDETECT
-        load(savename)
-        return
-    end
-end
+%% Loading behavior...
+% Pupil diameter
+pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
-%% For multiple lfp channels
-if ~isempty(channels)
-    usechans = ismember(lfp.channels,channels);
-    lfp.data = lfp.data(:,usechans);
-    lfp.channels = lfp.channels(usechans);
-elseif ~isfield(lfp,'channels')
-    lfp.channels = nan;
-end
+smoothwin = 0.5; %s
+pupildilation.data = smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving');
+nantimes = isnan(pupildilation.data);
+pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
 
-if length(lfp.channels)>1
-  %loop each channel and put the stuff in the right place
-	for cc = 1:length(lfp.channels)
-        if mod(cc,4)==1
-            display([num2str(cc),' of ',...
-                num2str(length(lfp.channels)),' complete!'])
-        end
-        lfp_temp = lfp; 
-        lfp_temp.data = lfp_temp.data(:,cc); 
-        lfp_temp.channels = lfp_temp.channels(cc);
-        specslope_temp = PowerSpectrumSlope(lfp_temp,winsize,dt,varargin{:});
-        
-        if ~exist('specslope','var')
-            specslope = specslope_temp;
-            %Don't save the big stuff for multiple channels.
-            specslope.resid = [];
-        else
-            specslope.data(:,cc) = specslope_temp.data;
-            specslope.intercept(:,cc) = specslope_temp.intercept;
-            specslope.rsq(:,cc) = specslope_temp.rsq;
-            specslope.specgram(:,:,cc) = specslope_temp.specgram;
-        end
-        
-	end
-    specslope.channels = lfp.channels;
-    %spec = [];
+if length(pupildilation.data) < 1
+    warning('Not enough pupil data >)');
     return
 end
-%%
-%Calcluate spectrogram
-noverlap = winsize-dt;
-spec.freqs = logspace(log10(frange(1)),log10(frange(2)),200);
-winsize_sf = round(winsize .*lfp.samplingRate);
-noverlap_sf = round(noverlap.*lfp.samplingRate);
-[spec.data,~,spec.timestamps] = spectrogram(single(lfp.data),winsize_sf,noverlap_sf,spec.freqs,lfp.samplingRate);
+pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 
-spec.amp = log10(abs(spec.data));
+% EMG
+EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
 
-%% Fit the slope of the power spectrogram
-rsq = zeros(size(spec.timestamps));
-s = zeros(length(spec.timestamps),2);
-yresid = zeros(length(spec.timestamps),length(spec.freqs));
-for tt = 1:length(spec.timestamps)
-    %Fit the line
-    x = log10(spec.freqs);  y=spec.amp(:,tt)';
-    s(tt,:) = polyfit(x,y,1);
-    %Calculate the residuals
-    yfit =  s(tt,1) * x + s(tt,2);
-    yresid(tt,:) = y - yfit;
-    %Calculate the rsquared value
-    SSresid = sum(yresid(tt,:).^2);
-    SStotal = (length(y)-1) * var(y);
-    rsq(tt) = 1 - SSresid/SStotal;
-end
+%Specifying SPONT whisking
+load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
+sidx = find(startsWith(MergePoints.foldernames,"Spont"));
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
 
-%% Output Structure
-specslope.data = s(:,1);
-specslope.intercept = s(:,2);
-specslope.timestamps = spec.timestamps';
-specslope.specgram = spec.amp;
-specslope.samplingRate = 1./dt;
+spontidx = find(EMGwhisk.ints.Wh(:,2) < sponttimes(2));
+EMGwhisk.ints.Wh = EMGwhisk.ints.Wh(spontidx,:);
 
-specslope.detectionparms.winsize = winsize;
-specslope.detectionparms.frange = frange;
+spontidx = find(EMGwhisk.ints.NWh(:,2) < sponttimes(2));
+EMGwhisk.ints.NWh = EMGwhisk.ints.NWh(spontidx,:);
 
-specslope.rsq = rsq';
-specslope.resid = yresid;
-specslope.freqs = spec.freqs;
+spontidx = find(EMGwhisk.timestamps < sponttimes(2));
+EMGwhisk.timestamps = EMGwhisk.timestamps(spontidx);
+EMGwhisk.EMGenvelope = EMGwhisk.EMGenvelope(spontidx);
+EMGwhisk.EMG = EMGwhisk.EMG(spontidx);
+EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 
-specslope.channels = lfp.channels;
+%% Optimizing lower frequency bounds and window/dt
+% Loading LFP for SlowWave detection channel
+load(fullfile(basePath,[baseName,'.SlowWaves.events.mat']),'SlowWaves');
+channel = SlowWaves.detectorinfo.detectionchannel;
+clear SlowWaves;
 
-if saveMat
-    save(savename,'specslope','spec');
-end
+lfp = bz_GetLFP(channel,'basepath',basePath,'noPrompts',true);
 
-%% Figure
-if SHOWFIG
+% Separate fractal and oscillatory components using sliding window
+srate = lfp.samplingRate; % sampling frequency SPECIFY...
+movingwin = round(([logspace(log10(0.25),log10(100),10); logspace(log10(0.25),log10(100),10)./4].*srate)'); % [window size, sliding step]
+lowerbound = logspace(log10(0.5),log10(80),10);
+
+FracEMGrho = zeros(length(lowerbound),size(movingwin,1));
+FracEMGp = zeros(length(lowerbound),size(movingwin,1));
+FracPupilrho = zeros(length(lowerbound),size(movingwin,1));
+FracPupilp = zeros(length(lowerbound),size(movingwin,1));
+
+Fracmeanrsq = zeros(length(lowerbound),size(movingwin,1));
+Fracrsqcorr = zeros(length(lowerbound),size(movingwin,1));
+Fracrsqp = zeros(length(lowerbound),size(movingwin,1));
+
+for x = 1:size(movingwin,1)
+    nwin = floor((length(lfp.data) - movingwin(x,1))/movingwin(x,2));
+    sig = zeros(movingwin(x,1),nwin);
     
-    bigsamplewin = bz_RandomWindowInIntervals(spec.timestamps([1 end]),30);
-
-   %hist(specslope.data,10)
-   specmean.all = mean(spec.amp,2);
-   slopebinIDs = discretize(specslope.data,linspace(min(specslope.data),max(specslope.data),6));
-   for bb = 1:length(unique(slopebinIDs))
-        specmean.bins(bb,:) = mean(spec.amp(:,slopebinIDs==bb),2);
-        
-        exwin(bb,:) = spec.timestamps(randsample(find(slopebinIDs==bb),1))+(winsize.*[-0.5 0.5]);
-   end
-figure
-    subplot(4,1,1)
-        imagesc(spec.timestamps,log2(spec.freqs),spec.amp)
-        LogScale('y',2)
-        ylabel('f (Hz)')
-        axis xy
-        xlim(bigsamplewin)
-        bz_ScaleBar('s')
-    subplot(8,1,3)
-        plot(lfp.timestamps,lfp.data,'k')
-        axis tight
-        box off
-        xlim(bigsamplewin)
-        lfprange = get(gca,'ylim');
-        set(gca,'XTickLabel',[])
-        ylabel('LFP')
-    subplot(8,1,4)
-        plot(specslope.timestamps,specslope.data,'k')
-        axis tight
-        box off
-        xlim(bigsamplewin)
-        set(gca,'XTickLabel',[])
-         
-    subplot(6,2,7)
-        hist(specslope.data,10)
-        box off
-        xlabel('PSS')
-        
-        
-    subplot(3,3,7)
-        plot(log2(spec.freqs),specmean.all,'k','linewidth',2)
-        hold on
-        plot(log2(spec.freqs),specmean.bins,'k')
-        LogScale('x',2)
-        axis tight
-        box off
-        
-    for bb = 1:2:5    
-	subplot(6,2,12-(bb-1))
-        plot(lfp.timestamps,lfp.data,'k')
-        axis tight
-        box off
-        xlim(exwin(bb,:)');ylim(lfprange)
-        set(gca,'XTickLabel',[])
-        set(gca,'YTick',[])
-        ylabel('LFP')
+    for i = 1 : nwin
+        sig(:,i) = lfp.data(ceil((i-1)*movingwin(x,2))+1 : ceil((i-1)*movingwin(x,2))+movingwin(x,1));
     end
-        bz_ScaleBar('s')
-
-if saveMat
-    figfolder = [basePath,filesep,'DetectionFigures'];
-    NiceSave('PowerSpectrumSlope',figfolder,baseName)
-end
+    
+    Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+    st = movingwin(x,1)/(srate*2);
+    Frac.timestamps = st + ((0:nwin-1) * movingwin(x,2)/srate);
+    
+    % Interpolating...
+    PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,Frac.timestamps);
+    PSS.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
+        Frac.timestamps,'nearest');
+    
+    for f = 1:length(lowerbound)
+        Frange = [lowerbound(f), 100]; % define frequency range for power-law fitting
+        Frac = amri_sig_plawfit(Frac,Frange);
         
+        %
+        [FracEMGrho(f,x),FracEMGp(f,x)] = corr(log10(PSS.EMG)',...
+            Frac.Beta.*-1,'type','spearman','rows','complete');
+        
+        [FracPupilrho(f,x),FracPupilp(f,x)] = corr(log10(PSS.pupilsize)',...
+            Frac.Beta.*-1,'type','spearman','rows','complete');
+        
+        %
+        Fracmeanrsq(f,x) = nanmean(Frac.rsq);
+        
+        [Fracrsqcorr(f,x),Fracrsqp(f,x)] = corr(Frac.rsq,...
+            Frac.Beta.*-1,'type','spearman','rows','complete');
+    end
 end
 
+%% FIGURE
+figure;
 
+subplot(2,2,1); hold on;
+winds = movingwin(:,1)./srate;
+imagesc(log10(lowerbound),log10(winds),FracEMGrho')
+[row,col] = find(FracEMGp > 0.05);
+plot(log10(lowerbound(row)),log10(winds(col)),'.w')
+colormap(gca,'jet')
+LogScale('x',10); LogScale('y',10);
+xticks(log10([1 2.5 5 10 20 40 80]));
+xticklabels({'1','2.5','5','10','20','40','80'});
+yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
+yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
+axis square
+axis tight
+ColorbarWithAxis([min(min(FracEMGrho)) max(max(FracEMGrho))],['Spearman corr'])
+caxis([min(min(FracEMGrho)) max(max(FracEMGrho))])
+xlabel('lower f bound (Hz)');ylabel('interval window (s)');
+title(['Frac-EMG correlation']);
+
+subplot(2,2,2); hold on;
+imagesc(log10(lowerbound),log10(winds),FracPupilrho')
+[row,col] = find(FracPupilp > 0.05);
+plot(log10(lowerbound(row)),log10(winds(col)),'.w')
+colormap(gca,'jet')
+LogScale('x',10); LogScale('y',10);
+xticks(log10([1 2.5 5 10 20 40 80]));
+xticklabels({'1','2.5','5','10','20','40','80'});
+yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
+yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
+axis square
+axis tight
+ColorbarWithAxis([min(min(FracPupilrho)) max(max(FracPupilrho))],['Spearman corr'])
+caxis([min(min(FracPupilrho)) max(max(FracPupilrho))])
+xlabel('lower f bound (Hz)'); ylabel('interval window (s)');
+title('Frac-Pupil diameter correlation');
+
+subplot(2,2,3); hold on;
+imagesc(log10(lowerbound),log10(winds),Fracmeanrsq')
+colormap(gca,'jet')
+LogScale('x',10); LogScale('y',10);
+xticks(log10([1 2.5 5 10 20 40 80]));
+xticklabels({'1','2.5','5','10','20','40','80'});
+yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
+yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
+axis square
+axis tight
+ColorbarWithAxis([min(min(Fracmeanrsq)) max(max(Fracmeanrsq))],['au'])
+caxis([min(min(Fracmeanrsq)) max(max(Fracmeanrsq))])
+xlabel('lower f bound (Hz)');ylabel('interval window (s)');
+title(['Mean RSQ slope fit']);
+
+subplot(2,2,4); hold on;
+imagesc(log10(lowerbound),log10(winds),Fracrsqcorr')
+[row,col] = find(Fracrsqp > 0.05);
+plot(log10(lowerbound(row)),log10(winds(col)),'.w')
+colormap(gca,'jet')
+LogScale('x',10); LogScale('y',10);
+xticks(log10([1 2.5 5 10 20 40 80]));
+xticklabels({'1','2.5','5','10','20','40','80'});
+yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
+yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
+axis square
+axis tight
+ColorbarWithAxis([min(min(Fracrsqcorr)) max(max(Fracrsqcorr))],['Spearman corr'])
+caxis([min(min(Fracrsqcorr)) max(max(Fracrsqcorr))])
+xlabel('lower f bound (Hz)'); ylabel('interval window (s)');
+title('Frac-RSQ correlation');
+
+NiceSave('Frac_EMG_Pupil_RSQ_Corr_p_win_lof',figfolder,baseName);
+
+%% Example slow/fast PSS, RSQ, EMG and Pupil...
+% Fast PSS
+movingwin = round([1 0.25].*srate);
+Frange = [5,100];
+
+nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
+sig = zeros(movingwin(1),nwin);
+for i = 1 : nwin
+    sig(:,i) = lfp.data(ceil((i-1)*movingwin(2))+1 : ceil((i-1)*movingwin(2))+movingwin(1));
+end
+Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+Frac.timestamps = st + ((0:nwin-1) * movingwin(2)/srate);
+Frac_fast = amri_sig_plawfit(Frac,Frange);
+
+% Slow PSS
+movingwin = round([15 3.75].*srate);
+Frange = [2.5,100];
+
+nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
+sig = zeros(movingwin(1),nwin);
+for i = 1 : nwin
+    sig(:,i) = lfp.data(ceil((i-1)*movingwin(2))+1 : ceil((i-1)*movingwin(2))+movingwin(1));
+end
+Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+Frac.timestamps = st + ((0:nwin-1) * movingwin(2)/srate);
+Frac_slow = amri_sig_plawfit(Frac,Frange);
+
+PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,Frac_slow.timestamps);
+PSS.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
+    Frac_slow.timestamps,'nearest');
+    
+%% FIGURE
+figure;
+
+h(1) = subplot(9,1,1); hold on;
+plot(Frac_fast.timestamps,Frac_fast.rsq,'k');
+plot(Frac_slow.timestamps,Frac_slow.rsq,'r');
+ylim([0 1]);
+legend({'RSQ fast','RSQ slow'},'location','southeast')
+
+h(2) = subplot(9,1,2:3); hold on;
+plot(Frac_fast.timestamps,Frac_fast.Beta.*-1,'k');
+plot(Frac_slow.timestamps,Frac_slow.Beta.*-1,'r');
+legend({'Frac fast','Frac slow'},'location','southeast')
+
+h(3) = subplot(9,1,4:5); hold on;
+plot(Frac_slow.timestamps,PSS.EMG,'k');
+legend({'EMG'},'location','southeast')
+
+h(4) = subplot(9,1,6:7); hold on;
+plot(Frac_slow.timestamps,PSS.pupilsize,'k');
+legend({'Pupil diameter'},'location','southeast')
+
+h(5) = subplot(9,1,8:9); hold on;
+deltarange = find(Frac_slow.freq >= 0.5 & Frac_slow.freq <= 3);
+plot(Frac_slow.timestamps,...
+    nanmean(Frac_slow.osci(deltarange,:),1)./max(nanmean(Frac_slow.osci(deltarange,:),1)),'r');
+thetarange = find(Frac_slow.freq >= 4 & Frac_slow.freq <= 10);
+plot(Frac_slow.timestamps,...
+    nanmean(Frac_slow.osci(thetarange,:),1)./max(nanmean(Frac_slow.osci(thetarange,:),1)),'g');
+gammarange = find(Frac_slow.freq >= 40 & Frac_slow.freq <= 120);
+plot(Frac_slow.timestamps,...
+    nanmean(Frac_slow.osci(gammarange,:),1)./max(nanmean(Frac_slow.osci(gammarange,:),1)),'b');
+legend({'Delta','Theta','Gamma'},'location','southeast')
+
+linkaxes(h,'x');
+xlim([250 1050]);
+xlabel('time (s)');
+
+NiceSave('Example_PSS_rsq_osci_behavior',figfolder,baseName);
+
+%% Correlating PSS/Oscillatory component to EMG/Pupil diameter by depth
+badchannels = sessionInfo.badchannels;
+usechannels = sessionInfo.AnatGrps.Channels;
+usechannels(ismember(usechannels,badchannels))=[];
+
+% Assuming that LFP still remains loaded from prior analysis...
+movingwin = [1 0.25].*srate;
+nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
+st = movingwin(1)/(srate*2);
+
+% Selected from prior analysis
+Frange = [5, 100]; % define frequency range for power-law fitting
+
+% Now calculating corrs...
+PSS = []; Osci = [];
+
+PSScorr.EMG = zeros(length(usechannels),1);
+PSScorr.EMG_p = zeros(length(usechannels),1);
+PSScorr.Pup = zeros(length(usechannels),1);
+PSScorr.Pup_p = zeros(length(usechannels),1);
+
+Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
+
+nbins = 100;
+PSSstatsdepth.bins = linspace(-5,0,nbins);
+PSSstatsdepth.dist = zeros(length(usechannels),nbins);
+
+for cc = 1:length(usechannels)
+    cc
+    channum = usechannels(cc);
+    lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
+    
+    %% Deconstruction
+    sig = zeros(movingwin(1),nwin);
+    for i = 1 : nwin
+        sig(:,i) = lfp.data(ceil((i-1)*movingwin(2))+1 : ceil((i-1)*movingwin(2))+movingwin(1));
+    end
+    clear lfp
+    
+    Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+    Frac.timestamps = st + ((0:nwin-1) * movingwin(2)/srate);
+    Frac = amri_sig_plawfit(Frac,Frange);
+    
+    PSS = cat(2,PSS,Frac.Beta.*-1);
+    Osci = cat(2,Osci,mean(Frac.osci,2));
+    
+    %% Histos
+    PSSstatsdepth.dist(cc,:) = hist(Frac.Beta.*-1,PSSstatsdepth.bins);
+    PSSstatsdepth.dist(cc,:)./sum(PSSstatsdepth.dist(cc,:));
+    
+    %% Interpolating...
+    temp_EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,Frac.timestamps);
+    temp_Pup = interp1(pupildilation.timestamps,pupildilation.data,...
+        Frac.timestamps,'nearest');
+    
+    %% Corrsss
+    [PSScorr.EMG(cc),PSScorr.EMG_p(cc)] =...
+        corr(log10(temp_EMG)',Frac.Beta.*-1,...
+        'type','spearman','rows','complete');
+    [PSScorr.Pup(cc),PSScorr.Pup_p(cc)] =...
+        corr(log10(temp_Pup)',Frac.Beta.*-1,...
+        'type','spearman','rows','complete');
+    
+    for x = 1:size(Frac.osci,1)
+        [Oscicorr.EMG(x,cc),Oscicorr.EMG_p(x,cc)] =...
+            corr(log10(temp_EMG)',Frac.osci(x,:)',...
+            'type','spearman','rows','complete');
+        [Oscicorr.Pup(x,cc),Oscicorr.Pup_p(x,cc)] =...
+            corr(log10(temp_Pup)',Frac.osci(x,:)',...
+            'type','spearman','rows','complete');
+    end
 end
 
+%% FIGURE
+figure;
+subplot(2,2,1);
+imagesc(PSSstatsdepth.bins,1:length(usechannels),PSSstatsdepth.dist)
+ColorbarWithAxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))],['counts'])
+caxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))])
+xlabel('PSS distributions (au)')
+xlim([-4 -1]);
+ylabel('channel no. (depth-aligned)')
+colormap(gca,'jet')
+axis tight
+
+subplot(2,2,2);
+plot(PSScorr.EMG,1:length(usechannels),'k','linewidth',2)
+hold on;
+plot(PSScorr.Pup,1:length(usechannels),'r','linewidth',2)
+legend('PSS-EMG corr','PSS-pupil diameter corr','location','eastoutside')
+xlabel('PSS-Behavior correlation');
+set(gca,'ydir','reverse')
+axis tight
+
+subplot(2,2,3);
+imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.EMG')
+LogScale('x',10);
+colormap(gca,'jet')
+ColorbarWithAxis([min(min(Oscicorr.EMG)) max(max(Oscicorr.EMG))],['Spearman corr'])
+caxis([min(min(Oscicorr.EMG)) max(max(Oscicorr.EMG))])
+xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
+title('Oscillatory LFP-EMG correlation');
+
+subplot(2,2,4);
+imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.Pup')
+LogScale('x',10);
+colormap(gca,'jet')
+ColorbarWithAxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))],['Spearman corr'])
+caxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))])
+xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
+title('Oscillatory LFP-Pupil diameter correlation');
+
+NiceSave('fPSS_Behavior_CorrbyDepth',figfolder,baseName)
+
+%% Xcorr PSS/Oscillatory component by depth
+PSSxcorr = zeros(size(PSS,2),size(PSS,2));
+PSSxcorr_p = zeros(size(PSS,2),size(PSS,2));
+for x = 1:size(PSS,2)
+    for y = 1:size(PSS,2)
+        [PSSxcorr(x,y),PSSxcorr_p(x,y)] = corr(PSS(:,x),PSS(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
+Oscixcorr = zeros(size(Osci,2),size(Osci,2));
+Oscixcorr_p = zeros(size(Osci,2),size(Osci,2));
+for x = 1:size(Osci,2)
+    for y = 1:size(Osci,2)
+        [Oscixcorr(x,y),Oscixcorr_p(x,y)] = corr(Osci(:,x),Osci(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
+%% FIGURE
+figure;
+
+subplot(1,2,1);
+imagesc(1:length(usechannels),1:length(usechannels),PSSxcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(PSSxcorr)) max(max(PSSxcorr))],['Spearman corr'])
+caxis([min(min(PSSxcorr)) max(max(PSSxcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('PSS-PSS xcorr by depth');
+
+subplot(1,2,2);
+imagesc(1:length(usechannels),1:length(usechannels),Oscixcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(Oscixcorr)) max(max(Oscixcorr))],['Spearman corr'])
+caxis([min(min(Oscixcorr)) max(max(Oscixcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('Oscillatory-Oscillatory LFP xcorr by depth');
+
+NiceSave('fPSS_Osci_Xcorrbydepth',figfolder,baseName);
+
+%% Again... but slow!
+% Assuming that LFP still remains loaded from prior analysis...
+movingwin = [15 3.75].*srate;
+nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
+st = movingwin(1)/(srate*2);
+
+% Selected from prior analysis
+Frange = [2.5, 100]; % define frequency range for power-law fitting
+
+% Now calculating corrs...
+PSS = []; Osci = [];
+
+PSScorr.EMG = zeros(length(usechannels),1);
+PSScorr.EMG_p = zeros(length(usechannels),1);
+PSScorr.Pup = zeros(length(usechannels),1);
+PSScorr.Pup_p = zeros(length(usechannels),1);
+
+Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
+Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
+
+nbins = 100;
+PSSstatsdepth.bins = linspace(-5,0,nbins);
+PSSstatsdepth.dist = zeros(length(usechannels),nbins);
+
+for cc = 1:length(usechannels)
+    cc
+    channum = usechannels(cc);
+    lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
+    
+    %% Deconstruction
+    sig = zeros(movingwin(1),nwin);
+    for i = 1 : nwin
+        sig(:,i) = lfp.data(ceil((i-1)*movingwin(2))+1 : ceil((i-1)*movingwin(2))+movingwin(1));
+    end
+    clear lfp
+    
+    Frac = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+    Frac.timestamps = st + ((0:nwin-1) * movingwin(2)/srate);
+    Frac = amri_sig_plawfit(Frac,Frange);
+    
+    PSS = cat(2,PSS,Frac.Beta.*-1);
+    Osci = cat(2,Osci,mean(Frac.osci,2));
+    
+    %% Histos
+    PSSstatsdepth.dist(cc,:) = hist(Frac.Beta.*-1,PSSstatsdepth.bins);
+    PSSstatsdepth.dist(cc,:)./sum(PSSstatsdepth.dist(cc,:));
+    
+    %% Interpolating...
+    temp_EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,Frac.timestamps);
+    temp_Pup = interp1(pupildilation.timestamps,pupildilation.data,...
+        Frac.timestamps,'nearest');
+    
+    %% Corrsss
+    [PSScorr.EMG(cc),PSScorr.EMG_p(cc)] =...
+        corr(log10(temp_EMG)',Frac.Beta.*-1,...
+        'type','spearman','rows','complete');
+    [PSScorr.Pup(cc),PSScorr.Pup_p(cc)] =...
+        corr(log10(temp_Pup)',Frac.Beta.*-1,...
+        'type','spearman','rows','complete');
+    
+    for x = 1:size(Frac.osci,1)
+        [Oscicorr.EMG(x,cc),Oscicorr.EMG_p(x,cc)] =...
+            corr(log10(temp_EMG)',Frac.osci(x,:)',...
+            'type','spearman','rows','complete');
+        [Oscicorr.Pup(x,cc),Oscicorr.Pup_p(x,cc)] =...
+            corr(log10(temp_Pup)',Frac.osci(x,:)',...
+            'type','spearman','rows','complete');
+    end
+end
+
+%% FIGURE
+figure;
+subplot(2,2,1);
+imagesc(PSSstatsdepth.bins,1:length(usechannels),PSSstatsdepth.dist)
+ColorbarWithAxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))],['counts'])
+caxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))])
+xlabel('PSS distributions (au)')
+xlim([-4 -1]);
+ylabel('channel no. (depth-aligned)')
+colormap(gca,'jet')
+axis tight
+
+subplot(2,2,2);
+plot(PSScorr.EMG,1:length(usechannels),'k','linewidth',2)
+hold on;
+plot(PSScorr.Pup,1:length(usechannels),'r','linewidth',2)
+legend('PSS-EMG corr','PSS-pupil diameter corr','location','eastoutside')
+xlabel('PSS-Behavior correlation');
+set(gca,'ydir','reverse')
+axis tight
+
+subplot(2,2,3);
+imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.EMG')
+LogScale('x',10);
+colormap(gca,'jet')
+ColorbarWithAxis([min(min(Oscicorr.EMG)) max(max(Oscicorr.EMG))],['Spearman corr'])
+caxis([min(min(Oscicorr.EMG)) max(max(Oscicorr.EMG))])
+xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
+title('Oscillatory LFP-EMG correlation');
+
+subplot(2,2,4);
+imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.Pup')
+LogScale('x',10);
+colormap(gca,'jet')
+ColorbarWithAxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))],['Spearman corr'])
+caxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))])
+xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
+title('Oscillatory LFP-Pupil diameter correlation');
+
+NiceSave('sPSS_Behavior_CorrbyDepth',figfolder,baseName)
+
+%% Xcorr PSS/Oscillatory component by depth
+PSSxcorr = zeros(size(PSS,2),size(PSS,2));
+PSSxcorr_p = zeros(size(PSS,2),size(PSS,2));
+for x = 1:size(PSS,2)
+    for y = 1:size(PSS,2)
+        [PSSxcorr(x,y),PSSxcorr_p(x,y)] = corr(PSS(:,x),PSS(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
+Oscixcorr = zeros(size(Osci,2),size(Osci,2));
+Oscixcorr_p = zeros(size(Osci,2),size(Osci,2));
+for x = 1:size(Osci,2)
+    for y = 1:size(Osci,2)
+        [Oscixcorr(x,y),Oscixcorr_p(x,y)] = corr(Osci(:,x),Osci(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
+%% FIGURE
+figure;
+
+subplot(1,2,1);
+imagesc(1:length(usechannels),1:length(usechannels),PSSxcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(PSSxcorr)) max(max(PSSxcorr))],['Spearman corr'])
+caxis([min(min(PSSxcorr)) max(max(PSSxcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('PSS-PSS xcorr by depth');
+
+subplot(1,2,2);
+imagesc(1:length(usechannels),1:length(usechannels),Oscixcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(Oscixcorr)) max(max(Oscixcorr))],['Spearman corr'])
+caxis([min(min(Oscixcorr)) max(max(Oscixcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('Oscillatory-Oscillatory LFP xcorr by depth');
+
+NiceSave('sPSS_Osci_Xcorrbydepth',figfolder,baseName);
