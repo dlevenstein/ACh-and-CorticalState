@@ -292,7 +292,6 @@ for cc = 1:length(usechannels)
     lfp.data = lfp.data(spontidx);
     lfp.timestamps = lfp.timestamps(spontidx);
     
-    downsamplefactor = 2;
     lfp.samplingRate = lfp.samplingRate./downsamplefactor;
     lfp.data = downsample(lfp.data,downsamplefactor);
     lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
@@ -462,7 +461,6 @@ for cc = 1:length(usechannels)
     lfp.data = lfp.data(spontidx);
     lfp.timestamps = lfp.timestamps(spontidx);
     
-    downsamplefactor = 2;
     lfp.samplingRate = lfp.samplingRate./downsamplefactor;
     lfp.data = downsample(lfp.data,downsamplefactor);
     lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
