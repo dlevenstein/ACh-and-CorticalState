@@ -261,10 +261,15 @@ PSScorr.EMG_p = zeros(length(usechannels),1);
 PSScorr.Pup = zeros(length(usechannels),1);
 PSScorr.Pup_p = zeros(length(usechannels),1);
 
-Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
-Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
-Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
-Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
+% Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
+% Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
+% Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
+% Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
+
+Oscicorr.EMG = zeros(512,length(usechannels));
+Oscicorr.EMG_p = zeros(512,length(usechannels));
+Oscicorr.Pup = zeros(512,length(usechannels));
+Oscicorr.Pup_p = zeros(512,length(usechannels));
 
 nbins = 100;
 PSSstatsdepth.bins = linspace(-5,0,nbins);
@@ -418,10 +423,15 @@ PSScorr.EMG_p = zeros(length(usechannels),1);
 PSScorr.Pup = zeros(length(usechannels),1);
 PSScorr.Pup_p = zeros(length(usechannels),1);
 
-Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
-Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
-Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
-Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
+% Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
+% Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
+% Oscicorr.Pup = zeros(size(Frac.osci,1),length(usechannels));
+% Oscicorr.Pup_p = zeros(size(Frac.osci,1),length(usechannels));
+
+Oscicorr.EMG = zeros(8192,length(usechannels));
+Oscicorr.EMG_p = zeros(8192,length(usechannels));
+Oscicorr.Pup = zeros(8192,length(usechannels));
+Oscicorr.Pup_p = zeros(8192,length(usechannels));
 
 nbins = 100;
 PSSstatsdepth.bins = linspace(-5,0,nbins);
