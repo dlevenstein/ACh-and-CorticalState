@@ -171,8 +171,8 @@ yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
 yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
 axis square
 axis tight
-ColorbarWithAxis([min(min(Fracrsqcorr)) max(max(Fracrsqcorr))],['Spearman corr'])
-caxis([min(min(Fracrsqcorr)) max(max(Fracrsqcorr))])
+ColorbarWithAxis([-1 1],['Spearman corr'])
+caxis([-1 1])
 xlabel('lower f bound (Hz)'); ylabel('interval window (s)');
 title('Frac-RSQ correlation');
 
@@ -423,7 +423,14 @@ title('Oscillatory-Oscillatory LFP xcorr by depth');
 NiceSave('fPSS_Osci_Xcorrbydepth',figfolder,baseName);
 
 %% Again... but slow!
-% Assuming that LFP still remains loaded from prior analysis...
+lfp = bz_GetLFP(channel,'basepath',basePath,'noPrompts',true);
+lfp.data = lfp.data(spontidx);
+lfp.timestamps = lfp.timestamps(spontidx);
+
+lfp.samplingRate = lfp.samplingRate./downsamplefactor;
+lfp.data = downsample(lfp.data,downsamplefactor);
+lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
+
 movingwin = [15 3.75].*srate;
 nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
 st = movingwin(1)/(srate*2);
