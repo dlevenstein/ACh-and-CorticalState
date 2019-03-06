@@ -47,6 +47,15 @@ clear SlowWaves;
 
 lfp = bz_GetLFP(channel,'basepath',basePath,'noPrompts',true);
 
+spontidx = find(lfp.timestamps < sponttimes(2));
+lfp.data = lfp.data(spontidx);
+lfp.timestamps = lfp.timestamps(spontidx);
+
+downsamplefactor = 2;
+lfp.samplingRate = lfp.samplingRate./downsamplefactor;
+lfp.data = downsample(lfp.data,downsamplefactor);
+lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
+
 % Separate fractal and oscillatory components using sliding window
 srate = lfp.samplingRate; % sampling frequency SPECIFY...
 movingwin = round(([logspace(log10(0.25),log10(100),10); logspace(log10(0.25),log10(100),10)./4].*srate)'); % [window size, sliding step]
@@ -280,6 +289,14 @@ for cc = 1:length(usechannels)
     channum = usechannels(cc);
     lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
     
+    lfp.data = lfp.data(spontidx);
+    lfp.timestamps = lfp.timestamps(spontidx);
+    
+    downsamplefactor = 2;
+    lfp.samplingRate = lfp.samplingRate./downsamplefactor;
+    lfp.data = downsample(lfp.data,downsamplefactor);
+    lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
+    
     %% Deconstruction
     sig = zeros(movingwin(1),nwin);
     for i = 1 : nwin
@@ -441,6 +458,14 @@ for cc = 1:length(usechannels)
     cc
     channum = usechannels(cc);
     lfp = bz_GetLFP(channum,'basepath',basePath,'noPrompts',true);
+    
+    lfp.data = lfp.data(spontidx);
+    lfp.timestamps = lfp.timestamps(spontidx);
+    
+    downsamplefactor = 2;
+    lfp.samplingRate = lfp.samplingRate./downsamplefactor;
+    lfp.data = downsample(lfp.data,downsamplefactor);
+    lfp.timestamps = downsample(lfp.timestamps,downsamplefactor);
     
     %% Deconstruction
     sig = zeros(movingwin(1),nwin);
