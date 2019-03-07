@@ -1,4 +1,4 @@
-function [rescaled] = rescaleCx( varargin )
+function [rescaled] = rescaleCx( basePath, varargin )
 %
 %   RESCALES laminar .lfp data according to normalized cortical column, as in
 %   Munoz et al. 2017 Science Sst IN paper. Assumes H3 Cambridge NeuroTech
