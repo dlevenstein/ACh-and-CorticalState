@@ -23,7 +23,7 @@ function [rescaled] = rescaleCx( basePath, varargin )
 %% Parse the inputs!
 % parse args
 p = inputParser;
-addParameter(p,'basePath',pwd,@isstr);
+addParameter(p,'basePath',[],@isstr);
 addParameter(p,'BADOUT',false,@islogical);
 
 parse(p,varargin{:})
