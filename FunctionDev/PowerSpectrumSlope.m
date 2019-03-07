@@ -3,6 +3,7 @@ baseName = bz_BasenameFromBasepath(basePath);
 sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 figfolder = fullfile(basePath,'DetectionFigures');
+savefile = fullfile(basePath,[baseName,'.Optimization.PSS.lfp.mat']);
 
 %% Loading behavior...
 % Pupil diameter
@@ -113,6 +114,17 @@ for x = 1:size(movingwin,1)
             Frac.Beta.*-1,'type','spearman','rows','complete');
     end
 end
+
+%Saving to struct
+PSpecSlope.Opti.movingwin = movingwin./srate;
+PSpecSlope.Opti.lowerbound = lowerbound;
+PSpecSlope.Opti.FracEMGrho = FracEMGrho;
+PSpecSlope.Opti.FracEMGp = FracEMGp;
+PSpecSlope.Opti.FracPupilrho = FracPupilrho;
+PSpecSlope.Opti.FracPupilp = FracPupilp;
+PSpecSlope.Opti.Fracmeanrsq = Fracmeanrsq;
+PSpecSlope.Opti.Fracrsqcorr = Fracrsqcorr;
+PSpecSlope.Opti.Fracrsqp = Fracrsqp;
 
 %% FIGURE
 figure;
@@ -242,26 +254,30 @@ wavespec.data = abs(wavespec.data)';
 
 figure;
 
-h(1) = subplot(9,1,1); hold on;
+h(1) = subplot(12,1,1); hold on;
 plot(Frac_fast.timestamps,Frac_fast.rsq,'k');
 plot(Frac_slow.timestamps,Frac_slow.rsq,'r');
 ylim([0 1]);
 legend({'RSQ fast','RSQ slow'},'location','southeast')
 
-h(2) = subplot(9,1,2:3); hold on;
+h(2) = subplot(12,1,2:3); hold on;
+plot(intlfp.timestamps,intlfp.data,'b');
+legend({'LFP'},'location','southeast')
+ 
+h(3) = subplot(12,1,4:5); hold on;
 plot(Frac_fast.timestamps,Frac_fast.Beta.*-1,'k');
 plot(Frac_slow.timestamps,Frac_slow.Beta.*-1,'r');
 legend({'Frac fast','Frac slow'},'location','southeast')
 
-h(3) = subplot(9,1,4:5); hold on;
+h(4) = subplot(12,1,6:7); hold on;
 plot(Frac_fast.timestamps,PSS.EMG,'k');
 legend({'EMG'},'location','southeast')
 
-h(4) = subplot(9,1,6:7); hold on;
+h(5) = subplot(12,1,8:9); hold on;
 plot(Frac_fast.timestamps,PSS.pupilsize,'k');
 legend({'Pupil diameter'},'location','southeast')
 
-h(5) = subplot(9,1,8:9); hold on;
+h(6) = subplot(12,1,10:12); hold on;
 imagesc(wavespec.timestamps,log10(wavespec.freqs),wavespec.data);
 caxis([min(min(wavespec.data)) max(max(wavespec.data))]);
 LogScale('y',10);
@@ -422,6 +438,24 @@ for cc = 1:length(usechannels)
     
 end
 
+% Saving to struct
+PSpecSlope.Shortwin.usechannels = usechannels;
+PSpecSlope.Shortwin.movingwin = movingwin./srate;
+PSpecSlope.Shortwin.Frange = Frange;
+PSpecSlope.Shortwin.timestamps = Frac.timestamps;
+PSpecSlope.Shortwin.PSS = PSS; 
+PSpecSlope.Shortwin.Osci = Osci;
+PSpecSlope.Shortwin.Deltaosci = Deltaosci; 
+PSpecSlope.Shortwin.Thetaosci = Thetaosci; 
+PSpecSlope.Shortwin.Gammaosci = Gammaosci;
+
+PSpecSlope.Shortwin.PSScorr = PSScorr;
+PSpecSlope.Shortwin.dcorr = dcorr;
+PSpecSlope.Shortwin.tcorr = tcorr;
+PSpecSlope.Shortwin.gcorr = gcorr;
+PSpecSlope.Shortwin.Oscicorr = Oscicorr;
+PSpecSlope.Shortwin.PSSstatsdepth = PSSstatsdepth;
+
 %% FIGURE
 figure;
 subplot(2,3,1);
@@ -528,6 +562,18 @@ for x = 1:size(Deltaosci,2)
             'type','spearman','rows','complete');
     end
 end
+
+% Saving to struct
+PSpecSlope.Shortwin.PSSxcorr = PSSxcorr;
+PSpecSlope.Shortwin.PSSxcorr_p = PSSxcorr_p;
+PSpecSlope.Shortwin.Oscixcorr = Oscixcorr;
+PSpecSlope.Shortwin.Oscixcorr_p = Oscixcorr_p;
+PSpecSlope.Shortwin.dxcorr = dxcorr;
+PSpecSlope.Shortwin.dxcorr_p = dxcorr_p;
+PSpecSlope.Shortwin.txcorr = txcorr;
+PSpecSlope.Shortwin.txcorr_p = txcorr_p;
+PSpecSlope.Shortwin.gxcorr = gxcorr;
+PSpecSlope.Shortwin.gxcorr_p = gxcorr_p;
 
 %% FIGURE
 figure;
@@ -733,6 +779,24 @@ for cc = 1:length(usechannels)
     
 end
 
+% Saving to struct
+PSpecSlope.Longwin.usechannels = usechannels;
+PSpecSlope.Longwin.movingwin = movingwin./srate;
+PSpecSlope.Longwin.Frange = Frange;
+PSpecSlope.Longwin.timestamps = Frac.timestamps;
+PSpecSlope.Longwin.PSS = PSS; 
+PSpecSlope.Longwin.Osci = Osci;
+PSpecSlope.Longwin.Deltaosci = Deltaosci; 
+PSpecSlope.Longwin.Thetaosci = Thetaosci; 
+PSpecSlope.Longwin.Gammaosci = Gammaosci;
+
+PSpecSlope.Longwin.PSScorr = PSScorr;
+PSpecSlope.Longwin.dcorr = dcorr;
+PSpecSlope.Longwin.tcorr = tcorr;
+PSpecSlope.Longwin.gcorr = gcorr;
+PSpecSlope.Longwin.Oscicorr = Oscicorr;
+PSpecSlope.Longwin.PSSstatsdepth = PSSstatsdepth;
+
 %% FIGURE
 figure;
 subplot(2,3,1);
@@ -839,6 +903,21 @@ for x = 1:size(Deltaosci,2)
             'type','spearman','rows','complete');
     end
 end
+
+% Saving to struct
+PSpecSlope.Longwin.PSSxcorr = PSSxcorr;
+PSpecSlope.Longwin.PSSxcorr_p = PSSxcorr_p;
+PSpecSlope.Longwin.Oscixcorr = Oscixcorr;
+PSpecSlope.Longwin.Oscixcorr_p = Oscixcorr_p;
+PSpecSlope.Longwin.dxcorr = dxcorr;
+PSpecSlope.Longwin.dxcorr_p = dxcorr_p;
+PSpecSlope.Longwin.txcorr = txcorr;
+PSpecSlope.Longwin.txcorr_p = txcorr_p;
+PSpecSlope.Longwin.gxcorr = gxcorr;
+PSpecSlope.Longwin.gxcorr_p = gxcorr_p;
+
+% Saving finally...
+save(savefile,'PSpecSlope');
 
 %% FIGURE
 figure;
