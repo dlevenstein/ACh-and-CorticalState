@@ -23,11 +23,9 @@ function [rescaled] = rescaleCx( basePath, varargin )
 %% Parse the inputs!
 % parse args
 p = inputParser;
-addParameter(p,'basePath',[],@isstr);
 addParameter(p,'BADOUT',false,@islogical);
 
 parse(p,varargin{:})
-basePath = p.Results.basePath;
 BADOUT = p.Results.BADOUT;
 
 %% Scales according to Cambridge NeuroTech H3 probe
