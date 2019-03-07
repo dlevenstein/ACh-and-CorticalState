@@ -30,7 +30,9 @@ BADOUT = p.Results.BADOUT;
 
 %% Scales according to Cambridge NeuroTech H3 probe
 chandist = [0:20:1275];
-lnorm = [0 0.1 0.35 0.5 0.6 0.75 0.9 1];
+%lnorm = [0 0.1 0.35 0.5 0.6 0.75 0.9 1]; %including 6a-6b division
+%lnorm = [0 0.1 0.35 0.5 0.6 0.75 1]; %proper 5b and 6 layers
+lnorm = [0 0.1 0.35 0.5 0.6 0.9 1]; %tentative given lack of 5b-6 boundary
 
 %% Loading data
 [baseFolder,baseName] = fileparts(basePath);
@@ -38,8 +40,8 @@ lnorm = [0 0.1 0.35 0.5 0.6 0.75 0.9 1];
 
 load(fullfile(basePath,[baseName,'.sessionInfo.mat']));
 usechannels = sessionInfo.AnatGrps.Channels;
-lborders = [NaN 20 18 62 16 36 33 32];
-%lborders = sessionInfo.layerborders;
+%lborders = [NaN 20 18 62 16 36 33 32]; %DEV
+lborders = sessionInfo.layerborders;
 
 %% Rescaling...
 truelayer1 = chandist(usechannels == lborders(end))*lnorm(2);
