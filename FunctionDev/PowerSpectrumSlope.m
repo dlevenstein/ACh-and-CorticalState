@@ -493,9 +493,9 @@ colormap(gca,'jet')
 axis tight
 
 subplot(4,2,2);
-plot(PSSEMGlag/srate,mean(PSSEMGxcorr),'k','linewidth',2);
-plot(PSSEMGlag/srate,mean(PSSEMGxcorr)+std(PSSEMGxcorr),'k.','linewidth',2);
-plot(PSSEMGlag/srate,mean(PSSEMGxcorr)-std(PSSEMGxcorr),'k.','linewidth',2);
+plot(PSSEMGlag./srate,mean(PSSEMGxcorr,2),'k','linewidth',0.5);
+plot(PSSEMGlag./srate,mean(PSSEMGxcorr,2)+std(PSSEMGxcorr,0,2),'k.','linewidth',0.5);
+plot(PSSEMGlag./srate,mean(PSSEMGxcorr,2)-std(PSSEMGxcorr,0,2),'k.','linewidth',0.5);
 axis square
 xlabel('PSS-EMG Lag (s)')
 a3 = gca;
@@ -503,9 +503,9 @@ a3.XTick = sort([-5:1:5 mean(PSSEMGtimeDiff)]);
 xlim([-5 5]);
 
 subplot(4,2,4);
-plot(PSSPuplag/srate,mean(PSSPupxcorr),'k','linewidth',2);
-plot(PSSPuplag/srate,mean(PSSPupxcorr)+std(PSSPupxcorr),'k.','linewidth',2);
-plot(PSSPuplag/srate,mean(PSSPupxcorr)-std(PSSPupxcorr),'k.','linewidth',2);
+plot(PSSPuplag./srate,mean(PSSPupxcorr,2),'r','linewidth',0.5);
+plot(PSSPuplag./srate,mean(PSSPupxcorr,2)+std(PSSPupxcorr,0,2),'r.','linewidth',0.5);
+plot(PSSPuplag./srate,mean(PSSPupxcorr,2)-std(PSSPupxcorr,0,2),'r.','linewidth',0.5);
 axis square
 xlabel('PSS-Pupil Lag (s)')
 a3 = gca;
@@ -898,9 +898,9 @@ colormap(gca,'jet')
 axis tight
 
 subplot(4,2,2);
-plot(PSSEMGlag/srate,mean(PSSEMGxcorr),'k','linewidth',2);
-plot(PSSEMGlag/srate,mean(PSSEMGxcorr)+std(PSSEMGxcorr),'k.','linewidth',2);
-plot(PSSEMGlag/srate,mean(PSSEMGxcorr)-std(PSSEMGxcorr),'k.','linewidth',2);
+plot(PSSEMGlag./srate,mean(PSSEMGxcorr,2),'k','linewidth',0.5);
+plot(PSSEMGlag./srate,mean(PSSEMGxcorr,2)+std(PSSEMGxcorr,0,2),'k.','linewidth',0.5);
+plot(PSSEMGlag./srate,mean(PSSEMGxcorr,2)-std(PSSEMGxcorr,0,2),'k.','linewidth',0.5);
 axis square
 xlabel('PSS-EMG Lag (s)')
 a3 = gca;
@@ -908,9 +908,9 @@ a3.XTick = sort([-5:1:5 mean(PSSEMGtimeDiff)]);
 xlim([-5 5]);
 
 subplot(4,2,4);
-plot(PSSPuplag/srate,mean(PSSPupxcorr),'k','linewidth',2);
-plot(PSSPuplag/srate,mean(PSSPupxcorr)+std(PSSPupxcorr),'k.','linewidth',2);
-plot(PSSPuplag/srate,mean(PSSPupxcorr)-std(PSSPupxcorr),'k.','linewidth',2);
+plot(PSSPuplag./srate,mean(PSSPupxcorr,2),'r','linewidth',0.5);
+plot(PSSPuplag./srate,mean(PSSPupxcorr,2)+std(PSSPupxcorr,0,2),'r.','linewidth',0.5);
+plot(PSSPuplag./srate,mean(PSSPupxcorr,2)-std(PSSPupxcorr,0,2),'r.','linewidth',0.5);
 axis square
 xlabel('PSS-Pupil Lag (s)')
 a3 = gca;
