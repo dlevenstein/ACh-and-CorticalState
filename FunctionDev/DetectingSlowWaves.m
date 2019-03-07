@@ -26,3 +26,10 @@ sponttimes = [MergePoints.timestamps(spontidx(1),1) MergePoints.timestamps(spont
 
 DetectSlowWaves(basePath,'NREMInts',sponttimes,'CTXChans',dtchan,'filterparms',...
     filterparms,'spikes',spikes,'showFig',true,'forceReload',true,'noPrompts',true);
+% 
+% 
+% find folder starting...
+%     get spikes
+% transfer to basePath
+% open spikes
+% run slowwave detection
