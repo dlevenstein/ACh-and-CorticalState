@@ -228,6 +228,18 @@ PSS.pupilsize = interp1(pupildilation.timestamps,pupildilation.data,...
     Frac_fast.timestamps,'nearest');
 
 %% FIGURE
+imagewind = [250 400];
+tempidx = find(lfp.timestamps >= imagewind(1) & lfp.timestamps <= imagewind(2));
+intlfp = lfp;
+intlfp.data = intlfp.data(tempidx);
+intlfp.timestamps = intlfp.timestamps(tempidx);
+frange = [1 128];
+nfreqs = 100;
+ncyc = 5;
+wavespec = bz_WaveSpec(intlfp,'frange',frange,'nfreqs',nfreqs,'ncyc',ncyc,...
+    'samplingRate',lfp.samplingRate,'space','log');
+wavespec.data = abs(wavespec.data)';
+
 figure;
 
 h(1) = subplot(9,1,1); hold on;
@@ -250,14 +262,16 @@ plot(Frac_fast.timestamps,PSS.pupilsize,'k');
 legend({'Pupil diameter'},'location','southeast')
 
 h(5) = subplot(9,1,8:9); hold on;
-imagesc(Frac_fast.timestamps,Frac_fast.freq,Frac_fast.osci);
-caxis([min(min(Frac_fast.osci)) max(max(Frac_fast.osci))])
-ylabel('f (hz)'); ylim([1 120]);
+imagesc(wavespec.timestamps,log10(wavespec.freqs),wavespec.data);
+caxis([min(min(wavespec.data)) max(max(wavespec.data))]);
+LogScale('y',10);
+ylabel('f (Hz)'); ylim(log10([1 128]));
 colormap(gca,'jet');
-legend({'Oscillatory PSpec'},'location','southeast')
+set(gca,'YDir','normal');
+legend({'Spectrogram'},'location','southeast')
 
 linkaxes(h,'x');
-xlim([250 650]);
+xlim([imagewind(1) imagewind(2)]);
 xlabel('time (s)');
 
 NiceSave('Example_PSS_rsq_osci_behavior',figfolder,baseName);
@@ -286,10 +300,11 @@ Frac.timestamps = timestamp;
 Frac = amri_sig_plawfit(Frac,Frange);
 
 % Selected from prior analysis
-Frange = [5, 100]; % define frequency range for power-law fitting
+Frange = [2.5, 100]; % define frequency range for power-law fitting
 
 % Now calculating corrs...
 PSS = []; Osci = [];
+Deltaosci = []; Thetaosci = []; Gammaosci = [];
 
 PSScorr.EMG = zeros(length(usechannels),1);
 PSScorr.EMG_p = zeros(length(usechannels),1);
@@ -350,6 +365,14 @@ for cc = 1:length(usechannels)
     PSS = cat(2,PSS,Frac.Beta.*-1);
     Osci = cat(2,Osci,mean(Frac.osci,2));
     
+    deltaidx = find(Frac.freq >= 0.5 & Frac.freq <= 3);
+    thetaidx = find(Frac.freq >= 4 & Frac.freq <= 10);
+    gammaidx = find(Frac.freq >= 40 & Frac.freq <= 120);
+    
+    Deltaosci = cat(2,Deltaosci,nanmean(Frac.osci(deltaidx,:),1)');
+    Thetaosci = cat(2,Thetaosci,nanmean(Frac.osci(thetaidx,:),1)');
+    Gammaosci = cat(2,Gammaosci,nanmean(Frac.osci(gammaidx,:),1)');
+    
     %% Histos
     PSSstatsdepth.dist(cc,:) = hist(Frac.Beta.*-1,PSSstatsdepth.bins);
     PSSstatsdepth.dist(cc,:)./sum(PSSstatsdepth.dist(cc,:));
@@ -361,42 +384,39 @@ for cc = 1:length(usechannels)
     
     %% Corrsss
     [PSScorr.EMG(cc),PSScorr.EMG_p(cc)] =...
-        corr(log10(temp_EMG)',Frac.Beta.*-1,...
+        corr(log10(temp_EMG),Frac.Beta.*-1,...
         'type','spearman','rows','complete');
     [PSScorr.Pup(cc),PSScorr.Pup_p(cc)] =...
-        corr(log10(temp_Pup)',Frac.Beta.*-1,...
+        corr(log10(temp_Pup),Frac.Beta.*-1,...
         'type','spearman','rows','complete');
     
-    deltaidx = find(Frac.freq >= 0.5 & Frac.freq <= 3);
     [dcorr.EMG(cc),dcorr.EMG_p(cc)] =...
-        corr(log10(temp_EMG)',(nanmean(Frac.osci(deltaidx,:),1))',...
+        corr(log10(temp_EMG),(nanmean(Frac.osci(deltaidx,:),1))',...
         'type','spearman','rows','complete');
     [dcorr.Pup(cc),dcorr.Pup_p(cc)] =...
-        corr(log10(temp_Pup)',(nanmean(Frac.osci(deltaidx,:),1))',...
+        corr(log10(temp_Pup),(nanmean(Frac.osci(deltaidx,:),1))',...
         'type','spearman','rows','complete');
     
-    thetaidx = find(Frac.freq >= 4 & Frac.freq <= 10);
     [tcorr.EMG(cc),tcorr.EMG_p(cc)] =...
-        corr(log10(temp_EMG)',(nanmean(Frac.osci(thetaidx,:),1))',...
+        corr(log10(temp_EMG),(nanmean(Frac.osci(thetaidx,:),1))',...
         'type','spearman','rows','complete');
     [tcorr.Pup(cc),tcorr.Pup_p(cc)] =...
-        corr(log10(temp_Pup)',(nanmean(Frac.osci(thetaidx,:),1))',...
+        corr(log10(temp_Pup),(nanmean(Frac.osci(thetaidx,:),1))',...
         'type','spearman','rows','complete');
-    
-    gammaidx = find(Frac.freq >= 40 & Frac.freq <= 120);
+   
     [gcorr.EMG(cc),gcorr.EMG_p(cc)] =...
-        corr(log10(temp_EMG)',(nanmean(Frac.osci(gammaidx,:),1))',...
+        corr(log10(temp_EMG),(nanmean(Frac.osci(gammaidx,:),1))',...
         'type','spearman','rows','complete');
     [gcorr.Pup(cc),gcorr.Pup_p(cc)] =...
-        corr(log10(temp_Pup)',(nanmean(Frac.osci(gammaidx,:),1))',...
+        corr(log10(temp_Pup),(nanmean(Frac.osci(gammaidx,:),1))',...
         'type','spearman','rows','complete');
     
     for x = 1:size(Frac.osci,1)
         [Oscicorr.EMG(x,cc),Oscicorr.EMG_p(x,cc)] =...
-            corr(log10(temp_EMG)',Frac.osci(x,:)',...
+            corr(log10(temp_EMG),Frac.osci(x,:)',...
             'type','spearman','rows','complete');
         [Oscicorr.Pup(x,cc),Oscicorr.Pup_p(x,cc)] =...
-            corr(log10(temp_Pup)',Frac.osci(x,:)',...
+            corr(log10(temp_Pup),Frac.osci(x,:)',...
             'type','spearman','rows','complete');
     end
     
@@ -441,21 +461,21 @@ caxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))])
 xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
 title('Oscillatory LFP-Pupil diameter correlation');
 
-subplot(2,6,5);
+subplot(2,6,11);
 plot(dcorr.EMG,1:length(usechannels),'r','linewidth',2)
 hold on;
-plot(tcorr.EMG,1:length(usechannels),'r','linewidth',2)
-plot(gcorr.EMG,1:length(usechannels),'r','linewidth',2)
+plot(tcorr.EMG,1:length(usechannels),'g','linewidth',2)
+plot(gcorr.EMG,1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-EMG correlation');
 set(gca,'ydir','reverse')
 axis tight
 
-subplot(2,6,6);
+subplot(2,6,12);
 plot(dcorr.Pup,1:length(usechannels),'r','linewidth',2)
 hold on;
-plot(tcorr.Pup,1:length(usechannels),'r','linewidth',2)
-plot(gcorr.Pup,1:length(usechannels),'r','linewidth',2)
+plot(tcorr.Pup,1:length(usechannels),'g','linewidth',2)
+plot(gcorr.Pup,1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-Pupil diameter correlation');
 set(gca,'ydir','reverse')
@@ -482,10 +502,37 @@ for x = 1:size(Osci,2)
     end
 end
 
+dxcorr = zeros(size(Deltaosci,2),size(Deltaosci,2));
+dxcorr_p = zeros(size(Deltaosci,2),size(Deltaosci,2));
+for x = 1:size(Deltaosci,2)
+    for y = 1:size(Deltaosci,2)
+        [dxcorr(x,y),dxcorr_p(x,y)] = corr(Deltaosci(:,x),Deltaosci(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
+txcorr = zeros(size(Deltaosci,2),size(Deltaosci,2));
+txcorr_p = zeros(size(Deltaosci,2),size(Deltaosci,2));
+for x = 1:size(Deltaosci,2)
+    for y = 1:size(Deltaosci,2)
+        [txcorr(x,y),txcorr_p(x,y)] = corr(Deltaosci(:,x),Deltaosci(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
+gxcorr = zeros(size(Deltaosci,2),size(Deltaosci,2));
+gxcorr_p = zeros(size(Deltaosci,2),size(Deltaosci,2));
+for x = 1:size(Deltaosci,2)
+    for y = 1:size(Deltaosci,2)
+        [gxcorr(x,y),gxcorr_p(x,y)] = corr(Deltaosci(:,x),Deltaosci(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
 %% FIGURE
 figure;
 
-subplot(1,2,1);
+subplot(2,3,1);
 imagesc(1:length(usechannels),1:length(usechannels),PSSxcorr);
 colormap(gca,'jet')
 axis square
@@ -495,7 +542,7 @@ caxis([min(min(PSSxcorr)) max(max(PSSxcorr))])
 xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
 title('PSS-PSS xcorr by depth');
 
-subplot(1,2,2);
+subplot(2,3,2);
 imagesc(1:length(usechannels),1:length(usechannels),Oscixcorr);
 colormap(gca,'jet')
 axis square
@@ -504,6 +551,36 @@ ColorbarWithAxis([min(min(Oscixcorr)) max(max(Oscixcorr))],['Spearman corr'])
 caxis([min(min(Oscixcorr)) max(max(Oscixcorr))])
 xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
 title('Oscillatory-Oscillatory LFP xcorr by depth');
+
+subplot(2,3,4);
+imagesc(1:length(usechannels),1:length(usechannels),dxcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(dxcorr)) max(max(dxcorr))],['Spearman corr'])
+caxis([min(min(dxcorr)) max(max(dxcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('Delta-Delta LFP xcorr by depth');
+
+subplot(2,3,5);
+imagesc(1:length(usechannels),1:length(usechannels),txcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(txcorr)) max(max(txcorr))],['Spearman corr'])
+caxis([min(min(txcorr)) max(max(txcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('Theta-Theta LFP xcorr by depth');
+
+subplot(2,3,6);
+imagesc(1:length(usechannels),1:length(usechannels),gxcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(gxcorr)) max(max(gxcorr))],['Spearman corr'])
+caxis([min(min(gxcorr)) max(max(gxcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('Gamma-Gamma LFP xcorr by depth');
 
 NiceSave('fPSS_Osci_Xcorrbydepth',figfolder,baseName);
 
@@ -538,11 +615,27 @@ Frange = [2.5, 100]; % define frequency range for power-law fitting
 
 % Now calculating corrs...
 PSS = []; Osci = [];
+Deltaosci = []; Thetaosci = []; Gammaosci = [];
 
 PSScorr.EMG = zeros(length(usechannels),1);
 PSScorr.EMG_p = zeros(length(usechannels),1);
 PSScorr.Pup = zeros(length(usechannels),1);
 PSScorr.Pup_p = zeros(length(usechannels),1);
+
+dcorr.EMG = zeros(length(usechannels),1);
+dcorr.EMG_p = zeros(length(usechannels),1);
+dcorr.Pup = zeros(length(usechannels),1);
+dcorr.Pup_p = zeros(length(usechannels),1);
+
+tcorr.EMG = zeros(length(usechannels),1);
+tcorr.EMG_p = zeros(length(usechannels),1);
+tcorr.Pup = zeros(length(usechannels),1);
+tcorr.Pup_p = zeros(length(usechannels),1);
+
+gcorr.EMG = zeros(length(usechannels),1);
+gcorr.EMG_p = zeros(length(usechannels),1);
+gcorr.Pup = zeros(length(usechannels),1);
+gcorr.Pup_p = zeros(length(usechannels),1);
 
 Oscicorr.EMG = zeros(size(Frac.osci,1),length(usechannels));
 Oscicorr.EMG_p = zeros(size(Frac.osci,1),length(usechannels));
@@ -583,6 +676,14 @@ for cc = 1:length(usechannels)
     PSS = cat(2,PSS,Frac.Beta.*-1);
     Osci = cat(2,Osci,mean(Frac.osci,2));
     
+    deltaidx = find(Frac.freq >= 0.5 & Frac.freq <= 3);
+    thetaidx = find(Frac.freq >= 4 & Frac.freq <= 10);
+    gammaidx = find(Frac.freq >= 40 & Frac.freq <= 120);
+    
+    Deltaosci = cat(2,Deltaosci,nanmean(Frac.osci(deltaidx,:),1)');
+    Thetaosci = cat(2,Thetaosci,nanmean(Frac.osci(thetaidx,:),1)');
+    Gammaosci = cat(2,Gammaosci,nanmean(Frac.osci(gammaidx,:),1)');
+    
     %% Histos
     PSSstatsdepth.dist(cc,:) = hist(Frac.Beta.*-1,PSSstatsdepth.bins);
     PSSstatsdepth.dist(cc,:)./sum(PSSstatsdepth.dist(cc,:));
@@ -594,25 +695,47 @@ for cc = 1:length(usechannels)
     
     %% Corrsss
     [PSScorr.EMG(cc),PSScorr.EMG_p(cc)] =...
-        corr(log10(temp_EMG)',Frac.Beta.*-1,...
+        corr(log10(temp_EMG),Frac.Beta.*-1,...
         'type','spearman','rows','complete');
     [PSScorr.Pup(cc),PSScorr.Pup_p(cc)] =...
-        corr(log10(temp_Pup)',Frac.Beta.*-1,...
+        corr(log10(temp_Pup),Frac.Beta.*-1,...
+        'type','spearman','rows','complete');
+    
+    [dcorr.EMG(cc),dcorr.EMG_p(cc)] =...
+        corr(log10(temp_EMG),(nanmean(Frac.osci(deltaidx,:),1))',...
+        'type','spearman','rows','complete');
+    [dcorr.Pup(cc),dcorr.Pup_p(cc)] =...
+        corr(log10(temp_Pup),(nanmean(Frac.osci(deltaidx,:),1))',...
+        'type','spearman','rows','complete');
+    
+    [tcorr.EMG(cc),tcorr.EMG_p(cc)] =...
+        corr(log10(temp_EMG),(nanmean(Frac.osci(thetaidx,:),1))',...
+        'type','spearman','rows','complete');
+    [tcorr.Pup(cc),tcorr.Pup_p(cc)] =...
+        corr(log10(temp_Pup),(nanmean(Frac.osci(thetaidx,:),1))',...
+        'type','spearman','rows','complete');
+   
+    [gcorr.EMG(cc),gcorr.EMG_p(cc)] =...
+        corr(log10(temp_EMG),(nanmean(Frac.osci(gammaidx,:),1))',...
+        'type','spearman','rows','complete');
+    [gcorr.Pup(cc),gcorr.Pup_p(cc)] =...
+        corr(log10(temp_Pup),(nanmean(Frac.osci(gammaidx,:),1))',...
         'type','spearman','rows','complete');
     
     for x = 1:size(Frac.osci,1)
         [Oscicorr.EMG(x,cc),Oscicorr.EMG_p(x,cc)] =...
-            corr(log10(temp_EMG)',Frac.osci(x,:)',...
+            corr(log10(temp_EMG),Frac.osci(x,:)',...
             'type','spearman','rows','complete');
         [Oscicorr.Pup(x,cc),Oscicorr.Pup_p(x,cc)] =...
-            corr(log10(temp_Pup)',Frac.osci(x,:)',...
+            corr(log10(temp_Pup),Frac.osci(x,:)',...
             'type','spearman','rows','complete');
     end
+    
 end
 
 %% FIGURE
 figure;
-subplot(2,2,1);
+subplot(2,3,1);
 imagesc(PSSstatsdepth.bins,1:length(usechannels),PSSstatsdepth.dist)
 ColorbarWithAxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))],['counts'])
 caxis([min(min(PSSstatsdepth.dist)) max(max(PSSstatsdepth.dist))])
@@ -622,7 +745,7 @@ ylabel('channel no. (depth-aligned)')
 colormap(gca,'jet')
 axis tight
 
-subplot(2,2,2);
+subplot(2,3,2);
 plot(PSScorr.EMG,1:length(usechannels),'k','linewidth',2)
 hold on;
 plot(PSScorr.Pup,1:length(usechannels),'r','linewidth',2)
@@ -631,7 +754,7 @@ xlabel('PSS-Behavior correlation');
 set(gca,'ydir','reverse')
 axis tight
 
-subplot(2,2,3);
+subplot(2,3,4);
 imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.EMG')
 LogScale('x',10);
 colormap(gca,'jet')
@@ -640,7 +763,7 @@ caxis([min(min(Oscicorr.EMG)) max(max(Oscicorr.EMG))])
 xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
 title('Oscillatory LFP-EMG correlation');
 
-subplot(2,2,4);
+subplot(2,3,5);
 imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.Pup')
 LogScale('x',10);
 colormap(gca,'jet')
@@ -648,6 +771,26 @@ ColorbarWithAxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))],['Spearman corr
 caxis([min(min(Oscicorr.Pup)) max(max(Oscicorr.Pup))])
 xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
 title('Oscillatory LFP-Pupil diameter correlation');
+
+subplot(2,6,11);
+plot(dcorr.EMG,1:length(usechannels),'r','linewidth',2)
+hold on;
+plot(tcorr.EMG,1:length(usechannels),'g','linewidth',2)
+plot(gcorr.EMG,1:length(usechannels),'b','linewidth',2)
+legend('d','t','g','location','southeast')
+xlabel('Oscillatory-EMG correlation');
+set(gca,'ydir','reverse')
+axis tight
+
+subplot(2,6,12);
+plot(dcorr.Pup,1:length(usechannels),'r','linewidth',2)
+hold on;
+plot(tcorr.Pup,1:length(usechannels),'g','linewidth',2)
+plot(gcorr.Pup,1:length(usechannels),'b','linewidth',2)
+legend('d','t','g','location','southeast')
+xlabel('Oscillatory-Pupil diameter correlation');
+set(gca,'ydir','reverse')
+axis tight
 
 NiceSave('sPSS_Behavior_CorrbyDepth',figfolder,baseName)
 
@@ -670,10 +813,37 @@ for x = 1:size(Osci,2)
     end
 end
 
+dxcorr = zeros(size(Deltaosci,2),size(Deltaosci,2));
+dxcorr_p = zeros(size(Deltaosci,2),size(Deltaosci,2));
+for x = 1:size(Deltaosci,2)
+    for y = 1:size(Deltaosci,2)
+        [dxcorr(x,y),dxcorr_p(x,y)] = corr(Deltaosci(:,x),Deltaosci(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
+txcorr = zeros(size(Deltaosci,2),size(Deltaosci,2));
+txcorr_p = zeros(size(Deltaosci,2),size(Deltaosci,2));
+for x = 1:size(Deltaosci,2)
+    for y = 1:size(Deltaosci,2)
+        [txcorr(x,y),txcorr_p(x,y)] = corr(Deltaosci(:,x),Deltaosci(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
+gxcorr = zeros(size(Deltaosci,2),size(Deltaosci,2));
+gxcorr_p = zeros(size(Deltaosci,2),size(Deltaosci,2));
+for x = 1:size(Deltaosci,2)
+    for y = 1:size(Deltaosci,2)
+        [gxcorr(x,y),gxcorr_p(x,y)] = corr(Deltaosci(:,x),Deltaosci(:,y),...
+            'type','spearman','rows','complete');
+    end
+end
+
 %% FIGURE
 figure;
 
-subplot(1,2,1);
+subplot(2,3,1);
 imagesc(1:length(usechannels),1:length(usechannels),PSSxcorr);
 colormap(gca,'jet')
 axis square
@@ -683,7 +853,7 @@ caxis([min(min(PSSxcorr)) max(max(PSSxcorr))])
 xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
 title('PSS-PSS xcorr by depth');
 
-subplot(1,2,2);
+subplot(2,3,2);
 imagesc(1:length(usechannels),1:length(usechannels),Oscixcorr);
 colormap(gca,'jet')
 axis square
@@ -692,5 +862,35 @@ ColorbarWithAxis([min(min(Oscixcorr)) max(max(Oscixcorr))],['Spearman corr'])
 caxis([min(min(Oscixcorr)) max(max(Oscixcorr))])
 xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
 title('Oscillatory-Oscillatory LFP xcorr by depth');
+
+subplot(2,3,4);
+imagesc(1:length(usechannels),1:length(usechannels),dxcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(dxcorr)) max(max(dxcorr))],['Spearman corr'])
+caxis([min(min(dxcorr)) max(max(dxcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('Delta-Delta LFP xcorr by depth');
+
+subplot(2,3,5);
+imagesc(1:length(usechannels),1:length(usechannels),txcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(txcorr)) max(max(txcorr))],['Spearman corr'])
+caxis([min(min(txcorr)) max(max(txcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('Theta-Theta LFP xcorr by depth');
+
+subplot(2,3,6);
+imagesc(1:length(usechannels),1:length(usechannels),gxcorr);
+colormap(gca,'jet')
+axis square
+%set(gca,'ydir','reverse')
+ColorbarWithAxis([min(min(gxcorr)) max(max(gxcorr))],['Spearman corr'])
+caxis([min(min(gxcorr)) max(max(gxcorr))])
+xlabel('channel no. (depth-aligned)');ylabel('channel no. (depth-aligned)');
+title('Gamma-Gamma LFP xcorr by depth');
 
 NiceSave('sPSS_Osci_Xcorrbydepth',figfolder,baseName);
