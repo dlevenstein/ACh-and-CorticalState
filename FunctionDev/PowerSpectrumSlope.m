@@ -247,7 +247,7 @@ intlfp.data = intlfp.data(tempidx);
 intlfp.timestamps = intlfp.timestamps(tempidx);
 frange = [1 128];
 nfreqs = 100;
-ncyc = 5;
+ncyc = 10;
 wavespec = bz_WaveSpec(intlfp,'frange',frange,'nfreqs',nfreqs,'ncyc',ncyc,...
     'samplingRate',lfp.samplingRate,'space','log');
 wavespec.data = abs(wavespec.data)';
@@ -525,7 +525,7 @@ subplot(2,2,4);
 plot(PSSEMGtimeDiff,1:length(usechannels),'k','linewidth',2)
 hold on;
 plot(PSSPuptimeDiff,1:length(usechannels),'r','linewidth',2)
-xlabel('PSS-Behavior lag');
+xlabel('PSS-Behavior lag (s)');
 set(gca,'ydir','reverse')
 axis tight
 xlim([min([min(PSSEMGtimeDiff) min(PSSPuptimeDiff)])-3 max([max(PSSEMGtimeDiff) max(PSSPuptimeDiff)])+3]);
@@ -546,6 +546,7 @@ ColorbarWithAxis([mincaxis maxcaxis],['Spearman corr'])
 caxis([mincaxis maxcaxis])
 xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
 title('Oscillatory LFP-EMG correlation');
+axis square
 
 subplot(2,2,2);
 plot(dcorr.EMG,1:length(usechannels),'r','linewidth',2)
@@ -555,7 +556,7 @@ plot(gcorr.EMG,1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-EMG correlation');
 set(gca,'ydir','reverse')
-axis tight
+axis square
 
 subplot(2,2,3);
 imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.Pup')
@@ -565,6 +566,7 @@ ColorbarWithAxis([mincaxis maxcaxis],['Spearman corr'])
 caxis([mincaxis maxcaxis])
 xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
 title('Oscillatory LFP-Pupil diameter correlation');
+axis square
 
 subplot(2,2,4);
 plot(dcorr.Pup,1:length(usechannels),'r','linewidth',2)
@@ -574,7 +576,7 @@ plot(gcorr.Pup,1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-Pupil diameter correlation');
 set(gca,'ydir','reverse')
-axis tight
+axis square
 
 NiceSave('fOsci_Behavior_CorrbyDepth',figfolder,baseName)
 
@@ -904,8 +906,8 @@ plot(PSSEMGlag./srate,mean(PSSEMGxcorr,2)-std(PSSEMGxcorr,0,2),'k.','linewidth',
 axis square
 xlabel('PSS-EMG Lag (s)')
 a3 = gca;
-a3.XTick = [-5:2.5:5];
-xlim([-5 5]);
+a3.XTick = [-2:1:2];
+xlim([-2 2]);
 
 subplot(4,2,4);
 plot(PSSPuplag./srate,mean(PSSPupxcorr,2),'r','linewidth',0.5);
@@ -914,8 +916,8 @@ plot(PSSPuplag./srate,mean(PSSPupxcorr,2)-std(PSSPupxcorr,0,2),'r.','linewidth',
 axis square
 xlabel('PSS-Pupil Lag (s)')
 a3 = gca;
-a3.XTick = [-5:2.5:5];
-xlim([-5 5]);
+a3.XTick = [-2:1:2];
+xlim([-2 2]);
 
 subplot(2,2,3);
 plot(PSScorr.EMG,1:length(usechannels),'k','linewidth',2)
@@ -930,10 +932,10 @@ subplot(2,2,4);
 plot(PSSEMGtimeDiff,1:length(usechannels),'k','linewidth',2)
 hold on;
 plot(PSSPuptimeDiff,1:length(usechannels),'r','linewidth',2)
-xlabel('PSS-Behavior lag');
+xlabel('PSS-Behavior lag (s)');
 set(gca,'ydir','reverse')
 axis tight
-xlim([min([min(PSSEMGtimeDiff) min(PSSPuptimeDiff)])-3 max([max(PSSEMGtimeDiff) max(PSSPuptimeDiff)])+3]);
+xlim([min([min(PSSEMGtimeDiff) min(PSSPuptimeDiff)])-1 max([max(PSSEMGtimeDiff) max(PSSPuptimeDiff)])+1]);
 legend('PSS-EMG','PSS-Pupil','location','eastoutside')
 
 NiceSave('sPSS_Behavior_CorrbyDepth',figfolder,baseName)
@@ -951,6 +953,7 @@ ColorbarWithAxis([mincaxis maxcaxis],['Spearman corr'])
 caxis([mincaxis maxcaxis])
 xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
 title('Oscillatory LFP-EMG correlation');
+axis square
 
 subplot(2,2,2);
 plot(dcorr.EMG,1:length(usechannels),'r','linewidth',2)
@@ -960,7 +963,7 @@ plot(gcorr.EMG,1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-EMG correlation');
 set(gca,'ydir','reverse')
-axis tight
+axis square
 
 subplot(2,2,3);
 imagesc(log10(Frac.freq),1:length(usechannels),Oscicorr.Pup')
@@ -970,6 +973,7 @@ ColorbarWithAxis([mincaxis maxcaxis],['Spearman corr'])
 caxis([mincaxis maxcaxis])
 xlabel('f (Hz)'); ylabel('channel no. (depth-aligned)');
 title('Oscillatory LFP-Pupil diameter correlation');
+axis square
 
 subplot(2,2,4);
 plot(dcorr.Pup,1:length(usechannels),'r','linewidth',2)
@@ -979,7 +983,7 @@ plot(gcorr.Pup,1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-Pupil diameter correlation');
 set(gca,'ydir','reverse')
-axis tight
+axis square
 
 NiceSave('sOsci_Behavior_CorrbyDepth',figfolder,baseName)
 

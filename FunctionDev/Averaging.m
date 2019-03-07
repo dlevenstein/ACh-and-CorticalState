@@ -1,80 +1,50 @@
 %% 
-basePath = pwd;
-baseName = bz_BasenameFromBasepath(basePath);
-sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
+baseGroup = ['/gpfs/data/rudylab/William/171006_WT_EM1M3';...
+'/gpfs/data/rudylab/William/171206_WT_EM1M3';...
+'/gpfs/data/rudylab/William/171209_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180209_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180211_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180213_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180214_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180515_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180603_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180605_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180607_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180703_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180706_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180708_WT_EM1M3';...
+'/gpfs/data/rudylab/William/180710_WT_EM1M3'];
 
-figfolder = fullfile(basePath,'DetectionFigures');
+basePath = pwd;
+baseName = 'WT_EM1M3';
+figfolder = fullfile(basePath,'SummaryFigures');
 savefile = fullfile(basePath,[baseName,'.Optimization.PSS.lfp.mat']);
 
+%% Rescale and collect data
+% For PSS-Behavior analysis
+groupPSS = [];
+groupDepth = [];
+for i = 1:size(baseGroup,1)
+    
+    cd(baseGroup(i,:));
+    basename = bz_BasenameFromBasepath(baseGroup(i,:));
 
-% FIGURE
-figure;
+    sessionInfo = bz_getSessionInfo(baseGroup(i,:),'noPrompts',true);
+    groupDepth = cat(3,groupDepth,rescaleCx(baseGroup(i,:),'BADOUT',true));
 
-subplot(2,2,1); hold on;
-winds = movingwin(:,1)./srate;
-imagesc(log10(lowerbound),log10(winds),FracEMGrho')
-[row,col] = find(FracEMGp > 0.05);
-plot(log10(lowerbound(row)),log10(winds(col)),'.w')
-colormap(gca,'jet')
-LogScale('x',10); LogScale('y',10);
-xticks(log10([1 2.5 5 10 20 40 80]));
-xticklabels({'1','2.5','5','10','20','40','80'});
-yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
-yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
-axis square
-axis tight
-ColorbarWithAxis([min(min(FracEMGrho)) max(max(FracEMGrho))],['Spearman corr'])
-caxis([min(min(FracEMGrho)) max(max(FracEMGrho))])
-xlabel('lower f bound (Hz)');ylabel('interval window (s)');
-title(['Frac-EMG correlation']);
+    load(fullfile(baseGroup(i,:),[basename,'.Optimization.PSS.lfp.mat']));
+    groupPSS = bz_CollapseStruct([groupPSS PSpecSlope],3,'justcat',true); 
+    
+end
 
-subplot(2,2,2); hold on;
-imagesc(log10(lowerbound),log10(winds),FracPupilrho')
-[row,col] = find(FracPupilp > 0.05);
-plot(log10(lowerbound(row)),log10(winds(col)),'.w')
-colormap(gca,'jet')
-LogScale('x',10); LogScale('y',10);
-xticks(log10([1 2.5 5 10 20 40 80]));
-xticklabels({'1','2.5','5','10','20','40','80'});
-yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
-yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
-axis square
-axis tight
-ColorbarWithAxis([min(min(FracPupilrho)) max(max(FracPupilrho))],['Spearman corr'])
-caxis([min(min(FracPupilrho)) max(max(FracPupilrho))])
-xlabel('lower f bound (Hz)'); ylabel('interval window (s)');
-title('Frac-Pupil diameter correlation');
+% Saving group structs
+save(savefile,'groupPSS','groupDepth');
 
-subplot(2,2,3); hold on;
-imagesc(log10(lowerbound),log10(winds),Fracmeanrsq')
-colormap(gca,'jet')
-LogScale('x',10); LogScale('y',10);
-xticks(log10([1 2.5 5 10 20 40 80]));
-xticklabels({'1','2.5','5','10','20','40','80'});
-yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
-yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
-axis square
-axis tight
-ColorbarWithAxis([min(min(Fracmeanrsq)) max(max(Fracmeanrsq))],['au'])
-caxis([min(min(Fracmeanrsq)) max(max(Fracmeanrsq))])
-xlabel('lower f bound (Hz)');ylabel('interval window (s)');
-title(['Mean RSQ slope fit']);
+%% Mean/std for group...
+%Pending proper error propagation and stats...
 
-subplot(2,2,4); hold on;
-imagesc(log10(lowerbound),log10(winds),Fracrsqcorr')
-[row,col] = find(Fracrsqp > 0.05);
-plot(log10(lowerbound(row)),log10(winds(col)),'.w')
-colormap(gca,'jet')
-LogScale('x',10); LogScale('y',10);
-xticks(log10([1 2.5 5 10 20 40 80]));
-xticklabels({'1','2.5','5','10','20','40','80'});
-yticks(log10([0.25 0.5 1 2.5 5 15 30 60 90]));
-yticklabels({'0.25','0.5','1','2.5','5','15','30','60','90'});
-axis square
-axis tight
-ColorbarWithAxis([-1 1],['Spearman corr'])
-caxis([-1 1])
-xlabel('lower f bound (Hz)'); ylabel('interval window (s)');
-title('Frac-RSQ correlation');
 
-NiceSave('Frac_EMG_Pupil_RSQ_Corr_p_win_lof',figfolder,baseName);
+
+%% FIGURES
+
+
