@@ -499,7 +499,7 @@ plot(PSSEMGlag./srate,mean(PSSEMGxcorr,2)-std(PSSEMGxcorr,0,2),'k.','linewidth',
 axis square
 xlabel('PSS-EMG Lag (s)')
 a3 = gca;
-a3.XTick = sort([-5:1:5 mean(PSSEMGtimeDiff)]);
+a3.XTick = [-5:2.5:5];
 xlim([-5 5]);
 
 subplot(4,2,4);
@@ -509,7 +509,7 @@ plot(PSSPuplag./srate,mean(PSSPupxcorr,2)-std(PSSPupxcorr,0,2),'r.','linewidth',
 axis square
 xlabel('PSS-Pupil Lag (s)')
 a3 = gca;
-a3.XTick = sort([-5:1:5 mean(PSSPuptimeDiff)]);
+a3.XTick = [-5:2.5:5];
 xlim([-5 5]);
 
 subplot(2,2,3);
@@ -904,7 +904,7 @@ plot(PSSEMGlag./srate,mean(PSSEMGxcorr,2)-std(PSSEMGxcorr,0,2),'k.','linewidth',
 axis square
 xlabel('PSS-EMG Lag (s)')
 a3 = gca;
-a3.XTick = sort([-5:1:5 mean(PSSEMGtimeDiff)]);
+a3.XTick = [-5:2.5:5];
 xlim([-5 5]);
 
 subplot(4,2,4);
@@ -914,7 +914,7 @@ plot(PSSPuplag./srate,mean(PSSPupxcorr,2)-std(PSSPupxcorr,0,2),'r.','linewidth',
 axis square
 xlabel('PSS-Pupil Lag (s)')
 a3 = gca;
-a3.XTick = sort([-5:1:5 mean(PSSPuptimeDiff)]);
+a3.XTick = [-5:2.5:5];
 xlim([-5 5]);
 
 subplot(2,2,3);
