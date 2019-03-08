@@ -11,7 +11,7 @@ function [rescaled] = rescaleCx( basePath, varargin )
 %                           whateverPath/baseName
 %                           and contain file baseName.lfp
 %    'BADOUT'             - to indicate if bad channels had to be excluded 
-%                           for analysis, as in laminar CSD analysis (default: false)
+%                           for analysis, as in laminar CSD analysis (default: true)
 %   OUTPUT
 %     rescaled       struct of lfp data. 
 %    .depth          [1 x Nd] vector of absolute distance to match LFP data
@@ -23,7 +23,7 @@ function [rescaled] = rescaleCx( basePath, varargin )
 %% Parse the inputs!
 % parse args
 p = inputParser;
-addParameter(p,'BADOUT',false,@islogical);
+addParameter(p,'BADOUT',true,@islogical);
 
 parse(p,varargin{:})
 BADOUT = p.Results.BADOUT;
@@ -69,13 +69,13 @@ lfactor2 = lnorm(2);
 temp = (([0 chandist(lb1(1):lb2)] - 0).* (lfactor2 - lfactor1))./(chandist(lb2) - 0) + lfactor1;
 normdepth(lb1(1):lb2) = temp(2:end);
 
-%% Excluding bad channels, if needed
+% Tagging bad channels, if needed
 if BADOUT
     badchannels = sessionInfo.badchannels;
     badidx = ismember(usechannels,badchannels);
-    usechannels(badidx) = [];
-    chandist(badidx) = [];
-    normdepth(badidx) = [];
+    usechannels(badidx) = NaN;
+    chandist(badidx) = NaN;
+    normdepth(badidx) = NaN;
 end
 
 %% Rescaled data to struct
