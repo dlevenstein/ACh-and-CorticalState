@@ -557,6 +557,7 @@ plot(gcorr.EMG(usechannels+1),1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-EMG correlation');
 set(gca,'ydir','reverse')
+axis tight
 axis square
 
 subplot(2,2,3);
@@ -577,6 +578,7 @@ plot(gcorr.Pup(usechannels+1),1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-Pupil diameter correlation');
 set(gca,'ydir','reverse')
+axis tight
 axis square
 
 NiceSave('fOsci_Behavior_CorrbyDepth',figfolder,baseName)
@@ -964,6 +966,7 @@ plot(gcorr.EMG(usechannels+1),1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-EMG correlation');
 set(gca,'ydir','reverse')
+axis tight
 axis square
 
 subplot(2,2,3);
@@ -984,6 +987,7 @@ plot(gcorr.Pup(usechannels+1),1:length(usechannels),'b','linewidth',2)
 legend('d','t','g','location','southeast')
 xlabel('Oscillatory-Pupil diameter correlation');
 set(gca,'ydir','reverse')
+axis tight
 axis square
 
 NiceSave('sOsci_Behavior_CorrbyDepth',figfolder,baseName)
