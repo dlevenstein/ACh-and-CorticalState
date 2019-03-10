@@ -12,30 +12,38 @@ KOBehavior = groupBehavior;
 %%
 
 WTpuphist = WTBehavior.puphist;
-KOpuphist = KOBehavior.puphist;
-WTpupPSD = WTBehavior.pupPSD;
-KOpupPSD = KOBehavior.pupPSD;
-
 WTpupdthist = WTBehavior.pupdthist;
+for i = 1:size(WTpuphist.counts,3)
+    WTpuphist.counts(:,:,i) = WTpuphist.counts(:,:,i)./max(WTpuphist.counts(:,:,i));
+    WTpupdthist.counts(:,:,i) = WTpupdthist.counts(:,:,i)./max(max(WTpupdthist.counts(:,:,i)));
+end
+WTpupPSD = WTBehavior.pupPSD;
+
+KOpuphist = KOBehavior.puphist;
 KOpupdthist = KOBehavior.pupdthist;
+for i = 1:size(KOpuphist.counts,3)
+    KOpuphist.counts(:,:,i) = KOpuphist.counts(:,:,i)./max(KOpuphist.counts(:,:,i));
+    KOpupdthist.counts(:,:,i) = KOpupdthist.counts(:,:,i)./max(max(KOpupdthist.counts(:,:,i)));
+end
+KOpupPSD = KOBehavior.pupPSD;
 
 %% FIGURE 1:
 figure;
 subplot(2,2,1);
 bar(WTpuphist.bins(:,:,1),...
-    nanmean(WTpuphist.counts,3)./max(nanmean(WTpuphist.counts,3)),...
+    nanmean(WTpuphist.counts,3),...
     'facecolor','k','facealpha',0.85); hold on;
 errorbar(WTpuphist.bins(:,:,1),...
-    nanmean(WTpuphist.counts,3)./max(nanmean(WTpuphist.counts,3)),...
+    nanmean(WTpuphist.counts,3),...
     nanstd(WTpuphist.counts,0,3),'k.');
 bar(KOpuphist.bins(:,:,1),...
-    nanmean(KOpuphist.counts,3)./max(nanmean(KOpuphist.counts,3)),...
+    nanmean(KOpuphist.counts,3),...
     'facecolor','r','facealpha',0.65)
 errorbar(KOpuphist.bins(:,:,1),...
-    nanmean(KOpuphist.counts,3)./max(nanmean(KOpuphist.counts,3)),...
+    nanmean(KOpuphist.counts,3),...
     nanstd(KOpuphist.counts,0,3),'r.');
 axis tight;
-xlim([0 3]);
+xlim([0 3]); ylim([0 1]);
 xlabel('diameter (norm.)'); ylabel('counts (norm.)');
 
 subplot(2,2,2);
@@ -53,7 +61,7 @@ title('Pupil diameter power spectrum');
 
 subplot(2,2,3);
 imagesc(WTpupdthist.bins{:,1,1},WTpupdthist.bins{:,2,1},...
-    (nanmean(WTpupdthist.counts,3)./max(max(nanmean(WTpupdthist.counts,3))))'); hold on;
+    nanmean(WTpupdthist.counts,3)'); hold on;
 colormap(gca,[1 1 1; colormap('jet')])
 plot(get(gca,'xlim'),[0 0],'r-')
 ColorbarWithAxis([-0.1 1],['counts (au)'])
@@ -66,7 +74,7 @@ title('floxed M1M3');
 
 subplot(2,2,4);
 imagesc(KOpupdthist.bins{:,1,1},KOpupdthist.bins{:,2,1},...
-    (nanmean(KOpupdthist.counts,3)./max(max(nanmean(KOpupdthist.counts,3))))'); hold on;
+    nanmean(KOpupdthist.counts,3)'); hold on;
 colormap(gca,[1 1 1; colormap('jet')])
 plot(get(gca,'xlim'),[0 0],'r-')
 ColorbarWithAxis([-0.1 1],['counts (au)'])
@@ -83,6 +91,7 @@ NiceSave('PupilStats',figfolder,baseName)
 WTEMGhist = WTBehavior.EMGhist;
 WTWhdurhist = WTBehavior.Whdurhist;
 for i = 1:size(WTWhdurhist.Whdurs,3)
+    WTEMGhist.logcounts(:,:,i) = WTEMGhist.logcounts(:,:,i)./max(WTEMGhist.logcounts(:,:,i));
     WTWhdurhist.Whdurs(:,:,i) = WTWhdurhist.Whdurs(:,:,i)./max(WTWhdurhist.Whdurs(:,:,i));
     WTWhdurhist.InterWhdurs(:,:,i) = WTWhdurhist.InterWhdurs(:,:,i)./max(WTWhdurhist.InterWhdurs(:,:,i));
 end
@@ -91,6 +100,7 @@ WTEMGPSD = WTBehavior.EMGPSD;
 KOEMGhist = KOBehavior.EMGhist;
 KOWhdurhist = KOBehavior.Whdurhist;
 for i = 1:size(KOWhdurhist.Whdurs,3)
+        KOEMGhist.logcounts(:,:,i) = KOEMGhist.logcounts(:,:,i)./max(KOEMGhist.logcounts(:,:,i));
     KOWhdurhist.Whdurs(:,:,i) = KOWhdurhist.Whdurs(:,:,i)./max(KOWhdurhist.Whdurs(:,:,i));
     KOWhdurhist.InterWhdurs(:,:,i) = KOWhdurhist.InterWhdurs(:,:,i)./max(KOWhdurhist.InterWhdurs(:,:,i));
 end
@@ -100,21 +110,22 @@ KOEMGPSD = KOBehavior.EMGPSD;
 figure;
 subplot(2,2,1);
 bar(WTEMGhist.logbins(:,:,1),...
-    nanmean(WTEMGhist.logcounts,3)./max(nanmean(WTEMGhist.logcounts,3)),...
+    nanmean(WTEMGhist.logcounts,3),...
     'facecolor','k','facealpha',0.85); hold on;
 h1 = errorbar(WTEMGhist.logbins(:,:,1),...
-    nanmean(WTEMGhist.logcounts,3)./max(nanmean(WTEMGhist.logcounts,3)),...
+    nanmean(WTEMGhist.logcounts,3),...
     nanstd(WTEMGhist.logcounts,0,3),'k.');
 bar(KOEMGhist.logbins(:,:,1),...
-    nanmean(KOEMGhist.logcounts,3)./max(nanmean(KOEMGhist.logcounts,3)),...
+    nanmean(KOEMGhist.logcounts,3),...
     'facecolor','r','facealpha',0.65); hold on;
 h2 = errorbar(KOEMGhist.logbins(:,:,1),...
-    nanmean(KOEMGhist.logcounts,3)./max(nanmean(KOEMGhist.logcounts,3)),...
+    nanmean(KOEMGhist.logcounts,3),...
     nanstd(KOEMGhist.logcounts,0,3),'r.');
 set(get(get(h1,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
 set(get(get(h2,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
 LogScale('x',10);
 axis tight
+ylim([0 1]);
 xlabel('EMG (norm.)'); ylabel('occupancy (norm.)');
 legend({'floxed M1/M3','Emx1;M1/M3'},'location','northeast');
 
@@ -127,7 +138,7 @@ shadederror(KOWhdurhist.bins(:,:,1),...
     nanstd(KOWhdurhist.Whdurs,0,3)','r','none',1,'r');
 LogScale('x',10)
 %legend({'floxed M1/M3','Emx1;M1/M3'},'location','northeast');
-xlabel('duration (s)'); ylabel('counts (norm.')
+xlabel('duration (s)'); ylabel('counts (norm.)')
 title('Wh durations')
 
 subplot(2,2,4);
@@ -139,7 +150,7 @@ shadederror(KOWhdurhist.bins(:,:,1),...
     nanstd(KOWhdurhist.InterWhdurs,0,3)','r','none',1,'r');
 LogScale('x',10)
 %legend({'floxed M1/M3','Emx1;M1/M3'},'location','northeast');
-xlabel('duration (s)'); ylabel('counts (norm.')
+xlabel('duration (s)'); ylabel('counts (norm.)')
 title('NWh durations')
 
 subplot(2,2,3);
@@ -409,4 +420,4 @@ xlabel('f (Hz)');
 axis tight
 title('Pupil-EMG phase coupling')
 
-NiceSave('Pupil_EMG_Temp_Phase_corr',figfolder,baseName)
+NiceSave('Pupil_EMG_Phase_coupling',figfolder,baseName)
