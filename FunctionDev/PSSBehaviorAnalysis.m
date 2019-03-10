@@ -73,37 +73,36 @@ L56idx = depthinfo.channels(L56idx);
 tempPSSEMGcorr = PSpecSlope.Shortwin.PSScorr.EMG(L56idx+1);
 bestchan = find(tempPSSEMGcorr == max(tempPSSEMGcorr));
 
-% PSS.data = PSpecSlope.Shortwin.PSS(:,L56idx(bestchan)+1);
-% PSS.timestamps = PSpecSlope.Shortwin.timestamps;
-% PSS.samplingRate = 1/mean(diff(PSS.timestamps));
+PSS.data = PSpecSlope.Shortwin.PSS(:,L56idx(bestchan)+1);
+PSS.timestamps = PSpecSlope.Shortwin.timestamps;
+PSS.samplingRate = 1/mean(diff(PSS.timestamps));
 
 % Re-running PSS w/ better time resolution
-lfp = bz_GetLFP(L56idx(bestchan),'basepath',basePath,'noPrompts',true);
-lfp.data = lfp.data(spontidx);
-lfp.timestamps = lfp.timestamps(spontidx);
-
-% Deconstruction
-movingwin = round([0.5 0.125].*lfp.samplingRate);
-nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
-Frange = [2.5, 100]; % define frequency range for power-law fitting
-
-sig = zeros(movingwin(1),nwin);
-timestamp = zeros(nwin,1);
-for i = 1 : nwin
-    idx = [ceil((i-1)*movingwin(2))+1 : ceil((i-1)*movingwin(2))+movingwin(1)];
-    sig(:,i) = lfp.data(idx);
-    %figure out timestamp associated with window i
-    timestamp(i) = mean(lfp.timestamps(idx));
-end
-clear lfp
-
-Frac = amri_sig_fractal_gpu(sig,lfp.samplingRate,'detrend',1);
-Frac.timestamps = timestamp;
-Frac = amri_sig_plawfit(Frac,Frange);
-
-PSS.data = Frac.Beta.*-1;
-PSS.timestamps = Frac.timestamps;
-PSS.samplingRate = 1/mean(diff(PSS.timestamps));
+% lfp = bz_GetLFP(L56idx(bestchan),'basepath',basePath,'noPrompts',true);
+% lfp.data = lfp.data(spontidx);
+% lfp.timestamps = lfp.timestamps(spontidx);
+% 
+% movingwin = round([0.5 0.125].*lfp.samplingRate);
+% nwin = floor((length(lfp.data) - movingwin(1))/movingwin(2));
+% Frange = [2.5, 100]; % define frequency range for power-law fitting
+% 
+% sig = zeros(movingwin(1),nwin);
+% timestamp = zeros(nwin,1);
+% for i = 1 : nwin
+%     idx = [ceil((i-1)*movingwin(2))+1 : ceil((i-1)*movingwin(2))+movingwin(1)];
+%     sig(:,i) = lfp.data(idx);
+%     %figure out timestamp associated with window i
+%     timestamp(i) = mean(lfp.timestamps(idx));
+% end
+% 
+% Frac = amri_sig_fractal_gpu(sig,lfp.samplingRate,'detrend',1);
+% Frac.timestamps = timestamp;
+% Frac = amri_sig_plawfit(Frac,Frange);
+% 
+% PSS.data = Frac.Beta.*-1;
+% PSS.timestamps = Frac.timestamps;
+% PSS.samplingRate = 1/mean(diff(PSS.timestamps));
+% clear lfp Frac
 
 PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGenvelope,...
     PSS.timestamps,'nearest');
@@ -142,6 +141,10 @@ numbins = 30;
 PSShist.bins = linspace(-4,0,numbins);
 PSShist.hist = hist(PSS.data,PSShist.bins);
 
+% Saving to struct
+PSSBehavior.pupcyclePSS = pupcyclePSS;
+PSSBehavior.PSShist = PSShist;
+
 %% PSS and UP/DOWN
 SlowWaves = bz_LoadEvents(basePath,'SlowWaves');
 
@@ -152,6 +155,9 @@ for ss = 1:2
     SlowWaves.midpoint.(updown{ss}) = mean(SlowWaves.ints.(updown{ss}),2);
     SlowWaves.PSS.(updown{ss}) = interp1(PSS.timestamps,PSS.data,SlowWaves.midpoint.(updown{ss}));
 end
+
+% Saving to struct
+PSSBehavior.SlowWaves = SlowWaves;
 
 %%
 figure;
@@ -164,7 +170,7 @@ LogScale('y',10)
 axis square
 legend(updown{:},'location','eastoutside')
 
-%NiceSave('PSS_SlowWaves',figfolder,baseName)
+NiceSave('PSS_SlowWaves',figfolder,baseName)
 
 %% FIGURE:
 figure;
@@ -197,7 +203,7 @@ plot((PSS.dpdt),PSS.data,'k.','markersize',1)
 xlabel('dpdt (med^-^1s^-^1)');ylabel('PSS')
 axis tight
 
-%NiceSave('PSS_Phase_dPdt',figfolder,baseName)
+NiceSave('PSS_Phase_dPdt',figfolder,baseName)
 
 %%
 pupildist.edges = {linspace(-pi,pi,20),linspace(-1.5,0,30)};
@@ -207,6 +213,9 @@ pupildist.joint = pupildist.counts./sum(pupildist.counts(:));
 
 pupildist.conditional = bsxfun(@rdivide,...
     pupildist.counts,sum(pupildist.counts,2));
+
+% Saving to struct
+PSSBehavior.pupildist = pupildist;
 
 %% FIGURE:
 cosx = linspace(-pi,3*pi,100);
@@ -239,7 +248,7 @@ axis xy
 xlabel('Pupil Phase');ylabel('Pupil Power')
 title('P(Pupil power|phase)')
 
-%NiceSave('PSS_PhasePow',figfolder,baseName)
+NiceSave('PSS_PhasePow',figfolder,baseName)
 
 %% Pupil phase-PSS codistribution
 pupilPSSdist.edges = {linspace(-pi,pi,40),linspace(-4,0,50)};
@@ -259,6 +268,9 @@ pupilPSSdist.conditional_high = bsxfun(@rdivide,...
     'Edges',pupilPSSdist.edges);
 pupilPSSdist.counts_low = bsxfun(@rdivide,...
     pupilPSSdist.counts_low,sum(pupilPSSdist.counts_low,2));
+
+% Saving to struct
+PSSBehavior.pupilPSSdist = pupilPSSdist;
 
 %% FIGURE:
 figure;
@@ -302,7 +314,7 @@ axis xy
 xlabel('Pupil Phase');ylabel('PSS')
 title('<median pupil');
 
-%NiceSave('PSSbyPupilPhase',figfolder,baseName)
+NiceSave('PSSbyPupilPhase',figfolder,baseName)
 
 %% Distribution of EMG given pupil phase
 pupilEMGdist.edges = {linspace(-pi,pi,40),linspace(-2,1,50)};
@@ -322,6 +334,9 @@ pupilEMGdist.conditional_high = bsxfun(@rdivide,...
     'Edges',pupilEMGdist.edges);
 pupilEMGdist.counts_low = bsxfun(@rdivide,...
     pupilEMGdist.counts_low,sum(pupilEMGdist.counts_low,2));
+
+% Saving to struct
+PSSBehavior.pupilEMGdist = pupilEMGdist;
 
 %% FIGURE:
 cosx = linspace(-pi,3*pi,100);
@@ -371,7 +386,7 @@ axis xy
 xlabel('Pupil phase');ylabel('EMG')
 title('<median pupil');
 
-%NiceSave('EMGbyPupilPhase',figfolder,baseName)
+NiceSave('EMGbyPupilPhase',figfolder,baseName)
 
 %% EMG-PSS codistribution:
 PSSEMGdist.edges = {linspace(-2,1,50),linspace(-3,0,50)};
@@ -381,6 +396,9 @@ PSSEMGdist.joint = PSSEMGdist.counts./sum(PSSEMGdist.counts(:));
 
 PSSEMGdist.conditional = bsxfun(@rdivide,...
     PSSEMGdist.counts,sum(PSSEMGdist.counts,2));
+
+% Saving to struct
+PSSBehavior.PSSEMGdist = PSSEMGdist;
 
 %% FIGURE:
 figure;
@@ -400,7 +418,7 @@ axis square
 xlabel('EMG');ylabel('PSS')
 title('P(EMG|PSS)')
 
-%NiceSave('EMGPSS',figfolder,baseName)
+NiceSave('EMGPSS',figfolder,baseName)
 
 %% FIGURE:
 figure;
@@ -433,7 +451,7 @@ ylim([-2 1]);xlim([-pi 3*pi])
 caxis([-1.5 0])
 xlabel('Pupil Phase');ylabel('EMG')
 
-%NiceSave('PupilEMGPSS',figfolder,baseName)
+NiceSave('PupilEMGPSS',figfolder,baseName)
 
 %% Get PSS around Whisks
 % Only LONG whisks selected...
@@ -481,6 +499,11 @@ timelockedPSS.highpupil = logical(timelockedPSS.highpupil); %Why?
 [~,whisksorts.dur] = sort(EMGwhisk.dur);
 
 % Saving to struct
+PSSBehavior.whiskPETH = whiskPETH;
+PSSBehavior.timelockedPSS = timelockedPSS;
+PSSBehavior.phasePETH = phasePETH;
+
+save(savefile,'PSSBehavior');
 
 %% FIGURE:
 figure;
@@ -513,7 +536,7 @@ xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
 title('<median pupil')
 
-%NiceSave('PETHbyPhase',figfolder,baseName)
+NiceSave('PETHbyPhase',figfolder,baseName)
 
 %% FIGURE:
 figure;
@@ -539,4 +562,4 @@ colorbar; caxis([-3 -1])
 xlabel('t (s, aligned to Wh Onset)');ylabel('trial no.')
 title('Epochs sorted by Wh duration');
 
-%NiceSave('PSSallWhisks',figfolder,baseName)
+NiceSave('PSSallWhisks',figfolder,baseName)
