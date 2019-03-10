@@ -73,7 +73,7 @@ pupdthist.counts = pupdthist.counts./sum(pupdthist.counts(:));
 frange = [0.001 10];
 pupilspec = bz_WaveSpec(pupildilation.data,...
    'frange',frange,'nfreqs',100,'ncyc',3,...
-   'samplingRate',pupildilation.samplingRate,'showprogress',true);
+   'samplingRate',pupildilation.samplingRate);
 freqs = pupilspec.freqs;
 spec = pupilspec.data;
 spec = (abs(spec));
@@ -190,7 +190,7 @@ Whdurhist.InterWhdurs = Whdurhist.InterWhdurs./diff(EMGwhisk.timestamps([1 end])
 frange = [0.001 10];
 EMGspec = bz_WaveSpec(EMGwhisk.EMGsm,...
    'frange',frange,'nfreqs',100,'ncyc',3,...
-   'samplingRate',EMGwhisk.samplingRate,'showprogress',true);
+   'samplingRate',EMGwhisk.samplingRate);
 freqs = EMGspec.freqs;
 spec = EMGspec.data;
 spec = (abs(spec));
