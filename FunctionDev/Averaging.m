@@ -29,33 +29,54 @@ baseGroup = ['/gpfs/data/rudylab/William/171211_KO_EM1M3';...
     '/gpfs/data/rudylab/William/180709_KO_EM1M3';...
     '/gpfs/data/rudylab/William/180711_KO_EM1M3'];
 
+baseGroup = ['/gpfs/data/rudylab/William/171211_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180208_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180210_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180212_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180525_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180530_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180601_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180602_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180608_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180704_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180705_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180709_KO_EM1M3';...
+    '/gpfs/data/rudylab/William/180711_KO_EM1M3'];
+
 %%
 basePath = pwd;
 %baseName = 'WT_EM1M3';
 baseName = 'KO_EM1M3';
 
-savefile = fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']);
+%savefile = fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']);
+savefile = fullfile(basePath,[baseName,'.BehaviorAnalysis.mat']);
 
 %% Rescale and collect data
 
-groupPSS = [];
-groupDepth = [];
+groupBehavior = [];
+%groupPSS = [];
+%groupDepth = [];
 for i = 1:size(baseGroup,1)
     
     basename = bz_BasenameFromBasepath(baseGroup(i,:));
     
-    sessionInfo = bz_getSessionInfo(baseGroup(i,:),'noPrompts',true);
-    groupDepth = bz_CollapseStruct([groupDepth rescaleCx(baseGroup(i,:))],3,'justcat',true);
+    %sessionInfo = bz_getSessionInfo(baseGroup(i,:),'noPrompts',true);
+    %groupDepth = bz_CollapseStruct([groupDepth rescaleCx(baseGroup(i,:))],3,'justcat',true);
     
     % For Behavior analysis
+    load(fullfile(baseGroup(i,:),[basename,'.BehaviorAnalysis.mat']));
+    PupEMG = rmfield(PupEMG,{'pupildilation','EMGwhisk','whints_pupil','whints_pupildt','whints_pupilphase',...
+        'whints_pupilamp','pupilEMGcorr','pupACG','pwCCG'});
+    groupBehavior = bz_CollapseStruct([groupBehavior PupEMG],3,'justcat',true);
+    
     % For LFP Spectral analysis
     % For Layer ID analysis
     
     % For PSS analysis
-    load(fullfile(baseGroup(i,:),[basename,'.PowerSpectrumSlope.lfp.mat']));
-    PSpecSlope.Shortwin = rmfield(PSpecSlope.Shortwin,{'timestamps','PSS','Osci','Deltaosci','Thetaosci','Gammaosci'});
-    PSpecSlope.Longwin = rmfield(PSpecSlope.Longwin,{'timestamps','PSS','Osci','Deltaosci','Thetaosci','Gammaosci'});
-    groupPSS = bz_CollapseStruct([groupPSS PSpecSlope],3,'justcat',true);
+    %load(fullfile(baseGroup(i,:),[basename,'.PowerSpectrumSlope.lfp.mat']));
+    %PSpecSlope.Shortwin = rmfield(PSpecSlope.Shortwin,{'timestamps','PSS','Osci','Deltaosci','Thetaosci','Gammaosci'});
+    %PSpecSlope.Longwin = rmfield(PSpecSlope.Longwin,{'timestamps','PSS','Osci','Deltaosci','Thetaosci','Gammaosci'});
+    %groupPSS = bz_CollapseStruct([groupPSS PSpecSlope],3,'justcat',true);
     
     % For PSS-Behavior analysis
     % For UP/DOWN analysis
@@ -63,4 +84,5 @@ for i = 1:size(baseGroup,1)
 end
 
 % Saving group structs
-save(savefile,'groupPSS','groupDepth');
+save(savefile,'groupBehavior');
+%save(savefile,'groupPSS','groupDepth');
