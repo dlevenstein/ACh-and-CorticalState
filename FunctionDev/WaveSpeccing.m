@@ -1,7 +1,9 @@
 basePath = pwd;
 baseName = bz_BasenameFromBasepath(basePath);
 savefolder = fullfile(basePath,'WaveSpec');
-
+if (~exist(savefolder,'dir'))
+    mkdir(savefolder)
+end
 %%
 lfp = bz_GetLFP('all','basepath',basePath,'noPrompts',true);
 lfp = bz_DownsampleLFP(lfp,5);
@@ -35,6 +37,6 @@ for i = 1:length(lfp.channels)
     wavespec.channels = lfp.channels(i);
     wavespec.filterparms = tempwavespec.filterparms;
     
-    save(lfpfilename,'wavespec');
+    save(lfpfilename,'-v7.3','wavespec');
     
 end
