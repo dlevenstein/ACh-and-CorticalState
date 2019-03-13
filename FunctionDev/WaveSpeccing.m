@@ -2,8 +2,20 @@ basePath = pwd;
 baseName = bz_BasenameFromBasepath(basePath);
 savefolder = fullfile(basePath,'WaveSpec');
 
+%%
 lfp = bz_GetLFP('all','basepath',basePath,'noPrompts',true);
 lfp = bz_DownsampleLFP(lfp,5);
+
+%%
+load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
+sidx = find(startsWith(MergePoints.foldernames,"Spont"));
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+
+spontidx = find(lfp.timestamps < sponttimes(2));
+lfp.timestamps = lfp.timestamps(spontidx);
+lfp.data = lfp.data(spontidx,:);
+
+%%
 % profile on
 % tic
 tempwavespec = bz_WaveSpec_GPU(lfp,'showprogress',true);
@@ -11,6 +23,7 @@ tempwavespec = bz_WaveSpec_GPU(lfp,'showprogress',true);
 % profile off
 % profile viewer
 
+%%
 for i = 1:length(lfp.channels)
     
     lfpfilename = fullfile(savefolder,[baseName,'.',num2str(lfp.channels(i)),'.WaveSpec.lfp.mat']);
