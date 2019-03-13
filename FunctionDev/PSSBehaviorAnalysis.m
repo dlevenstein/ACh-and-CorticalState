@@ -115,8 +115,8 @@ PSS.pupphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
 PSS.amp = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
     PSS.timestamps,'nearest');
 
-PSS.pupthresh = nanmedian(PSS.pupil);
-PSS.highpup = PSS.pupil>PSS.pupthresh;
+PSS.pupthresh = nanmedian(PSS.amp); %changed this as per discussion w/ DL!!!
+PSS.highpup = PSS.pupil>PSS.pupthresh; %need to think and change this one as well...
 
 %% PSS-Pupil phase and dPdt codist
 numbins = 15;
