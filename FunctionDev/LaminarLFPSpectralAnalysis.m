@@ -248,18 +248,18 @@ LayerSpectral.eventMUA_Wh = eventMUA_Wh;
 
 %% FIGURE: 
 figure;
-subplot(1,7,1);
-stairs(cLayerMUA_all(usechannels+1),normdepth,'Color','k'); hold on;
-stairs(cLayerMUA_NWh(usechannels+1),normdepth,'Color','b'); hold on;
-stairs(cLayerMUA_Wh(usechannels+1),normdepth,'Color','r'); hold on;
-set(gca,'YDir','reverse');
-ylim([normdepth(1) normdepth(end)]);
-xlabel('MUA power (0.15-2 KHz)'); 
-set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
-set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
-set(gca,'YGrid','on', 'GridColor','k','GridAlpha',0.45);
-box on;
-legend({'ALL','NWh','Wh'},'location','northeast');
+% subplot(1,7,1);
+% stairs(cLayerMUA_all(usechannels+1),normdepth,'Color','k'); hold on;
+% stairs(cLayerMUA_NWh(usechannels+1),normdepth,'Color','b'); hold on;
+% stairs(cLayerMUA_Wh(usechannels+1),normdepth,'Color','r'); hold on;
+% set(gca,'YDir','reverse');
+% ylim([normdepth(1) normdepth(end)]);
+% xlabel('MUA power (0.15-2 KHz)'); 
+% set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
+% set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
+% set(gca,'YGrid','on', 'GridColor','k','GridAlpha',0.45);
+% box on;
+% legend({'ALL','NWh','Wh'},'location','northeast');
 
 cmin = min(min(cLayerSpec_Wh(:,usechannels+1)-cLayerSpec_NWh(:,usechannels+1)));
 cmax = max(max(cLayerSpec_Wh(:,usechannels+1)-cLayerSpec_NWh(:,usechannels+1)));
@@ -319,18 +319,18 @@ NiceSave('LaminarPspec_Wh_NWh',figfolder,baseName)
 
 %% FIGURE:
 figure;
-subplot(1,7,1);
-stairs(cLayerMUA_all(usechannels+1),normdepth,'Color','k'); hold on;
-stairs(cLayerMUA_loP(usechannels+1),normdepth,'Color','b'); hold on;
-stairs(cLayerMUA_hiP(usechannels+1),normdepth,'Color','r'); hold on;
-set(gca,'YDir','reverse');
-ylim([normdepth(1) normdepth(end)]);
-xlabel('MUA power (0.15-2 KHz)'); 
-set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
-set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
-set(gca,'YGrid','on', 'GridColor','k','GridAlpha',0.45);
-box on;
-legend({'ALL','loP','hiP'},'location','northeast');
+% subplot(1,7,1);
+% stairs(cLayerMUA_all(usechannels+1),normdepth,'Color','k'); hold on;
+% stairs(cLayerMUA_loP(usechannels+1),normdepth,'Color','b'); hold on;
+% stairs(cLayerMUA_hiP(usechannels+1),normdepth,'Color','r'); hold on;
+% set(gca,'YDir','reverse');
+% ylim([normdepth(1) normdepth(end)]);
+% xlabel('MUA power (0.15-2 KHz)'); 
+% set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
+% set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
+% set(gca,'YGrid','on', 'GridColor','k','GridAlpha',0.45);
+% box on;
+% legend({'ALL','loP','hiP'},'location','northeast');
 
 cmin = min(min(cLayerSpec_hiP(:,usechannels+1)-cLayerSpec_loP(:,usechannels+1)));
 cmax = max(max(cLayerSpec_hiP(:,usechannels+1)-cLayerSpec_loP(:,usechannels+1)));
