@@ -1,6 +1,6 @@
-function [ csd ] = eventCSD (lfp, events, varargin)
+function [ eventCSD ] = eventCSD (lfp, events, varargin)
 
-% [ CSD ] = bz_eventCSD (lfp, events, varargin)
+% [ eventCSD ] = bz_eventCSD (lfp, events, varargin)
 % Calculates event-triggered (i.e. SWRs) CSD map from a linear array of LFPs
 %
 % INPUT
@@ -50,12 +50,10 @@ addParameter(p,'doDetrend',false,@islogical);
 addParameter(p,'plotCSD',true,@islogical);
 addParameter(p,'plotLFP',true,@islogical);
 addParameter(p,'cwin',[]);
-addParameter(p,'lfp',[]);
 addParameter(p,'saveMat',true,@islogical)
 addParameter(p,'saveName','eventCSD')
 
 parse(p,varargin{:});
-lfp = p.Results.lfp;
 channels = p.Results.channels;
 samplingRate = p.Results.samplingRate;
 spat_sm = p.Results.spat_sm;

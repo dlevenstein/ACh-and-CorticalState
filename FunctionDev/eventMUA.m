@@ -1,6 +1,6 @@
-function [ MUApow ] = eventMUA (mua, events, varargin)
+function [ eventMUA ] = eventMUA (mua, events, varargin)
 
-% [ CSD ] = bz_eventCSD (lfp, events, varargin)
+% [ eventMUA ] = bz_eventMUA (lfp, events, varargin)
 % Calculates event-triggered (i.e. SWRs) CSD map from a linear array of LFPs
 %
 % INPUT
@@ -47,15 +47,13 @@ addParameter(p,'twin',[0.1 0.1],@isnumeric);
 addParameter(p,'spat_sm',0,@isnumeric);
 addParameter(p,'temp_sm',0,@isnumeric);
 addParameter(p,'doDetrend',false,@islogical);
-addParameter(p,'plotCSD',true,@islogical);
-addParameter(p,'plotLFP',true,@islogical);
+addParameter(p,'plotCSD',false,@islogical);
+addParameter(p,'plotLFP',false,@islogical);
 addParameter(p,'cwin',[]);
-addParameter(p,'mua',[]);
 addParameter(p,'saveMat',true,@islogical)
-addParameter(p,'saveName','eventCSD')
+addParameter(p,'saveName','eventMUA')
 
 parse(p,varargin{:});
-mua = p.Results.mua;
 channels = p.Results.channels;
 samplingRate = p.Results.samplingRate;
 spat_sm = p.Results.spat_sm;
@@ -81,9 +79,8 @@ savefile = fullfile(basePath,[baseName,'.',saveName,'.lfp.mat']);
 
 %% Load the LFP
 if isempty(mua)
-
-load(fullfile(basePath,[baseName,'.MUA.lfp.mat']));
-mua = MUA;
+    load(fullfile(basePath,[baseName,'.MUA.lfp.mat']));
+    mua = MUA;
 end
 
 %lfp input
@@ -142,16 +139,16 @@ end
 %CSD = diff(lfp_avg,2,2);
 
 % generate output structure
-eventCSD.MUAdata = mua_avg;
-eventCSD.timestamps = -twin(1):twin(2);
-eventCSD.samplingRate = samplingRate;
-eventCSD.channels = channels;
-eventCSD.params.spat_sm = spat_sm;
-eventCSD.params.temp_sm = temp_sm;
-eventCSD.params.detrend = doDetrend;
+eventMUA.data = mua_avg;
+eventMUA.timestamps = -twin(1):twin(2);
+eventMUA.samplingRate = samplingRate;
+eventMUA.channels = channels;
+eventMUA.params.spat_sm = spat_sm;
+eventMUA.params.temp_sm = temp_sm;
+eventMUA.params.detrend = doDetrend;
 
 if saveMat
-    save(savefile,'eventCSD')
+    save(savefile,'eventMUA')
 end
 
 %% Plot
