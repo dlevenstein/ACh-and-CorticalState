@@ -30,7 +30,7 @@ movingwin = round([0.5 0.1].*lfp.samplingRate);
 nwin = floor((size(lfp.data,1) - movingwin(1))/movingwin(2));
 
 for i = 1:length(lfp.channels)
-    
+    i
     %
     sig = zeros(movingwin(1),nwin);
     timestamp = zeros(nwin,1);
