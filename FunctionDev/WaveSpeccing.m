@@ -6,7 +6,7 @@ if (~exist(savefolder,'dir'))
 end
 %%
 lfp = bz_GetLFP('all','basepath',basePath,'noPrompts',true);
-lfp = bz_DownsampleLFP(lfp,2.5); %version 1: downfactor 5
+lfp = bz_DownsampleLFP(lfp,3); %version 1: downfactor 5
 
 %%
 load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
@@ -20,7 +20,7 @@ lfp.data = lfp.data(spontidx,:);
 %%
 % profile on
 % tic
-tempwavespec = bz_WaveSpec_GPU(lfp,'frange',[0.1 250],'nfreqs',100,'showprogress',true); %version 1: ncyc 5
+tempwavespec = bz_WaveSpec_GPU(lfp,'frange',[0.1 208],'nfreqs',100,'showprogress',true); %version 1: ncyc 5
 % toc
 % profile off
 % profile viewer
