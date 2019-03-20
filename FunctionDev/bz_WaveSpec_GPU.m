@@ -145,19 +145,13 @@ for f_i = 1:nfreqs
         end
     end
     wavelet = gpuArray(MorletWavelet(freqs(f_i),ncyc,si));
-    
-         for ii = 1:nChans
-             [f_i ii] 
-            x = FConv_GPU(wavelet',data(:,ii));
-            wavespec.data(:,f_i,ii) = x;
-         end
+    wavespec.data(:,f_i,1:32) = FConv_GPU(wavelet',data(:,1:32));
+    wavespec.data(:,f_i,33:64) = FConv_GPU(wavelet',data(:,33:64));
 end
 
 % if exist('celllengths','var')
 %     spec = mat2cell(spec,nfreqs,celllengths);
 % end
-
-
 
 %% Output in buzcode format
 wavespec.timestamps = timestamps;
