@@ -17,8 +17,8 @@ freqs = spec.freqs;
 maxRescaleFactor = 2.9; %as per Muthukumaraswamy and Liley, NeuroImage 2018
 
 numberRescalesfreq = maxRescaleFactor*freqs(1);
-numberRescalesidx = find(freqs >= numberRescalesfreq,'first');
-numberRescales = numberRescalesidx-1;
+numberRescalesidx = find(freqs >= numberRescalesfreq);
+numberRescales = numberRescalesidx(1)-1;
 
 maxRescaleFactor = freqs(numberRescales+1)/freqs(1);
 disp(['MaxRescaleFactor is ' num2str(maxRescaleFactor,2) '. Default IRASA is 2.9']);
