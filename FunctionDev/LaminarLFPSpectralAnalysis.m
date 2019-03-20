@@ -33,7 +33,7 @@ L6idx = rescaled.channels(L6idx);
 % Specifying folders
 figfolder = fullfile(basePath,'AnalysisFigures');
 savefile = fullfile(basePath,[baseName,'.LaminarSpectralAnalysis.lfp.mat']);
-savefolder = fullfile(basePath,'WaveSpec');
+savefolder = fullfile(basePath,'WaveSpec2');
 
 %Pending: better layer boundary detection and exclusion of bad channels
 
@@ -95,7 +95,7 @@ pupthresh = nanmedian(log10(lowpupildata.amp));
 highpup = log10(lowpupildata.amp)>pupthresh;
 
 % Getting intervals in spec times
-load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec.lfp.mat']));
+load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec2.lfp.mat']));
 
 eventshipupil = interp1(wavespec.timestamps,...
     wavespec.timestamps,...
@@ -152,25 +152,48 @@ allidx_NWh = allidx_NWh.*wavespec.samplingRate;
 cLayerSpec_all = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh = NaN(size(wavespec.data,2),length(channels));  
-% cLayerSpec_T = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_loP = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_hiP = NaN(size(wavespec.data,2),length(channels)); 
+
+cLayerSpec_all_n = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_Wh_n = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_NWh_n = NaN(size(wavespec.data,2),length(channels));  
+cLayerSpec_loP_n = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_hiP_n = NaN(size(wavespec.data,2),length(channels)); 
+
+cLayerSpec_all_z = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_Wh_z = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_NWh_z = NaN(size(wavespec.data,2),length(channels));  
+cLayerSpec_loP_z = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_hiP_z = NaN(size(wavespec.data,2),length(channels)); 
 
 for i = 1:length(channels)
     i
     % Loading spectrograms
-    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec.lfp.mat']));
-    wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
-        ./nanstd(log10(abs(wavespec.data)),0,1);
+    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec2.lfp.mat']));
+    
+    wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
+    wavespec.datan = log10(abs(wavespec.data))./nanmedian(log10(abs(wavespec.data)),1);
     %wavespec.data = NormToInt(log10(abs(wavespec.data)),'Z',...
     %    [events_Wh; events_NWh],wavespec.samplingRate);
-    %wavespec.data = NormToInt(log10(abs(wavespec.data)),'Z');
     
     cLayerSpec_all(:,i) = nanmedian(wavespec.data,1);
     cLayerSpec_Wh(:,i) = nanmedian(wavespec.data(round(allidx_Wh),:),1);
     cLayerSpec_NWh(:,i) = nanmedian(wavespec.data(round(allidx_NWh),:),1);
     cLayerSpec_hiP(:,i) = nanmedian(wavespec.data(round(eventshipupil),:),1);
     cLayerSpec_loP(:,i) = nanmedian(wavespec.data(round(eventslopupil),:),1);
+    
+    cLayerSpec_all_n(:,i) = nanmedian(wavespec.datan,1);
+    cLayerSpec_Wh_n(:,i) = nanmedian(wavespec.datan(round(allidx_Wh),:),1);
+    cLayerSpec_NWh_n(:,i) = nanmedian(wavespec.datan(round(allidx_NWh),:),1);
+    cLayerSpec_hiP_n(:,i) = nanmedian(wavespec.datan(round(eventshipupil),:),1);
+    cLayerSpec_loP_n(:,i) = nanmedian(wavespec.datan(round(eventslopupil),:),1);
+    
+    cLayerSpec_all_z(:,i) = nanmedian(wavespec.dataz,1);
+    cLayerSpec_Wh_z(:,i) = nanmedian(wavespec.dataz(round(allidx_Wh),:),1);
+    cLayerSpec_NWh_z(:,i) = nanmedian(wavespec.dataz(round(allidx_NWh),:),1);
+    cLayerSpec_hiP_z(:,i) = nanmedian(wavespec.dataz(round(eventshipupil),:),1);
+    cLayerSpec_loP_z(:,i) = nanmedian(wavespec.dataz(round(eventslopupil),:),1);
 
 %     if ~isempty(Piezotouch)
 %         cLayerSpec_T(:,i) = nanmedian(wavespec.data(round(allidx_T),:),1);
@@ -179,11 +202,11 @@ for i = 1:length(channels)
 end
 
 % Saving to struct
-LayerSpectral.cLayerSpec_all = cLayerSpec_all;
-LayerSpectral.cLayerSpec_Wh = cLayerSpec_Wh;
-LayerSpectral.cLayerSpec_NWh = cLayerSpec_NWh;
-LayerSpectral.cLayerSpec_loP = cLayerSpec_loP;
-LayerSpectral.cLayerSpec_hiP = cLayerSpec_hiP;
+% LayerSpectral.cLayerSpec_all = cLayerSpec_all;
+% LayerSpectral.cLayerSpec_Wh = cLayerSpec_Wh;
+% LayerSpectral.cLayerSpec_NWh = cLayerSpec_NWh;
+% LayerSpectral.cLayerSpec_loP = cLayerSpec_loP;
+% LayerSpectral.cLayerSpec_hiP = cLayerSpec_hiP;
 
 %% Laminar MUA power (0.15 - 2 kHz)
 load(fullfile(basePath,[baseName,'.MUA.lfp.mat']));

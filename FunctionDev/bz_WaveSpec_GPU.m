@@ -145,7 +145,8 @@ for f_i = 1:nfreqs
         end
     end
     wavelet = gpuArray(MorletWavelet(freqs(f_i),ncyc,si));
-    wavespec.data(:,f_i,:) = FConv_GPU(wavelet',data);
+    wavespec.data(:,f_i,1:32) = FConv_GPU(wavelet',data(:,1:32));
+    wavespec.data(:,f_i,33:64) = FConv_GPU(wavelet',data(:,33:64));
 end
 
 % if exist('celllengths','var')
