@@ -135,7 +135,7 @@ nfreqs = size(freqs,2);
 
 %Filter with wavelets
 
-%data = gpuArray(data);
+data = gpuArray(data);
 nChans = size(data,2);
 wavespec.data = zeros(length(timestamps),nfreqs,nChans);
 for f_i = 1:nfreqs
@@ -144,13 +144,13 @@ for f_i = 1:nfreqs
             display(['freq ',num2str(f_i),' of ',num2str(nfreqs)]);
         end
     end
-   % wavelet = gpuArray(MorletWavelet(freqs(f_i),ncyc,si));
-   wavelet = MorletWavelet(freqs(f_i),ncyc,si);
-    for ii = 1:nChans
-        ii
-        x = FConv_GPU(wavelet',data(:,ii));
-        wavespec.data(:,f_i,ii) = x;
-    end
+    wavelet = gpuArray(MorletWavelet(freqs(f_i),ncyc,si));
+    
+    %     for ii = 1:nChans
+    %         ii
+    x = FConv_GPU(wavelet',data);
+    wavespec.data(:,f_i,:) = x;
+    %     end
 end
 
 % if exist('celllengths','var')
