@@ -144,9 +144,12 @@ for f_i = 1:nfreqs
             display(['freq ',num2str(f_i),' of ',num2str(nfreqs)]);
         end
     end
-    wavelet = gpuArray(MorletWavelet(freqs(f_i),ncyc,si));
+   % wavelet = gpuArray(MorletWavelet(freqs(f_i),ncyc,si));
+   wavelet = MorletWavelet(freqs(f_i),ncyc,si);
     for ii = 1:nChans
-        wavespec.data(:,f_i,ii) = FConv_GPU(wavelet',gpuArray(data(:,ii)));
+        ii
+        x = FConv_GPU(wavelet',data(:,ii));
+        wavespec.data(:,f_i,ii) = x;
     end
 end
 
