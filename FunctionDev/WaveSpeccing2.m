@@ -7,7 +7,7 @@ datfilename = fullfile(basePath,[baseName,'.dat']);
 channels = sessionInfo.channels;
 
 %%
-downfactor = 25;
+downfactor = 40;
 datlfp.data = bz_LoadBinary(datfilename,...
               'frequency',datSampleRate,'nchannels',sessionInfo.nChannels,...
               'channels',channels+1,'downsample',downfactor);
@@ -26,7 +26,7 @@ datlfp.timestamps = datlfp.timestamps(spontidx);
 datlfp.data = datlfp.data(spontidx,:);
 
 %%
-tempwavespec = bz_WaveSpec_GPU(datlfp,'frange',[0.1 400],'nfreqs',200,'showprogress',true); %version 1: ncyc 5
+tempwavespec = bz_WaveSpec_GPU(datlfp,'frange',[0.1 250],'nfreqs',200,'showprogress',true); %version 1: ncyc 5
 
 %%
 
