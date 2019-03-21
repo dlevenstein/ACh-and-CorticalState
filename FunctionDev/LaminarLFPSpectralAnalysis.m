@@ -33,7 +33,7 @@ L6idx = rescaled.channels(L6idx);
 % Specifying folders
 figfolder = fullfile(basePath,'AnalysisFigures');
 savefile = fullfile(basePath,[baseName,'.LaminarSpectralAnalysis.lfp.mat']);
-savefolder = fullfile(basePath,'WaveSpec2');
+savefolder = fullfile(basePath,'WaveSpec');
 
 %Pending: better layer boundary detection and exclusion of bad channels
 
@@ -95,7 +95,7 @@ pupthresh = nanmedian(log10(lowpupildata.amp));
 highpup = log10(lowpupildata.amp)>pupthresh;
 
 % Getting intervals in spec times
-load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec2.lfp.mat']));
+load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec.lfp.mat']));
 
 eventshipupil = interp1(wavespec.timestamps,...
     wavespec.timestamps,...
@@ -135,19 +135,6 @@ allidx_NWh = allidx_NWh.*wavespec.samplingRate;
 % else
 % end
 
-%% Laminar eventCSD/MUA
-% sort thourgh high/low Wh/pupil/SW amplitude events
-% adjust by phase of SlowWaves
-% easyyy lines but specifying better intervals, trial selection
-% establish and z score to baseline
-
-% eventCSD = eventCSD (lfp, events, varargin);
-% eventMUA = eventMUA (mua, events, varargin);
-% eventSpec = eventSpec (spec, events, varargin);
-
-%% Laminar CSD-CSD/MUA-MUA cross-corr
-% thin about this...
-
 %% Laminar Power spectra by layer, by state
 cLayerSpec_all = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh = NaN(size(wavespec.data,2),length(channels)); 
@@ -170,7 +157,7 @@ cLayerSpec_hiP_z = NaN(size(wavespec.data,2),length(channels));
 for i = 1:length(channels)
     i
     % Loading spectrograms
-    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec2.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec.lfp.mat']));
     
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     wavespec.datan = log10(abs(wavespec.data))./nanmedian(log10(abs(wavespec.data)),1);
@@ -544,6 +531,19 @@ xlabel('normalized depth');ylabel('normalized depth');
 title('LFPxcorr >median Pupil area');
 
 NiceSave('LaminarLFPXcorr_lo_hiPup',figfolder,baseName)
+
+%% Laminar eventCSD/MUA
+% sort thourgh high/low Wh/pupil/SW amplitude events
+% adjust by phase of SlowWaves
+% easyyy lines but specifying better intervals, trial selection
+% establish and z score to baseline
+
+% eventCSD = eventCSD (lfp, events, varargin);
+% eventMUA = eventMUA (mua, events, varargin);
+% eventSpec = eventSpec (spec, events, varargin);
+
+%% Laminar CSD-CSD/MUA-MUA cross-corr
+% thin about this...
 
 %% Layer-averaged PSpecs, eventSpec, and comodulograms, by state
 twin = [0.75 0.75].*wavespec.samplingRate;
