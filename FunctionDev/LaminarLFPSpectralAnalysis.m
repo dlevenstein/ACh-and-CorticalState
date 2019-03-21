@@ -33,7 +33,7 @@ L6idx = rescaled.channels(L6idx);
 % Specifying folders
 figfolder = fullfile(basePath,'AnalysisFigures');
 savefile = fullfile(basePath,[baseName,'.LaminarSpectralAnalysis.lfp.mat']);
-savefolder = fullfile(basePath,'WaveSpec');
+savefolder = fullfile(basePath,'WaveSpec2');
 
 %Pending: better layer boundary detection and exclusion of bad channels
 
@@ -95,7 +95,7 @@ pupthresh = nanmedian(log10(lowpupildata.amp));
 highpup = log10(lowpupildata.amp)>pupthresh;
 
 % Getting intervals in spec times
-load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec.lfp.mat']));
+load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec2.lfp.mat']));
 
 eventshipupil = interp1(wavespec.timestamps,...
     wavespec.timestamps,...
@@ -157,18 +157,18 @@ cLayerSpec_hiP_z = NaN(size(wavespec.data,2),length(channels));
 for i = 1:length(channels)
     i
     % Loading spectrograms
-    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec2.lfp.mat']));
     
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     wavespec.datan = log10(abs(wavespec.data))./nanmedian(log10(abs(wavespec.data)),1);
     %wavespec.data = NormToInt(log10(abs(wavespec.data)),'Z',...
     %    [events_Wh; events_NWh],wavespec.samplingRate);
     
-    cLayerSpec_all(:,i) = nanmedian(wavespec.data,1);
-    cLayerSpec_Wh(:,i) = nanmedian(wavespec.data(round(allidx_Wh),:),1);
-    cLayerSpec_NWh(:,i) = nanmedian(wavespec.data(round(allidx_NWh),:),1);
-    cLayerSpec_hiP(:,i) = nanmedian(wavespec.data(round(eventshipupil),:),1);
-    cLayerSpec_loP(:,i) = nanmedian(wavespec.data(round(eventslopupil),:),1);
+    cLayerSpec_all(:,i) = nanmedian(log10(abs(wavespec.data)),1);
+    cLayerSpec_Wh(:,i) = nanmedian(log10(abs(wavespec.data(round(allidx_Wh),:))),1);
+    cLayerSpec_NWh(:,i) = nanmedian(log10(abs(wavespec.data(round(allidx_NWh),:))),1);
+    cLayerSpec_hiP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventshipupil),:))),1);
+    cLayerSpec_loP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventslopupil),:))),1);
     
     cLayerSpec_all_n(:,i) = nanmedian(wavespec.datan,1);
     cLayerSpec_Wh_n(:,i) = nanmedian(wavespec.datan(round(allidx_Wh),:),1);

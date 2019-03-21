@@ -52,6 +52,34 @@ EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 
 EMGwhisk.pupiltime = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,pupildilation.timestamps,'nearest');
 
+%% PUPIL dilation ONsets/OFFsets
+pupthresh = nanmean(abs(pupildilation.dpdt)); 
+
+% Threshold crossing
+pup_thresh = pupildilation.dpdt > pupthresh;
+pup_on = find(pup_thresh(2:end) > pup_thresh(1:end-1))+1; %Pup onsets (si)
+pup_off = find(pup_thresh(2:end) < pup_thresh(1:end-1))+1; %Pup offsets (si)
+
+% If data starts/ends in the middle of an epoch, drop first/last trigger
+if pup_off(1)<pup_on(1)
+    pup_off = pup_off(2:end);
+end
+if pup_off(end) < pup_on(end)
+    pup_on = pup_on(1:end-1);
+end
+
+%Convert to seconds
+pup_on = pupildilation.timestamps(pup_on);
+pup_off = pupildilation.timestamps(pup_off);
+Pupints = [pup_on pup_off];
+
+%
+% figure;
+% plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k'); hold on;
+% plot(Pupints',pupthresh.*ones(size(Pupints))','g','linewidth',2)
+% axis tight
+% ylabel('dPdt');
+
 %% PUPIL STATS
 % Computing x-covariance
 acgwin = 200; %s
