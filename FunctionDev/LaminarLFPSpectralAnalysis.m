@@ -62,7 +62,8 @@ EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
 % Specifying SPONT whisking
 load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
 sidx = find(startsWith(MergePoints.foldernames,"Spont"));
-sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+%sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/4];
 
 spontidx = find(EMGwhisk.ints.Wh(:,2) < sponttimes(2));
 EMGwhisk.ints.Wh = EMGwhisk.ints.Wh(spontidx,:);
@@ -80,30 +81,30 @@ EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 % Piezotouch = bz_LoadBehavior(basePath,'Piezotouch');
 
 % Pupil phase
-lowfilter = [0.01 0.1];
-pupil4filter = pupildilation;
-lowpupildata = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',3);
-x = lowpupildata.timestamps;
-x = repmat(x,[1 5]);
-y = repmat((0:4) * (1/(lowpupildata.samplingRate*5)) ,[length(x) 1]);
-x = x + y;
-y = reshape(x',[length(x)*5 1]);
-lowpupildata.timestamps = y;
-lowpupildata.amp = resample(lowpupildata.amp,5,1);
-
-pupthresh = nanmedian(log10(lowpupildata.amp));
-highpup = log10(lowpupildata.amp)>pupthresh;
+% lowfilter = [0.01 0.1];
+% pupil4filter = pupildilation;
+% lowpupildata = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',3);
+% x = lowpupildata.timestamps;
+% x = repmat(x,[1 5]);
+% y = repmat((0:4) * (1/(lowpupildata.samplingRate*5)) ,[length(x) 1]);
+% x = x + y;
+% y = reshape(x',[length(x)*5 1]);
+% lowpupildata.timestamps = y;
+% lowpupildata.amp = resample(lowpupildata.amp,5,1);
+% 
+% pupthresh = nanmedian(log10(lowpupildata.amp));
+% highpup = log10(lowpupildata.amp)>pupthresh;
 
 % Getting intervals in spec times
 load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec2.lfp.mat']));
 
-eventshipupil = interp1(wavespec.timestamps,...
-    wavespec.timestamps,...
-    lowpupildata.timestamps(highpup),'nearest').*wavespec.samplingRate;
-
-eventslopupil = interp1(wavespec.timestamps,...
-    wavespec.timestamps,...
-    lowpupildata.timestamps(~highpup),'nearest').*wavespec.samplingRate;
+% eventshipupil = interp1(wavespec.timestamps,...
+%     wavespec.timestamps,...
+%     lowpupildata.timestamps(highpup),'nearest').*wavespec.samplingRate;
+% 
+% eventslopupil = interp1(wavespec.timestamps,...
+%     wavespec.timestamps,...
+%     lowpupildata.timestamps(~highpup),'nearest').*wavespec.samplingRate;
 
 events_Wh = interp1(wavespec.timestamps,wavespec.timestamps,...
     EMGwhisk.ints.Wh,'nearest');
@@ -139,20 +140,20 @@ allidx_NWh = allidx_NWh.*wavespec.samplingRate;
 cLayerSpec_all = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh = NaN(size(wavespec.data,2),length(channels));  
-cLayerSpec_loP = NaN(size(wavespec.data,2),length(channels)); 
-cLayerSpec_hiP = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_loP = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_hiP = NaN(size(wavespec.data,2),length(channels)); 
 
 cLayerSpec_all_n = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh_n = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh_n = NaN(size(wavespec.data,2),length(channels));  
-cLayerSpec_loP_n = NaN(size(wavespec.data,2),length(channels)); 
-cLayerSpec_hiP_n = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_loP_n = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_hiP_n = NaN(size(wavespec.data,2),length(channels)); 
 
 cLayerSpec_all_z = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh_z = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh_z = NaN(size(wavespec.data,2),length(channels));  
-cLayerSpec_loP_z = NaN(size(wavespec.data,2),length(channels)); 
-cLayerSpec_hiP_z = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_loP_z = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_hiP_z = NaN(size(wavespec.data,2),length(channels)); 
 
 for i = 1:length(channels)
     i
@@ -167,20 +168,20 @@ for i = 1:length(channels)
     cLayerSpec_all(:,i) = nanmedian(log10(abs(wavespec.data)),1);
     cLayerSpec_Wh(:,i) = nanmedian(log10(abs(wavespec.data(round(allidx_Wh),:))),1);
     cLayerSpec_NWh(:,i) = nanmedian(log10(abs(wavespec.data(round(allidx_NWh),:))),1);
-    cLayerSpec_hiP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventshipupil),:))),1);
-    cLayerSpec_loP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventslopupil),:))),1);
+    %cLayerSpec_hiP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventshipupil),:))),1);
+    %cLayerSpec_loP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventslopupil),:))),1);
     
     cLayerSpec_all_n(:,i) = nanmedian(wavespec.datan,1);
     cLayerSpec_Wh_n(:,i) = nanmedian(wavespec.datan(round(allidx_Wh),:),1);
     cLayerSpec_NWh_n(:,i) = nanmedian(wavespec.datan(round(allidx_NWh),:),1);
-    cLayerSpec_hiP_n(:,i) = nanmedian(wavespec.datan(round(eventshipupil),:),1);
-    cLayerSpec_loP_n(:,i) = nanmedian(wavespec.datan(round(eventslopupil),:),1);
+    %cLayerSpec_hiP_n(:,i) = nanmedian(wavespec.datan(round(eventshipupil),:),1);
+    %cLayerSpec_loP_n(:,i) = nanmedian(wavespec.datan(round(eventslopupil),:),1);
     
     cLayerSpec_all_z(:,i) = nanmedian(wavespec.dataz,1);
     cLayerSpec_Wh_z(:,i) = nanmedian(wavespec.dataz(round(allidx_Wh),:),1);
     cLayerSpec_NWh_z(:,i) = nanmedian(wavespec.dataz(round(allidx_NWh),:),1);
-    cLayerSpec_hiP_z(:,i) = nanmedian(wavespec.dataz(round(eventshipupil),:),1);
-    cLayerSpec_loP_z(:,i) = nanmedian(wavespec.dataz(round(eventslopupil),:),1);
+    %cLayerSpec_hiP_z(:,i) = nanmedian(wavespec.dataz(round(eventshipupil),:),1);
+    %cLayerSpec_loP_z(:,i) = nanmedian(wavespec.dataz(round(eventslopupil),:),1);
 
 %     if ~isempty(Piezotouch)
 %         cLayerSpec_T(:,i) = nanmedian(wavespec.data(round(allidx_T),:),1);
