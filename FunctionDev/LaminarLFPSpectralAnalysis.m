@@ -63,7 +63,7 @@ EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
 load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
 sidx = find(startsWith(MergePoints.foldernames,"Spont"));
 %sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
-sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/4];
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/8];
 
 spontidx = find(EMGwhisk.ints.Wh(:,2) < sponttimes(2));
 EMGwhisk.ints.Wh = EMGwhisk.ints.Wh(spontidx,:);

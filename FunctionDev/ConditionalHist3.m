@@ -41,7 +41,7 @@ Yedges(1) = -inf;Yedges(end) = inf;
 
 
 %%
-[N,~,~,BINX,BINY] = histcounts2(X,Y,Xedges,Yedges);
+[n,~,~,BINX,BINY] = histcounts2(X,Y,Xedges,Yedges);
 meanZ = zeros(numXbins,numYbins);
       
 switch bintype
@@ -51,7 +51,8 @@ switch bintype
                 meanZ(xx,yy) = nanmean(Z(BINX==xx & BINY==yy));
             end
         end
-        meanZ(N<minXY)=nan;
+        meanZ(n<minXY)=nan;
+        N = n;
 
     case 'gaussian'
         gaussN = zeros(numXbins,numYbins);
@@ -66,8 +67,8 @@ switch bintype
             end
         end
         meanZ(gaussN<minXY)=nan;
-        %N.countN = n;
-        %N.gaussN = gaussN;
+        N = gaussN./length(Z);
+        N = N.*sum(N(:));
 
 end
 
