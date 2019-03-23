@@ -33,7 +33,7 @@ L6idx = rescaled.channels(L6idx);
 % Specifying folders
 figfolder = fullfile(basePath,'AnalysisFigures');
 savefile = fullfile(basePath,[baseName,'.LaminarSpectralAnalysis.lfp.mat']);
-savefolder = fullfile(basePath,'WaveSpec');
+savefolder = fullfile(basePath,'WaveSpec2');
 
 %Pending: better layer boundary detection and exclusion of bad channels
 
@@ -62,8 +62,8 @@ EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
 % Specifying SPONT whisking
 load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
 sidx = find(startsWith(MergePoints.foldernames,"Spont"));
-sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
-%sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/8];
+%sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/8];
 
 spontidx = find(EMGwhisk.ints.Wh(:,2) < sponttimes(2));
 EMGwhisk.ints.Wh = EMGwhisk.ints.Wh(spontidx,:);
@@ -99,7 +99,7 @@ pupthresh = nanmedian(pupildilation.data);
 highpup = pupildilation.data>pupthresh;
 
 % Getting intervals in spec times
-load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec.lfp.mat']));
+load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec2.lfp.mat']));
 
 % eventshipupil = interp1(wavespec.timestamps,...
 %     wavespec.timestamps,...
@@ -151,31 +151,31 @@ allidx_NWh = allidx_NWh.*wavespec.samplingRate;
 cLayerSpec_all = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh = NaN(size(wavespec.data,2),length(channels));  
-cLayerSpec_loP = NaN(size(wavespec.data,2),length(channels)); 
-cLayerSpec_hiP = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_loP = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_hiP = NaN(size(wavespec.data,2),length(channels)); 
 
-% cLayerSpec_all_r = NaN(size(wavespec.data,2),length(channels)); 
-% cLayerSpec_Wh_r = NaN(size(wavespec.data,2),length(channels)); 
-% cLayerSpec_NWh_r = NaN(size(wavespec.data,2),length(channels));  
+cLayerSpec_all_r = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_Wh_r = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_NWh_r = NaN(size(wavespec.data,2),length(channels));  
 % cLayerSpec_loP_r = NaN(size(wavespec.data,2),length(channels)); 
 % cLayerSpec_hiP_r = NaN(size(wavespec.data,2),length(channels));
 
 cLayerSpec_all_n = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh_n = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh_n = NaN(size(wavespec.data,2),length(channels));  
-cLayerSpec_loP_n = NaN(size(wavespec.data,2),length(channels)); 
-cLayerSpec_hiP_n = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_loP_n = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_hiP_n = NaN(size(wavespec.data,2),length(channels)); 
 
 cLayerSpec_all_z = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh_z = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh_z = NaN(size(wavespec.data,2),length(channels));  
-cLayerSpec_loP_z = NaN(size(wavespec.data,2),length(channels)); 
-cLayerSpec_hiP_z = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_loP_z = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_hiP_z = NaN(size(wavespec.data,2),length(channels)); 
 
 for i = 1:length(channels)
     i
     % Loading spectrograms
-    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec2.lfp.mat']));
     
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     wavespec.datan = log10(abs(wavespec.data))./nanmedian(log10(abs(wavespec.data)),1);
@@ -188,9 +188,11 @@ for i = 1:length(channels)
     %cLayerSpec_hiP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventshipupil),:))),1);
     %cLayerSpec_loP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventslopupil),:))),1);
     
-    cLayerSpec_all_r(:,i) = nanmedian(wavespec.data,1);
-    cLayerSpec_Wh_r(:,i) = nanmedian(wavespec.data(round(allidx_Wh),:),1);
-    cLayerSpec_NWh_r(:,i) = nanmedian(wavespec.data(round(allidx_NWh),:),1);
+    cLayerSpec_all_r(:,i) = nanmedian(abs(wavespec.data),1);
+    cLayerSpec_Wh_r(:,i) = nanmedian(abs(wavespec.data(round(allidx_Wh),:)),1);
+    cLayerSpec_NWh_r(:,i) = nanmedian(abs(wavespec.data(round(allidx_NWh),:)),1);
+    %cLayerSpec_hiP_r(:,i) = nanmedian(abs(wavespec.data(round(eventshipupil),:)),1);
+    %cLayerSpec_loP_r(:,i) = nanmedian(abs(wavespec.data(round(eventslopupil),:)),1);
     
     cLayerSpec_all_n(:,i) = nanmedian(wavespec.datan,1);
     cLayerSpec_Wh_n(:,i) = nanmedian(wavespec.datan(round(allidx_Wh),:),1);
@@ -211,39 +213,114 @@ for i = 1:length(channels)
 end
 
 % Saving to struct
-LayerSpectral.cLayerSpec_all = cLayerSpec_all;
-LayerSpectral.cLayerSpec_Wh = cLayerSpec_Wh;
-LayerSpectral.cLayerSpec_NWh = cLayerSpec_NWh;
-LayerSpectral.cLayerSpec_loP = cLayerSpec_loP;
-LayerSpectral.cLayerSpec_hiP = cLayerSpec_hiP;
+% LayerSpectral.cLayerSpec_all = cLayerSpec_all;
+% LayerSpectral.cLayerSpec_Wh = cLayerSpec_Wh;
+% LayerSpectral.cLayerSpec_NWh = cLayerSpec_NWh;
+% LayerSpectral.cLayerSpec_loP = cLayerSpec_loP;
+% LayerSpectral.cLayerSpec_hiP = cLayerSpec_hiP;
+
+%%
+spec.data = cLayerSpec_Wh_r(:,usechannels+1)';
+spec.samplingRate = wavespec.samplingRate;
+spec.nfreqs = wavespec.nfreqs;
+spec.freqs = wavespec.freqs;
+
+[frac_wh,osci_wh,validfreq] = WaveIRASA(spec);
+
+spec.data = cLayerSpec_NWh_r(:,usechannels+1)';
+spec.samplingRate = wavespec.samplingRate;
+spec.nfreqs = wavespec.nfreqs;
+spec.freqs = wavespec.freqs;
+
+[frac_nwh,osci_nwh,validfreq] = WaveIRASA(spec);
+osci_nwh(osci_nwh<0) = 0;
+osci_wh(osci_wh<0) = 0;
+
+cmax = max([max(max(osci_nwh)) max(max(osci_wh))]);
+cmin = min([min(min(osci_nwh)) min(min(osci_wh))]);
+
+figure;
+subplot(1,2,1);
+imagesc(log10(validfreq),normdepth,osci_nwh);
+LogScale('x',10)
+%LogScale('c',10)
+colormap('jet'); 
+xlabel('f (Hz)');
+xlim(log10([1 100]));
+caxis([0 cmax/2]);
+set(gca,'Xtick',log10([1 5 10 25 50 100]));
+set(gca,'Xticklabel',{'1','5','10','25','50','100'});
+set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
+set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
+set(gca,'YGrid','on', 'GridColor','w','GridAlpha',0.45);
+title('Oscigram NWh')
+
+subplot(1,2,2);
+imagesc(log10(validfreq),normdepth,osci_wh);
+LogScale('x',10)
+%LogScale('c',10)
+colormap('jet'); 
+xlabel('f (Hz)');
+xlim(log10([1 100]));
+caxis([0 cmax/2]);
+set(gca,'Xtick',log10([1 5 10 25 50 100]));
+set(gca,'Xticklabel',{'1','5','10','25','50','100'});
+set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
+set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
+set(gca,'YGrid','on', 'GridColor','w','GridAlpha',0.45);
+title('Oscigram Wh')
+
+cmax = max([max(max(log10(frac_nwh))) max(max(log10(frac_wh)))]);
+cmin = min([min(min(log10(frac_nwh))) min(min(log10(frac_wh)))]);
+
+figure;
+subplot(1,2,1);
+imagesc(log10(validfreq),normdepth,log10(frac_nwh));
+LogScale('x',10)
+LogScale('c',10)
+colormap('jet'); 
+xlabel('f (Hz)');
+xlim(log10([1 100]));
+caxis([cmin cmax]);
+set(gca,'Xtick',log10([1 5 10 25 50 100]));
+set(gca,'Xticklabel',{'1','5','10','25','50','100'});
+set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
+set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
+set(gca,'YGrid','on', 'GridColor','w','GridAlpha',0.45);
+title('Oscigram NWh')
+
+subplot(1,2,2);
+imagesc(log10(validfreq),normdepth,log10(frac_wh));
+LogScale('x',10)
+LogScale('c',10)
+colormap('jet'); 
+xlabel('f (Hz)');
+xlim(log10([1 100]));
+caxis([cmin cmax]);
+set(gca,'Xtick',log10([1 5 10 25 50 100]));
+set(gca,'Xticklabel',{'1','5','10','25','50','100'});
+set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
+set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
+set(gca,'YGrid','on', 'GridColor','w','GridAlpha',0.45);
+title('Oscigram Wh')
 
 %% FIGURE: 
 figure;
-% subplot(1,7,1);
-% stairs(cLayerMUA_all(usechannels+1),normdepth,'Color','k'); hold on;
-% stairs(cLayerMUA_NWh(usechannels+1),normdepth,'Color','b'); hold on;
-% stairs(cLayerMUA_Wh(usechannels+1),normdepth,'Color','r'); hold on;
-% set(gca,'YDir','reverse');
-% ylim([normdepth(1) normdepth(end)]);
-% xlabel('MUA power (0.15-2 KHz)'); 
-% set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
-% set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
-% set(gca,'YGrid','on', 'GridColor','k','GridAlpha',0.45);
-% box on;
-% legend({'ALL','NWh','Wh'},'location','northeast');
+cmin = min(min(cLayerSpec_Wh_z(:,usechannels+1)-cLayerSpec_NWh_z(:,usechannels+1)));
+cmax = max(max(cLayerSpec_Wh_z(:,usechannels+1)-cLayerSpec_NWh_z(:,usechannels+1)));
 
-cmin = min(min(cLayerSpec_Wh(:,usechannels+1)-cLayerSpec_NWh(:,usechannels+1)));
-cmax = max(max(cLayerSpec_Wh(:,usechannels+1)-cLayerSpec_NWh(:,usechannels+1)));
-
-subplot(1,7,2:3);
+subplot(1,3,1);
 imagesc(log10(wavespec.freqs),normdepth,...
-    (cLayerSpec_Wh(:,usechannels+1)-cLayerSpec_NWh(:,usechannels+1))');
+    (cLayerSpec_Wh_z(:,usechannels+1)-cLayerSpec_NWh_z(:,usechannels+1))');
 axis tight
 LogScale('x',10)
 colormap('jet'); 
 %ColorbarWithAxis([cmin cmax],['power (dB)'])
-caxis([cmax*-1 cmax]);
+caxis([cmin cmin*-1]);
 %set(gca,'YDir','reverse');
+xlim(log10([1 100]));
+set(gca,'Xtick',log10([1 10 25 50 100]));
+set(gca,'Xticklabel',{'1','10','25','50','100'});
 xtickangle(45);
 xlabel('f (Hz)');
 set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
@@ -251,19 +328,22 @@ set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
 set(gca,'YGrid','on', 'GridColor','w','GridAlpha',0.45);
 title('Power spectra Wh-NWh diff');
 
-cmin = min([min(min(cLayerSpec_Wh(:,usechannels+1)))...
-    min(min(cLayerSpec_NWh(:,usechannels+1)))]);
-cmax = max([max(max(cLayerSpec_Wh(:,usechannels+1)))...
-    max(max(cLayerSpec_NWh(:,usechannels+1)))]);
+cmin = min([min(min(cLayerSpec_Wh_z(:,usechannels+1)))...
+    min(min(cLayerSpec_NWh_z(:,usechannels+1)))]);
+cmax = max([max(max(cLayerSpec_Wh_z(:,usechannels+1)))...
+    max(max(cLayerSpec_NWh_z(:,usechannels+1)))]);
 
-subplot(1,7,4:5);
-imagesc(log10(wavespec.freqs),normdepth,cLayerSpec_NWh(:,usechannels+1)');
+subplot(1,3,2);
+imagesc(log10(wavespec.freqs),normdepth,cLayerSpec_NWh_z(:,usechannels+1)');
 axis tight
 LogScale('x',10)
 colormap('jet'); 
 %ColorbarWithAxis([cmin cmax],['power (dB)'])
-caxis([cmax*-1 cmax]);
+caxis([cmin cmax]);
 %set(gca,'YDir','reverse');
+xlim(log10([1 100]));
+set(gca,'Xtick',log10([1 10 25 50 100]));
+set(gca,'Xticklabel',{'1','10','25','50','100'});
 xtickangle(45);
 xlabel('f (Hz)');
 set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
@@ -271,14 +351,17 @@ set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
 set(gca,'YGrid','on', 'GridColor','w','GridAlpha',0.45);
 title('Power spectra NWh');
 
-subplot(1,7,6:7);
-imagesc(log10(wavespec.freqs),normdepth,cLayerSpec_Wh(:,usechannels+1)');
+subplot(1,3,3);
+imagesc(log10(wavespec.freqs),normdepth,cLayerSpec_Wh_z(:,usechannels+1)');
 axis tight
 LogScale('x',10)
 colormap('jet'); 
 %ColorbarWithAxis([cmin cmax],['power (dB)'])
-caxis([cmax*-1 cmax]);
+caxis([cmin cmax]);
 %set(gca,'YDir','reverse');
+xlim(log10([1 100]));
+set(gca,'Xtick',log10([1 10 25 50 100]));
+set(gca,'Xticklabel',{'1','10','25','50','100'});
 xtickangle(45);
 xlabel('f (Hz)');
 set(gca,'Ytick',[0.1 0.35 0.5 0.6 0.9]);
@@ -286,7 +369,7 @@ set(gca,'Yticklabel',{'L1/2','L3/4','L4/5a','L5b','L6'});
 set(gca,'YGrid','on', 'GridColor','w','GridAlpha',0.45);
 title('Power spectra Wh');
 
-NiceSave('LaminarPspec_Wh_NWh',figfolder,baseName)
+%NiceSave('LaminarPspec_Wh_NWh',figfolder,baseName)
 
 %% FIGURE:
 figure;
@@ -502,40 +585,40 @@ dLayerSpec_NWh = NaN(size(wavespec.data(round(allidx_NWh),:),1),...
 dLayerSpec_Wh = NaN(size(wavespec.data(round(allidx_Wh),:),1),...
     size(wavespec.data(round(allidx_Wh),:),2),6);
 % dLayerSpec_T = NaN(size(wavespec.data,1),size(wavespec.data,2),6);
-dLayerSpec_hiP = NaN(size(wavespec.data(round(eventshipupil),:),1),...
-    size(wavespec.data(round(eventshipupil),:),2),6);
-dLayerSpec_loP = NaN(size(wavespec.data(round(eventslopupil),:),1),...
-    size(wavespec.data(round(eventslopupil),:),2),6);
+% dLayerSpec_hiP = NaN(size(wavespec.data(round(eventshipupil),:),1),...
+%     size(wavespec.data(round(eventshipupil),:),2),6);
+% dLayerSpec_loP = NaN(size(wavespec.data(round(eventslopupil),:),1),...
+%     size(wavespec.data(round(eventslopupil),:),2),6);
 
 % Layer 1
 L1eventSpec_Wh = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),length(L1idx));
 for x = 1: length(L1idx)
-    load(fullfile(savefolder,[baseName,'.',num2str(L1idx(x)),'.WaveSpec.lfp.mat']));
-    wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
-        ./nanstd(log10(abs(wavespec.data)),0,1);
+    load(fullfile(savefolder,[baseName,'.',num2str(L1idx(x)),'.WaveSpec2.lfp.mat']));
+%     wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
+%         ./nanstd(log10(abs(wavespec.data)),0,1);
     %wavespec.data = NormToInt(log10(abs(wavespec.data)),'modZ');
     
-    tempSpec = cat(3,dLayerSpec_all(:,:,1),wavespec.data);
+    tempSpec = cat(3,dLayerSpec_all(:,:,1),abs(wavespec.data));
     dLayerSpec_all(:,:,1) = nansum(tempSpec,3);
     
-    tempSpec = cat(3,dLayerSpec_NWh(:,:,1),wavespec.data(round(allidx_NWh),:));
+    tempSpec = cat(3,dLayerSpec_NWh(:,:,1),abs(wavespec.data(round(allidx_NWh),:)));
     dLayerSpec_NWh(:,:,1) = nansum(tempSpec,3);
     
-    tempSpec = cat(3,dLayerSpec_Wh(:,:,1),wavespec.data(round(allidx_Wh),:));
+    tempSpec = cat(3,dLayerSpec_Wh(:,:,1),abs(wavespec.data(round(allidx_Wh),:)));
     dLayerSpec_Wh(:,:,1) = nansum(tempSpec,3);
     
-    tempSpec = cat(3,dLayerSpec_loP(:,:,1),wavespec.data(round(eventslopupil),:));
-    dLayerSpec_loP(:,:,1) = nansum(tempSpec,3);
-    
-    tempSpec = cat(3,dLayerSpec_hiP(:,:,1),wavespec.data(round(eventshipupil),:));
-    dLayerSpec_hiP(:,:,1) = nansum(tempSpec,3);
+%     tempSpec = cat(3,dLayerSpec_loP(:,:,1),wavespec.data(round(eventslopupil),:));
+%     dLayerSpec_loP(:,:,1) = nansum(tempSpec,3);
+%     
+%     tempSpec = cat(3,dLayerSpec_hiP(:,:,1),wavespec.data(round(eventshipupil),:));
+%     dLayerSpec_hiP(:,:,1) = nansum(tempSpec,3);
     
     % eventSpec
     events = round(events_Wh.*wavespec.samplingRate);
     spec_temp = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),size(events,1));
     for e = 1:size(events,1)
         if events(e,1)-twin(1) > 0 && events(e,1)+twin(2) < size(wavespec.data,1)
-            spec_temp(:,:,e) = wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:);
+            spec_temp(:,:,e) = abs(wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:));
         else
         end
     end
@@ -545,15 +628,15 @@ L1eventSpec_Wh = squeeze(nanmean(L1eventSpec_Wh,3));
 dLayerSpec_all(:,:,1) = dLayerSpec_all(:,:,1)./length(L1idx);
 dLayerSpec_Wh(:,:,1) = dLayerSpec_Wh(:,:,1)./length(L1idx);
 dLayerSpec_NWh(:,:,1) = dLayerSpec_NWh(:,:,1)./length(L1idx);
-dLayerSpec_loP(:,:,1) = dLayerSpec_loP(:,:,1)./length(L1idx);
-dLayerSpec_hiP(:,:,1) = dLayerSpec_hiP(:,:,1)./length(L1idx);
+% dLayerSpec_loP(:,:,1) = dLayerSpec_loP(:,:,1)./length(L1idx);
+% dLayerSpec_hiP(:,:,1) = dLayerSpec_hiP(:,:,1)./length(L1idx);
 
 % Layer 2/3
 L23eventSpec_Wh = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),length(L23idx));
 for x = 1: length(L23idx)
-    load(fullfile(savefolder,[baseName,'.',num2str(L23idx(x)),'.WaveSpec.lfp.mat']));
-    wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
-        ./nanstd(log10(abs(wavespec.data)),0,1);
+    load(fullfile(savefolder,[baseName,'.',num2str(L23idx(x)),'.WaveSpec2.lfp.mat']));
+%     wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
+%         ./nanstd(log10(abs(wavespec.data)),0,1);
     %wavespec.data = NormToInt(log10(abs(wavespec.data)),'modZ');
 
     tempSpec = cat(3,dLayerSpec_all(:,:,2),wavespec.data);
@@ -565,18 +648,18 @@ for x = 1: length(L23idx)
     tempSpec = cat(3,dLayerSpec_Wh(:,:,2),wavespec.data(round(allidx_Wh),:));
     dLayerSpec_Wh(:,:,2) = nansum(tempSpec,3);
     
-    tempSpec = cat(3,dLayerSpec_loP(:,:,2),wavespec.data(round(eventslopupil),:));
-    dLayerSpec_loP(:,:,2) = nansum(tempSpec,3);
-    
-    tempSpec = cat(3,dLayerSpec_hiP(:,:,2),wavespec.data(round(eventshipupil),:));
-    dLayerSpec_hiP(:,:,2) = nansum(tempSpec,3);
+%     tempSpec = cat(3,dLayerSpec_loP(:,:,2),wavespec.data(round(eventslopupil),:));
+%     dLayerSpec_loP(:,:,2) = nansum(tempSpec,3);
+%     
+%     tempSpec = cat(3,dLayerSpec_hiP(:,:,2),wavespec.data(round(eventshipupil),:));
+%     dLayerSpec_hiP(:,:,2) = nansum(tempSpec,3);
     
     % eventSpec
     events = round(events_Wh.*wavespec.samplingRate);
     spec_temp = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),size(events,1));
     for e = 1:size(events,1)
         if events(e,1)-twin(1) > 0 && events(e,1)+twin(2) < size(wavespec.data,1)
-            spec_temp(:,:,e) = wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:);
+            spec_temp(:,:,e) = abs(wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:));
         else
         end
     end
@@ -586,15 +669,15 @@ L23eventSpec_Wh = squeeze(nanmean(L23eventSpec_Wh,3));
 dLayerSpec_all(:,:,2) = dLayerSpec_all(:,:,2)./length(L23idx);
 dLayerSpec_Wh(:,:,2) = dLayerSpec_Wh(:,:,2)./length(L23idx);
 dLayerSpec_NWh(:,:,2) = dLayerSpec_NWh(:,:,2)./length(L23idx);
-dLayerSpec_loP(:,:,2) = dLayerSpec_loP(:,:,2)./length(L23idx);
-dLayerSpec_hiP(:,:,2) = dLayerSpec_hiP(:,:,2)./length(L23idx);
+%dLayerSpec_loP(:,:,2) = dLayerSpec_loP(:,:,2)./length(L23idx);
+%dLayerSpec_hiP(:,:,2) = dLayerSpec_hiP(:,:,2)./length(L23idx);
 
 % Layer 4
 L4eventSpec_Wh = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),length(L4idx));
 for x = 1: length(L4idx)
-    load(fullfile(savefolder,[baseName,'.',num2str(L4idx(x)),'.WaveSpec.lfp.mat']));
-    wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
-        ./nanstd(log10(abs(wavespec.data)),0,1);
+    load(fullfile(savefolder,[baseName,'.',num2str(L4idx(x)),'.WaveSpec2.lfp.mat']));
+%     wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
+%         ./nanstd(log10(abs(wavespec.data)),0,1);
     %wavespec.data = NormToInt(log10(abs(wavespec.data)),'modZ');
 
     tempSpec = cat(3,dLayerSpec_all(:,:,3),wavespec.data);
@@ -606,18 +689,18 @@ for x = 1: length(L4idx)
     tempSpec = cat(3,dLayerSpec_Wh(:,:,3),wavespec.data(round(allidx_Wh),:));
     dLayerSpec_Wh(:,:,3) = nansum(tempSpec,3);
     
-    tempSpec = cat(3,dLayerSpec_loP(:,:,3),wavespec.data(round(eventslopupil),:));
-    dLayerSpec_loP(:,:,3) = nansum(tempSpec,3);
-    
-    tempSpec = cat(3,dLayerSpec_hiP(:,:,3),wavespec.data(round(eventshipupil),:));
-    dLayerSpec_hiP(:,:,3) = nansum(tempSpec,3);
-    
+%     tempSpec = cat(3,dLayerSpec_loP(:,:,3),wavespec.data(round(eventslopupil),:));
+%     dLayerSpec_loP(:,:,3) = nansum(tempSpec,3);
+%     
+%     tempSpec = cat(3,dLayerSpec_hiP(:,:,3),wavespec.data(round(eventshipupil),:));
+%     dLayerSpec_hiP(:,:,3) = nansum(tempSpec,3);
+%     
      % eventSpec
     events = round(events_Wh.*wavespec.samplingRate);
     spec_temp = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),size(events,1));
     for e = 1:size(events,1)
         if events(e,1)-twin(1) > 0 && events(e,1)+twin(2) < size(wavespec.data,1)
-            spec_temp(:,:,e) = wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:);
+            spec_temp(:,:,e) = abs(wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:));
         else
         end
     end
@@ -627,15 +710,15 @@ L4eventSpec_Wh = squeeze(nanmean(L4eventSpec_Wh,3));
 dLayerSpec_all(:,:,3) = dLayerSpec_all(:,:,3)./length(L4idx);
 dLayerSpec_Wh(:,:,3) = dLayerSpec_Wh(:,:,3)./length(L4idx);
 dLayerSpec_NWh(:,:,3) = dLayerSpec_NWh(:,:,3)./length(L4idx);
-dLayerSpec_loP(:,:,3) = dLayerSpec_loP(:,:,3)./length(L4idx);
-dLayerSpec_hiP(:,:,3) = dLayerSpec_hiP(:,:,3)./length(L4idx);
+%dLayerSpec_loP(:,:,3) = dLayerSpec_loP(:,:,3)./length(L4idx);
+%dLayerSpec_hiP(:,:,3) = dLayerSpec_hiP(:,:,3)./length(L4idx);
 
 % Layer 5a
 L5aeventSpec_Wh = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),length(L5aidx));
 for x = 1: length(L5aidx)
-    load(fullfile(savefolder,[baseName,'.',num2str(L5aidx(x)),'.WaveSpec.lfp.mat']));
-    wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
-        ./nanstd(log10(abs(wavespec.data)),0,1);
+    load(fullfile(savefolder,[baseName,'.',num2str(L5aidx(x)),'.WaveSpec2.lfp.mat']));
+%     wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
+%         ./nanstd(log10(abs(wavespec.data)),0,1);
     %wavespec.data = NormToInt(log10(abs(wavespec.data)),'modZ');
 
     tempSpec = cat(3,dLayerSpec_all(:,:,4),wavespec.data);
@@ -647,18 +730,18 @@ for x = 1: length(L5aidx)
     tempSpec = cat(3,dLayerSpec_Wh(:,:,4),wavespec.data(round(allidx_Wh),:));
     dLayerSpec_Wh(:,:,4) = nansum(tempSpec,3);
     
-    tempSpec = cat(3,dLayerSpec_loP(:,:,4),wavespec.data(round(eventslopupil),:));
-    dLayerSpec_loP(:,:,4) = nansum(tempSpec,3);
-    
-    tempSpec = cat(3,dLayerSpec_hiP(:,:,4),wavespec.data(round(eventshipupil),:));
-    dLayerSpec_hiP(:,:,4) = nansum(tempSpec,3);
+%     tempSpec = cat(3,dLayerSpec_loP(:,:,4),wavespec.data(round(eventslopupil),:));
+%     dLayerSpec_loP(:,:,4) = nansum(tempSpec,3);
+%     
+%     tempSpec = cat(3,dLayerSpec_hiP(:,:,4),wavespec.data(round(eventshipupil),:));
+%     dLayerSpec_hiP(:,:,4) = nansum(tempSpec,3);
     
     % eventSpec
     events = round(events_Wh.*wavespec.samplingRate);
     spec_temp = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),size(events,1));
     for e = 1:size(events,1)
         if events(e,1)-twin(1) > 0 && events(e,1)+twin(2) < size(wavespec.data,1)
-            spec_temp(:,:,e) = wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:);
+            spec_temp(:,:,e) = abs(wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:));
         else
         end
     end
@@ -668,15 +751,15 @@ L5aeventSpec_Wh = squeeze(nanmean(L5aeventSpec_Wh,3));
 dLayerSpec_all(:,:,4) = dLayerSpec_all(:,:,4)./length(L5aidx);
 dLayerSpec_Wh(:,:,4) = dLayerSpec_Wh(:,:,4)./length(L5aidx);
 dLayerSpec_NWh(:,:,4) = dLayerSpec_NWh(:,:,4)./length(L5aidx);
-dLayerSpec_loP(:,:,4) = dLayerSpec_loP(:,:,4)./length(L5aidx);
-dLayerSpec_hiP(:,:,4) = dLayerSpec_hiP(:,:,4)./length(L5aidx);
+%dLayerSpec_loP(:,:,4) = dLayerSpec_loP(:,:,4)./length(L5aidx);
+%dLayerSpec_hiP(:,:,4) = dLayerSpec_hiP(:,:,4)./length(L5aidx);
 
 % Layer 5b/6
 L56eventSpec_Wh = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),length(L56idx));
 for x = 1: length(L56idx)
-    load(fullfile(savefolder,[baseName,'.',num2str(L56idx(x)),'.WaveSpec.lfp.mat']));
-    wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
-        ./nanstd(log10(abs(wavespec.data)),0,1);
+    load(fullfile(savefolder,[baseName,'.',num2str(L56idx(x)),'.WaveSpec2.lfp.mat']));
+%     wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
+%         ./nanstd(log10(abs(wavespec.data)),0,1);
     %wavespec.data = NormToInt(log10(abs(wavespec.data)),'modZ');
 
     tempSpec = cat(3,dLayerSpec_all(:,:,5),wavespec.data);
@@ -688,18 +771,18 @@ for x = 1: length(L56idx)
     tempSpec = cat(3,dLayerSpec_Wh(:,:,5),wavespec.data(round(allidx_Wh),:));
     dLayerSpec_Wh(:,:,5) = nansum(tempSpec,3);
     
-    tempSpec = cat(3,dLayerSpec_loP(:,:,5),wavespec.data(round(eventslopupil),:));
-    dLayerSpec_loP(:,:,5) = nansum(tempSpec,3);
-    
-    tempSpec = cat(3,dLayerSpec_hiP(:,:,5),wavespec.data(round(eventshipupil),:));
-    dLayerSpec_hiP(:,:,5) = nansum(tempSpec,3);
-    
+%     tempSpec = cat(3,dLayerSpec_loP(:,:,5),wavespec.data(round(eventslopupil),:));
+%     dLayerSpec_loP(:,:,5) = nansum(tempSpec,3);
+%     
+%     tempSpec = cat(3,dLayerSpec_hiP(:,:,5),wavespec.data(round(eventshipupil),:));
+%     dLayerSpec_hiP(:,:,5) = nansum(tempSpec,3);
+%     
     % eventSpec
     events = round(events_Wh.*wavespec.samplingRate);
     spec_temp = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),size(events,1));
     for e = 1:size(events,1)
         if events(e,1)-twin(1) > 0 && events(e,1)+twin(2) < size(wavespec.data,1)
-            spec_temp(:,:,e) = wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:);
+            spec_temp(:,:,e) = abs(wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:));
         else
         end
     end
@@ -709,15 +792,15 @@ L56eventSpec_Wh = squeeze(nanmean(L56eventSpec_Wh,3));
 dLayerSpec_all(:,:,5) = dLayerSpec_all(:,:,5)./length(L56idx);
 dLayerSpec_Wh(:,:,5) = dLayerSpec_Wh(:,:,5)./length(L56idx);
 dLayerSpec_NWh(:,:,5) = dLayerSpec_NWh(:,:,5)./length(L56idx);
-dLayerSpec_loP(:,:,5) = dLayerSpec_loP(:,:,5)./length(L56idx);
-dLayerSpec_hiP(:,:,5) = dLayerSpec_hiP(:,:,5)./length(L56idx);
+%dLayerSpec_loP(:,:,5) = dLayerSpec_loP(:,:,5)./length(L56idx);
+%dLayerSpec_hiP(:,:,5) = dLayerSpec_hiP(:,:,5)./length(L56idx);
 
 % Layer 6
 L6eventSpec_Wh = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),length(L6idx));
 for x = 1: length(L6idx)
-    load(fullfile(savefolder,[baseName,'.',num2str(L6idx(x)),'.WaveSpec.lfp.mat']));
-    wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
-        ./nanstd(log10(abs(wavespec.data)),0,1);
+    load(fullfile(savefolder,[baseName,'.',num2str(L6idx(x)),'.WaveSpec2.lfp.mat']));
+%     wavespec.data = (log10(abs(wavespec.data))-nanmean(log10(abs(wavespec.data)),1))...
+%         ./nanstd(log10(abs(wavespec.data)),0,1);
     %wavespec.data = NormToInt(log10(abs(wavespec.data)),'modZ');
     
     tempSpec = cat(3,dLayerSpec_all(:,:,6),wavespec.data);
@@ -729,18 +812,18 @@ for x = 1: length(L6idx)
     tempSpec = cat(3,dLayerSpec_Wh(:,:,6),wavespec.data(round(allidx_Wh),:));
     dLayerSpec_Wh(:,:,6) = nansum(tempSpec,3);
     
-    tempSpec = cat(3,dLayerSpec_loP(:,:,6),wavespec.data(round(eventslopupil),:));
-    dLayerSpec_loP(:,:,6) = nansum(tempSpec,3);
-    
-    tempSpec = cat(3,dLayerSpec_hiP(:,:,6),wavespec.data(round(eventshipupil),:));
-    dLayerSpec_hiP(:,:,6) = nansum(tempSpec,3);
-    
+%     tempSpec = cat(3,dLayerSpec_loP(:,:,6),wavespec.data(round(eventslopupil),:));
+%     dLayerSpec_loP(:,:,6) = nansum(tempSpec,3);
+%     
+%     tempSpec = cat(3,dLayerSpec_hiP(:,:,6),wavespec.data(round(eventshipupil),:));
+%     dLayerSpec_hiP(:,:,6) = nansum(tempSpec,3);
+%     
     % eventSpec
     events = round(events_Wh.*wavespec.samplingRate);
     spec_temp = NaN(twin(1)+twin(2)+1,size(wavespec.data,2),size(events,1));
     for e = 1:size(events,1)
         if events(e,1)-twin(1) > 0 && events(e,1)+twin(2) < size(wavespec.data,1)
-            spec_temp(:,:,e) = wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:);
+            spec_temp(:,:,e) = abs(wavespec.data(events(e,1)-twin(1):events(e,1)+twin(2),:));
         else
         end
     end
@@ -750,57 +833,57 @@ L6eventSpec_Wh = squeeze(nanmean(L6eventSpec_Wh,3));
 dLayerSpec_all(:,:,6) = dLayerSpec_all(:,:,6)./length(L6idx);
 dLayerSpec_Wh(:,:,6) = dLayerSpec_Wh(:,:,6)./length(L6idx);
 dLayerSpec_NWh(:,:,6) = dLayerSpec_NWh(:,:,6)./length(L6idx);
-dLayerSpec_loP(:,:,6) = dLayerSpec_loP(:,:,6)./length(L6idx);
-dLayerSpec_hiP(:,:,6) = dLayerSpec_hiP(:,:,6)./length(L6idx);
+%dLayerSpec_loP(:,:,6) = dLayerSpec_loP(:,:,6)./length(L6idx);
+%dLayerSpec_hiP(:,:,6) = dLayerSpec_hiP(:,:,6)./length(L6idx);
 
 % Saving to struct
-LayerSpectral.L1chan = length(L1idx);
-LayerSpectral.L1eventSpec_Wh = L1eventSpec_Wh;
-LayerSpectral.L1Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,1),1)); 
-LayerSpectral.L1Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,1),1)); 
-LayerSpectral.L1Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,1),1)); 
-LayerSpectral.L1Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,1),1));
-LayerSpectral.L1Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,1),1));
-
-LayerSpectral.L23chan = length(L23idx);
-LayerSpectral.L23eventSpec_Wh = L23eventSpec_Wh;
-LayerSpectral.L23Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,2),1)); 
-LayerSpectral.L23Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,2),1)); 
-LayerSpectral.L23Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,2),1)); 
-LayerSpectral.L23Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,2),1));
-LayerSpectral.L23Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,2),1));
-
-LayerSpectral.L4chan = length(L4idx);
-LayerSpectral.L4eventSpec_Wh = L4eventSpec_Wh;
-LayerSpectral.L4Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,3),1)); 
-LayerSpectral.L4Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,3),1)); 
-LayerSpectral.L4Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,3),1)); 
-LayerSpectral.L4Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,3),1));
-LayerSpectral.L4Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,3),1));
-
-LayerSpectral.L5achan = length(L5aidx);
-LayerSpectral.L5aeventSpec_Wh = L5aeventSpec_Wh;
-LayerSpectral.L5aSpec_all = squeeze(nanmean(dLayerSpec_all(:,:,4),1)); 
-LayerSpectral.L5aSpec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,4),1)); 
-LayerSpectral.L5aSpec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,4),1)); 
-LayerSpectral.L5aSpec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,4),1));
-LayerSpectral.L5aSpec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,4),1));
-
-LayerSpectral.L56chan = length(L56idx);
-LayerSpectral.L56eventSpec_Wh = L56eventSpec_Wh;
-LayerSpectral.L56Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,5),1)); 
-LayerSpectral.L56Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,5),1)); 
-LayerSpectral.L56Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,5),1)); 
-LayerSpectral.L56Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,5),1));
-LayerSpectral.L56Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,5),1));
-
-LayerSpectral.L6chan = length(L6idx);
-LayerSpectral.L6eventSpec_Wh = L6eventSpec_Wh;
-LayerSpectral.L6Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,6),1)); 
-LayerSpectral.L6Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,6),1)); 
-LayerSpectral.L6Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,6),1)); 
-LayerSpectral.L6Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,6),1));
-LayerSpectral.L6Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,6),1));
+% LayerSpectral.L1chan = length(L1idx);
+% LayerSpectral.L1eventSpec_Wh = L1eventSpec_Wh;
+% LayerSpectral.L1Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,1),1)); 
+% LayerSpectral.L1Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,1),1)); 
+% LayerSpectral.L1Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,1),1)); 
+% LayerSpectral.L1Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,1),1));
+% LayerSpectral.L1Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,1),1));
+% 
+% LayerSpectral.L23chan = length(L23idx);
+% LayerSpectral.L23eventSpec_Wh = L23eventSpec_Wh;
+% LayerSpectral.L23Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,2),1)); 
+% LayerSpectral.L23Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,2),1)); 
+% LayerSpectral.L23Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,2),1)); 
+% LayerSpectral.L23Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,2),1));
+% LayerSpectral.L23Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,2),1));
+% 
+% LayerSpectral.L4chan = length(L4idx);
+% LayerSpectral.L4eventSpec_Wh = L4eventSpec_Wh;
+% LayerSpectral.L4Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,3),1)); 
+% LayerSpectral.L4Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,3),1)); 
+% LayerSpectral.L4Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,3),1)); 
+% LayerSpectral.L4Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,3),1));
+% LayerSpectral.L4Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,3),1));
+% 
+% LayerSpectral.L5achan = length(L5aidx);
+% LayerSpectral.L5aeventSpec_Wh = L5aeventSpec_Wh;
+% LayerSpectral.L5aSpec_all = squeeze(nanmean(dLayerSpec_all(:,:,4),1)); 
+% LayerSpectral.L5aSpec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,4),1)); 
+% LayerSpectral.L5aSpec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,4),1)); 
+% LayerSpectral.L5aSpec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,4),1));
+% LayerSpectral.L5aSpec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,4),1));
+% 
+% LayerSpectral.L56chan = length(L56idx);
+% LayerSpectral.L56eventSpec_Wh = L56eventSpec_Wh;
+% LayerSpectral.L56Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,5),1)); 
+% LayerSpectral.L56Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,5),1)); 
+% LayerSpectral.L56Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,5),1)); 
+% LayerSpectral.L56Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,5),1));
+% LayerSpectral.L56Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,5),1));
+% 
+% LayerSpectral.L6chan = length(L6idx);
+% LayerSpectral.L6eventSpec_Wh = L6eventSpec_Wh;
+% LayerSpectral.L6Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,6),1)); 
+% LayerSpectral.L6Spec_Wh = squeeze(nanmean(dLayerSpec_Wh(:,:,6),1)); 
+% LayerSpectral.L6Spec_NWh = squeeze(nanmean(dLayerSpec_NWh(:,:,6),1)); 
+% LayerSpectral.L6Spec_loP = squeeze(nanmean(dLayerSpec_loP(:,:,6),1));
+% LayerSpectral.L6Spec_hiP = squeeze(nanmean(dLayerSpec_hiP(:,:,6),1));
 
 %% FIGURE:
 taxis = (-(twin(1)/wavespec.samplingRate):(1/wavespec.samplingRate):(twin(2)/wavespec.samplingRate))*1e3;
@@ -809,7 +892,7 @@ cmax = max([max(max(L1eventSpec_Wh)) max(max(L23eventSpec_Wh))...
     max(max(L56eventSpec_Wh)) max(max(L6eventSpec_Wh))]);
 
 figure;
-subplot(3,2,1);
+subplot(6,2,1);
 imagesc(taxis,log10(wavespec.freqs),L1eventSpec_Wh');hold on;
 colormap jet;
 LogScale('y',10);
@@ -819,7 +902,7 @@ xlabel('time (ms)'); ylabel('f (Hz)');
 plot([0 0],[log10(wavespec.freqs(1)) log10(wavespec.freqs(end))],'--k');hold on;
 title('L1');
     
-subplot(3,2,3);
+subplot(6,2,3);
 imagesc(taxis,log10(wavespec.freqs),L23eventSpec_Wh');hold on;
 colormap jet;
 LogScale('y',10);
@@ -829,7 +912,7 @@ xlabel('time (ms)'); ylabel('f (Hz)');
 plot([0 0],[log10(wavespec.freqs(1)) log10(wavespec.freqs(end))],'--k');hold on;
 title('L2/3');
     
-subplot(3,2,5);
+subplot(6,2,5);
 imagesc(taxis,log10(wavespec.freqs),L4eventSpec_Wh');hold on;
 colormap jet;
 LogScale('y',10);
@@ -839,7 +922,7 @@ xlabel('time (ms)'); ylabel('f (Hz)');
 plot([0 0],[log10(wavespec.freqs(1)) log10(wavespec.freqs(end))],'--k');hold on;
 title('L4')
 
-subplot(3,2,2);
+subplot(6,2,7);
 imagesc(taxis,log10(wavespec.freqs),L5aeventSpec_Wh');hold on;
 colormap jet;
 LogScale('y',10);
@@ -849,7 +932,7 @@ xlabel('time (ms)'); ylabel('f (Hz)');
 plot([0 0],[log10(wavespec.freqs(1)) log10(wavespec.freqs(end))],'--k');hold on;
 title('L5a')
     
-subplot(3,2,4);
+subplot(6,2,9);
 imagesc(taxis,log10(wavespec.freqs),L56eventSpec_Wh');hold on;
 colormap jet;
 LogScale('y',10);
@@ -859,7 +942,7 @@ xlabel('time (ms)'); ylabel('f (Hz)');
 plot([0 0],[log10(wavespec.freqs(1)) log10(wavespec.freqs(end))],'--k');hold on;
 title('L5/6')
     
-subplot(3,2,6);
+subplot(6,2,11);
 imagesc(taxis,log10(wavespec.freqs),L6eventSpec_Wh');hold on;
 colormap jet;
 LogScale('y',10);
@@ -868,8 +951,25 @@ axis xy
 xlabel('time (ms)'); ylabel('f (Hz)');
 plot([0 0],[log10(wavespec.freqs(1)) log10(wavespec.freqs(end))],'--k');hold on;
 title('L6')
+
+spec.data = L6eventSpec_Wh';
+spec.samplingRate = wavespec.samplingRate;
+spec.nfreqs = wavespec.nfreqs;
+spec.freqs = wavespec.freqs;
+
+[frac,osci,validfreq] = WaveIRASA(spec);
+
+subplot(6,2,11);
+imagesc(taxis,log10(valifreq),osci);hold on;
+colormap jet;
+LogScale('y',10);
+caxis([-cmax cmax]);
+axis xy
+xlabel('time (ms)'); ylabel('f (Hz)');
+plot([0 0],[log10(wavespec.freqs(1)) log10(wavespec.freqs(end))],'--k');hold on;
+title('L6')
   
-NiceSave('Laminar_eventSpec_Wh',figfolder,baseName)
+%NiceSave('Laminar_eventSpec_Wh',figfolder,baseName)
     
 %% State comodulograms
 i = 1;

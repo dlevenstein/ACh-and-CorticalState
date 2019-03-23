@@ -26,8 +26,10 @@ disp(['MaxRescaleFactor is ' num2str(maxRescaleFactor,2) '. Default IRASA is 2.9
 %% Resampling
 smoothingSamples = 1;
 validFreqInds = numberRescales + 1:numFreqs - numberRescales - 1;
-ampData = gpuArray(zeros(size(spec.data)));
-resampledData = gpuArray(zeros(size(spec.data)));
+%ampData = gpuArray(zeros(size(spec.data)));
+%resampledData = gpuArray(zeros(size(spec.data)));
+ampData = zeros(size(spec.data));
+resampledData = zeros(size(spec.data));
 
 for i_freq = 1:numFreqs
     i_freq
@@ -41,10 +43,11 @@ for i_freq = validFreqInds
     resampledData(:,i_freq) = median(ampData(:,inds),2);
 end
 
-ampData = gather(ampData);
-resampledData = gather(resampledData);
+%ampData = gather(ampData);
+%resampledData = gather(resampledData);
+
 osci = ampData(:,validFreqInds)-resampledData(:,validFreqInds);
-frac = resampledData;
+frac = resampledData(:,validFreqInds);
 validfreq = freqs(validFreqInds);
 
 %%

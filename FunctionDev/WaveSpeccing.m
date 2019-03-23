@@ -27,15 +27,18 @@ tempwavespec = bz_WaveSpec_GPU(lfp,'frange',[0.1 208],'nfreqs',100,'showprogress
 % profile viewer
 
 %%
-for i = 1:length(lfp.channels)
-    lfpfilename = fullfile(savefolder,[baseName,'.',num2str(lfp.channels(i)),'.WaveSpec.lfp.mat']);
+channels = lfp.channels;
+clear lfp
+for i = 1:length(channels)
+    lfpfilename = fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec.lfp.mat']);
     wavespec.data = tempwavespec.data(:,:,i);
     wavespec.timestamps = tempwavespec.timestamps;
     wavespec.freqs = tempwavespec.freqs;
     wavespec.nfreqs = tempwavespec.nfreqs;
     wavespec.samplingRate = tempwavespec.samplingRate;
-    wavespec.channels = lfp.channels(i);
+    wavespec.channels = channels(i);
     wavespec.filterparms = tempwavespec.filterparms;
     
     save(lfpfilename,'-v7.3','wavespec');
+    clear wavespec
 end
