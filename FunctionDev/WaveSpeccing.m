@@ -40,5 +40,4 @@ for i = 1:length(channels)
     wavespec.filterparms = tempwavespec.filterparms;
     
     save(lfpfilename,'-v7.3','wavespec');
-    clear wavespec
 end
