@@ -290,7 +290,7 @@ axis xy
 xlabel('diameter');ylabel('dP/dt')
 axis square
 
-%NiceSave('Pupil_Stats_PupSpace',figfolder,baseName)
+NiceSave('Pupil_Stats_PupSpace',figfolder,baseName)
 
 %% EMG STATS
 % EMG envelope histogram
@@ -365,7 +365,7 @@ xlabel('f (Hz)'); ylabel('power (dB)')
 axis tight
 ylim([min(EMGPSD.psd) max(EMGPSD.psd)]);
 
-%NiceSave('EMG_Stats',figfolder,baseName)
+NiceSave('EMG_Stats',figfolder,baseName)
 
 %% EMG in PupSpace
 % Codistribution
@@ -488,11 +488,11 @@ hold on
 plot(log10(whints_pupil(:,1)),whints_pupildt(:,1),'k.','markersize',2)
 plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color','k')
 
-%NiceSave('EMG_PupSpace1',figfolder,baseName);
+NiceSave('EMG_PupSpace1',figfolder,baseName);
 
 %% FIGURE 4:
 %distcolor = [1 1 1; makeColorMap([0.7 0.7 0.7],[0 0.5 0],[0.7 0.6,0])];
-%emgcolor = [1 1 1;makeColorMap([0.5 0.5 0.5],[0 0 0.8])];
+emgcolor = [1 1 1;makeColorMap([0.5 0.5 0.5],[0 0 0.8])];
 
 figure;
 
@@ -549,7 +549,7 @@ colorbar
 axis xy
 title('Whisk start rate')
 
-%NiceSave('EMG_PupSpace2',figfolder,baseName);
+NiceSave('EMG_PupSpace2',figfolder,baseName);
 
 %% ACG/CCG
 % Computing x-covariance
@@ -642,7 +642,7 @@ xlim(lagwin)
 xlabel('t (s - aligned to PupOn)')
 ylabel('EMG')
 
-%NiceSave('Pupil_EMG_ACG_CCG',figfolder,baseName)
+NiceSave('Pupil_EMG_ACG_CCG',figfolder,baseName)
 
 %% EMG-Pupil Phase coupling
 % Phase coupling
@@ -668,7 +668,7 @@ PhaseAmpCoup = PhaseAmpCouplingByAmp(lowpupildata.phase,log10(lowpupildata.amp),
 PupEMG.WPcoupling = WPcoupling;
 PupEMG.PhaseAmpCoup = PhaseAmpCoup;
 
-%save(savefile,'PupEMG');
+save(savefile,'PupEMG');
 
 %% FIGURE 6:
 rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
@@ -720,4 +720,4 @@ colormap(gca,'jet');
 axis xy
 ylabel('EMG (Z)'); xlabel('Pupil (Z)')
 
-%NiceSave('Pupil_EMG_PhaseAmpCoup',figfolder,baseName)
+NiceSave('Pupil_EMG_PhaseAmpCoup',figfolder,baseName)
