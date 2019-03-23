@@ -74,13 +74,13 @@ tPuphist = hist(log10(Pupz),tPupbins);
 Pupgrad = smooth(gradient(tPuphist),4);
 
 % Find troughs (gradient crossing from - to +)
-troughidx = find(diff(Pupgrad>0)==1);
+troughidx = find(diff(Pupgrad<0)==1);
 troughs = 10.^tPupbins(troughidx);
 
-pupthreshold = troughs(find(troughs<0.5,1,'last'));
+pupthreshold = troughs(find(troughs>0.5,1,'first'));
 pup_thresh = Pupz > pupthreshold;
-pup_on = find(pup_thresh(2:end) > pup_thresh(1:end-1))+1; %Pup onsets (si)
-pup_off = find(pup_thresh(2:end) < pup_thresh(1:end-1))+1; %Pup offsets (si)
+pup_on = round(find(pup_thresh(2:end) > pup_thresh(1:end-1))+1); %Pup onsets (si)
+pup_off = round(find(pup_thresh(2:end) < pup_thresh(1:end-1))+1); %Pup offsets (si)
 
 % If data starts/ends in the middle of an epoch, drop first/last trigger
 if pup_off(1)<pup_on(1)
@@ -90,17 +90,66 @@ if pup_off(end) < pup_on(end)
     pup_on = pup_on(1:end-1);
 end
 
+for i = 1:length(pup_on)
+    tidx = find(pupildilation.dpdt(pup_on(i):pup_off(i))...
+        == max(pupildilation.dpdt(pup_on(i):pup_off(i))),1,'first');
+    pup_on(i) = pup_on(i)+tidx;
+end
+
+for i = 1:length(pup_on)
+    tidx = find(pupildilation.data(pup_on(i):end-1) < pupildilation.data(pup_on(i)),1,'first');
+    pup_off(i) = pup_on(i)+tidx;
+end
+
 % Convert to seconds, merge and exclude transients
 pup_on = pupildilation.timestamps(pup_on);
 pup_off = pupildilation.timestamps(pup_off);
-[ Pupints ] = MergeSeparatedInts( [pup_on,pup_off],0.5 );
-[pup_on,pup_off] = MinEpochLength(Pupints(:,1),Pupints(:,2),0.25,1);
+% [ Pupints ] = MergeSeparatedInts( [pup_on,pup_off],0.1 );
+Pupints = [pup_on,pup_off];
+[pup_on,pup_off] = MinEpochLength(Pupints(:,1),Pupints(:,2),1,1);
+Pupints = [pup_on,pup_off];
 
-figure;
-plot(pupildilation.timestamps(1:end-1),pupildilation.dpdt,'k'); hold on;
-plot(Pupints',pupthreshold.*ones(size(Pupints))','g','linewidth',2)
-axis tight
-ylabel('dPdt');
+% figure;
+% plot(pupildilation.timestamps,pupildilation.data,'k'); hold on;
+% plot(Pupints',nanmean(pupildilation.data).*ones(size(Pupints))','g','linewidth',2)
+
+% Durations and peaks
+Pupdur = pup_off-pup_on;
+pup_peak = length(pup_on);
+for i = 1:length(pup_on)
+    tsidx = find(pupildilation.timestamps == pup_on(i));
+    teidx = find(pupildilation.timestamps == pup_off(i));
+    pup_peak(i) = max(pupildilation.data(tsidx:teidx));
+end
+
+% figure; 
+% scatter(log10(Pupdur),pup_peak,'k.');
+% LogScale('x',10);
+
+% Using findpeaks function
+% [pks,locs,w,p] = findpeaks(pupildilation.dpdt,'MinPeakHeight',0.125,'MinPeakDistance',300);
+% 
+% figure;
+% plot(pupildilation.data,'k'); hold on;
+% plot(locs,pupildilation.data(locs),'ro','linewidth',2)
+% pup_on = pupildilation.timestamps(locs);
+
+% pup_on = locs;
+% pup_off = NaN(length(pup_on),1);
+% for i = 1:length(pup_on)
+%     tidx = find(pupildilation.data(pup_on(i):end-1) < pupildilation.data(pup_on(i)),1,'first');
+%     pup_off(i) = pup_on(i)+tidx;
+% end
+% 
+% pup_on = pupildilation.timestamps(round(pup_on));
+% pup_off = pupildilation.timestamps(round(pup_off));
+% % [ Pupints ] = MergeSeparatedInts( [pup_on,pup_off],0.1 );
+% % [pup_on,pup_off] = MinEpochLength(Pupints(:,1),Pupints(:,2),0.01,1);
+% Pupints = [pup_on,pup_off];
+% 
+% figure;
+% plot(pupildilation.timestamps,pupildilation.data,'k'); hold on;
+% plot(Pupints',nanmean(pupildilation.data).*ones(size(Pupints))','g','linewidth',2)
 
 %% PUPIL STATS
 % Pupil diameter histogram
@@ -671,4 +720,4 @@ colormap(gca,'jet');
 axis xy
 ylabel('EMG (Z)'); xlabel('Pupil (Z)')
 
-%NiceSave('Pupil_EMG_Temp_Phase_corr',figfolder,baseName)
+%NiceSave('Pupil_EMG_PhaseAmpCoup',figfolder,baseName)

@@ -14,7 +14,7 @@ numFreqs = spec.nfreqs;
 freqs = spec.freqs;
 
 %%
-maxRescaleFactor = 2.9; %as per Muthukumaraswamy and Liley, NeuroImage 2018
+maxRescaleFactor = 2.1; %as per Muthukumaraswamy and Liley, NeuroImage 2018
 
 numberRescalesfreq = maxRescaleFactor*freqs(1);
 numberRescalesidx = find(freqs >= numberRescalesfreq);

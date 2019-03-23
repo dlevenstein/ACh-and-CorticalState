@@ -33,7 +33,7 @@ L6idx = rescaled.channels(L6idx);
 % Specifying folders
 figfolder = fullfile(basePath,'AnalysisFigures');
 savefile = fullfile(basePath,[baseName,'.LaminarSpectralAnalysis.lfp.mat']);
-savefolder = fullfile(basePath,'WaveSpec2');
+savefolder = fullfile(basePath,'WaveSpec');
 
 %Pending: better layer boundary detection and exclusion of bad channels
 
@@ -62,8 +62,8 @@ EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
 % Specifying SPONT whisking
 load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
 sidx = find(startsWith(MergePoints.foldernames,"Spont"));
-%sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
-sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/8];
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+%sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/8];
 
 spontidx = find(EMGwhisk.ints.Wh(:,2) < sponttimes(2));
 EMGwhisk.ints.Wh = EMGwhisk.ints.Wh(spontidx,:);
@@ -95,8 +95,11 @@ EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 % pupthresh = nanmedian(log10(lowpupildata.amp));
 % highpup = log10(lowpupildata.amp)>pupthresh;
 
+pupthresh = nanmedian(pupildilation.data);
+highpup = pupildilation.data>pupthresh;
+
 % Getting intervals in spec times
-load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec2.lfp.mat']));
+load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec.lfp.mat']));
 
 % eventshipupil = interp1(wavespec.timestamps,...
 %     wavespec.timestamps,...
@@ -105,6 +108,14 @@ load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec2.lfp.mat']));
 % eventslopupil = interp1(wavespec.timestamps,...
 %     wavespec.timestamps,...
 %     lowpupildata.timestamps(~highpup),'nearest').*wavespec.samplingRate;
+
+eventshipupil = interp1(wavespec.timestamps,...
+    wavespec.timestamps,...
+    pupildilation.timestamps(highpup),'nearest').*wavespec.samplingRate;
+
+eventslopupil = interp1(wavespec.timestamps,...
+    wavespec.timestamps,...
+    pupildilation.timestamps(~highpup),'nearest').*wavespec.samplingRate;
 
 events_Wh = interp1(wavespec.timestamps,wavespec.timestamps,...
     EMGwhisk.ints.Wh,'nearest');
@@ -140,25 +151,31 @@ allidx_NWh = allidx_NWh.*wavespec.samplingRate;
 cLayerSpec_all = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh = NaN(size(wavespec.data,2),length(channels));  
-% cLayerSpec_loP = NaN(size(wavespec.data,2),length(channels)); 
-% cLayerSpec_hiP = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_loP = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_hiP = NaN(size(wavespec.data,2),length(channels)); 
+
+% cLayerSpec_all_r = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_Wh_r = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_NWh_r = NaN(size(wavespec.data,2),length(channels));  
+% cLayerSpec_loP_r = NaN(size(wavespec.data,2),length(channels)); 
+% cLayerSpec_hiP_r = NaN(size(wavespec.data,2),length(channels));
 
 cLayerSpec_all_n = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh_n = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh_n = NaN(size(wavespec.data,2),length(channels));  
-% cLayerSpec_loP_n = NaN(size(wavespec.data,2),length(channels)); 
-% cLayerSpec_hiP_n = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_loP_n = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_hiP_n = NaN(size(wavespec.data,2),length(channels)); 
 
 cLayerSpec_all_z = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_Wh_z = NaN(size(wavespec.data,2),length(channels)); 
 cLayerSpec_NWh_z = NaN(size(wavespec.data,2),length(channels));  
-% cLayerSpec_loP_z = NaN(size(wavespec.data,2),length(channels)); 
-% cLayerSpec_hiP_z = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_loP_z = NaN(size(wavespec.data,2),length(channels)); 
+cLayerSpec_hiP_z = NaN(size(wavespec.data,2),length(channels)); 
 
 for i = 1:length(channels)
     i
     % Loading spectrograms
-    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec2.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec.lfp.mat']));
     
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     wavespec.datan = log10(abs(wavespec.data))./nanmedian(log10(abs(wavespec.data)),1);
@@ -170,6 +187,10 @@ for i = 1:length(channels)
     cLayerSpec_NWh(:,i) = nanmedian(log10(abs(wavespec.data(round(allidx_NWh),:))),1);
     %cLayerSpec_hiP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventshipupil),:))),1);
     %cLayerSpec_loP(:,i) = nanmedian(log10(abs(wavespec.data(round(eventslopupil),:))),1);
+    
+    cLayerSpec_all_r(:,i) = nanmedian(wavespec.data,1);
+    cLayerSpec_Wh_r(:,i) = nanmedian(wavespec.data(round(allidx_Wh),:),1);
+    cLayerSpec_NWh_r(:,i) = nanmedian(wavespec.data(round(allidx_NWh),:),1);
     
     cLayerSpec_all_n(:,i) = nanmedian(wavespec.datan,1);
     cLayerSpec_Wh_n(:,i) = nanmedian(wavespec.datan(round(allidx_Wh),:),1);
@@ -190,72 +211,11 @@ for i = 1:length(channels)
 end
 
 % Saving to struct
-% LayerSpectral.cLayerSpec_all = cLayerSpec_all;
-% LayerSpectral.cLayerSpec_Wh = cLayerSpec_Wh;
-% LayerSpectral.cLayerSpec_NWh = cLayerSpec_NWh;
-% LayerSpectral.cLayerSpec_loP = cLayerSpec_loP;
-% LayerSpectral.cLayerSpec_hiP = cLayerSpec_hiP;
-
-%% Laminar MUA power (0.15 - 2 kHz)
-load(fullfile(basePath,[baseName,'.MUA.lfp.mat']));
-
-cLayerMUA_all = nanmean(MUA.data,1);
-
-% for Wh
-events = interp1(MUA.timestamps,MUA.timestamps,...
-    EMGwhisk.ints.Wh,'nearest');
-allidx = [];
-for e = 1:size(events,1)
-    allidx = cat(1,allidx,wavespec.timestamps(find([wavespec.timestamps >= events(e,1)...
-        & wavespec.timestamps <= events(e,2)])));
-end
-allidx = allidx.*MUA.samplingRate;
-cLayerMUA_Wh = nanmean(MUA.data(round(allidx),:),1);
-        
-% for NWh
-events = interp1(MUA.timestamps,MUA.timestamps,...
-    EMGwhisk.ints.NWh,'nearest');
-allidx = [];
-for e = 1:size(events,1)
-    allidx = cat(1,allidx,wavespec.timestamps(find([wavespec.timestamps >= events(e,1)...
-        & wavespec.timestamps <= events(e,2)])));
-end
-allidx = allidx.*MUA.samplingRate;
-cLayerMUA_NWh = nanmean(MUA.data(round(allidx),:),1);
-        
-% if ~isempty(Piezotouch)
-%     % for Touch
-%     events = interp1(MUA.timestamps,MUA.timestamps,...
-%         Piezotouch.ints.Touch,'nearest');
-%     allidx = [];
-%     for e = 1:size(events,1)
-%         allidx = cat(1,allidx,wavespec.timestamps(find([wavespec.timestamps >= events(e,1)...
-%             & wavespec.timestamps <= events(e,2)])));
-%     end
-%     allidx = allidx.*MUA.samplingRate;
-%     cLayerMUA_T = nanmean(MUA.data(round(allidx),:),1);
-% else
-% end
-
-events = interp1(MUA.timestamps,MUA.timestamps,...
-    lowpupildata.timestamps(highpup),'nearest').*MUA.samplingRate;
-cLayerMUA_hiP = nanmean(MUA.data(round(events)),1);
-
-events = interp1(MUA.timestamps,MUA.timestamps,...
-    lowpupildata.timestamps(~highpup),'nearest').*MUA.samplingRate;
-cLayerMUA_loP = nanmean(MUA.data(round(events)),1);
-
-% event MUA
-eventMUA_Wh = eventMUA(MUA,EMGwhisk.ints.Wh(:,1),...
-    'channels',channels,'twin',[0.75 0.75],'spat_sm',0,'saveMat',false);
-
-% Saving to struct
-LayerSpectral.cLayerMUA_all = cLayerMUA_all;
-LayerSpectral.cLayerMUA_Wh = cLayerMUA_Wh;
-LayerSpectral.cLayerMUA_NWh = cLayerMUA_NWh;
-LayerSpectral.cLayerMUA_hiP = cLayerMUA_hiP;
-LayerSpectral.cLayerMUA_loP = cLayerMUA_loP;
-LayerSpectral.eventMUA_Wh = eventMUA_Wh;
+LayerSpectral.cLayerSpec_all = cLayerSpec_all;
+LayerSpectral.cLayerSpec_Wh = cLayerSpec_Wh;
+LayerSpectral.cLayerSpec_NWh = cLayerSpec_NWh;
+LayerSpectral.cLayerSpec_loP = cLayerSpec_loP;
+LayerSpectral.cLayerSpec_hiP = cLayerSpec_hiP;
 
 %% FIGURE: 
 figure;
@@ -532,19 +492,6 @@ xlabel('normalized depth');ylabel('normalized depth');
 title('LFPxcorr >median Pupil area');
 
 NiceSave('LaminarLFPXcorr_lo_hiPup',figfolder,baseName)
-
-%% Laminar eventCSD/MUA
-% sort thourgh high/low Wh/pupil/SW amplitude events
-% adjust by phase of SlowWaves
-% easyyy lines but specifying better intervals, trial selection
-% establish and z score to baseline
-
-% eventCSD = eventCSD (lfp, events, varargin);
-% eventMUA = eventMUA (mua, events, varargin);
-% eventSpec = eventSpec (spec, events, varargin);
-
-%% Laminar CSD-CSD/MUA-MUA cross-corr
-% thin about this...
 
 %% Layer-averaged PSpecs, eventSpec, and comodulograms, by state
 twin = [0.75 0.75].*wavespec.samplingRate;

@@ -1,6 +1,6 @@
 basePath = pwd;
 baseName = bz_BasenameFromBasepath(basePath);
-savefolder = fullfile(basePath,'WaveSpec2');
+savefolder = fullfile(basePath,'WaveSpec');
 if (~exist(savefolder,'dir'))
     mkdir(savefolder)
 end
@@ -11,8 +11,8 @@ lfp = bz_DownsampleLFP(lfp,3); %version 1: downfactor 5
 %%
 load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
 sidx = find(startsWith(MergePoints.foldernames,"Spont"));
-sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/8];
-%sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+%sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/8];
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
 
 spontidx = find(lfp.timestamps < sponttimes(2));
 lfp.timestamps = lfp.timestamps(spontidx);
@@ -28,7 +28,7 @@ tempwavespec = bz_WaveSpec_GPU(lfp,'frange',[0.1 208],'nfreqs',100,'showprogress
 
 %%
 for i = 1:length(lfp.channels)
-    lfpfilename = fullfile(savefolder,[baseName,'.',num2str(lfp.channels(i)),'.WaveSpec2.lfp.mat']);
+    lfpfilename = fullfile(savefolder,[baseName,'.',num2str(lfp.channels(i)),'.WaveSpec.lfp.mat']);
     wavespec.data = tempwavespec.data(:,:,i);
     wavespec.timestamps = tempwavespec.timestamps;
     wavespec.freqs = tempwavespec.freqs;
