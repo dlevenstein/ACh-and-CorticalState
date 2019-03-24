@@ -14,7 +14,7 @@ numFreqs = spec.nfreqs;
 freqs = spec.freqs;
 
 %%
-maxRescaleFactor = 1.9; %as per Muthukumaraswamy and Liley, NeuroImage 2018
+maxRescaleFactor = 2.9; %as per Muthukumaraswamy and Liley, NeuroImage 2018
 
 numberRescalesfreq = maxRescaleFactor*freqs(1);
 numberRescalesidx = find(freqs >= numberRescalesfreq);
@@ -32,13 +32,13 @@ ampData = zeros(size(spec.data));
 resampledData = zeros(size(spec.data));
 
 for i_freq = 1:numFreqs
-    i_freq
+    i_freq;
     ampData(:,i_freq) = abs(spec.data(:,i_freq));
     %smoothedData(:,i_freq) = ampData(:,i_freq);%smooth(ampData(:,i_freq),smoothingSamples);
 end
 
 for i_freq = validFreqInds
-    i_freq
+    i_freq;
     inds = [i_freq-numberRescales:i_freq-1 i_freq+1:i_freq+numberRescales];
     resampledData(:,i_freq) = median(ampData(:,inds),2);
 end
@@ -46,7 +46,8 @@ end
 %ampData = gather(ampData);
 %resampledData = gather(resampledData);
 
-osci = ampData(:,validFreqInds)-resampledData(:,validFreqInds);
+%osci = ampData(:,validFreqInds)-resampledData(:,validFreqInds);
+osci = log10(ampData(:,validFreqInds))-log10(resampledData(:,validFreqInds));
 frac = resampledData(:,validFreqInds);
 validfreq = freqs(validFreqInds);
 
