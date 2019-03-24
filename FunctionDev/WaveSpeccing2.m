@@ -25,6 +25,7 @@ datlfp.channels = channels;
 load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
 sidx = find(startsWith(MergePoints.foldernames,"Spont"));
 sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+%sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(1),2)/15];
 
 spontidx = find(datlfp.timestamps < sponttimes(2));
 datlfp.timestamps = datlfp.timestamps(spontidx);
@@ -50,7 +51,7 @@ for i = 1:length(tempdatlfp.channels)
     wavespec.channels = tempdatlfp.channels(i);
     wavespec.filterparms = tempwavespec.filterparms;
        
-    save(lfpfilename,'-v7.3','wavespec');
+    save(lfpfilename,'-v7.3','-nocompression','wavespec');
    
 end
 
@@ -74,7 +75,7 @@ for i = 1:length(tempdatlfp.channels)
     wavespec.channels = tempdatlfp.channels(i);
     wavespec.filterparms = tempwavespec.filterparms;
        
-    save(lfpfilename,'-v7.3','wavespec');
+    save(lfpfilename,'-v7.3','-nocompression','wavespec');
    
 end
 
@@ -98,7 +99,7 @@ for i = 1:length(tempdatlfp.channels)
     wavespec.channels = tempdatlfp.channels(i);
     wavespec.filterparms = tempwavespec.filterparms;
        
-    save(lfpfilename,'-v7.3','wavespec');
+    save(lfpfilename,'-v7.3','-nocompression','wavespec');
    
 end
 
@@ -122,6 +123,6 @@ for i = 1:length(tempdatlfp.channels)
     wavespec.channels = tempdatlfp.channels(i);
     wavespec.filterparms = tempwavespec.filterparms;
        
-    save(lfpfilename,'-v7.3','wavespec');
+    save(lfpfilename,'-v7.3','-nocompression','wavespec');
    
 end

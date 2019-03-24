@@ -286,8 +286,23 @@ end
 eventsidx.hiWh = tevents;
 allidx.hiWh = tallidx;
 
+%% Loading binary data...
+sessionInfo = bz_getSessionInfo(basePath, 'noPrompts', true);
+datSampleRate = sessionInfo.rates.wideband;
+datfilename = fullfile(basePath,[baseName,'.dat']);
+channels = sessionInfo.channels;
+
+downfactor = 25;
+datlfp.data = bz_LoadBinary(datfilename,...
+              'frequency',datSampleRate,'nchannels',sessionInfo.nChannels,...
+              'channels',channels+1,'downsample',downfactor);
+
+datlfp.samplingRate = datSampleRate./downfactor;
+datlfp.timestamps = [0:(length(datlfp.data)-1)]'/datlfp.samplingRate;  %To be overwritten later...
+datlfp.channels = channels;
+
 %% Columnar Power spectra and oscillospecs by state
-maxRescaleFactor = 1.9; 
+maxRescaleFactor = 2.9; 
 numberRescalesfreq = maxRescaleFactor*wavespec.freqs(1);
 numberRescalesidx = find(wavespec.freqs >= numberRescalesfreq);
 numberRescales = numberRescalesidx(1)-1;
@@ -328,7 +343,8 @@ for i = 1:length(channels)
     i
     % Loading spectrograms
     %load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec.lfp.mat']));
-    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec2.lfp.mat']));
+    %load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec2.lfp.mat']));
+    [wavespec] = bz_WaveSpec_GPU(datlfp);
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     wavespec.datan = log10(abs(wavespec.data))./nanmedian(log10(abs(wavespec.data)),1);
     
@@ -467,7 +483,7 @@ imagesc(log10(wavespec.freqs),normdepth,columnspec_NWh.modz(:,usechannels+1)');
 axis tight
 LogScale('x',10)
 colormap('jet');
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 xlim(log10([1 100]));
 set(gca,'Xtick',log10([1 5 10 25 50 100]));
 set(gca,'Xticklabel',{'1','5','10','25','50','100'});
@@ -483,7 +499,7 @@ imagesc(log10(wavespec.freqs),normdepth,columnspec_Wh.modz(:,usechannels+1)');
 axis tight
 LogScale('x',10)
 colormap('jet');
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 xlim(log10([1 100]));
 set(gca,'Xtick',log10([1 5 10 25 50 100]));
 set(gca,'Xticklabel',{'1','5','10','25','50','100'});
@@ -707,7 +723,7 @@ imagesc(log10(wavespec.freqs),normdepth,columnspec_loP.modz(:,usechannels+1)');
 axis tight
 LogScale('x',10)
 colormap('jet');
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 xlim(log10([1 100]));
 set(gca,'Xtick',log10([1 5 10 25 50 100]));
 set(gca,'Xticklabel',{'1','5','10','25','50','100'});
@@ -723,7 +739,7 @@ imagesc(log10(wavespec.freqs),normdepth,columnspec_hiP.modz(:,usechannels+1)');
 axis tight
 LogScale('x',10)
 colormap('jet');
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 xlim(log10([1 100]));
 set(gca,'Xtick',log10([1 5 10 25 50 100]));
 set(gca,'Xticklabel',{'1','5','10','25','50','100'});
@@ -1148,7 +1164,7 @@ imagesc(taxis,log10(wavespec.freqs),L1eventSpec.Wh.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1162,7 +1178,7 @@ imagesc(taxis,log10(wavespec.freqs),L23eventSpec.Wh.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1176,7 +1192,7 @@ imagesc(taxis,log10(wavespec.freqs),L4eventSpec.Wh.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1190,7 +1206,7 @@ imagesc(taxis,log10(wavespec.freqs),L5aeventSpec.Wh.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1204,7 +1220,7 @@ imagesc(taxis,log10(wavespec.freqs),L56eventSpec.Wh.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1218,7 +1234,7 @@ imagesc(taxis,log10(wavespec.freqs),L6eventSpec.Wh.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1240,7 +1256,7 @@ imagesc(taxis,log10(wavespec.validfreq),L1eventSpec.Wh.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax/4*-1 cmax/4]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1254,7 +1270,7 @@ imagesc(taxis,log10(wavespec.validfreq),L23eventSpec.Wh.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax/4*-1 cmax/4]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1268,7 +1284,7 @@ imagesc(taxis,log10(wavespec.validfreq),L4eventSpec.Wh.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax/4*-1 cmax/4]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1282,7 +1298,7 @@ imagesc(taxis,log10(wavespec.validfreq),L5aeventSpec.Wh.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax/4*-1 cmax/4]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1296,7 +1312,7 @@ imagesc(taxis,log10(wavespec.validfreq),L56eventSpec.Wh.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax/4*-1 cmax/4]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1310,7 +1326,7 @@ imagesc(taxis,log10(wavespec.validfreq),L6eventSpec.Wh.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax/4*-1 cmax/4]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1427,7 +1443,7 @@ imagesc(taxis,log10(wavespec.freqs),L1eventSpec.Pup.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1441,7 +1457,7 @@ imagesc(taxis,log10(wavespec.freqs),L23eventSpec.Pup.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1455,7 +1471,7 @@ imagesc(taxis,log10(wavespec.freqs),L4eventSpec.Pup.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1469,7 +1485,7 @@ imagesc(taxis,log10(wavespec.freqs),L5aeventSpec.Pup.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1483,7 +1499,7 @@ imagesc(taxis,log10(wavespec.freqs),L56eventSpec.Pup.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1497,7 +1513,7 @@ imagesc(taxis,log10(wavespec.freqs),L6eventSpec.Pup.spec');hold on;
 colormap jet;
 LogScale('y',10);
 %LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1519,7 +1535,7 @@ imagesc(taxis,log10(wavespec.validfreq),L1eventSpec.Pup.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1533,7 +1549,7 @@ imagesc(taxis,log10(wavespec.validfreq),L23eventSpec.Pup.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1547,7 +1563,7 @@ imagesc(taxis,log10(wavespec.validfreq),L4eventSpec.Pup.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1561,7 +1577,7 @@ imagesc(taxis,log10(wavespec.validfreq),L5aeventSpec.Pup.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1575,7 +1591,7 @@ imagesc(taxis,log10(wavespec.validfreq),L56eventSpec.Pup.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
@@ -1589,7 +1605,7 @@ imagesc(taxis,log10(wavespec.validfreq),L6eventSpec.Pup.frac');hold on;
 colormap jet;
 LogScale('y',10);
 LogScale('c',10);
-caxis([cmin cmax]);
+caxis([cmax*-1 cmax]);
 axis xy
 ylim(log10([1 100]));
 set(gca,'Ytick',log10([1 5 10 25 50 100]));
