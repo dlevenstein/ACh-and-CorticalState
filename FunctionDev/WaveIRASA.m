@@ -40,7 +40,7 @@ end
 for i_freq = validFreqInds
     i_freq;
     inds = [i_freq-numberRescales:i_freq-1 i_freq+1:i_freq+numberRescales];
-    resampledData(:,i_freq) = median(ampData(:,inds),2);
+    resampledData(:,i_freq) = nanmedian(ampData(:,inds),2);
 end
 
 ampData = gather(ampData);

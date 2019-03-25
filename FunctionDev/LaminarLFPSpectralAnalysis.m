@@ -131,7 +131,8 @@ end
 % Set the Pupil dilation thresholds by troughs
 tempPup = pupildilation.dpdt;
 tempPup(tempPup<0) = nan;
-Pupz = NormToInt(tempPup,'modZ'); %Modified Z score - robust to outliers
+%Pupz = NormToInt(tempPup,'modZ'); %Modified Z score - robust to outliers
+Pupz = (tempPup - nanmean(tempPup))./nanstd(tempPup,0,1);
 
 % find by "gradient descent"(ish) from initial guess (0.5)
 tPupbins = linspace(-1.5,2,100);
@@ -195,6 +196,8 @@ end
 
 %% Partition lo/hi, short/long Whisking epochs/indices
 % For NWh
+nwhdurs = EMGwhisk.ints.NWh(:,2)-EMGwhisk.ints.NWh(:,1);
+
 eventsidx.NWh = interp1(wavespec.timestamps,wavespec.timestamps,...
     EMGwhisk.ints.NWh,'nearest');
 allidx.NWh = [];
@@ -205,6 +208,20 @@ end
 for i = 1:length(eventsidx.NWh)
     eventsidx.NWh(i) = find(wavespec.timestamps == eventsidx.NWh(i)); 
 end
+
+% For >0.5 s NWh
+tevents = interp1(wavespec.timestamps,wavespec.timestamps,...
+    EMGwhisk.ints.NWh(nwhdurs>=0.5,:),'nearest');
+tallidx = [];
+for e = 1:size(tevents,1)
+    tempidx = find([wavespec.timestamps >= tevents(e,1) & wavespec.timestamps <= tevents(e,2)]);
+    tallidx = cat(1,tallidx,tempidx);
+end
+for i = 1:length(tevents)
+    tevents(i) = find(wavespec.timestamps == tevents(i)); 
+end
+eventsidx.lNWh = tevents;
+allidx.lNWh = tallidx;
 
 % For Wh
 whpeak = NaN(size(EMGwhisk.ints.Wh,1),1);
@@ -321,11 +338,41 @@ columnspec_NWh.modz = NaN(size(wavespec.data,2),length(channels));
 columnspec_NWh.frac = NaN(length(validFreqInds),length(channels));
 columnspec_NWh.osci = NaN(length(validFreqInds),length(channels));
 
+columnspec_lNWh.db = NaN(size(wavespec.data,2),length(channels));
+columnspec_lNWh.mednorm = NaN(size(wavespec.data,2),length(channels));
+columnspec_lNWh.modz = NaN(size(wavespec.data,2),length(channels));
+columnspec_lNWh.frac = NaN(length(validFreqInds),length(channels));
+columnspec_lNWh.osci = NaN(length(validFreqInds),length(channels));
+
 columnspec_Wh.db = NaN(size(wavespec.data,2),length(channels));
 columnspec_Wh.mednorm = NaN(size(wavespec.data,2),length(channels));
 columnspec_Wh.modz = NaN(size(wavespec.data,2),length(channels));
 columnspec_Wh.frac = NaN(length(validFreqInds),length(channels));
 columnspec_Wh.osci = NaN(length(validFreqInds),length(channels));
+
+columnspec_sWh.db = NaN(size(wavespec.data,2),length(channels));
+columnspec_sWh.mednorm = NaN(size(wavespec.data,2),length(channels));
+columnspec_sWh.modz = NaN(size(wavespec.data,2),length(channels));
+columnspec_sWh.frac = NaN(length(validFreqInds),length(channels));
+columnspec_sWh.osci = NaN(length(validFreqInds),length(channels));
+
+columnspec_lWh.db = NaN(size(wavespec.data,2),length(channels));
+columnspec_lWh.mednorm = NaN(size(wavespec.data,2),length(channels));
+columnspec_lWh.modz = NaN(size(wavespec.data,2),length(channels));
+columnspec_lWh.frac = NaN(length(validFreqInds),length(channels));
+columnspec_lWh.osci = NaN(length(validFreqInds),length(channels));
+
+columnspec_loWh.db = NaN(size(wavespec.data,2),length(channels));
+columnspec_loWh.mednorm = NaN(size(wavespec.data,2),length(channels));
+columnspec_loWh.modz = NaN(size(wavespec.data,2),length(channels));
+columnspec_loWh.frac = NaN(length(validFreqInds),length(channels));
+columnspec_loWh.osci = NaN(length(validFreqInds),length(channels));
+
+columnspec_hiWh.db = NaN(size(wavespec.data,2),length(channels));
+columnspec_hiWh.mednorm = NaN(size(wavespec.data,2),length(channels));
+columnspec_hiWh.modz = NaN(size(wavespec.data,2),length(channels));
+columnspec_hiWh.frac = NaN(length(validFreqInds),length(channels));
+columnspec_hiWh.osci = NaN(length(validFreqInds),length(channels));
 
 columnspec_loP.db = NaN(size(wavespec.data,2),length(channels));
 columnspec_loP.mednorm = NaN(size(wavespec.data,2),length(channels));
@@ -366,12 +413,42 @@ for i = 1:length(channels)
     columnspec_NWh.osci(:,i) = nanmedian(wavespec.osci(allidx.NWh,:),1);
     %columnspec_NWh.osci(columnspec_NWh.osci(:,i)<0,i) = 0;
     
+    columnspec_lNWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.lNWh,:))),1);
+    columnspec_lNWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.lNWh,:),1);
+    columnspec_lNWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.lNWh,:),1);
+    columnspec_lNWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.lNWh,:)),1);
+    columnspec_lNWh.osci(:,i) = nanmedian(wavespec.osci(allidx.lNWh,:),1);
+    
     columnspec_Wh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.Wh,:))),1);
     columnspec_Wh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.Wh,:),1);
     columnspec_Wh.modz(:,i) = nanmedian(wavespec.dataz(allidx.Wh,:),1);
     columnspec_Wh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.Wh,:)),1);
     columnspec_Wh.osci(:,i) = nanmedian(wavespec.osci(allidx.Wh,:),1);
     %columnspec_Wh.osci(columnspec_Wh.osci(:,i)<0,i) = 0;
+    
+    columnspec_sWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.sWh,:))),1);
+    columnspec_sWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.sWh,:),1);
+    columnspec_sWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.sWh,:),1);
+    columnspec_sWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.sWh,:)),1);
+    columnspec_sWh.osci(:,i) = nanmedian(wavespec.osci(allidx.sWh,:),1);
+    
+    columnspec_lWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.lWh,:))),1);
+    columnspec_lWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.lWh,:),1);
+    columnspec_lWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.lWh,:),1);
+    columnspec_lWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.lWh,:)),1);
+    columnspec_lWh.osci(:,i) = nanmedian(wavespec.osci(allidx.lWh,:),1);
+    
+    columnspec_loWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.loWh,:))),1);
+    columnspec_loWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.loWh,:),1);
+    columnspec_loWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.loWh,:),1);
+    columnspec_loWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.loWh,:)),1);
+    columnspec_loWh.osci(:,i) = nanmedian(wavespec.osci(allidx.loWh,:),1);
+    
+    columnspec_hiWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.hiWh,:))),1);
+    columnspec_hiWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.hiWh,:),1);
+    columnspec_hiWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.hiWh,:),1);
+    columnspec_hiWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.hiWh,:)),1);
+    columnspec_hiWh.osci(:,i) = nanmedian(wavespec.osci(allidx.hiWh,:),1);
     
     columnspec_loP.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.loP,:))),1);
     columnspec_loP.mednorm(:,i) = nanmedian(wavespec.datan(allidx.loP,:),1);
@@ -394,7 +471,12 @@ LayerSpectral.freqs = wavespec.freqs;
 LayerSpectral.validfreqs = wavespec.validfreq;
 LayerSpectral.columnspec_all = columnspec_all;
 LayerSpectral.columnspec_NWh = columnspec_NWh;
+LayerSpectral.columnspec_lNWh = columnspec_lNWh;
 LayerSpectral.columnspec_Wh = columnspec_Wh;
+LayerSpectral.columnspec_sWh = columnspec_sWh;
+LayerSpectral.columnspec_lWh = columnspec_lWh;
+LayerSpectral.columnspec_loWh = columnspec_loWh;
+LayerSpectral.columnspec_hiWh = columnspec_hiWh;
 LayerSpectral.columnspec_loP = columnspec_loP;
 LayerSpectral.columnspec_hiP = columnspec_hiP;
 
@@ -888,6 +970,10 @@ laminarosci = NaN(size(wavespec.data,1),length(validFreqInds),6);
 lidx = 1;
 chidx = L1idx;
 eventspec.Wh.spec = []; eventspec.Wh.frac = []; eventspec.Wh.osci = [];
+eventspec.sWh.spec = []; eventspec.sWh.frac = []; eventspec.sWh.osci = [];
+eventspec.lWh.spec = []; eventspec.lWh.frac = []; eventspec.lWh.osci = [];
+eventspec.loWh.spec = []; eventspec.loWh.frac = []; eventspec.loWh.osci = [];
+eventspec.hiWh.spec = []; eventspec.hiWh.frac = []; eventspec.hiWh.osci = [];
 eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
@@ -898,7 +984,7 @@ for x = 1:length(chidx)
     
     % WaveIRASA wavelet spec
     [wavespec.frac,wavespec.osci,wavespec.validfreq] = WaveIRASA(wavespec);
-    wavespec.osci(wavespec.osci<0) = 0;
+    %wavespec.osci(wavespec.osci<0) = 0;
     
     % Averaging...
     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
@@ -914,12 +1000,36 @@ for x = 1:length(chidx)
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
     eventspec.Wh = bz_CollapseStruct([eventspec.Wh teventSpec],3,'justcat',true);
     
+    teventSpec = eventSpec(wavespec,eventsidx.sWh(:,1));
+    eventspec.sWh = bz_CollapseStruct([eventspec.sWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.lWh(:,1));
+    eventspec.lWh = bz_CollapseStruct([eventspec.lWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.loWh(:,1));
+    eventspec.loWh = bz_CollapseStruct([eventspec.loWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.hiWh(:,1));
+    eventspec.hiWh = bz_CollapseStruct([eventspec.hiWh teventSpec],3,'justcat',true);
+    
     teventSpec = eventSpec(wavespec,eventsidx.Pup(:,1));
     eventspec.Pup = bz_CollapseStruct([eventspec.Pup teventSpec],3,'justcat',true);
 end
 eventspec.Wh.spec = squeeze(nanmean(eventspec.Wh.spec,3)); 
 eventspec.Wh.frac = squeeze(nanmean(eventspec.Wh.frac,3));  
 eventspec.Wh.osci = squeeze(nanmean(eventspec.Wh.osci,3)); 
+eventspec.sWh.spec = squeeze(nanmean(eventspec.sWh.spec,3)); 
+eventspec.sWh.frac = squeeze(nanmean(eventspec.sWh.frac,3));  
+eventspec.sWh.osci = squeeze(nanmean(eventspec.sWh.osci,3));
+eventspec.lWh.spec = squeeze(nanmean(eventspec.lWh.spec,3)); 
+eventspec.lWh.frac = squeeze(nanmean(eventspec.lWh.frac,3));  
+eventspec.lWh.osci = squeeze(nanmean(eventspec.lWh.osci,3));
+eventspec.loWh.spec = squeeze(nanmean(eventspec.loWh.spec,3)); 
+eventspec.loWh.frac = squeeze(nanmean(eventspec.loWh.frac,3));  
+eventspec.loWh.osci = squeeze(nanmean(eventspec.loWh.osci,3));
+eventspec.hiWh.spec = squeeze(nanmean(eventspec.hiWh.spec,3)); 
+eventspec.hiWh.frac = squeeze(nanmean(eventspec.hiWh.frac,3));  
+eventspec.hiWh.osci = squeeze(nanmean(eventspec.hiWh.osci,3));
 eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3)); 
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
@@ -932,6 +1042,10 @@ L1eventSpec = eventspec;
 lidx = 2;
 chidx = L23idx;
 eventspec.Wh.spec = []; eventspec.Wh.frac = []; eventspec.Wh.osci = [];
+eventspec.sWh.spec = []; eventspec.sWh.frac = []; eventspec.sWh.osci = [];
+eventspec.lWh.spec = []; eventspec.lWh.frac = []; eventspec.lWh.osci = [];
+eventspec.loWh.spec = []; eventspec.loWh.frac = []; eventspec.loWh.osci = [];
+eventspec.hiWh.spec = []; eventspec.hiWh.frac = []; eventspec.hiWh.osci = [];
 eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
@@ -942,7 +1056,7 @@ for x = 1:length(chidx)
     
     % WaveIRASA wavelet spec
     [wavespec.frac,wavespec.osci,wavespec.validfreq] = WaveIRASA(wavespec);
-    wavespec.osci(wavespec.osci<0) = 0;
+    %wavespec.osci(wavespec.osci<0) = 0;
     
     % Averaging...
     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
@@ -958,12 +1072,36 @@ for x = 1:length(chidx)
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
     eventspec.Wh = bz_CollapseStruct([eventspec.Wh teventSpec],3,'justcat',true);
     
+    teventSpec = eventSpec(wavespec,eventsidx.sWh(:,1));
+    eventspec.sWh = bz_CollapseStruct([eventspec.sWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.lWh(:,1));
+    eventspec.lWh = bz_CollapseStruct([eventspec.lWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.loWh(:,1));
+    eventspec.loWh = bz_CollapseStruct([eventspec.loWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.hiWh(:,1));
+    eventspec.hiWh = bz_CollapseStruct([eventspec.hiWh teventSpec],3,'justcat',true);
+    
     teventSpec = eventSpec(wavespec,eventsidx.Pup(:,1));
     eventspec.Pup = bz_CollapseStruct([eventspec.Pup teventSpec],3,'justcat',true);
 end
 eventspec.Wh.spec = squeeze(nanmean(eventspec.Wh.spec,3)); 
 eventspec.Wh.frac = squeeze(nanmean(eventspec.Wh.frac,3));  
 eventspec.Wh.osci = squeeze(nanmean(eventspec.Wh.osci,3)); 
+eventspec.sWh.spec = squeeze(nanmean(eventspec.sWh.spec,3)); 
+eventspec.sWh.frac = squeeze(nanmean(eventspec.sWh.frac,3));  
+eventspec.sWh.osci = squeeze(nanmean(eventspec.sWh.osci,3));
+eventspec.lWh.spec = squeeze(nanmean(eventspec.lWh.spec,3)); 
+eventspec.lWh.frac = squeeze(nanmean(eventspec.lWh.frac,3));  
+eventspec.lWh.osci = squeeze(nanmean(eventspec.lWh.osci,3));
+eventspec.loWh.spec = squeeze(nanmean(eventspec.loWh.spec,3)); 
+eventspec.loWh.frac = squeeze(nanmean(eventspec.loWh.frac,3));  
+eventspec.loWh.osci = squeeze(nanmean(eventspec.loWh.osci,3));
+eventspec.hiWh.spec = squeeze(nanmean(eventspec.hiWh.spec,3)); 
+eventspec.hiWh.frac = squeeze(nanmean(eventspec.hiWh.frac,3));  
+eventspec.hiWh.osci = squeeze(nanmean(eventspec.hiWh.osci,3));
 eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3)); 
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
@@ -976,6 +1114,10 @@ L23eventSpec = eventspec;
 lidx = 3;
 chidx = L4idx;
 eventspec.Wh.spec = []; eventspec.Wh.frac = []; eventspec.Wh.osci = [];
+eventspec.sWh.spec = []; eventspec.sWh.frac = []; eventspec.sWh.osci = [];
+eventspec.lWh.spec = []; eventspec.lWh.frac = []; eventspec.lWh.osci = [];
+eventspec.loWh.spec = []; eventspec.loWh.frac = []; eventspec.loWh.osci = [];
+eventspec.hiWh.spec = []; eventspec.hiWh.frac = []; eventspec.hiWh.osci = [];
 eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
@@ -986,7 +1128,7 @@ for x = 1:length(chidx)
     
     % WaveIRASA wavelet spec
     [wavespec.frac,wavespec.osci,wavespec.validfreq] = WaveIRASA(wavespec);
-    wavespec.osci(wavespec.osci<0) = 0;
+    %wavespec.osci(wavespec.osci<0) = 0;
     
     % Averaging...
     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
@@ -1002,12 +1144,36 @@ for x = 1:length(chidx)
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
     eventspec.Wh = bz_CollapseStruct([eventspec.Wh teventSpec],3,'justcat',true);
     
+    teventSpec = eventSpec(wavespec,eventsidx.sWh(:,1));
+    eventspec.sWh = bz_CollapseStruct([eventspec.sWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.lWh(:,1));
+    eventspec.lWh = bz_CollapseStruct([eventspec.lWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.loWh(:,1));
+    eventspec.loWh = bz_CollapseStruct([eventspec.loWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.hiWh(:,1));
+    eventspec.hiWh = bz_CollapseStruct([eventspec.hiWh teventSpec],3,'justcat',true);
+    
     teventSpec = eventSpec(wavespec,eventsidx.Pup(:,1));
     eventspec.Pup = bz_CollapseStruct([eventspec.Pup teventSpec],3,'justcat',true);
 end
 eventspec.Wh.spec = squeeze(nanmean(eventspec.Wh.spec,3)); 
 eventspec.Wh.frac = squeeze(nanmean(eventspec.Wh.frac,3));  
 eventspec.Wh.osci = squeeze(nanmean(eventspec.Wh.osci,3)); 
+eventspec.sWh.spec = squeeze(nanmean(eventspec.sWh.spec,3)); 
+eventspec.sWh.frac = squeeze(nanmean(eventspec.sWh.frac,3));  
+eventspec.sWh.osci = squeeze(nanmean(eventspec.sWh.osci,3));
+eventspec.lWh.spec = squeeze(nanmean(eventspec.lWh.spec,3)); 
+eventspec.lWh.frac = squeeze(nanmean(eventspec.lWh.frac,3));  
+eventspec.lWh.osci = squeeze(nanmean(eventspec.lWh.osci,3));
+eventspec.loWh.spec = squeeze(nanmean(eventspec.loWh.spec,3)); 
+eventspec.loWh.frac = squeeze(nanmean(eventspec.loWh.frac,3));  
+eventspec.loWh.osci = squeeze(nanmean(eventspec.loWh.osci,3));
+eventspec.hiWh.spec = squeeze(nanmean(eventspec.hiWh.spec,3)); 
+eventspec.hiWh.frac = squeeze(nanmean(eventspec.hiWh.frac,3));  
+eventspec.hiWh.osci = squeeze(nanmean(eventspec.hiWh.osci,3));
 eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3)); 
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
@@ -1020,6 +1186,10 @@ L4eventSpec = eventspec;
 lidx = 4;
 chidx = L5aidx;
 eventspec.Wh.spec = []; eventspec.Wh.frac = []; eventspec.Wh.osci = [];
+eventspec.sWh.spec = []; eventspec.sWh.frac = []; eventspec.sWh.osci = [];
+eventspec.lWh.spec = []; eventspec.lWh.frac = []; eventspec.lWh.osci = [];
+eventspec.loWh.spec = []; eventspec.loWh.frac = []; eventspec.loWh.osci = [];
+eventspec.hiWh.spec = []; eventspec.hiWh.frac = []; eventspec.hiWh.osci = [];
 eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
@@ -1030,7 +1200,7 @@ for x = 1:length(chidx)
     
     % WaveIRASA wavelet spec
     [wavespec.frac,wavespec.osci,wavespec.validfreq] = WaveIRASA(wavespec);
-    wavespec.osci(wavespec.osci<0) = 0;
+    %wavespec.osci(wavespec.osci<0) = 0;
     
     % Averaging...
     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
@@ -1046,12 +1216,36 @@ for x = 1:length(chidx)
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
     eventspec.Wh = bz_CollapseStruct([eventspec.Wh teventSpec],3,'justcat',true);
     
+    teventSpec = eventSpec(wavespec,eventsidx.sWh(:,1));
+    eventspec.sWh = bz_CollapseStruct([eventspec.sWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.lWh(:,1));
+    eventspec.lWh = bz_CollapseStruct([eventspec.lWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.loWh(:,1));
+    eventspec.loWh = bz_CollapseStruct([eventspec.loWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.hiWh(:,1));
+    eventspec.hiWh = bz_CollapseStruct([eventspec.hiWh teventSpec],3,'justcat',true);
+    
     teventSpec = eventSpec(wavespec,eventsidx.Pup(:,1));
     eventspec.Pup = bz_CollapseStruct([eventspec.Pup teventSpec],3,'justcat',true);
 end
 eventspec.Wh.spec = squeeze(nanmean(eventspec.Wh.spec,3)); 
 eventspec.Wh.frac = squeeze(nanmean(eventspec.Wh.frac,3));  
 eventspec.Wh.osci = squeeze(nanmean(eventspec.Wh.osci,3)); 
+eventspec.sWh.spec = squeeze(nanmean(eventspec.sWh.spec,3)); 
+eventspec.sWh.frac = squeeze(nanmean(eventspec.sWh.frac,3));  
+eventspec.sWh.osci = squeeze(nanmean(eventspec.sWh.osci,3));
+eventspec.lWh.spec = squeeze(nanmean(eventspec.lWh.spec,3)); 
+eventspec.lWh.frac = squeeze(nanmean(eventspec.lWh.frac,3));  
+eventspec.lWh.osci = squeeze(nanmean(eventspec.lWh.osci,3));
+eventspec.loWh.spec = squeeze(nanmean(eventspec.loWh.spec,3)); 
+eventspec.loWh.frac = squeeze(nanmean(eventspec.loWh.frac,3));  
+eventspec.loWh.osci = squeeze(nanmean(eventspec.loWh.osci,3));
+eventspec.hiWh.spec = squeeze(nanmean(eventspec.hiWh.spec,3)); 
+eventspec.hiWh.frac = squeeze(nanmean(eventspec.hiWh.frac,3));  
+eventspec.hiWh.osci = squeeze(nanmean(eventspec.hiWh.osci,3));
 eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3)); 
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
@@ -1064,6 +1258,10 @@ L5aeventSpec = eventspec;
 lidx = 5;
 chidx = L56idx;
 eventspec.Wh.spec = []; eventspec.Wh.frac = []; eventspec.Wh.osci = [];
+eventspec.sWh.spec = []; eventspec.sWh.frac = []; eventspec.sWh.osci = [];
+eventspec.lWh.spec = []; eventspec.lWh.frac = []; eventspec.lWh.osci = [];
+eventspec.loWh.spec = []; eventspec.loWh.frac = []; eventspec.loWh.osci = [];
+eventspec.hiWh.spec = []; eventspec.hiWh.frac = []; eventspec.hiWh.osci = [];
 eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
@@ -1074,7 +1272,7 @@ for x = 1:length(chidx)
     
     % WaveIRASA wavelet spec
     [wavespec.frac,wavespec.osci,wavespec.validfreq] = WaveIRASA(wavespec);
-    wavespec.osci(wavespec.osci<0) = 0;
+    %wavespec.osci(wavespec.osci<0) = 0;
     
     % Averaging...
     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
@@ -1090,12 +1288,36 @@ for x = 1:length(chidx)
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
     eventspec.Wh = bz_CollapseStruct([eventspec.Wh teventSpec],3,'justcat',true);
     
+    teventSpec = eventSpec(wavespec,eventsidx.sWh(:,1));
+    eventspec.sWh = bz_CollapseStruct([eventspec.sWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.lWh(:,1));
+    eventspec.lWh = bz_CollapseStruct([eventspec.lWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.loWh(:,1));
+    eventspec.loWh = bz_CollapseStruct([eventspec.loWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.hiWh(:,1));
+    eventspec.hiWh = bz_CollapseStruct([eventspec.hiWh teventSpec],3,'justcat',true);
+    
     teventSpec = eventSpec(wavespec,eventsidx.Pup(:,1));
     eventspec.Pup = bz_CollapseStruct([eventspec.Pup teventSpec],3,'justcat',true);
 end
 eventspec.Wh.spec = squeeze(nanmean(eventspec.Wh.spec,3)); 
 eventspec.Wh.frac = squeeze(nanmean(eventspec.Wh.frac,3));  
 eventspec.Wh.osci = squeeze(nanmean(eventspec.Wh.osci,3)); 
+eventspec.sWh.spec = squeeze(nanmean(eventspec.sWh.spec,3)); 
+eventspec.sWh.frac = squeeze(nanmean(eventspec.sWh.frac,3));  
+eventspec.sWh.osci = squeeze(nanmean(eventspec.sWh.osci,3));
+eventspec.lWh.spec = squeeze(nanmean(eventspec.lWh.spec,3)); 
+eventspec.lWh.frac = squeeze(nanmean(eventspec.lWh.frac,3));  
+eventspec.lWh.osci = squeeze(nanmean(eventspec.lWh.osci,3));
+eventspec.loWh.spec = squeeze(nanmean(eventspec.loWh.spec,3)); 
+eventspec.loWh.frac = squeeze(nanmean(eventspec.loWh.frac,3));  
+eventspec.loWh.osci = squeeze(nanmean(eventspec.loWh.osci,3));
+eventspec.hiWh.spec = squeeze(nanmean(eventspec.hiWh.spec,3)); 
+eventspec.hiWh.frac = squeeze(nanmean(eventspec.hiWh.frac,3));  
+eventspec.hiWh.osci = squeeze(nanmean(eventspec.hiWh.osci,3));
 eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3)); 
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
@@ -1108,6 +1330,10 @@ L56eventSpec = eventspec;
 lidx = 6;
 chidx = L6idx;
 eventspec.Wh.spec = []; eventspec.Wh.frac = []; eventspec.Wh.osci = [];
+eventspec.sWh.spec = []; eventspec.sWh.frac = []; eventspec.sWh.osci = [];
+eventspec.lWh.spec = []; eventspec.lWh.frac = []; eventspec.lWh.osci = [];
+eventspec.loWh.spec = []; eventspec.loWh.frac = []; eventspec.loWh.osci = [];
+eventspec.hiWh.spec = []; eventspec.hiWh.frac = []; eventspec.hiWh.osci = [];
 eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
@@ -1118,7 +1344,7 @@ for x = 1:length(chidx)
     
     % WaveIRASA wavelet spec
     [wavespec.frac,wavespec.osci,wavespec.validfreq] = WaveIRASA(wavespec);
-    wavespec.osci(wavespec.osci<0) = 0;
+    %wavespec.osci(wavespec.osci<0) = 0;
     
     % Averaging...
     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
@@ -1134,12 +1360,36 @@ for x = 1:length(chidx)
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
     eventspec.Wh = bz_CollapseStruct([eventspec.Wh teventSpec],3,'justcat',true);
     
+    teventSpec = eventSpec(wavespec,eventsidx.sWh(:,1));
+    eventspec.sWh = bz_CollapseStruct([eventspec.sWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.lWh(:,1));
+    eventspec.lWh = bz_CollapseStruct([eventspec.lWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.loWh(:,1));
+    eventspec.loWh = bz_CollapseStruct([eventspec.loWh teventSpec],3,'justcat',true);
+    
+    teventSpec = eventSpec(wavespec,eventsidx.hiWh(:,1));
+    eventspec.hiWh = bz_CollapseStruct([eventspec.hiWh teventSpec],3,'justcat',true);
+    
     teventSpec = eventSpec(wavespec,eventsidx.Pup(:,1));
     eventspec.Pup = bz_CollapseStruct([eventspec.Pup teventSpec],3,'justcat',true);
 end
 eventspec.Wh.spec = squeeze(nanmean(eventspec.Wh.spec,3)); 
 eventspec.Wh.frac = squeeze(nanmean(eventspec.Wh.frac,3));  
 eventspec.Wh.osci = squeeze(nanmean(eventspec.Wh.osci,3)); 
+eventspec.sWh.spec = squeeze(nanmean(eventspec.sWh.spec,3)); 
+eventspec.sWh.frac = squeeze(nanmean(eventspec.sWh.frac,3));  
+eventspec.sWh.osci = squeeze(nanmean(eventspec.sWh.osci,3));
+eventspec.lWh.spec = squeeze(nanmean(eventspec.lWh.spec,3)); 
+eventspec.lWh.frac = squeeze(nanmean(eventspec.lWh.frac,3));  
+eventspec.lWh.osci = squeeze(nanmean(eventspec.lWh.osci,3));
+eventspec.loWh.spec = squeeze(nanmean(eventspec.loWh.spec,3)); 
+eventspec.loWh.frac = squeeze(nanmean(eventspec.loWh.frac,3));  
+eventspec.loWh.osci = squeeze(nanmean(eventspec.loWh.osci,3));
+eventspec.hiWh.spec = squeeze(nanmean(eventspec.hiWh.spec,3)); 
+eventspec.hiWh.frac = squeeze(nanmean(eventspec.hiWh.frac,3));  
+eventspec.hiWh.osci = squeeze(nanmean(eventspec.hiWh.osci,3));
 eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3)); 
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
