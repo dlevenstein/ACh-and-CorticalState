@@ -169,7 +169,10 @@ end
 %temppup_on = pup_on;
 for i = 1:length(pup_on)
     tidx = find(pupildilation.dpdt(1:pup_on(i)) < 0,1,'last');
-    pup_on(i) = tidx;
+    if ~isempty(tidx)
+        pup_on(i) = tidx;
+    else
+    end
 end
 
 % figure; 
