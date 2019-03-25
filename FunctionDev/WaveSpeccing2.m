@@ -32,28 +32,28 @@ datlfp.timestamps = datlfp.timestamps(spontidx);
 datlfp.data = datlfp.data(spontidx,:);
 
 %%
-% tempdatlfp = datlfp;
-% tempdatlfp.data = tempdatlfp.data(:,1:16);
-% tempdatlfp.channels = tempdatlfp.channels(1:16);
-% tempwavespec = bz_WaveSpec_GPU(tempdatlfp,'frange',[0.1 400],'nfreqs',100,'showprogress',true); %version 1: ncyc 5
+tempdatlfp = datlfp;
+tempdatlfp.data = tempdatlfp.data(:,1:16);
+tempdatlfp.channels = tempdatlfp.channels(1:16);
+tempwavespec = bz_WaveSpec_GPU(tempdatlfp,'frange',[0.1 400],'nfreqs',100,'showprogress',true); %version 1: ncyc 5
 
 %%
 
-% for i = 1:length(tempdatlfp.channels)
-%     i 
-%     % 
-%     lfpfilename = fullfile(savefolder,[baseName,'.',num2str(tempdatlfp.channels(i)),'.WaveSpec.lfp.mat']);
-%     wavespec.data = tempwavespec.data(:,:,i);
-%     wavespec.timestamps = tempwavespec.timestamps;
-%     wavespec.freqs = tempwavespec.freqs;
-%     wavespec.nfreqs = tempwavespec.nfreqs;
-%     wavespec.samplingRate = tempwavespec.samplingRate;
-%     wavespec.channels = tempdatlfp.channels(i);
-%     wavespec.filterparms = tempwavespec.filterparms;
-%        
-%     save(lfpfilename,'-v7.3','-nocompression','wavespec');
-%    
-% end
+for i = 1:length(tempdatlfp.channels)
+    i 
+    % 
+    lfpfilename = fullfile(savefolder,[baseName,'.',num2str(tempdatlfp.channels(i)),'.WaveSpec.lfp.mat']);
+    wavespec.data = tempwavespec.data(:,:,i);
+    wavespec.timestamps = tempwavespec.timestamps;
+    wavespec.freqs = tempwavespec.freqs;
+    wavespec.nfreqs = tempwavespec.nfreqs;
+    wavespec.samplingRate = tempwavespec.samplingRate;
+    wavespec.channels = tempdatlfp.channels(i);
+    wavespec.filterparms = tempwavespec.filterparms;
+       
+    save(lfpfilename,'-v7.3','-nocompression','wavespec');
+   
+end
 
 %%
 tempdatlfp = datlfp;
@@ -80,49 +80,49 @@ for i = 1:length(tempdatlfp.channels)
 end
 
 %%
-% tempdatlfp = datlfp;
-% tempdatlfp.data = tempdatlfp.data(:,33:48);
-% tempdatlfp.channels = tempdatlfp.channels(33:48);
-% tempwavespec = bz_WaveSpec_GPU(tempdatlfp,'frange',[0.1 400],'nfreqs',100,'showprogress',true); %version 1: ncyc 5
+tempdatlfp = datlfp;
+tempdatlfp.data = tempdatlfp.data(:,33:48);
+tempdatlfp.channels = tempdatlfp.channels(33:48);
+tempwavespec = bz_WaveSpec_GPU(tempdatlfp,'frange',[0.1 400],'nfreqs',100,'showprogress',true); %version 1: ncyc 5
 
 %%
 
-% for i = 1:length(tempdatlfp.channels)
-%     i 
-%     % 
-%     lfpfilename = fullfile(savefolder,[baseName,'.',num2str(tempdatlfp.channels(i)),'.WaveSpec.lfp.mat']);
-%     wavespec.data = tempwavespec.data(:,:,i);
-%     wavespec.timestamps = tempwavespec.timestamps;
-%     wavespec.freqs = tempwavespec.freqs;
-%     wavespec.nfreqs = tempwavespec.nfreqs;
-%     wavespec.samplingRate = tempwavespec.samplingRate;
-%     wavespec.channels = tempdatlfp.channels(i);
-%     wavespec.filterparms = tempwavespec.filterparms;
-%        
-%     save(lfpfilename,'-v7.3','-nocompression','wavespec');
-%    
-% end
+for i = 1:length(tempdatlfp.channels)
+    i 
+    % 
+    lfpfilename = fullfile(savefolder,[baseName,'.',num2str(tempdatlfp.channels(i)),'.WaveSpec.lfp.mat']);
+    wavespec.data = tempwavespec.data(:,:,i);
+    wavespec.timestamps = tempwavespec.timestamps;
+    wavespec.freqs = tempwavespec.freqs;
+    wavespec.nfreqs = tempwavespec.nfreqs;
+    wavespec.samplingRate = tempwavespec.samplingRate;
+    wavespec.channels = tempdatlfp.channels(i);
+    wavespec.filterparms = tempwavespec.filterparms;
+       
+    save(lfpfilename,'-v7.3','-nocompression','wavespec');
+   
+end
 
 %%
-% tempdatlfp = datlfp;
-% tempdatlfp.data = tempdatlfp.data(:,49:64);
-% tempdatlfp.channels = tempdatlfp.channels(49:64);
-% tempwavespec = bz_WaveSpec_GPU(tempdatlfp,'frange',[0.1 400],'nfreqs',100,'showprogress',true); %version 1: ncyc 5
+tempdatlfp = datlfp;
+tempdatlfp.data = tempdatlfp.data(:,49:64);
+tempdatlfp.channels = tempdatlfp.channels(49:64);
+tempwavespec = bz_WaveSpec_GPU(tempdatlfp,'frange',[0.1 400],'nfreqs',100,'showprogress',true); %version 1: ncyc 5
 
 %%
 
-% for i = 1:length(tempdatlfp.channels)
-%     i 
-%     % 
-%     lfpfilename = fullfile(savefolder,[baseName,'.',num2str(tempdatlfp.channels(i)),'.WaveSpec.lfp.mat']);
-%     wavespec.data = tempwavespec.data(:,:,i);
-%     wavespec.timestamps = tempwavespec.timestamps;
-%     wavespec.freqs = tempwavespec.freqs;
-%     wavespec.nfreqs = tempwavespec.nfreqs;
-%     wavespec.samplingRate = tempwavespec.samplingRate;
-%     wavespec.channels = tempdatlfp.channels(i);
-%     wavespec.filterparms = tempwavespec.filterparms;
-%        
-%     save(lfpfilename,'-v7.3','-nocompression','wavespec');
-%    
-% end
+for i = 1:length(tempdatlfp.channels)
+    i 
+    % 
+    lfpfilename = fullfile(savefolder,[baseName,'.',num2str(tempdatlfp.channels(i)),'.WaveSpec.lfp.mat']);
+    wavespec.data = tempwavespec.data(:,:,i);
+    wavespec.timestamps = tempwavespec.timestamps;
+    wavespec.freqs = tempwavespec.freqs;
+    wavespec.nfreqs = tempwavespec.nfreqs;
+    wavespec.samplingRate = tempwavespec.samplingRate;
+    wavespec.channels = tempdatlfp.channels(i);
+    wavespec.filterparms = tempwavespec.filterparms;
+       
+    save(lfpfilename,'-v7.3','-nocompression','wavespec');
+   
+end
