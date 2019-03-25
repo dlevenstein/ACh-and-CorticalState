@@ -357,35 +357,35 @@ for i = 1:length(channels)
     columnspec_all.modz(:,i) = nanmedian(wavespec.dataz,1);
     columnspec_all.frac(:,i) = nanmedian(log10(wavespec.frac),1);
     columnspec_all.osci(:,i) = nanmedian(wavespec.osci,1);
-    columnspec_all.osci(columnspec_all.osci(:,i)<0,i) = 0;
+    %columnspec_all.osci(columnspec_all.osci(:,i)<0,i) = 0;
     
     columnspec_NWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.NWh,:))),1);
     columnspec_NWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.NWh,:),1);
     columnspec_NWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.NWh,:),1);
     columnspec_NWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.NWh,:)),1);
     columnspec_NWh.osci(:,i) = nanmedian(wavespec.osci(allidx.NWh,:),1);
-    columnspec_NWh.osci(columnspec_NWh.osci(:,i)<0,i) = 0;
+    %columnspec_NWh.osci(columnspec_NWh.osci(:,i)<0,i) = 0;
     
     columnspec_Wh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.Wh,:))),1);
     columnspec_Wh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.Wh,:),1);
     columnspec_Wh.modz(:,i) = nanmedian(wavespec.dataz(allidx.Wh,:),1);
     columnspec_Wh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.Wh,:)),1);
     columnspec_Wh.osci(:,i) = nanmedian(wavespec.osci(allidx.Wh,:),1);
-    columnspec_Wh.osci(columnspec_Wh.osci(:,i)<0,i) = 0;
+    %columnspec_Wh.osci(columnspec_Wh.osci(:,i)<0,i) = 0;
     
     columnspec_loP.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.loP,:))),1);
     columnspec_loP.mednorm(:,i) = nanmedian(wavespec.datan(allidx.loP,:),1);
     columnspec_loP.modz(:,i) = nanmedian(wavespec.dataz(allidx.loP,:),1);
     columnspec_loP.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.loP,:)),1);
     columnspec_loP.osci(:,i) = nanmedian(wavespec.osci(allidx.loP,:),1);
-    columnspec_loP.osci(columnspec_loP.osci(:,i)<0,i) = 0;
+    %columnspec_loP.osci(columnspec_loP.osci(:,i)<0,i) = 0;
     
     columnspec_hiP.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.hiP,:))),1);
     columnspec_hiP.mednorm(:,i) = nanmedian(wavespec.datan(allidx.hiP,:),1);
     columnspec_hiP.modz(:,i) = nanmedian(wavespec.dataz(allidx.hiP,:),1);
     columnspec_hiP.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.hiP,:)),1);
     columnspec_hiP.osci(:,i) = nanmedian(wavespec.osci(allidx.hiP,:),1);
-    columnspec_hiP.osci(columnspec_hiP.osci(:,i)<0,i) = 0;
+    %columnspec_hiP.osci(columnspec_hiP.osci(:,i)<0,i) = 0;
     
 end
 
