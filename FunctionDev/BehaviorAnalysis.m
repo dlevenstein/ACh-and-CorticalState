@@ -99,7 +99,11 @@ end
 
 for i = 1:length(pup_on)
     tidx = find(pupildilation.data(pup_on(i):end-1) < pupildilation.data(pup_on(i)),1,'first');
-    pup_off(i) = pup_on(i)+tidx;
+    if ~isempty(tidx)
+        pup_off(i) = pup_on(i)+tidx;
+    else
+        pup_off(i) = length(pupildilation.data)-1;
+    end
 end
 
 % Convert to seconds, merge and exclude transients
