@@ -97,6 +97,21 @@ for i = 1:length(pup_on)
     pup_on(i) = pup_on(i)+tidx;
 end
 
+% figure; 
+% plot(pupildilation.dpdt,'k'); hold on;
+% plot(pup_on,pupildilation.dpdt(pup_on),'ro')
+
+%temppup_on = pup_on;
+for i = 1:length(pup_on)
+    tidx = find(pupildilation.dpdt(1:pup_on(i)) < 0,1,'last');
+    pup_on(i) = tidx;
+end
+
+% figure; 
+% plot(pupildilation.dpdt,'k'); hold on;
+% plot(temppup_on,pupildilation.dpdt(temppup_on),'ro')
+% plot(pup_on,pupildilation.dpdt(pup_on),'go')
+
 for i = 1:length(pup_on)
     tidx = find(pupildilation.data(pup_on(i):end-1) < pupildilation.data(pup_on(i)),1,'first');
     if ~isempty(tidx)
@@ -111,8 +126,8 @@ pup_on = pupildilation.timestamps(pup_on);
 pup_off = pupildilation.timestamps(pup_off);
 % [ Pupints ] = MergeSeparatedInts( [pup_on,pup_off],0.1 );
 Pupints = [pup_on,pup_off];
-[pup_on,pup_off] = MinEpochLength(Pupints(:,1),Pupints(:,2),1,1);
-Pupints = [pup_on,pup_off];
+% [pup_on,pup_off] = MinEpochLength(Pupints(:,1),Pupints(:,2),0.1,1);
+% Pupints = [pup_on,pup_off];
 
 % figure;
 % plot(pupildilation.timestamps,pupildilation.data,'k'); hold on;
@@ -474,7 +489,7 @@ colorbar
 ylabel('dP/dt')
 title('EMG')
 hold on
-caxis([min(min(pupildynamicsEMG.meanZ)) max(max(pupildynamicsEMG.meanZ))])
+%caxis([min(min(pupildynamicsEMG.meanZ)) max(max(pupildynamicsEMG.meanZ))])
 %LogScale('c',10)
 plot(log10(whints_pupil(:,1)),whints_pupildt(:,1),'k.','markersize',2)
 plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color','k')
@@ -508,7 +523,7 @@ colormap(gca,'jet')
 alpha(a,double(~isnan([pupilphaseEMG.meanZ; pupilphaseEMG.meanZ]')))
 colorbar
 %ColorbarWithAxis([min(min(pupilphaseEMG.meanZ)) max(max(pupilphaseEMG.meanZ))],'EMG')
-caxis([min(min(pupilphaseEMG.meanZ)) max(max(pupilphaseEMG.meanZ))])
+%caxis([min(min(pupilphaseEMG.meanZ)) max(max(pupilphaseEMG.meanZ))])
 ylim([-2 0.25]);
 xlabel('Phase');ylabel('Amplitude')
 title('EMG')
@@ -520,7 +535,7 @@ a = imagesc([pupilphaseEMG.Xbins pupilphaseEMG.Xbins+2*pi],...
 colormap(gca,'jet')
 alpha(a,double(~isnan([pupilphaseEMG.pWhisk; pupilphaseEMG.pWhisk]')))
 %ColorbarWithAxis([min(min(pupilphaseEMG.pWhisk)) max(max(pupilphaseEMG.pWhisk))],'pWhisk')
-caxis([min(min(pupilphaseEMG.pWhisk)) max(max(pupilphaseEMG.pWhisk))])
+%caxis([min(min(pupilphaseEMG.pWhisk)) max(max(pupilphaseEMG.pWhisk))])
 ylim([-2 0.25]);
 xlabel('Phase');ylabel('Amplitude')
 title('p(Whisking)')
@@ -532,7 +547,7 @@ a = imagesc([pupilphaseEMG.Xbins pupilphaseEMG.Xbins+2*pi],...
     pupilphaseEMG.Ybins,log10([pupilphaseEMG.meanWhdur; pupilphaseEMG.meanWhdur])');
 colormap(gca,'jet')
 alpha(a,double(~isnan([pupilphaseEMG.meanWhdur; pupilphaseEMG.meanWhdur]')))
-ColorbarWithAxis(log10([min(min(pupilphaseEMG.meanWhdur)) max(max(pupilphaseEMG.meanWhdur))]),'EMG Envelope')
+%ColorbarWithAxis(log10([min(min(pupilphaseEMG.meanWhdur)) max(max(pupilphaseEMG.meanWhdur))]),'EMG Envelope')
 ylim([-2 0.25]);  xlim([-pi 3*pi])
 caxis([-1 0.5])
 LogScale('c',10)
@@ -546,7 +561,7 @@ a = imagesc([pupilphaseEMG.Xbins pupilphaseEMG.Xbins+2*pi],...
     pupilphaseEMG.Ybins,log10([pupilphaseEMG.Whstartrate; pupilphaseEMG.Whstartrate])');
 colormap(gca,'jet')
 alpha(a,double(~isnan([pupilphaseEMG.Whstartrate; pupilphaseEMG.Whstartrate]')))
-ColorbarWithAxis(log10([min(min(pupilphaseEMG.Whstartrate)) max(max(pupilphaseEMG.Whstartrate))]),'EMG Envelope')
+%ColorbarWithAxis(log10([min(min(pupilphaseEMG.Whstartrate)) max(max(pupilphaseEMG.Whstartrate))]),'EMG Envelope')
 ylim([-2 0.25]); xlim([-pi 3*pi])
 LogScale('c',10)
 xlabel('Phase');ylabel('Amplitude')
@@ -676,53 +691,53 @@ PupEMG.PhaseAmpCoup = PhaseAmpCoup;
 save(savefile,'PupEMG');
 
 %% FIGURE 6:
-rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
-plotx = linspace(-pi,3*pi,100);
-
-figure
-subplot(3,2,1)
-imagesc(PhaseAmpCoup.phasebins,PhaseAmpCoup.ampbins,PhaseAmpCoup.phaseamphist); hold on;
-imagesc(PhaseAmpCoup.phasebins+2*pi,PhaseAmpCoup.ampbins,PhaseAmpCoup.phaseamphist)
-plot(PhaseAmpCoup.sig2prefangle,PhaseAmpCoup.ampbins,'.k')
-plot(PhaseAmpCoup.sig2prefangle+2*pi,PhaseAmpCoup.ampbins,'.k')
-plot(plotx,cos(plotx),'k')
-colormap(gca,rwbcolormap)
-axis xy
-axis tight
-ColorbarWithAxis([-0.5 0.5],['Phase-EMG dist'])
-caxis([-0.5 0.5])
-xlim([-pi 3*pi]); ylim(PhaseAmpCoup.ampbins([1 end]))
-xlabel('Pupil phase'); ylabel('Pupil (Z)')
-
-subplot(3,2,2);
-plot(log10(wavespec.freqs),coupling,'r','LineWidth',2)
-LogScale('x',10);
-xlabel('f (Hz)');
-axis tight
-title('Pupil-EMG phase coupling')
-
-subplot(3,2,3)
-plot(PhaseAmpCoup.ampbins,PhaseAmpCoup.sig2powerskew,'k','LineWidth',1)
-xlabel('Pupil (Z)');
-ylabel('Phase-EMG MI (mrl)')
-axis tight
-
-subplot(3,2,4)
-histogram(PhaseAmpCoup.sig1amp,PhaseAmpCoup.ampbins)
-xlabel('Pupil (Z)');
-ylabel('Occupancy')
-axis tight
-
-subplot(3,2,6)
-histogram(PhaseAmpCoup.sig2amp,PhaseAmpCoup.ampbins)
-xlabel('EMG (Z)');
-ylabel('Occupancy')
-axis tight
-
-subplot(3,2,5)
-imagesc(PhaseAmpCoup.ampbins,PhaseAmpCoup.ampbins,PhaseAmpCoup.gasphist)
-colormap(gca,'jet');
-axis xy
-ylabel('EMG (Z)'); xlabel('Pupil (Z)')
-
-NiceSave('Pupil_EMG_PhaseAmpCoup',figfolder,baseName)
+% rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
+% plotx = linspace(-pi,3*pi,100);
+% 
+% figure
+% subplot(3,2,1)
+% imagesc(PhaseAmpCoup.phasebins,PhaseAmpCoup.ampbins,PhaseAmpCoup.phaseamphist); hold on;
+% imagesc(PhaseAmpCoup.phasebins+2*pi,PhaseAmpCoup.ampbins,PhaseAmpCoup.phaseamphist)
+% plot(PhaseAmpCoup.sig2prefangle,PhaseAmpCoup.ampbins,'.k')
+% plot(PhaseAmpCoup.sig2prefangle+2*pi,PhaseAmpCoup.ampbins,'.k')
+% plot(plotx,cos(plotx),'k')
+% colormap(gca,rwbcolormap)
+% axis xy
+% axis tight
+% ColorbarWithAxis([-0.5 0.5],['Phase-EMG dist'])
+% caxis([-0.5 0.5])
+% xlim([-pi 3*pi]); ylim(PhaseAmpCoup.ampbins([1 end]))
+% xlabel('Pupil phase'); ylabel('Pupil (Z)')
+% 
+% subplot(3,2,2);
+% plot(log10(wavespec.freqs),coupling,'r','LineWidth',2)
+% LogScale('x',10);
+% xlabel('f (Hz)');
+% axis tight
+% title('Pupil-EMG phase coupling')
+% 
+% subplot(3,2,3)
+% plot(PhaseAmpCoup.ampbins,PhaseAmpCoup.sig2powerskew,'k','LineWidth',1)
+% xlabel('Pupil (Z)');
+% ylabel('Phase-EMG MI (mrl)')
+% axis tight
+% 
+% subplot(3,2,4)
+% histogram(PhaseAmpCoup.sig1amp,PhaseAmpCoup.ampbins)
+% xlabel('Pupil (Z)');
+% ylabel('Occupancy')
+% axis tight
+% 
+% subplot(3,2,6)
+% histogram(PhaseAmpCoup.sig2amp,PhaseAmpCoup.ampbins)
+% xlabel('EMG (Z)');
+% ylabel('Occupancy')
+% axis tight
+% 
+% subplot(3,2,5)
+% imagesc(PhaseAmpCoup.ampbins,PhaseAmpCoup.ampbins,PhaseAmpCoup.gasphist)
+% colormap(gca,'jet');
+% axis xy
+% ylabel('EMG (Z)'); xlabel('Pupil (Z)')
+% 
+% NiceSave('Pupil_EMG_PhaseAmpCoup',figfolder,baseName)

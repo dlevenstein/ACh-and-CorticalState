@@ -3,7 +3,7 @@ function [ eventSpec ] = eventSpec (spec, events, varargin)
 %
 %
 %%
-twin = [0.75 0.75].*spec.samplingRate;
+twin = round([0.75 0.75].*spec.samplingRate);
 
 % for WaveSpec
 spec_temp = NaN(twin(1)+twin(2)+1,size(spec.dataz,2),length(events));
@@ -13,8 +13,8 @@ for e = 1:length(events)
     else
     end
 end
-eventSpec.spec = (spec_temp-nanmean(spec_temp(twin(1)-100:twin(1)-20,:,:),1))...
-    ./nanstd(spec_temp(twin(1)-100:twin(1)-20,:,:),0,1);
+eventSpec.spec = (spec_temp-nanmean(spec_temp(twin(1)-80:twin(1)-24,:,:),1))...
+    ./nanstd(spec_temp(twin(1)-80:twin(1)-24,:,:),0,1);
 eventSpec.spec = nanmean(eventSpec.spec,3);
 
 % for Fractal
@@ -25,9 +25,19 @@ for e = 1:length(events)
     else
     end
 end
-eventSpec.frac = (spec_temp-nanmean(spec_temp(twin(1)-100:twin(1)-20,:,:),1))...
-    ./nanstd(spec_temp(twin(1)-100:twin(1)-20,:,:),0,1);
+eventSpec.frac = (spec_temp-nanmean(spec_temp(twin(1)-80:twin(1)-24,:,:),1))...
+    ./nanstd(spec_temp(twin(1)-80:twin(1)-24,:,:),0,1);
 eventSpec.frac = nanmean(eventSpec.frac,3);
+
+% for PSS
+spec_temp = NaN(twin(1)+twin(2)+1,length(events));
+for e = 1:length(events)
+    if events(e)-twin(1) > 0 && events(e)+twin(2) < size(spec.frac,1)
+        spec_temp(:,e) = spec.Beta(events(e)-twin(1):events(e)+twin(2));
+    else
+    end
+end
+eventSpec.pss = nanmean(spec_temp,2);
 
 % for Osci
 spec_temp = NaN(twin(1)+twin(2)+1,size(spec.osci,2),length(events));
