@@ -13,8 +13,8 @@ for e = 1:length(events)
     else
     end
 end
-eventSpec.spec = (spec_temp-nanmean(spec_temp(twin(1)-100:twin(1),:,:),1))...
-    ./nanstd(spec_temp(twin(1)-100:twin(1),:,:),0,1);
+eventSpec.spec = (spec_temp-nanmean(spec_temp(twin(1)-100:twin(1)-10,:,:),1))...
+    ./nanstd(spec_temp(twin(1)-100:twin(1)-10,:,:),0,1);
 eventSpec.spec = nanmean(eventSpec.spec,3);
 
 % for Fractal
@@ -25,8 +25,8 @@ for e = 1:length(events)
     else
     end
 end
-eventSpec.frac = (spec_temp-nanmean(spec_temp(twin(1)-100:twin(1),:,:),1))...
-    ./nanstd(spec_temp(twin(1)-100:twin(1),:,:),0,1);
+eventSpec.frac = (spec_temp-nanmean(spec_temp(twin(1)-100:twin(1)-10,:,:),1))...
+    ./nanstd(spec_temp(twin(1)-100:twin(1)-10,:,:),0,1);
 eventSpec.frac = nanmean(eventSpec.frac,3);
 
 % for Osci

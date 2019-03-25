@@ -32,9 +32,9 @@ L6idx = rescaled.channels(L6idx);
 
 % Specifying folders
 figfolder = fullfile(basePath,'AnalysisFigures');
-savefile = fullfile(basePath,[baseName,'.LaminarSpectralAnalysis.lfp.mat']);
-%savefolder = fullfile(basePath,'WaveSpec');
-savefolder = fullfile(basePath,'WaveSpec2');
+savefile = fullfile(basePath,[baseName,'.LaminarSpectralAnalysis.mat']);
+savefolder = fullfile(basePath,'WaveSpec');
+%savefolder = fullfile(basePath,'WaveSpec2');
 
 %% Loading behavior...
 % Pupil diameter
@@ -84,8 +84,8 @@ pupildilation.timestamps = pupildilation.timestamps(spontidx);
 
 %% Partition lo/hi Pupil dilation indices
 % Getting intervals in spec times
-%load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec.lfp.mat']));
-load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec2.lfp.mat']));
+load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec.lfp.mat']));
+%load(fullfile(savefolder,[baseName,'.',num2str(0),'.WaveSpec2.lfp.mat']));
 
 % Pupil phase
 % lowfilter = [0.01 0.1];
@@ -287,19 +287,19 @@ eventsidx.hiWh = tevents;
 allidx.hiWh = tallidx;
 
 %% Loading binary data...
-sessionInfo = bz_getSessionInfo(basePath, 'noPrompts', true);
-datSampleRate = sessionInfo.rates.wideband;
-datfilename = fullfile(basePath,[baseName,'.dat']);
-channels = sessionInfo.channels;
-
-downfactor = 25;
-datlfp.data = bz_LoadBinary(datfilename,...
-              'frequency',datSampleRate,'nchannels',sessionInfo.nChannels,...
-              'channels',channels+1,'downsample',downfactor);
-
-datlfp.samplingRate = datSampleRate./downfactor;
-datlfp.timestamps = [0:(length(datlfp.data)-1)]'/datlfp.samplingRate;  %To be overwritten later...
-datlfp.channels = channels;
+% sessionInfo = bz_getSessionInfo(basePath, 'noPrompts', true);
+% datSampleRate = sessionInfo.rates.wideband;
+% datfilename = fullfile(basePath,[baseName,'.dat']);
+% channels = sessionInfo.channels;
+% 
+% downfactor = 25;
+% datlfp.data = bz_LoadBinary(datfilename,...
+%               'frequency',datSampleRate,'nchannels',sessionInfo.nChannels,...
+%               'channels',channels+1,'downsample',downfactor);
+% 
+% datlfp.samplingRate = datSampleRate./downfactor;
+% datlfp.timestamps = [0:(length(datlfp.data)-1)]'/datlfp.samplingRate;  %To be overwritten later...
+% datlfp.channels = channels;
 
 %% Columnar Power spectra and oscillospecs by state
 maxRescaleFactor = 2.9; 
@@ -342,9 +342,9 @@ columnspec_hiP.osci = NaN(length(validFreqInds),length(channels));
 for i = 1:length(channels)
     i
     % Loading spectrograms
-    %load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec.lfp.mat']));
     %load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec2.lfp.mat']));
-    [wavespec] = bz_WaveSpec_GPU(datlfp);
+    
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     wavespec.datan = log10(abs(wavespec.data))./nanmedian(log10(abs(wavespec.data)),1);
     
@@ -390,7 +390,13 @@ for i = 1:length(channels)
 end
 
 % Saving to struct
-% LayerSpectral... save freqs and validfreqs
+LayerSpectral.freqs = wavespec.freqs;
+LayerSpectral.validfreqs = wavespec.validfreq;
+LayerSpectral.columnspec_all = columnspec_all;
+LayerSpectral.columnspec_NWh = columnspec_NWh;
+LayerSpectral.columnspec_Wh = columnspec_Wh;
+LayerSpectral.columnspec_loP = columnspec_loP;
+LayerSpectral.columnspec_hiP = columnspec_hiP;
 
 %% FIGURE: NWh vs Wh Columnar Specs
 cmax = max(max(columnspec_Wh.db(:,usechannels+1)-columnspec_NWh.db(:,usechannels+1)));
@@ -630,7 +636,7 @@ set(gca,'YGrid','on', 'GridColor','w','GridAlpha',0.45);
 xlabel('f (Hz)');
 title('Osci Wh');
 
-%NiceSave('ColumnarSpecs_Wh_NWh',figfolder,baseName)
+NiceSave('ColumnarSpecs_Wh_NWh',figfolder,baseName)
 
 %% FIGURE 2: lo-hi Pupil
 cmax = max(max(columnspec_hiP.db(:,usechannels+1)-columnspec_loP.db(:,usechannels+1)));
@@ -870,7 +876,7 @@ set(gca,'YGrid','on', 'GridColor','w','GridAlpha',0.45);
 xlabel('f (Hz)');
 title('Osci hiP');
 
-%NiceSave('ColumnarSpecs_hiP_loP',figfolder,baseName)
+NiceSave('ColumnarSpecs_hiP_loP',figfolder,baseName)
 
 %% Laminar eventSpec by state
 twin = [0.75 0.75].*wavespec.samplingRate;
@@ -886,8 +892,8 @@ eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
     % Loading spectrograms
-    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
-    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
+    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     
     % WaveIRASA wavelet spec
@@ -930,8 +936,8 @@ eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
     % Loading spectrograms
-    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
-    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
+    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     
     % WaveIRASA wavelet spec
@@ -974,8 +980,8 @@ eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
     % Loading spectrograms
-    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
-    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
+    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     
     % WaveIRASA wavelet spec
@@ -1018,8 +1024,8 @@ eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
     % Loading spectrograms
-    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
-    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
+    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     
     % WaveIRASA wavelet spec
@@ -1062,8 +1068,8 @@ eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
     % Loading spectrograms
-    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
-    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
+    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     
     % WaveIRASA wavelet spec
@@ -1106,8 +1112,8 @@ eventspec.Pup.spec = []; eventspec.Pup.frac = []; eventspec.Pup.osci = [];
 for x = 1:length(chidx)
     x
     % Loading spectrograms
-    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
-    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
+    load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec.lfp.mat']));
+    %load(fullfile(savefolder,[baseName,'.',num2str(chidx(x)),'.WaveSpec2.lfp.mat']));
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
     
     % WaveIRASA wavelet spec
@@ -1143,9 +1149,15 @@ laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
 L6eventSpec = eventspec;
 
 % Saving to struct
-% LayerSpectral.L1chan = length(L1idx);
-% LayerSpectral.L1eventSpec_Wh = L1eventSpec_Wh;
-% LayerSpectral.L1Spec_all = squeeze(nanmean(dLayerSpec_all(:,:,1),1));
+LayerSpectral.laminarspec = laminarspec;
+LayerSpectral.laminarfrac = laminarfrac;
+LayerSpectral.laminarosci = laminarosci;
+LayerSpectral.L1eventSpec = L1eventSpec; 
+LayerSpectral.L23eventSpec = L23eventSpec; 
+LayerSpectral.L4eventSpec = L4eventSpec; 
+LayerSpectral.L5aeventSpec = L5aeventSpec; 
+LayerSpectral.L56eventSpec = L56eventSpec; 
+LayerSpectral.L6eventSpec = L6eventSpec; 
 
 %% FIGURE 3: Whisking-aligned Spec/Frac/Osci
 twin = [0.75 0.75].*wavespec.samplingRate;
@@ -1427,7 +1439,7 @@ set(gca,'Yticklabel',{'1','5','10','25','50','100'});
 plot([0 0],[log10(wavespec.validfreq(1)) log10(wavespec.validfreq(end))],'--k');hold on;
 title('L6');
 
-%NiceSave('Laminar_WhSpec',figfolder,baseName)
+NiceSave('Laminar_WhSpec',figfolder,baseName)
 
 %% FIGURE 4: Pupil dilation-aligned Specs
 cmin = min([min(min(L1eventSpec.Pup.spec)) min(min(L23eventSpec.Pup.spec))...
@@ -1706,7 +1718,7 @@ set(gca,'Yticklabel',{'1','5','10','25','50','100'});
 plot([0 0],[log10(wavespec.validfreq(1)) log10(wavespec.validfreq(end))],'--k');hold on;
 title('L6');
 
-%NiceSave('Laminar_PupSpec',figfolder,baseName)
+NiceSave('Laminar_PupSpec',figfolder,baseName)
 
 %% Laminar comodulograms
 i = 1;
@@ -1806,15 +1818,27 @@ for ii = 1:size(laminarspec,3)
 end
 
 % Saving to struct
-% LayerSpectral.L1comodcorrs_all.L1 = squeeze(L1comodcorrs_all(:,:,1));
-% LayerSpectral.L1comodcorrs_all.L23 = squeeze(L1comodcorrs_all(:,:,2));
-% LayerSpectral.L1comodcorrs_all.L4 = squeeze(L1comodcorrs_all(:,:,3));
-% LayerSpectral.L1comodcorrs_all.L5a = squeeze(L1comodcorrs_all(:,:,4));
-% LayerSpectral.L1comodcorrs_all.L56 = squeeze(L1comodcorrs_all(:,:,5));
-% LayerSpectral.L1comodcorrs_all.L6 = squeeze(L1comodcorrs_all(:,:,6));
+LayerSpectral.L1comodspec = L1comodspec; 
+LayerSpectral.L1comodfrac = L1comodfrac; 
+LayerSpectral.L1comodosci = L1comodosci;
+LayerSpectral.L23comodspec = L23comodspec; 
+LayerSpectral.L23comodfrac = L23comodfrac; 
+LayerSpectral.L23comodosci = L23comodosci;
+LayerSpectral.L4comodspec = L4comodspec; 
+LayerSpectral.L4comodfrac = L4comodfrac; 
+LayerSpectral.L4comodosci = L4comodosci;
+LayerSpectral.L5acomodspec = L5acomodspec; 
+LayerSpectral.L5acomodfrac = L5acomodfrac; 
+LayerSpectral.L5acomodosci = L5acomodosci;
+LayerSpectral.L56comodspec = L56comodspec; 
+LayerSpectral.L56comodfrac = L56comodfrac; 
+LayerSpectral.L56comodosci = L56comodosci;
+LayerSpectral.L6comodspec = L6comodspec; 
+LayerSpectral.L6comodfrac = L6comodfrac; 
+LayerSpectral.L6comodosci = L6comodosci;
 
 % Finally saving all...
-%save(savefile,'-v7.3','LayerSpectral');
+save(savefile,'-v7.3','LayerSpectral');
 
 %% FIGURE 5: Laminar CoMOD Spec
 cmin = min([min(min(min(L1comodspec))) min(min(min(L23comodspec)))...
@@ -1891,7 +1915,7 @@ for i = 1:size(L6comodspec,3)
     xlim(log10([1 100])); ylim(log10([1 100]));
 end
 
-%NiceSave('LaminarCoMOD_Spec',figfolder,baseName)
+NiceSave('LaminarCoMOD_Spec',figfolder,baseName)
 
 %% FIGURE:
 cmin = min([min(min(min(L1comodfrac))) min(min(min(L23comodfrac)))...
@@ -1968,7 +1992,7 @@ for i = 1:size(L6comodfrac,3)
     xlim(log10([1 100])); ylim(log10([1 100]));
 end
 
-%NiceSave('LaminarCoMOD_Frac',figfolder,baseName)
+NiceSave('LaminarCoMOD_Frac',figfolder,baseName)
 
 %% FIGURE:
 cmin = min([min(min(min(L1comodosci))) min(min(min(L23comodosci)))...
@@ -2045,4 +2069,4 @@ for i = 1:size(L6comodosci,3)
     xlim(log10([1 100])); ylim(log10([1 100]));
 end
 
-%NiceSave('LaminarCoMOD_Osci',figfolder,baseName)
+NiceSave('LaminarCoMOD_Osci',figfolder,baseName)
