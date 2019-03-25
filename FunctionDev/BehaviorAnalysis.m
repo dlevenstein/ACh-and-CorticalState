@@ -66,7 +66,8 @@ EMGwhisk.pupiltime = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,pupildilation.ti
 % Set the Pupil dilation thresholds by troughs 
 tempPup = pupildilation.dpdt;
 tempPup(tempPup<0) = nan;
-Pupz = NormToInt(tempPup,'modZ'); %Modified Z score - robust to outliers
+%Pupz = NormToInt(tempPup,'modZ'); %Modified Z score - robust to outliers
+Pupz = (tempPup - nanmean(tempPup))./nanstd(tempPup,0,1);
 
 % find by "gradient descent"(ish) from initial guess (0.5)
 tPupbins = linspace(-1.5,2,100);
