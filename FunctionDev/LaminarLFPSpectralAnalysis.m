@@ -360,9 +360,9 @@ numberRescales = numberRescalesidx(1)-1;
 validFreqInds = numberRescales + 1:wavespec.nfreqs - numberRescales - 1;
 
 twin = round([0.75 0.75].*wavespec.samplingRate);
-laminarspec = NaN(size(wavespec.data,1),size(wavespec.data,2),6);
-laminarfrac = NaN(size(wavespec.data,1),length(validFreqInds),6);
-laminarosci = NaN(size(wavespec.data,1),length(validFreqInds),6);
+% laminarspec = NaN(size(wavespec.data,1),size(wavespec.data,2),6);
+% laminarfrac = NaN(size(wavespec.data,1),length(validFreqInds),6);
+% laminarosci = NaN(size(wavespec.data,1),length(validFreqInds),6);
 
 % Layer 1
 lidx = 1;
@@ -387,14 +387,14 @@ for x = 1:length(chidx)
     wavespec = WaveIRASA_plawfit(wavespec, [2.5 100]);
 
     % Averaging...
-    tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
-    laminarspec(:,:,lidx) = nansum(tempSpec,3);
-    
-    tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
-    laminarfrac(:,:,lidx) = nansum(tempFrac,3);
-    
-    tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
-    laminarosci(:,:,lidx) = nansum(tempOsci,3);
+%     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
+%     laminarspec(:,:,lidx) = nansum(tempSpec,3);
+%     
+%     tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
+%     laminarfrac(:,:,lidx) = nansum(tempFrac,3);
+%     
+%     tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
+%     laminarosci(:,:,lidx) = nansum(tempOsci,3);
    
     % eventSpec
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
@@ -446,9 +446,9 @@ eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3));
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.pss = squeeze(nanmean(eventspec.Pup.pss,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
-laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
-laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
-laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
+% laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
+% laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
+% laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
 L1eventSpec = eventspec;
 
 % Layer 2/3
@@ -474,14 +474,14 @@ for x = 1:length(chidx)
     wavespec = WaveIRASA_plawfit(wavespec, [2.5 100]);
 
     % Averaging...
-    tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
-    laminarspec(:,:,lidx) = nansum(tempSpec,3);
-    
-    tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
-    laminarfrac(:,:,lidx) = nansum(tempFrac,3);
-    
-    tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
-    laminarosci(:,:,lidx) = nansum(tempOsci,3);
+%     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
+%     laminarspec(:,:,lidx) = nansum(tempSpec,3);
+%     
+%     tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
+%     laminarfrac(:,:,lidx) = nansum(tempFrac,3);
+%     
+%     tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
+%     laminarosci(:,:,lidx) = nansum(tempOsci,3);
    
     % eventSpec
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
@@ -533,9 +533,9 @@ eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3));
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.pss = squeeze(nanmean(eventspec.Pup.pss,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
-laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
-laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
-laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
+% laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
+% laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
+% laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
 L23eventSpec = eventspec;
 
 % Layer 4
@@ -561,14 +561,14 @@ for x = 1:length(chidx)
     wavespec = WaveIRASA_plawfit(wavespec, [2.5 100]);
 
     % Averaging...
-    tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
-    laminarspec(:,:,lidx) = nansum(tempSpec,3);
-    
-    tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
-    laminarfrac(:,:,lidx) = nansum(tempFrac,3);
-    
-    tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
-    laminarosci(:,:,lidx) = nansum(tempOsci,3);
+%     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
+%     laminarspec(:,:,lidx) = nansum(tempSpec,3);
+%     
+%     tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
+%     laminarfrac(:,:,lidx) = nansum(tempFrac,3);
+%     
+%     tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
+%     laminarosci(:,:,lidx) = nansum(tempOsci,3);
    
     % eventSpec
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
@@ -620,9 +620,9 @@ eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3));
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.pss = squeeze(nanmean(eventspec.Pup.pss,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
-laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
-laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
-laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
+% laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
+% laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
+% laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
 L4eventSpec = eventspec;
 
 % Layer 5a
@@ -648,14 +648,14 @@ for x = 1:length(chidx)
     wavespec = WaveIRASA_plawfit(wavespec, [2.5 100]);
 
     % Averaging...
-    tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
-    laminarspec(:,:,lidx) = nansum(tempSpec,3);
-    
-    tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
-    laminarfrac(:,:,lidx) = nansum(tempFrac,3);
-    
-    tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
-    laminarosci(:,:,lidx) = nansum(tempOsci,3);
+%     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
+%     laminarspec(:,:,lidx) = nansum(tempSpec,3);
+%     
+%     tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
+%     laminarfrac(:,:,lidx) = nansum(tempFrac,3);
+%     
+%     tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
+%     laminarosci(:,:,lidx) = nansum(tempOsci,3);
    
     % eventSpec
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
@@ -707,9 +707,9 @@ eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3));
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.pss = squeeze(nanmean(eventspec.Pup.pss,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
-laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
-laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
-laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
+% laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
+% laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
+% laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
 L5aeventSpec = eventspec;
 
 % Layer 5b/6
@@ -735,14 +735,14 @@ for x = 1:length(chidx)
     wavespec = WaveIRASA_plawfit(wavespec, [2.5 100]);
 
     % Averaging...
-    tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
-    laminarspec(:,:,lidx) = nansum(tempSpec,3);
-    
-    tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
-    laminarfrac(:,:,lidx) = nansum(tempFrac,3);
-    
-    tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
-    laminarosci(:,:,lidx) = nansum(tempOsci,3);
+%     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
+%     laminarspec(:,:,lidx) = nansum(tempSpec,3);
+%     
+%     tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
+%     laminarfrac(:,:,lidx) = nansum(tempFrac,3);
+%     
+%     tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
+%     laminarosci(:,:,lidx) = nansum(tempOsci,3);
    
     % eventSpec
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
@@ -794,9 +794,9 @@ eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3));
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.pss = squeeze(nanmean(eventspec.Pup.pss,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
-laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
-laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
-laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
+% laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
+% laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
+% laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
 L56eventSpec = eventspec;
 
 % Layer 6
@@ -822,14 +822,14 @@ for x = 1:length(chidx)
     wavespec = WaveIRASA_plawfit(wavespec, [2.5 100]);
 
     % Averaging...
-    tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
-    laminarspec(:,:,lidx) = nansum(tempSpec,3);
-    
-    tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
-    laminarfrac(:,:,lidx) = nansum(tempFrac,3);
-    
-    tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
-    laminarosci(:,:,lidx) = nansum(tempOsci,3);
+%     tempSpec = cat(3,laminarspec(:,:,lidx),log10(abs(wavespec.data)));
+%     laminarspec(:,:,lidx) = nansum(tempSpec,3);
+%     
+%     tempFrac = cat(3,laminarfrac(:,:,lidx),log10(wavespec.frac));
+%     laminarfrac(:,:,lidx) = nansum(tempFrac,3);
+%     
+%     tempOsci = cat(3,laminarosci(:,:,lidx),wavespec.osci);
+%     laminarosci(:,:,lidx) = nansum(tempOsci,3);
    
     % eventSpec
     teventSpec = eventSpec(wavespec,eventsidx.Wh(:,1));
@@ -881,15 +881,15 @@ eventspec.Pup.spec = squeeze(nanmean(eventspec.Pup.spec,3));
 eventspec.Pup.frac = squeeze(nanmean(eventspec.Pup.frac,3)); 
 eventspec.Pup.pss = squeeze(nanmean(eventspec.Pup.pss,3)); 
 eventspec.Pup.osci = squeeze(nanmean(eventspec.Pup.osci,3)); 
-laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
-laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
-laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
+% laminarspec(:,:,lidx) = laminarspec(:,:,lidx)./length(chidx);
+% laminarfrac(:,:,lidx) = laminarfrac(:,:,lidx)./length(chidx);
+% laminarosci(:,:,lidx) = laminarosci(:,:,lidx)./length(chidx);
 L6eventSpec = eventspec;
 
 % Saving to struct
-LayerSpectral.laminarspec = laminarspec;
-LayerSpectral.laminarfrac = laminarfrac;
-LayerSpectral.laminarosci = laminarosci;
+% LayerSpectral.laminarspec = laminarspec;
+% LayerSpectral.laminarfrac = laminarfrac;
+% LayerSpectral.laminarosci = laminarosci;
 LayerSpectral.L1eventSpec = L1eventSpec; 
 LayerSpectral.L23eventSpec = L23eventSpec; 
 LayerSpectral.L4eventSpec = L4eventSpec; 
@@ -1461,352 +1461,352 @@ title('L6');
 NiceSave('Laminar_PupSpec',figfolder,baseName)
 
 %% Laminar comodulograms
-i = 1;
-L1comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
-L1comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
-L1comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
-for ii = 1:size(laminarspec,3)
-    L1comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
-        laminarspec(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L1comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
-        laminarfrac(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L1comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
-        laminarosci(:,:,ii),'type','spearman',...
-        'rows','complete');
-end
-
-i = 2;
-L23comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
-L23comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
-L23comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
-for ii = 1:size(laminarspec,3)
-    L23comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
-        laminarspec(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L23comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
-        laminarfrac(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L23comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
-        laminarosci(:,:,ii),'type','spearman',...
-        'rows','complete');
-end
-
-i = 3;
-L4comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
-L4comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
-L4comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
-for ii = 1:size(laminarspec,3)
-    L4comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
-        laminarspec(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L4comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
-        laminarfrac(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L4comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
-        laminarosci(:,:,ii),'type','spearman',...
-        'rows','complete');
-end
-
-i = 4;
-L5acomodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
-L5acomodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
-L5acomodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
-for ii = 1:size(laminarspec,3)
-    L5acomodspec(:,:,ii) = corr(laminarspec(:,:,i),...
-        laminarspec(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L5acomodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
-        laminarfrac(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L5acomodosci(:,:,ii) = corr(laminarosci(:,:,i),...
-        laminarosci(:,:,ii),'type','spearman',...
-        'rows','complete');
-end
-
-i = 5;
-L56comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
-L56comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
-L56comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
-for ii = 1:size(laminarspec,3)
-    L56comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
-        laminarspec(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L56comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
-        laminarfrac(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L56comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
-        laminarosci(:,:,ii),'type','spearman',...
-        'rows','complete');
-end
-
-i = 6;
-L6comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
-L6comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
-L6comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
-for ii = 1:size(laminarspec,3)
-    L6comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
-        laminarspec(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L6comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
-        laminarfrac(:,:,ii),'type','spearman',...
-        'rows','complete');
-    L6comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
-        laminarosci(:,:,ii),'type','spearman',...
-        'rows','complete');
-end
-
-% Saving to struct
-LayerSpectral.L1comodspec = L1comodspec; 
-LayerSpectral.L1comodfrac = L1comodfrac; 
-LayerSpectral.L1comodosci = L1comodosci;
-LayerSpectral.L23comodspec = L23comodspec; 
-LayerSpectral.L23comodfrac = L23comodfrac; 
-LayerSpectral.L23comodosci = L23comodosci;
-LayerSpectral.L4comodspec = L4comodspec; 
-LayerSpectral.L4comodfrac = L4comodfrac; 
-LayerSpectral.L4comodosci = L4comodosci;
-LayerSpectral.L5acomodspec = L5acomodspec; 
-LayerSpectral.L5acomodfrac = L5acomodfrac; 
-LayerSpectral.L5acomodosci = L5acomodosci;
-LayerSpectral.L56comodspec = L56comodspec; 
-LayerSpectral.L56comodfrac = L56comodfrac; 
-LayerSpectral.L56comodosci = L56comodosci;
-LayerSpectral.L6comodspec = L6comodspec; 
-LayerSpectral.L6comodfrac = L6comodfrac; 
-LayerSpectral.L6comodosci = L6comodosci;
-
-% Finally saving all...
-save(savefile,'-v7.3','LayerSpectral');
-
-%% FIGURE 5: Laminar CoMOD Spec
-cmin = min([min(min(min(L1comodspec))) min(min(min(L23comodspec)))...
-    min(min(min(L4comodspec))) min(min(min(L5acomodspec)))...
-    min(min(min(L56comodspec))) min(min(min(L6comodspec)))]);
-cmax = max([max(max(max(L1comodspec))) max(max(max(L23comodspec)))...
-    max(max(max(L4comodspec))) max(max(max(L5acomodspec)))...
-    max(max(max(L56comodspec))) max(max(max(L6comodspec)))]);
-
-figure;
-for i = 1:size(L1comodspec,3)
-    subplot(6,6,i*1);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L1comodspec(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L23comodspec,3)
-    subplot(6,6,i+6);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L23comodspec(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L4comodspec,3)
-    subplot(6,6,i+12);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L4comodspec(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L5acomodspec,3)
-    subplot(6,6,i+18);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L5acomodspec(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L56comodspec,3)
-    subplot(6,6,i+24);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L56comodspec(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L6comodspec,3)
-    subplot(6,6,i+30);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L6comodspec(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-NiceSave('LaminarCoMOD_Spec',figfolder,baseName)
-
-%% FIGURE:
-cmin = min([min(min(min(L1comodfrac))) min(min(min(L23comodfrac)))...
-    min(min(min(L4comodfrac))) min(min(min(L5acomodfrac)))...
-    min(min(min(L56comodfrac))) min(min(min(L6comodfrac)))]);
-cmax = max([max(max(max(L1comodfrac))) max(max(max(L23comodfrac)))...
-    max(max(max(L4comodfrac))) max(max(max(L5acomodfrac)))...
-    max(max(max(L56comodfrac))) max(max(max(L6comodfrac)))]);
-
-figure;
-for i = 1:size(L1comodfrac,3)
-    subplot(6,6,i*1);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L1comodfrac(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L23comodfrac,3)
-    subplot(6,6,i+6);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L23comodfrac(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L4comodfrac,3)
-    subplot(6,6,i+12);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L4comodfrac(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L5acomodfrac,3)
-    subplot(6,6,i+18);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L5acomodfrac(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L56comodfrac,3)
-    subplot(6,6,i+24);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L56comodfrac(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L6comodfrac,3)
-    subplot(6,6,i+30);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L6comodfrac(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-NiceSave('LaminarCoMOD_Frac',figfolder,baseName)
-
-%% FIGURE:
-cmin = min([min(min(min(L1comodosci))) min(min(min(L23comodosci)))...
-    min(min(min(L4comodosci))) min(min(min(L5acomodosci)))...
-    min(min(min(L56comodosci))) min(min(min(L6comodosci)))]);
-cmax = max([max(max(max(L1comodosci))) max(max(max(L23comodosci)))...
-    max(max(max(L4comodosci))) max(max(max(L5acomodosci)))...
-    max(max(max(L56comodosci))) max(max(max(L6comodosci)))]);
-
-figure;
-for i = 1:size(L1comodosci,3)
-    subplot(6,6,i*1);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L1comodosci(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L23comodosci,3)
-    subplot(6,6,i+6);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L23comodosci(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L4comodosci,3)
-    subplot(6,6,i+12);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L4comodosci(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L5acomodosci,3)
-    subplot(6,6,i+18);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L5acomodosci(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L56comodosci,3)
-    subplot(6,6,i+24);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L56comodosci(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-for i = 1:size(L6comodosci,3)
-    subplot(6,6,i+30);
-    imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L6comodosci(:,:,i))
-    axis xy
-    xlabel('f (Hz)'); ylabel('f (Hz)');
-    colormap(gca,'jet')
-    caxis([cmin cmax])
-    LogScale('x',10); LogScale('y',10);
-    xlim(log10([1 100])); ylim(log10([1 100]));
-end
-
-NiceSave('LaminarCoMOD_Osci',figfolder,baseName)
+% i = 1;
+% L1comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
+% L1comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
+% L1comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
+% for ii = 1:size(laminarspec,3)
+%     L1comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
+%         laminarspec(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L1comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
+%         laminarfrac(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L1comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
+%         laminarosci(:,:,ii),'type','spearman',...
+%         'rows','complete');
+% end
+% 
+% i = 2;
+% L23comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
+% L23comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
+% L23comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
+% for ii = 1:size(laminarspec,3)
+%     L23comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
+%         laminarspec(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L23comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
+%         laminarfrac(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L23comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
+%         laminarosci(:,:,ii),'type','spearman',...
+%         'rows','complete');
+% end
+% 
+% i = 3;
+% L4comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
+% L4comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
+% L4comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
+% for ii = 1:size(laminarspec,3)
+%     L4comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
+%         laminarspec(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L4comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
+%         laminarfrac(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L4comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
+%         laminarosci(:,:,ii),'type','spearman',...
+%         'rows','complete');
+% end
+% 
+% i = 4;
+% L5acomodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
+% L5acomodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
+% L5acomodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
+% for ii = 1:size(laminarspec,3)
+%     L5acomodspec(:,:,ii) = corr(laminarspec(:,:,i),...
+%         laminarspec(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L5acomodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
+%         laminarfrac(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L5acomodosci(:,:,ii) = corr(laminarosci(:,:,i),...
+%         laminarosci(:,:,ii),'type','spearman',...
+%         'rows','complete');
+% end
+% 
+% i = 5;
+% L56comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
+% L56comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
+% L56comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
+% for ii = 1:size(laminarspec,3)
+%     L56comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
+%         laminarspec(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L56comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
+%         laminarfrac(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L56comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
+%         laminarosci(:,:,ii),'type','spearman',...
+%         'rows','complete');
+% end
+% 
+% i = 6;
+% L6comodspec = NaN(size(laminarspec,2),size(laminarspec,2),6);
+% L6comodfrac = NaN(size(laminarfrac,2),size(laminarfrac,2),6);
+% L6comodosci = NaN(size(laminarosci,2),size(laminarosci,2),6);
+% for ii = 1:size(laminarspec,3)
+%     L6comodspec(:,:,ii) = corr(laminarspec(:,:,i),...
+%         laminarspec(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L6comodfrac(:,:,ii) = corr(laminarfrac(:,:,i),...
+%         laminarfrac(:,:,ii),'type','spearman',...
+%         'rows','complete');
+%     L6comodosci(:,:,ii) = corr(laminarosci(:,:,i),...
+%         laminarosci(:,:,ii),'type','spearman',...
+%         'rows','complete');
+% end
+% 
+% % Saving to struct
+% LayerSpectral.L1comodspec = L1comodspec; 
+% LayerSpectral.L1comodfrac = L1comodfrac; 
+% LayerSpectral.L1comodosci = L1comodosci;
+% LayerSpectral.L23comodspec = L23comodspec; 
+% LayerSpectral.L23comodfrac = L23comodfrac; 
+% LayerSpectral.L23comodosci = L23comodosci;
+% LayerSpectral.L4comodspec = L4comodspec; 
+% LayerSpectral.L4comodfrac = L4comodfrac; 
+% LayerSpectral.L4comodosci = L4comodosci;
+% LayerSpectral.L5acomodspec = L5acomodspec; 
+% LayerSpectral.L5acomodfrac = L5acomodfrac; 
+% LayerSpectral.L5acomodosci = L5acomodosci;
+% LayerSpectral.L56comodspec = L56comodspec; 
+% LayerSpectral.L56comodfrac = L56comodfrac; 
+% LayerSpectral.L56comodosci = L56comodosci;
+% LayerSpectral.L6comodspec = L6comodspec; 
+% LayerSpectral.L6comodfrac = L6comodfrac; 
+% LayerSpectral.L6comodosci = L6comodosci;
+% 
+% % Finally saving all...
+% save(savefile,'-v7.3','LayerSpectral');
+% 
+% %% FIGURE 5: Laminar CoMOD Spec
+% cmin = min([min(min(min(L1comodspec))) min(min(min(L23comodspec)))...
+%     min(min(min(L4comodspec))) min(min(min(L5acomodspec)))...
+%     min(min(min(L56comodspec))) min(min(min(L6comodspec)))]);
+% cmax = max([max(max(max(L1comodspec))) max(max(max(L23comodspec)))...
+%     max(max(max(L4comodspec))) max(max(max(L5acomodspec)))...
+%     max(max(max(L56comodspec))) max(max(max(L6comodspec)))]);
+% 
+% figure;
+% for i = 1:size(L1comodspec,3)
+%     subplot(6,6,i*1);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L1comodspec(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L23comodspec,3)
+%     subplot(6,6,i+6);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L23comodspec(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L4comodspec,3)
+%     subplot(6,6,i+12);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L4comodspec(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L5acomodspec,3)
+%     subplot(6,6,i+18);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L5acomodspec(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L56comodspec,3)
+%     subplot(6,6,i+24);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L56comodspec(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L6comodspec,3)
+%     subplot(6,6,i+30);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L6comodspec(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% NiceSave('LaminarCoMOD_Spec',figfolder,baseName)
+% 
+% %% FIGURE:
+% cmin = min([min(min(min(L1comodfrac))) min(min(min(L23comodfrac)))...
+%     min(min(min(L4comodfrac))) min(min(min(L5acomodfrac)))...
+%     min(min(min(L56comodfrac))) min(min(min(L6comodfrac)))]);
+% cmax = max([max(max(max(L1comodfrac))) max(max(max(L23comodfrac)))...
+%     max(max(max(L4comodfrac))) max(max(max(L5acomodfrac)))...
+%     max(max(max(L56comodfrac))) max(max(max(L6comodfrac)))]);
+% 
+% figure;
+% for i = 1:size(L1comodfrac,3)
+%     subplot(6,6,i*1);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L1comodfrac(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L23comodfrac,3)
+%     subplot(6,6,i+6);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L23comodfrac(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L4comodfrac,3)
+%     subplot(6,6,i+12);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L4comodfrac(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L5acomodfrac,3)
+%     subplot(6,6,i+18);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L5acomodfrac(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L56comodfrac,3)
+%     subplot(6,6,i+24);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L56comodfrac(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L6comodfrac,3)
+%     subplot(6,6,i+30);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L6comodfrac(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% NiceSave('LaminarCoMOD_Frac',figfolder,baseName)
+% 
+% %% FIGURE:
+% cmin = min([min(min(min(L1comodosci))) min(min(min(L23comodosci)))...
+%     min(min(min(L4comodosci))) min(min(min(L5acomodosci)))...
+%     min(min(min(L56comodosci))) min(min(min(L6comodosci)))]);
+% cmax = max([max(max(max(L1comodosci))) max(max(max(L23comodosci)))...
+%     max(max(max(L4comodosci))) max(max(max(L5acomodosci)))...
+%     max(max(max(L56comodosci))) max(max(max(L6comodosci)))]);
+% 
+% figure;
+% for i = 1:size(L1comodosci,3)
+%     subplot(6,6,i*1);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L1comodosci(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L23comodosci,3)
+%     subplot(6,6,i+6);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L23comodosci(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L4comodosci,3)
+%     subplot(6,6,i+12);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L4comodosci(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L5acomodosci,3)
+%     subplot(6,6,i+18);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L5acomodosci(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L56comodosci,3)
+%     subplot(6,6,i+24);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L56comodosci(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% for i = 1:size(L6comodosci,3)
+%     subplot(6,6,i+30);
+%     imagesc(log10(wavespec.freqs),log10(wavespec.freqs),L6comodosci(:,:,i))
+%     axis xy
+%     xlabel('f (Hz)'); ylabel('f (Hz)');
+%     colormap(gca,'jet')
+%     caxis([cmin cmax])
+%     LogScale('x',10); LogScale('y',10);
+%     xlim(log10([1 100])); ylim(log10([1 100]));
+% end
+% 
+% NiceSave('LaminarCoMOD_Osci',figfolder,baseName)

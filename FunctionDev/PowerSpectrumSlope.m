@@ -7,8 +7,8 @@ usechannels = sessionInfo.AnatGrps.Channels;
 usechannels(ismember(usechannels,badchannels))=[];
 channels = sessionInfo.channels;
 
-figfolder = fullfile(basePath,'DetectionFigures');
-savefile = fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']);
+figfolder = fullfile(basePath,'AnalysisFigures');
+savefile = fullfile(basePath,[baseName,'.PowerSpectrumSlope.mat']);
 
 %% Loading behavior...
 % Pupil diameter
@@ -410,18 +410,22 @@ for cc = 1:length(channels)
         'type','spearman','rows','complete');
     
     isOK=isfinite(log10(temp_EMG)) & isfinite(Frac.Beta.*-1);   % both rows finite (neither NaN)
-    [acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'coeff');
+    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'unbiased');
+    lag = lag.*mode(diff(Frac.timestamps));
+    %[acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'coeff');
     [~,I] = max(acor);
     lagDiff = lag(I);
-    PSSEMGtimeDiff(cc) = lagDiff/srate;
+    PSSEMGtimeDiff(cc) = lagDiff;
     PSSEMGxcorr = cat(2,PSSEMGxcorr,acor);
     PSSEMGlag = lag;
     
     isOK=isfinite(log10(temp_Pup)) & isfinite(Frac.Beta.*-1);
-    [acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'coeff');
+    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'unbiased');
+    lag = lag.*mode(diff(Frac.timestamps));
+    %[acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'coeff');
     [~,I] = max(acor);
     lagDiff = lag(I);
-    PSSPuptimeDiff(cc) = lagDiff/srate;
+    PSSPuptimeDiff(cc) = lagDiff;
     PSSPupxcorr = cat(2,PSSPupxcorr,acor);
     PSSPuplag = lag;
     
@@ -819,18 +823,22 @@ for cc = 1:length(channels)
         'type','spearman','rows','complete');
     
     isOK=isfinite(log10(temp_EMG)) & isfinite(Frac.Beta.*-1);   % both rows finite (neither NaN)
-    [acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'coeff');
+    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'unbiased');
+    lag = lag.*mode(diff(Frac.timestamps));
+    %[acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'coeff');
     [~,I] = max(acor);
     lagDiff = lag(I);
-    PSSEMGtimeDiff(cc) = lagDiff/srate;
+    PSSEMGtimeDiff(cc) = lagDiff;
     PSSEMGxcorr = cat(2,PSSEMGxcorr,acor);
     PSSEMGlag = lag;
     
     isOK=isfinite(log10(temp_Pup)) & isfinite(Frac.Beta.*-1);
-    [acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'coeff');
+    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'unbiased');
+    lag = lag.*mode(diff(Frac.timestamps));
+    %[acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'coeff');
     [~,I] = max(acor);
     lagDiff = lag(I);
-    PSSPuptimeDiff(cc) = lagDiff/srate;
+    PSSPuptimeDiff(cc) = lagDiff;
     PSSPupxcorr = cat(2,PSSPupxcorr,acor);
     PSSPuplag = lag;
     
