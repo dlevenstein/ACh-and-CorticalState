@@ -675,22 +675,30 @@ whiskPETH.timestamps = whiskPETH.window(1):(1/PSS.samplingRate):whiskPETH.window
 timelockedPSS.data = zeros(length(whiskPETH.timestamps),EMGwhisk.numwhisks);
 
 for ww = 1:EMGwhisk.numwhisks
-    PSS.whidx(ww) = find(PSS.timestamps==interp1(PSS.timestamps,PSS.timestamps,EMGwhisk.ints.Wh(ww,1),'nearest'));
-    %PSS.whidx(ww) = find(PSS.timestamps==interp1(PSS.timestamps,PSS.timestamps,EMGwhisk.ints.Wh(tempidx(ww),1),'nearest'));
-    
-    if PSS.whidx(ww)-whiskPETH.windex > 0 && PSS.whidx(ww)+whiskPETH.windex < length(PSS.data)
-        timelockedPSS.data(:,ww) = PSS.data(PSS.whidx(ww)-whiskPETH.windex:PSS.whidx(ww)+whiskPETH.windex);
-        timelockedPSS.timestamps(:,ww) = whiskPETH.timestamps;
-        timelockedPSS.phases(:,ww) = ones(size(whiskPETH.timestamps)).*EMGwhisk.phase(ww);
-        timelockedPSS.highpupil(:,ww) = true(size(whiskPETH.timestamps)).*EMGwhisk.highpupil(ww);
-        %NEED TO TAKE OUT OTHER WHISKS!?
-        %     prevwhisk = EMGwhisk.ints.Wh(ww-1,2) - EMGwhisk.ints.Wh(ww,1);
-        %     nextwhisk = EMGwhisk.ints.Wh(ww+1,1) - EMGwhisk.ints.Wh(ww,2);
-        %     timelockedPSS.otherwhisks(:,ww) = ...
-        %         timelockedPSS.timestamps(:,ww)<prevwhisk |...
-        %         timelockedPSS.timestamps(:,ww)>nextwhisk;
+    tempidx = interp1(PSS.timestamps,PSS.timestamps,EMGwhisk.ints.Wh(ww,1),'nearest');
+    if ~isnan(tempidx)
+        PSS.whidx(ww) = find(PSS.timestamps==tempidx);
+        %PSS.whidx(ww) = find(PSS.timestamps==interp1(PSS.timestamps,PSS.timestamps,EMGwhisk.ints.Wh(tempidx(ww),1),'nearest'));
+        
+        if PSS.whidx(ww)-whiskPETH.windex > 0 && PSS.whidx(ww)+whiskPETH.windex < length(PSS.data)
+            timelockedPSS.data(:,ww) = PSS.data(PSS.whidx(ww)-whiskPETH.windex:PSS.whidx(ww)+whiskPETH.windex);
+            timelockedPSS.timestamps(:,ww) = whiskPETH.timestamps;
+            timelockedPSS.phases(:,ww) = ones(size(whiskPETH.timestamps)).*EMGwhisk.phase(ww);
+            timelockedPSS.highpupil(:,ww) = true(size(whiskPETH.timestamps)).*EMGwhisk.highpupil(ww);
+            %NEED TO TAKE OUT OTHER WHISKS!?
+            %     prevwhisk = EMGwhisk.ints.Wh(ww-1,2) - EMGwhisk.ints.Wh(ww,1);
+            %     nextwhisk = EMGwhisk.ints.Wh(ww+1,1) - EMGwhisk.ints.Wh(ww,2);
+            %     timelockedPSS.otherwhisks(:,ww) = ...
+            %         timelockedPSS.timestamps(:,ww)<prevwhisk |...
+            %         timelockedPSS.timestamps(:,ww)>nextwhisk;
+        end
+    else
+%         PSS.whidx(ww) = [];
+%         timelockedPSS.data(:,ww) = [];
+%         timelockedPSS.timestamps(:,ww) = NaN(length(whiskPETH.timestamps),1);
+%         timelockedPSS.phases(:,ww) = NaN(size(whiskPETH.timestamps));
+%         timelockedPSS.highpupil(:,ww) = NaN(size(whiskPETH.timestamps));
     end
-    
 end
 timelockedPSS.highpupil = logical(timelockedPSS.highpupil); %Why?
 
