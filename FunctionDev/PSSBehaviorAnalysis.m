@@ -159,8 +159,8 @@ Pupon.power = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
     pup_on,'nearest');
 
 %% Load PSS and aligning behavior
-load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.mat']));
-%load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
+%load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.mat']));
+load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
 
 depthinfo = rescaleCx(basePath);
 L56idx = find(depthinfo.ndepth >= 0.6 & depthinfo.ndepth <= 0.9);
