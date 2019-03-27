@@ -806,12 +806,16 @@ whiskPETH.timestamps = whiskPETH.window(1):(1/PSS.samplingRate):whiskPETH.window
 puplockedPSS.data = zeros(length(whiskPETH.timestamps),Pupon.numpups);
 
 for ww = 1:Pupon.numpups
-    PSS.pupidx(ww) = find(PSS.timestamps==interp1(PSS.timestamps,PSS.timestamps,pup_on(ww),'nearest'));
-    
-    if PSS.pupidx(ww)-whiskPETH.windex > 0 && PSS.pupidx(ww)+whiskPETH.windex < length(PSS.data)
-        puplockedPSS.data(:,ww) = PSS.data(PSS.pupidx(ww)-whiskPETH.windex:PSS.pupidx(ww)+whiskPETH.windex);
-        puplockedPSS.timestamps(:,ww) = whiskPETH.timestamps;
-        puplockedPSS.pupwhdiff(:,ww) = ones(size(whiskPETH.timestamps)).*Pupon.pupwhdiff(ww);
+    tempidx = interp1(PSS.timestamps,PSS.timestamps,pup_on(ww),'nearest');
+    if ~isnan(tempidx)
+        PSS.pupidx(ww) = find(PSS.timestamps==tempidx);
+        
+        if PSS.pupidx(ww)-whiskPETH.windex > 0 && PSS.pupidx(ww)+whiskPETH.windex < length(PSS.data)
+            puplockedPSS.data(:,ww) = PSS.data(PSS.pupidx(ww)-whiskPETH.windex:PSS.pupidx(ww)+whiskPETH.windex);
+            puplockedPSS.timestamps(:,ww) = whiskPETH.timestamps;
+            puplockedPSS.pupwhdiff(:,ww) = ones(size(whiskPETH.timestamps)).*Pupon.pupwhdiff(ww);
+        end
+    else
     end
 end
 
