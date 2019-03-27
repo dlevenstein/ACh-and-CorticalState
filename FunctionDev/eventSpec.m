@@ -30,14 +30,14 @@ eventSpec.frac = (spec_temp-nanmean(spec_temp(twin(1)-80:twin(1)-24,:,:),1))...
 eventSpec.frac = nanmean(eventSpec.frac,3);
 
 % for PSS
-spec_temp = NaN(twin(1)+twin(2)+1,length(events));
-for e = 1:length(events)
-    if events(e)-twin(1) > 0 && events(e)+twin(2) < size(spec.frac,1)
-        spec_temp(:,e) = spec.Beta(events(e)-twin(1):events(e)+twin(2));
-    else
-    end
-end
-eventSpec.pss = nanmean(spec_temp,2);
+% spec_temp = NaN(twin(1)+twin(2)+1,length(events));
+% for e = 1:length(events)
+%     if events(e)-twin(1) > 0 && events(e)+twin(2) < size(spec.frac,1)
+%         spec_temp(:,e) = spec.Beta(events(e)-twin(1):events(e)+twin(2));
+%     else
+%     end
+% end
+% eventSpec.pss = nanmean(spec_temp,2);
 
 % for Osci
 spec_temp = NaN(twin(1)+twin(2)+1,size(spec.osci,2),length(events));
