@@ -9,7 +9,7 @@ usechannels(ismember(usechannels,badchannels))=[];
 channels = sessionInfo.channels;
 
 figfolder = fullfile(basePath,'AnalysisFigures');
-savefile = fullfile(basePath,[baseName,'.PSSBehaviorAnalysis.mat']);
+savefile = fullfile(basePath,[baseName,'.PSSBehaviorAnalysis2.mat']);
 
 %% Loading behavior...
 % Pupil diameter
@@ -92,9 +92,11 @@ if pup_off(end) < pup_on(end)
     pup_on = pup_on(1:end-1);
 end
 
+dPpeak = NaN(length(pup_on),1);
 for i = 1:length(pup_on)
     tidx = find(pupildilation.dpdt(pup_on(i):pup_off(i))...
         == max(pupildilation.dpdt(pup_on(i):pup_off(i))),1,'first');
+    dPpeak(i) = pupildilation.dpdt(pup_on(i)+tidx);
     pup_on(i) = pup_on(i)+tidx;
 end
 
@@ -157,8 +159,8 @@ Pupon.power = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
     pup_on,'nearest');
 
 %% Load PSS and aligning behavior
-%load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.mat']));
-load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
+load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.mat']));
+%load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
 
 depthinfo = rescaleCx(basePath);
 L56idx = find(depthinfo.ndepth >= 0.6 & depthinfo.ndepth <= 0.9);
@@ -325,7 +327,7 @@ LogScale('y',10);
 axis square
 axis xy
 
-%NiceSave('PSS_SlowWaves',figfolder,baseName)
+NiceSave('PSS_SlowWaves',figfolder,baseName)
 
 %% FIGURE:
 figure;
@@ -367,7 +369,7 @@ ylim([-0.4 0.4])
 axis square
 axis xy
 
-%NiceSave('PSS_Phase_dPdt',figfolder,baseName)
+NiceSave('PSS_Phase_dPdt',figfolder,baseName)
 
 %%
 pupildist.edges = {linspace(-pi,pi,20),linspace(-1.5,0,30)};
@@ -412,7 +414,7 @@ axis xy
 xlabel('Pupil Phase');ylabel('Pupil Power')
 title('P(Pupil power|phase)')
 
-%NiceSave('PSS_PhasePow',figfolder,baseName)
+NiceSave('PSS_PhasePow',figfolder,baseName)
 
 %% Pupil phase-PSS codistribution
 pupilPSSdist.edges = {linspace(-pi,pi,40),linspace(-4,0,50)};
@@ -478,7 +480,7 @@ axis xy
 xlabel('Pupil Phase');ylabel('PSS')
 title('<median pupil');
 
-%NiceSave('PSSbyPupilPhase',figfolder,baseName)
+NiceSave('PSSbyPupilPhase',figfolder,baseName)
 
 %% Distribution of EMG given pupil phase
 pupilEMGdist.edges = {linspace(-pi,pi,40),linspace(-2,1,50)};
@@ -550,7 +552,7 @@ axis xy
 xlabel('Pupil phase');ylabel('EMG')
 title('<median pupil');
 
-%NiceSave('EMGbyPupilPhase',figfolder,baseName)
+NiceSave('EMGbyPupilPhase',figfolder,baseName)
 
 %% EMG-PSS codistribution:
 PSSEMGdist.edges = {linspace(-2,1,50),linspace(-3,0,50)};
@@ -582,7 +584,7 @@ axis square
 xlabel('EMG');ylabel('PSS')
 title('P(EMG|PSS)')
 
-%NiceSave('EMGPSS',figfolder,baseName)
+NiceSave('EMGPSS',figfolder,baseName)
 
 %% Conditional histos PSS/EMG/Pupil dynamics
 [EMGPupPSS.meanZ,EMGPupPSS.N,EMGPupPSS.Xbins,...
@@ -602,6 +604,11 @@ title('P(EMG|PSS)')
     log10(PSS.EMG(~PSS.highpup)),...
     PSS.data(~PSS.highpup),'minXY',0,'Xbounds',[-pi pi],'Ybounds',[-3 1],...
     'numXbins',100,'numYbins',100);
+
+% Saving to struct
+PSSBehavior.EMGPupPSS = EMGPupPSS;
+PSSBehavior.PSSbyhiPup = PSSbyhiPup;
+PSSBehavior.PSSbyloPup = PSSbyloPup;
 
 %% FIGURE:
 figure;
@@ -700,13 +707,14 @@ phasePETH.high.mean = (phasePETH.high.mean-nanmean(phasePETH.high.mean(8:11,:),1
 phasePETH.low.mean = (phasePETH.low.mean-nanmean(phasePETH.low.mean(8:11,:),1))./nanmean(phasePETH.low.std(8:11,:),1);
 
 % Sorting Wh by phase/duration
-[~,whisksorts.phase] = sort(EMGwhisk.phase);
-[~,whisksorts.dur] = sort(EMGwhisk.dur);
+[whisksorts.phaseval,whisksorts.phase] = sort(EMGwhisk.phase);
+[whisksorts.durval,whisksorts.dur] = sort(EMGwhisk.dur);
 
 % Saving to struct
 PSSBehavior.whiskPETH = whiskPETH;
 PSSBehavior.timelockedPSS = timelockedPSS;
 PSSBehavior.phasePETH = phasePETH;
+PSSBehavior.whisksorts = whisksorts;
 
 %% FIGURE:
 figure;
@@ -739,64 +747,7 @@ xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
 title('<median pupil')
 
-%NiceSave('zPSS_PETHbyPhase',figfolder,baseName)
-
-%% Get PSS around Pupil dilation, sorted by Whisking onset
-% finding associated wh on
-Pupon.whidx = [];
-for i = 1:length(pup_on)
-    Pupon.whidx = cat(1,Pupon.whidx,find(EMGwhisk.ints.Wh(:,1) > pup_on(i)-5 & EMGwhisk.ints.Wh(:,1) > pup_on(i),1,'last'));
-end
-Pupon.pupwhdiff1 = EMGwhisk.ints.Wh(Pupon.whidx,1)-pup_on;
-Pupon.pupwhdiff2 = pup_on-EMGwhisk.ints.Wh(Pupon.whidx,2);
-
-Pupon.numpups = length(pup_on);
-Pupon.highpupil = Pupon.power>nanmedian(Pupon.power);
-
-whiskPETH.window = [-5 5]; %s
-whiskPETH.windex = 5*PSS.samplingRate; %s
-whiskPETH.timestamps = whiskPETH.window(1):(1/PSS.samplingRate):whiskPETH.window(2);
-puplockedPSS.data = zeros(length(whiskPETH.timestamps),EMGwhisk.numwhisks);
-
-for ww = 1:Pupon.numpups
-    PSS.pupidx(ww) = find(PSS.timestamps==interp1(PSS.timestamps,PSS.timestamps,pup_on(ww),'nearest'));
-    
-    if PSS.pupidx(ww)-whiskPETH.windex > 0 && PSS.pupidx(ww)+whiskPETH.windex < length(PSS.data)
-        puplockedPSS.data(:,ww) = PSS.data(PSS.pupidx(ww)-whiskPETH.windex:PSS.pupidx(ww)+whiskPETH.windex);
-        puplockedPSS.timestamps(:,ww) = whiskPETH.timestamps;
-        puplockedPSS.phases(:,ww) = ones(size(whiskPETH.timestamps)).*Pupon.phase(ww);
-        puplockedPSS.highpupil(:,ww) = true(size(whiskPETH.timestamps)).*Pupon.highpupil(ww);
-    end
-    
-end
-
-
-puplockedPSS.highpupil = logical(puplockedPSS.highpupil); %Why?
-
-[phasePETH.high]=PairMatHist(puplockedPSS.data,...%&~timelockedPSS.otherwhisks),...%
-    [puplockedPSS.timestamps,...%&~timelockedPSS.otherwhisks),...
-    puplockedPSS.phases],...%&~timelockedPSS.otherwhisks)],...
-    50,[-pi 4]);
-phasePETH.high.mean = (phasePETH.high.mean-nanmean(phasePETH.high.mean(8:11,:),1))./nanmean(phasePETH.high.std(8:11,:),1);
-
-[phasePETH.low]=PairMatHist(puplockedPSS.data(~puplockedPSS.highpupil),...%&~timelockedPSS.otherwhisks),...
-    [puplockedPSS.timestamps(~puplockedPSS.highpupil),...%&~timelockedPSS.otherwhisks),...
-    puplockedPSS.phases(~puplockedPSS.highpupil)],...%&~timelockedPSS.otherwhisks)],...
-    15,[-pi 5]);
-phasePETH.low.mean = (phasePETH.low.mean-nanmean(phasePETH.low.mean(8:11,:),1))./nanmean(phasePETH.low.std(8:11,:),1);
-
-% Sorting Wh by phase/duration
-%[~,whisksorts.phase] = sort(EMGwhisk.phase);
-%[~,whisksorts.dur] = sort(EMGwhisk.dur);
-
-% Saving to struct
-%PSSBehavior.whiskPETH = whiskPETH;
-%PSSBehavior.timelockedPSS = timelockedPSS;
-%PSSBehavior.phasePETH = phasePETH;
-
-
-%save(savefile,'PSSBehavior');
-
+NiceSave('zPSS_PETHbyPhase',figfolder,baseName)
 
 %% FIGURE:
 figure;
@@ -825,7 +776,85 @@ title('Epochs sorted by Wh duration');
 % sorted by whisking amplitude
 % sorted by pupil amplitude
 
-%NiceSave('PSSallWhisks',figfolder,baseName)
+NiceSave('PSS_sortedWhisks',figfolder,baseName)
 
-%%
-% reverse the figure above
+%% Get PSS around Pupil dilation, sorted by Whisking onset
+Pupon.whon = NaN(length(pup_on),2);
+for i = 1:length(pup_on)
+    %Pupon.whon(i) = interp1(EMGwhisk.ints.Wh(:,1),EMGwhisk.ints.Wh(:,1),pup_on(i),'nearest');
+    Pupon.whon(i,:) = EMGwhisk.ints.Wh(find(EMGwhisk.ints.Wh(:,1)<pup_on(i),1,'last'),:);
+end
+Pupon.pupwhdiff = Pupon.whon(:,1) - pup_on;
+%Pupon.pupwhend = Pupon.pupwhdiff + Pupon.whon(:,2)- Pupon.whon(:,1);
+
+Pupon.numpups = length(pup_on);
+whiskPETH.window = [-10 10]; %s
+whiskPETH.windex = 10*PSS.samplingRate; %s
+whiskPETH.timestamps = whiskPETH.window(1):(1/PSS.samplingRate):whiskPETH.window(2);
+puplockedPSS.data = zeros(length(whiskPETH.timestamps),Pupon.numpups);
+
+for ww = 1:Pupon.numpups
+    PSS.pupidx(ww) = find(PSS.timestamps==interp1(PSS.timestamps,PSS.timestamps,pup_on(ww),'nearest'));
+    
+    if PSS.pupidx(ww)-whiskPETH.windex > 0 && PSS.pupidx(ww)+whiskPETH.windex < length(PSS.data)
+        puplockedPSS.data(:,ww) = PSS.data(PSS.pupidx(ww)-whiskPETH.windex:PSS.pupidx(ww)+whiskPETH.windex);
+        puplockedPSS.timestamps(:,ww) = whiskPETH.timestamps;
+        puplockedPSS.pupwhdiff(:,ww) = ones(size(whiskPETH.timestamps)).*Pupon.pupwhdiff(ww);
+    end
+end
+
+% Sorting trials by params
+[pupsorts.Pupwhdiffval,pupsorts.Pupwhdiff] = sort(Pupon.pupwhdiff);
+[pupsorts.dPval,pupsorts.dP] = sort(dPpeak);
+[pupsorts.durval,pupsorts.dur] = sort(Pupdur);
+[pupsorts.peakval,pupsorts.peak] = sort(pup_peak);
+
+% Saving to struct
+PSSBehavior.pupsorts = pupsorts;
+PSSBehavior.puplockedPSS = puplockedPSS;
+
+save(savefile,'PSSBehavior');
+
+%% FIGURE:
+figure; 
+subplot(2,2,1);
+imagesc(puplockedPSS.timestamps(:,1),[1:Pupon.numpups],puplockedPSS.data(:,pupsorts.Pupwhdiff)'); hold on;
+plot(Pupon.pupwhdiff(pupsorts.Pupwhdiff),[1:Pupon.numpups],'r.','markersize',5)
+plot([0 0],[1 Pupon.numpups],'b')
+axis square
+xlim([-10 10])
+%colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Epochs sorted by Wh-Pup onset diff');
+
+subplot(2,2,2);
+imagesc(puplockedPSS.timestamps(:,1),[1:Pupon.numpups],puplockedPSS.data(:,pupsorts.dP)'); hold on;
+%plot(Pupon.pupwhdiff(pupsorts.dP),[1:Pupon.numpups],'r.','markersize',5)
+plot([0 0],[1 Pupon.numpups],'b')
+axis square
+xlim([-10 10])
+%colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Epochs sorted by dP/dt');
+
+subplot(2,2,3);
+imagesc(puplockedPSS.timestamps(:,1),[1:Pupon.numpups],puplockedPSS.data(:,pupsorts.peak)'); hold on;
+%plot(Pupon.pupwhdiff(pupsorts.dP),[1:Pupon.numpups],'r.','markersize',5)
+plot([0 0],[1 Pupon.numpups],'b')
+axis square
+xlim([-10 10])
+%colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Epochs sorted by peak pupil area');
+
+subplot(2,2,4);
+imagesc(puplockedPSS.timestamps(:,1),[1:Pupon.numpups],puplockedPSS.data(:,pupsorts.dur)'); hold on;
+%plot(pup_off(pupsorts.dur)-pup_on(pupsorts.dur),[1:Pupon.numpups],'r.','markersize',5)
+plot([0 0],[1 Pupon.numpups],'b')
+axis square
+xlim([-10 10])
+%colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Epochs sorted by epoch duration');
+
+NiceSave('PSS_sortedPupil',figfolder,baseName)

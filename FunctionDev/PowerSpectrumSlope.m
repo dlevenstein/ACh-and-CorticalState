@@ -410,8 +410,8 @@ for cc = 1:length(channels)
         'type','spearman','rows','complete');
     
     isOK=isfinite(log10(temp_EMG)) & isfinite(Frac.Beta.*-1);   % both rows finite (neither NaN)
-    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'unbiased');
-    lag = lag.*mode(diff(Frac.timestamps));
+    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),100,'unbiased');
+    lag = lag./(1/mode(diff(Frac.timestamps)));
     %[acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'coeff');
     [~,I] = max(acor);
     lagDiff = lag(I);
@@ -420,8 +420,8 @@ for cc = 1:length(channels)
     PSSEMGlag = lag;
     
     isOK=isfinite(log10(temp_Pup)) & isfinite(Frac.Beta.*-1);
-    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'unbiased');
-    lag = lag.*mode(diff(Frac.timestamps));
+    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),100,'unbiased');
+    lag = lag./(1/mode(diff(Frac.timestamps)));
     %[acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'coeff');
     [~,I] = max(acor);
     lagDiff = lag(I);
@@ -823,8 +823,8 @@ for cc = 1:length(channels)
         'type','spearman','rows','complete');
     
     isOK=isfinite(log10(temp_EMG)) & isfinite(Frac.Beta.*-1);   % both rows finite (neither NaN)
-    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'unbiased');
-    lag = lag.*mode(diff(Frac.timestamps));
+    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),100,'unbiased');
+    lag = lag./(1/mode(diff(Frac.timestamps)));
     %[acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_EMG(isOK)),'coeff');
     [~,I] = max(acor);
     lagDiff = lag(I);
@@ -833,8 +833,8 @@ for cc = 1:length(channels)
     PSSEMGlag = lag;
     
     isOK=isfinite(log10(temp_Pup)) & isfinite(Frac.Beta.*-1);
-    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'unbiased');
-    lag = lag.*mode(diff(Frac.timestamps));
+    [acor,lag] = xcov(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),100,'unbiased');
+    lag = lag./(1/mode(diff(Frac.timestamps)));
     %[acor,lag] = xcorr(Frac.Beta(isOK).*-1,log10(temp_Pup(isOK)),'coeff');
     [~,I] = max(acor);
     lagDiff = lag(I);
