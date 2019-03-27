@@ -366,11 +366,11 @@ columnspec_all.modz = NaN(size(wavespec.data,2),length(channels));
 columnspec_all.frac = NaN(length(validFreqInds),length(channels));
 columnspec_all.osci = NaN(length(validFreqInds),length(channels));
 
-columnspec_NWh.db = NaN(size(wavespec.data,2),length(channels));
-columnspec_NWh.mednorm = NaN(size(wavespec.data,2),length(channels));
-columnspec_NWh.modz = NaN(size(wavespec.data,2),length(channels));
-columnspec_NWh.frac = NaN(length(validFreqInds),length(channels));
-columnspec_NWh.osci = NaN(length(validFreqInds),length(channels));
+% columnspec_NWh.db = NaN(size(wavespec.data,2),length(channels));
+% columnspec_NWh.mednorm = NaN(size(wavespec.data,2),length(channels));
+% columnspec_NWh.modz = NaN(size(wavespec.data,2),length(channels));
+% columnspec_NWh.frac = NaN(length(validFreqInds),length(channels));
+% columnspec_NWh.osci = NaN(length(validFreqInds),length(channels));
 
 columnspec_lNWh.db = NaN(size(wavespec.data,2),length(channels));
 columnspec_lNWh.mednorm = NaN(size(wavespec.data,2),length(channels));
@@ -378,11 +378,11 @@ columnspec_lNWh.modz = NaN(size(wavespec.data,2),length(channels));
 columnspec_lNWh.frac = NaN(length(validFreqInds),length(channels));
 columnspec_lNWh.osci = NaN(length(validFreqInds),length(channels));
 
-columnspec_Wh.db = NaN(size(wavespec.data,2),length(channels));
-columnspec_Wh.mednorm = NaN(size(wavespec.data,2),length(channels));
-columnspec_Wh.modz = NaN(size(wavespec.data,2),length(channels));
-columnspec_Wh.frac = NaN(length(validFreqInds),length(channels));
-columnspec_Wh.osci = NaN(length(validFreqInds),length(channels));
+% columnspec_Wh.db = NaN(size(wavespec.data,2),length(channels));
+% columnspec_Wh.mednorm = NaN(size(wavespec.data,2),length(channels));
+% columnspec_Wh.modz = NaN(size(wavespec.data,2),length(channels));
+% columnspec_Wh.frac = NaN(length(validFreqInds),length(channels));
+% columnspec_Wh.osci = NaN(length(validFreqInds),length(channels));
 
 columnspec_sWh.db = NaN(size(wavespec.data,2),length(channels));
 columnspec_sWh.mednorm = NaN(size(wavespec.data,2),length(channels));
@@ -396,17 +396,17 @@ columnspec_lWh.modz = NaN(size(wavespec.data,2),length(channels));
 columnspec_lWh.frac = NaN(length(validFreqInds),length(channels));
 columnspec_lWh.osci = NaN(length(validFreqInds),length(channels));
 
-columnspec_loWh.db = NaN(size(wavespec.data,2),length(channels));
-columnspec_loWh.mednorm = NaN(size(wavespec.data,2),length(channels));
-columnspec_loWh.modz = NaN(size(wavespec.data,2),length(channels));
-columnspec_loWh.frac = NaN(length(validFreqInds),length(channels));
-columnspec_loWh.osci = NaN(length(validFreqInds),length(channels));
-
-columnspec_hiWh.db = NaN(size(wavespec.data,2),length(channels));
-columnspec_hiWh.mednorm = NaN(size(wavespec.data,2),length(channels));
-columnspec_hiWh.modz = NaN(size(wavespec.data,2),length(channels));
-columnspec_hiWh.frac = NaN(length(validFreqInds),length(channels));
-columnspec_hiWh.osci = NaN(length(validFreqInds),length(channels));
+% columnspec_loWh.db = NaN(size(wavespec.data,2),length(channels));
+% columnspec_loWh.mednorm = NaN(size(wavespec.data,2),length(channels));
+% columnspec_loWh.modz = NaN(size(wavespec.data,2),length(channels));
+% columnspec_loWh.frac = NaN(length(validFreqInds),length(channels));
+% columnspec_loWh.osci = NaN(length(validFreqInds),length(channels));
+% 
+% columnspec_hiWh.db = NaN(size(wavespec.data,2),length(channels));
+% columnspec_hiWh.mednorm = NaN(size(wavespec.data,2),length(channels));
+% columnspec_hiWh.modz = NaN(size(wavespec.data,2),length(channels));
+% columnspec_hiWh.frac = NaN(length(validFreqInds),length(channels));
+% columnspec_hiWh.osci = NaN(length(validFreqInds),length(channels));
 
 columnspec_loP.db = NaN(size(wavespec.data,2),length(channels));
 columnspec_loP.mednorm = NaN(size(wavespec.data,2),length(channels));
@@ -427,72 +427,72 @@ for i = 1:length(channels)
     %load(fullfile(savefolder,[baseName,'.',num2str(channels(i)),'.WaveSpec2.lfp.mat']));
     
     wavespec.dataz = NormToInt(log10(abs(wavespec.data)),'modZ');
-    wavespec.datan = log10(abs(wavespec.data))./nanmedian(log10(abs(wavespec.data)),1);
+    %wavespec.datan = log10(abs(wavespec.data))./nanmedian(log10(abs(wavespec.data)),1);
     
     % WaveIRASA wavelet spec
     [wavespec.frac,wavespec.osci,wavespec.validfreq] = WaveIRASA(wavespec);
     
     % Averaging...
     columnspec_all.db(:,i) = nanmedian(log10(abs(wavespec.data)),1);
-    columnspec_all.mednorm(:,i) = nanmedian(wavespec.datan,1);
+%     columnspec_all.mednorm(:,i) = nanmedian(wavespec.datan,1);
     columnspec_all.modz(:,i) = nanmedian(wavespec.dataz,1);
     columnspec_all.frac(:,i) = nanmedian(log10(wavespec.frac),1);
     columnspec_all.osci(:,i) = nanmedian(wavespec.osci,1);
     %columnspec_all.osci(columnspec_all.osci(:,i)<0,i) = 0;
     
-    columnspec_NWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.NWh,:))),1);
-    columnspec_NWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.NWh,:),1);
-    columnspec_NWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.NWh,:),1);
-    columnspec_NWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.NWh,:)),1);
-    columnspec_NWh.osci(:,i) = nanmedian(wavespec.osci(allidx.NWh,:),1);
-    %columnspec_NWh.osci(columnspec_NWh.osci(:,i)<0,i) = 0;
-    
+%     columnspec_NWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.NWh,:))),1);
+%     columnspec_NWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.NWh,:),1);
+%     columnspec_NWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.NWh,:),1);
+%     columnspec_NWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.NWh,:)),1);
+%     columnspec_NWh.osci(:,i) = nanmedian(wavespec.osci(allidx.NWh,:),1);
+%     %columnspec_NWh.osci(columnspec_NWh.osci(:,i)<0,i) = 0;
+%     
     columnspec_lNWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.lNWh,:))),1);
-    columnspec_lNWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.lNWh,:),1);
+%     columnspec_lNWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.lNWh,:),1);
     columnspec_lNWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.lNWh,:),1);
     columnspec_lNWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.lNWh,:)),1);
     columnspec_lNWh.osci(:,i) = nanmedian(wavespec.osci(allidx.lNWh,:),1);
-    
-    columnspec_Wh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.Wh,:))),1);
-    columnspec_Wh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.Wh,:),1);
-    columnspec_Wh.modz(:,i) = nanmedian(wavespec.dataz(allidx.Wh,:),1);
-    columnspec_Wh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.Wh,:)),1);
-    columnspec_Wh.osci(:,i) = nanmedian(wavespec.osci(allidx.Wh,:),1);
-    %columnspec_Wh.osci(columnspec_Wh.osci(:,i)<0,i) = 0;
+%     
+%     columnspec_Wh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.Wh,:))),1);
+%     columnspec_Wh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.Wh,:),1);
+%     columnspec_Wh.modz(:,i) = nanmedian(wavespec.dataz(allidx.Wh,:),1);
+%     columnspec_Wh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.Wh,:)),1);
+%     columnspec_Wh.osci(:,i) = nanmedian(wavespec.osci(allidx.Wh,:),1);
+%     %columnspec_Wh.osci(columnspec_Wh.osci(:,i)<0,i) = 0;
     
     columnspec_sWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.sWh,:))),1);
-    columnspec_sWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.sWh,:),1);
+%     columnspec_sWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.sWh,:),1);
     columnspec_sWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.sWh,:),1);
     columnspec_sWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.sWh,:)),1);
     columnspec_sWh.osci(:,i) = nanmedian(wavespec.osci(allidx.sWh,:),1);
     
     columnspec_lWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.lWh,:))),1);
-    columnspec_lWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.lWh,:),1);
+%     columnspec_lWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.lWh,:),1);
     columnspec_lWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.lWh,:),1);
     columnspec_lWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.lWh,:)),1);
     columnspec_lWh.osci(:,i) = nanmedian(wavespec.osci(allidx.lWh,:),1);
     
-    columnspec_loWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.loWh,:))),1);
-    columnspec_loWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.loWh,:),1);
-    columnspec_loWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.loWh,:),1);
-    columnspec_loWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.loWh,:)),1);
-    columnspec_loWh.osci(:,i) = nanmedian(wavespec.osci(allidx.loWh,:),1);
-    
-    columnspec_hiWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.hiWh,:))),1);
-    columnspec_hiWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.hiWh,:),1);
-    columnspec_hiWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.hiWh,:),1);
-    columnspec_hiWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.hiWh,:)),1);
-    columnspec_hiWh.osci(:,i) = nanmedian(wavespec.osci(allidx.hiWh,:),1);
+%     columnspec_loWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.loWh,:))),1);
+%     columnspec_loWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.loWh,:),1);
+%     columnspec_loWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.loWh,:),1);
+%     columnspec_loWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.loWh,:)),1);
+%     columnspec_loWh.osci(:,i) = nanmedian(wavespec.osci(allidx.loWh,:),1);
+%     
+%     columnspec_hiWh.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.hiWh,:))),1);
+%     columnspec_hiWh.mednorm(:,i) = nanmedian(wavespec.datan(allidx.hiWh,:),1);
+%     columnspec_hiWh.modz(:,i) = nanmedian(wavespec.dataz(allidx.hiWh,:),1);
+%     columnspec_hiWh.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.hiWh,:)),1);
+%     columnspec_hiWh.osci(:,i) = nanmedian(wavespec.osci(allidx.hiWh,:),1);
     
     columnspec_loP.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.loP,:))),1);
-    columnspec_loP.mednorm(:,i) = nanmedian(wavespec.datan(allidx.loP,:),1);
+%     columnspec_loP.mednorm(:,i) = nanmedian(wavespec.datan(allidx.loP,:),1);
     columnspec_loP.modz(:,i) = nanmedian(wavespec.dataz(allidx.loP,:),1);
     columnspec_loP.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.loP,:)),1);
     columnspec_loP.osci(:,i) = nanmedian(wavespec.osci(allidx.loP,:),1);
     %columnspec_loP.osci(columnspec_loP.osci(:,i)<0,i) = 0;
     
     columnspec_hiP.db(:,i) = nanmedian(log10(abs(wavespec.data(allidx.hiP,:))),1);
-    columnspec_hiP.mednorm(:,i) = nanmedian(wavespec.datan(allidx.hiP,:),1);
+%     columnspec_hiP.mednorm(:,i) = nanmedian(wavespec.datan(allidx.hiP,:),1);
     columnspec_hiP.modz(:,i) = nanmedian(wavespec.dataz(allidx.hiP,:),1);
     columnspec_hiP.frac(:,i) = nanmedian(log10(wavespec.frac(allidx.hiP,:)),1);
     columnspec_hiP.osci(:,i) = nanmedian(wavespec.osci(allidx.hiP,:),1);
@@ -504,17 +504,17 @@ end
 ColumnSpectral.freqs = wavespec.freqs;
 ColumnSpectral.validfreqs = wavespec.validfreq;
 ColumnSpectral.columnspec_all = columnspec_all;
-ColumnSpectral.columnspec_NWh = columnspec_NWh;
+% ColumnSpectral.columnspec_NWh = columnspec_NWh;
 ColumnSpectral.columnspec_lNWh = columnspec_lNWh;
-ColumnSpectral.columnspec_Wh = columnspec_Wh;
+% ColumnSpectral.columnspec_Wh = columnspec_Wh;
 ColumnSpectral.columnspec_sWh = columnspec_sWh;
 ColumnSpectral.columnspec_lWh = columnspec_lWh;
-ColumnSpectral.columnspec_loWh = columnspec_loWh;
-ColumnSpectral.columnspec_hiWh = columnspec_hiWh;
+% ColumnSpectral.columnspec_loWh = columnspec_loWh;
+% ColumnSpectral.columnspec_hiWh = columnspec_hiWh;
 ColumnSpectral.columnspec_loP = columnspec_loP;
 ColumnSpectral.columnspec_hiP = columnspec_hiP;
 
-save(savefile,'-v7.3','ColumnSpectral');
+save(savefile,'ColumnSpectral');
 
 %% FIGURE: NWh vs Wh Columnar Specs
 cmax = max(max(columnspec_Wh.db(:,usechannels+1)-columnspec_NWh.db(:,usechannels+1)));
