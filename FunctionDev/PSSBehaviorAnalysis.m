@@ -790,7 +790,11 @@ NiceSave('PSS_sortedWhisks',figfolder,baseName)
 Pupon.whon = NaN(length(pup_on),2);
 for i = 1:length(pup_on)
     %Pupon.whon(i) = interp1(EMGwhisk.ints.Wh(:,1),EMGwhisk.ints.Wh(:,1),pup_on(i),'nearest');
-    Pupon.whon(i,:) = EMGwhisk.ints.Wh(find(EMGwhisk.ints.Wh(:,1)<pup_on(i),1,'last'),:);
+    tempidx = find(EMGwhisk.ints.Wh(:,1)<pup_on(i),1,'last');
+    if ~isnan(tempidx)
+        Pupon.whon(i,:) = EMGwhisk.ints.Wh(tempidx,:);
+    else
+    end
 end
 Pupon.pupwhdiff = Pupon.whon(:,1) - pup_on;
 %Pupon.pupwhend = Pupon.pupwhdiff + Pupon.whon(:,2)- Pupon.whon(:,1);
