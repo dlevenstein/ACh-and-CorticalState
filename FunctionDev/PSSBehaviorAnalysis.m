@@ -617,8 +617,8 @@ a = imagesc([EMGPupPSS.Xbins EMGPupPSS.Xbins+2*pi],...
     EMGPupPSS.Ybins,[EMGPupPSS.meanZ; EMGPupPSS.meanZ]');
 colormap(gca,'jet')
 alpha(a,double(~isnan([EMGPupPSS.meanZ; EMGPupPSS.meanZ]')))
-ColorbarWithAxis([min(min(EMGPupPSS.meanZ)) max(max(EMGPupPSS.meanZ))],'EMG')
-caxis([min(min(EMGPupPSS.meanZ)) max(max(EMGPupPSS.meanZ))])
+%ColorbarWithAxis([min(min(EMGPupPSS.meanZ)) max(max(EMGPupPSS.meanZ))],'EMG')
+%caxis([min(min(EMGPupPSS.meanZ)) max(max(EMGPupPSS.meanZ))])
 ylim([-3 0]);
 xlabel('Pupil phase');ylabel('PSS')
 axis xy
@@ -629,8 +629,8 @@ a = imagesc([PSSbyhiPup.Xbins PSSbyhiPup.Xbins+2*pi],...
     PSSbyhiPup.Ybins,[PSSbyhiPup.meanZ; PSSbyhiPup.meanZ]');
 colormap(gca,'jet')
 alpha(a,double(~isnan([PSSbyhiPup.meanZ; PSSbyhiPup.meanZ]')))
-ColorbarWithAxis([min(min(PSSbyhiPup.meanZ)) max(max(PSSbyhiPup.meanZ))],'PSS (au)')
-caxis([min(min(PSSbyhiPup.meanZ)) max(max(PSSbyhiPup.meanZ))])
+% ColorbarWithAxis([min(min(PSSbyhiPup.meanZ)) max(max(PSSbyhiPup.meanZ))],'PSS (au)')
+% caxis([min(min(PSSbyhiPup.meanZ)) max(max(PSSbyhiPup.meanZ))])
 ylim([-2 1.5]);
 xlabel('Pupil phase');ylabel('EMG')
 axis xy
@@ -641,8 +641,8 @@ a = imagesc([PSSbyloPup.Xbins PSSbyloPup.Xbins+2*pi],...
     PSSbyloPup.Ybins,[PSSbyloPup.meanZ; PSSbyloPup.meanZ]');
 colormap(gca,'jet')
 alpha(a,double(~isnan([PSSbyloPup.meanZ; PSSbyloPup.meanZ]')))
-ColorbarWithAxis([min(min(PSSbyloPup.meanZ)) max(max(PSSbyloPup.meanZ))],'PSS (au)')
-caxis([min(min(PSSbyloPup.meanZ)) max(max(PSSbyloPup.meanZ))])
+% ColorbarWithAxis([min(min(PSSbyloPup.meanZ)) max(max(PSSbyloPup.meanZ))],'PSS (au)')
+% caxis([min(min(PSSbyloPup.meanZ)) max(max(PSSbyloPup.meanZ))])
 ylim([-2 1.5]);
 xlabel('Pupil phase');ylabel('EMG')
 axis xy
@@ -728,7 +728,7 @@ plot(cos(cosx),cosx,'w','linewidth',2)
 plot([0 0],[-pi 3*pi],'r')
 colorbar
 axis xy
-caxis([max(max(phasePETH.high.mean))*-1 max(max(phasePETH.high.mean))])
+% caxis([max(max(phasePETH.high.mean))*-1 max(max(phasePETH.high.mean))])
 xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
 title('>median pupil')
@@ -742,7 +742,7 @@ plot(cos(cosx),cosx,'w','linewidth',2)
 plot([0 0],[-pi 3*pi],'r')
 colorbar
 axis xy
-caxis([max(max(phasePETH.high.mean))*-1 max(max(phasePETH.high.mean))])
+% caxis([max(max(phasePETH.high.mean))*-1 max(max(phasePETH.high.mean))])
 xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
 title('<median pupil')
