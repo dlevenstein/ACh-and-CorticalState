@@ -436,8 +436,11 @@ for i = 1:size(EMGwhisk.ints.Wh,1)
     temps = find(lowpupildata.timestamps == tempidx(i,1));
     tempe = find(lowpupildata.timestamps == tempidx(i,2));
     
-    if ~isempty(temps) || ~isempty(tempe)
+    if ~isempty(temps) 
+        if ~isempty(tempe)
         whints_maxamp(i) = max(lowpupildata.amp(temps:tempe));
+        else
+        end
     else
     end
 end
