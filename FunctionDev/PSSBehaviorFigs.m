@@ -22,6 +22,9 @@ KOwhisksorts = whisksorts;
 KOtimelockedPSS = timelockedPSS;
 
 %% FIGURE:
+upcolor = [1 1 1;makeColorMap([1 1 1],[0.8 0 0])];
+downcolor = [1 1 1;makeColorMap([1 1 1],[0 0 0.8])];
+
 figure;
 subplot(2,5,1);
 barh(WTPSSBehavior.UPdur.bins(:,:,1),nanmean(WTPSSBehavior.UPdur.hist,3),'r'); hold on;
@@ -44,7 +47,7 @@ title('KO');
 subplot(2,5,2:3);
 imagesc(WTPSSBehavior.PSSUPDOWNhist.bins{:,1,1},WTPSSBehavior.PSSUPDOWNhist.bins{:,2,1},...
     nanmean(WTPSSBehavior.PSSUPDOWNhist.UPcounts,3)'); hold on;
-colormap(gca,'autumn')
+colormap(gca,upcolor)
 %ColorbarWithAxis([min(min(PSSUPDOWNhist.UPcounts)) max(max(PSSUPDOWNhist.UPcounts))/4],['counts (au)'])
 caxis([min(min(nanmean(WTPSSBehavior.PSSUPDOWNhist.UPcounts,3)))...
     max(max(nanmean(WTPSSBehavior.PSSUPDOWNhist.UPcounts,3)))/4]);
@@ -56,7 +59,7 @@ axis xy
 subplot(2,5,4:5);
 imagesc(WTPSSBehavior.PSSUPDOWNhist.bins{:,1,1},WTPSSBehavior.PSSUPDOWNhist.bins{:,2,1},...
     nanmean(WTPSSBehavior.PSSUPDOWNhist.DOWNcounts,3)'); hold on;
-colormap(gca,'winter')
+colormap(gca,downcolor)
 %ColorbarWithAxis([min(min(PSSUPDOWNhist.DOWNcounts)) max(max(PSSUPDOWNhist.DOWNcounts))/4],['counts (au)'])
 caxis([min(min(nanmean(WTPSSBehavior.PSSUPDOWNhist.DOWNcounts,3)))...
     max(max(nanmean(WTPSSBehavior.PSSUPDOWNhist.DOWNcounts,3)))/4]);
@@ -68,7 +71,7 @@ axis xy
 subplot(2,5,7:8);
 imagesc(KOPSSBehavior.PSSUPDOWNhist.bins{:,1,1},KOPSSBehavior.PSSUPDOWNhist.bins{:,2,1},...
     nanmean(KOPSSBehavior.PSSUPDOWNhist.UPcounts,3)'); hold on;
-colormap(gca,'autumn')
+colormap(gca,upcolor)
 %ColorbarWithAxis([min(min(PSSUPDOWNhist.UPcounts)) max(max(PSSUPDOWNhist.UPcounts))/4],['counts (au)'])
 caxis([min(min(nanmean(KOPSSBehavior.PSSUPDOWNhist.UPcounts,3)))...
     max(max(nanmean(KOPSSBehavior.PSSUPDOWNhist.UPcounts,3)))/4]);
@@ -80,7 +83,7 @@ axis xy
 subplot(2,5,9:10);
 imagesc(KOPSSBehavior.PSSUPDOWNhist.bins{:,1,1},KOPSSBehavior.PSSUPDOWNhist.bins{:,2,1},...
     nanmean(KOPSSBehavior.PSSUPDOWNhist.DOWNcounts,3)'); hold on;
-colormap(gca,'winter')
+colormap(gca,downcolor)
 %ColorbarWithAxis([min(min(PSSUPDOWNhist.DOWNcounts)) max(max(PSSUPDOWNhist.DOWNcounts))/4],['counts (au)'])
 caxis([min(min(nanmean(KOPSSBehavior.PSSUPDOWNhist.DOWNcounts,3)))...
     max(max(nanmean(KOPSSBehavior.PSSUPDOWNhist.DOWNcounts,3)))/4]);
@@ -380,6 +383,141 @@ title('<median pupil');
 NiceSave('PSSbyPupilPhase',figfolder,baseName)
 
 %% FIGURE:
+cmin = min([min(min(nanmean(WTPSSBehavior.pupilPSSdist.conditional_highw,3)))...
+    min(min(nanmean(KOPSSBehavior.pupilPSSdist.conditional_highw,3)))]);
+cmax = max([max(max(nanmean(WTPSSBehavior.pupilPSSdist.conditional_highw,3)))...
+    max(max(nanmean(KOPSSBehavior.pupilPSSdist.conditional_highw,3)))]);
+
+figure;
+subplot(2,4,1);
+imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1},WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilPSSdist.conditional_highw,3)')
+hold on
+imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilPSSdist.conditional_highw,3)')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('PSS')
+title('>median pupil, wh');
+
+subplot(2,4,5);
+imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1},KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilPSSdist.conditional_highw,3)')
+hold on
+imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilPSSdist.conditional_highw,3)')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('PSS')
+title('>median pupil, wh');
+
+cmin = min([min(min(nanmean(WTPSSBehavior.pupilPSSdist.conditional_loww,3)))...
+    min(min(nanmean(KOPSSBehavior.pupilPSSdist.conditional_loww,3)))]);
+cmax = max([max(max(nanmean(WTPSSBehavior.pupilPSSdist.conditional_loww,3)))...
+    max(max(nanmean(KOPSSBehavior.pupilPSSdist.conditional_loww,3)))]);
+
+subplot(2,4,2);
+imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1},WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilPSSdist.conditional_loww,3)')
+hold on
+imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilPSSdist.conditional_loww,3)')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('PSS')
+title('<median pupil, wh');
+
+subplot(2,4,6);
+imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1},KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilPSSdist.conditional_loww,3)')
+hold on
+imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilPSSdist.conditional_loww,3)')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('PSS')
+title('<median pupil, wh');
+
+cmin = min([min(min(nanmean(WTPSSBehavior.pupilPSSdist.conditional_highnow,3)))...
+    min(min(nanmean(KOPSSBehavior.pupilPSSdist.conditional_highnow,3)))]);
+cmax = max([max(max(nanmean(WTPSSBehavior.pupilPSSdist.conditional_highnow,3)))...
+    max(max(nanmean(KOPSSBehavior.pupilPSSdist.conditional_highnow,3)))]);
+
+subplot(2,4,3);
+imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1},WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilPSSdist.conditional_highnow,3)')
+hold on
+imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilPSSdist.conditional_highnow,3)')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('PSS')
+title('>median pupil, no whisky');
+
+subplot(2,4,7);
+imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1},KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilPSSdist.conditional_highnow,3)')
+hold on
+imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilPSSdist.conditional_highnow,3)')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('PSS')
+title('>median pupil, no whisky');
+
+cmin = min([min(min(nanmean(WTPSSBehavior.pupilPSSdist.conditional_lownow,3)))...
+    min(min(nanmean(KOPSSBehavior.pupilPSSdist.conditional_lownow,3)))]);
+cmax = max([max(max(nanmean(WTPSSBehavior.pupilPSSdist.conditional_lownow,3)))...
+    max(max(nanmean(KOPSSBehavior.pupilPSSdist.conditional_lownow,3)))]);
+
+subplot(2,4,4);
+imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1},WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilPSSdist.conditional_lownow,3)')
+hold on
+imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilPSSdist.conditional_lownow,3)')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('PSS')
+title('<median pupil, no whisky');
+
+subplot(2,4,8);
+imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1},KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilPSSdist.conditional_lownow,3)')
+hold on
+imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilPSSdist.conditional_lownow,3)')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('PSS')
+title('<median pupil, no whisky');
+
+NiceSave('PSSbyPupilPhase_Whisksep',figfolder,baseName)
+
+%%
+load(fullfile(basePath,['WT_EM1M3.BehaviorAnalysis2.mat']));
+WTthresh = nanmean(groupBehaviorInts.whthresh);
+
+load(fullfile(basePath,['KO_EM1M3.BehaviorAnalysis2.mat']));
+KOthresh = nanmean(groupBehaviorInts.whthresh);
+
+%% FIGURE:
 cosx = linspace(-pi,3*pi,100);
 
 cmin = min([min(min(nanmean(WTPSSBehavior.pupilEMGdist.joint,3)))...
@@ -529,9 +667,13 @@ axis xy
 title('EMG by PSS/Pupil');
 
 cmin = min([min(min(nanmean(WTPSSBehavior.PSSbyhiPup.meanZ,3)))...
-    min(min(nanmean(KOPSSBehavior.PSSbyhiPup.meanZ,3)))]);
+    min(min(nanmean(KOPSSBehavior.PSSbyhiPup.meanZ,3)))...
+    min(min(nanmean(WTPSSBehavior.PSSbyloPup.meanZ,3)))...
+    min(min(nanmean(KOPSSBehavior.PSSbyloPup.meanZ,3)))]);
 cmax = max([max(max(nanmean(WTPSSBehavior.PSSbyhiPup.meanZ,3)))...
-    max(max(nanmean(KOPSSBehavior.PSSbyhiPup.meanZ,3)))]);
+    max(max(nanmean(KOPSSBehavior.PSSbyhiPup.meanZ,3)))...
+    max(max(nanmean(WTPSSBehavior.PSSbyloPup.meanZ,3)))...
+    max(max(nanmean(KOPSSBehavior.PSSbyloPup.meanZ,3)))]);
 
 subplot(2,3,2);
 a = imagesc([WTPSSBehavior.PSSbyhiPup.Xbins(:,:,1) WTPSSBehavior.PSSbyhiPup.Xbins(:,:,1)+2*pi],...
@@ -558,11 +700,6 @@ ylim([-2 1.5]);
 xlabel('Pupil phase');ylabel('EMG')
 axis xy
 title('>median pupil');
-
-cmin = min([min(min(nanmean(WTPSSBehavior.PSSbyloPup.meanZ,3)))...
-    min(min(nanmean(KOPSSBehavior.PSSbyloPup.meanZ,3)))]);
-cmax = max([max(max(nanmean(WTPSSBehavior.PSSbyloPup.meanZ,3)))...
-    max(max(nanmean(KOPSSBehavior.PSSbyloPup.meanZ,3)))]);
 
 subplot(2,3,3);
 a = imagesc([WTPSSBehavior.PSSbyloPup.Xbins(:,:,1) WTPSSBehavior.PSSbyloPup.Xbins(:,:,1)+2*pi],...
@@ -594,9 +731,13 @@ NiceSave('PupilEMGPSS',figfolder,baseName)
 
 %% FIGURE:
 cmin = min([min(min(nanmean(WTPSSBehavior.phasePETH.high.mean,3)))...
-    min(min(nanmean(KOPSSBehavior.phasePETH.high.mean,3)))]);
+    min(min(nanmean(WTPSSBehavior.phasePETH.low.mean,3)))...
+    min(min(nanmean(KOPSSBehavior.phasePETH.high.mean,3)))...
+    min(min(nanmean(KOPSSBehavior.phasePETH.low.mean,3)))]);
 cmax = max([max(max(nanmean(WTPSSBehavior.phasePETH.high.mean,3)))...
-    max(max(nanmean(KOPSSBehavior.phasePETH.high.mean,3)))]);
+    max(max(nanmean(WTPSSBehavior.phasePETH.low.mean,3)))...
+    max(max(nanmean(KOPSSBehavior.phasePETH.high.mean,3)))...
+    max(max(nanmean(KOPSSBehavior.phasePETH.low.mean,3)))]);
 
 figure;
 subplot(2,2,1);
@@ -608,7 +749,7 @@ plot(cos(cosx),cosx,'w','linewidth',2)
 plot([0 0],[-pi 3*pi],'r')
 colorbar
 axis xy
-caxis([-2 2]);
+caxis([cmin cmax]);
 xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
 title('>median pupil')
@@ -622,7 +763,7 @@ plot(cos(cosx),cosx,'w','linewidth',2)
 plot([0 0],[-pi 3*pi],'r')
 colorbar
 axis xy
-caxis([-2 2]);
+caxis([cmin cmax]);
 xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
 title('>median pupil')
@@ -636,25 +777,284 @@ plot(cos(cosx),cosx,'w','linewidth',2)
 plot([0 0],[-pi 3*pi],'r')
 colorbar
 axis xy
-caxis([-2 2]);
+caxis([cmin cmax]);
 xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
 title('<median pupil')
 
 subplot(2,2,4);
 imagesc(KOPSSBehavior.phasePETH.low.bincenters(:,:,1),KOPSSBehavior.phasePETH.low.bincenters(:,:,1),...
-    nanmean(WTPSSBehavior.phasePETH.low.mean,3)'); hold on
+    nanmean(KOPSSBehavior.phasePETH.low.mean,3)'); hold on
 imagesc(KOPSSBehavior.phasePETH.low.bincenters(:,:,1),KOPSSBehavior.phasePETH.low.bincenters(:,:,1)+2*pi,...
     nanmean(KOPSSBehavior.phasePETH.low.mean,3)')
 plot(cos(cosx),cosx,'w','linewidth',2)
 plot([0 0],[-pi 3*pi],'r')
 colorbar
 axis xy
-caxis([-2 2]);
+caxis([cmin cmax]);
 xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
 title('<median pupil')
 
-%NiceSave('zPSS_PETHbyPhase',figfolder,baseName)
+NiceSave('zPSS_PETHbyPhase',figfolder,baseName)
 
 %%
+[~,WTwhisksorts.phaseidx] = sort(WTwhisksorts.phase);
+[~,WTwhisksorts.duridx] = sort(WTwhisksorts.dur);
+[~,WTwhisksorts.ampidx] = sort(WTwhisksorts.amp);
+[~,WTwhisksorts.pssidx] = sort(WTwhisksorts.maxpss);
+
+[~,KOwhisksorts.phaseidx] = sort(KOwhisksorts.phase);
+[~,KOwhisksorts.duridx] = sort(KOwhisksorts.dur);
+[~,KOwhisksorts.ampidx] = sort(KOwhisksorts.amp);
+[~,KOwhisksorts.pssidx] = sort(KOwhisksorts.maxpss);
+
+%% FIGURE:
+figure;
+subplot(2,3,1);
+imagesc(WTtimelockedPSS.timestamps(:,1),[1 size(WTtimelockedPSS.data,2)],...
+    WTtimelockedPSS.data(:,WTwhisksorts.phaseidx)')
+hold on
+plot(WTwhisksorts.dur(WTwhisksorts.phaseidx),[1:size(WTtimelockedPSS.data,2)],'.r','markersize',2)
+plot([0 0],[0 size(WTtimelockedPSS.data,2)],'b')
+axis tight
+xlim([-2 5])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Wh Onset)');ylabel('trial no.')
+title('Epochs sorted by pupil phase');
+
+subplot(2,3,4);
+imagesc(KOtimelockedPSS.timestamps(:,1),[1 size(KOtimelockedPSS.data,2)],...
+    KOtimelockedPSS.data(:,KOwhisksorts.phaseidx)')
+hold on
+plot(KOwhisksorts.dur(KOwhisksorts.phaseidx),[1:size(KOtimelockedPSS.data,2)],'.r','markersize',2)
+plot([0 0],[0 size(KOtimelockedPSS.data,2)],'b')
+axis tight
+xlim([-2 5])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Wh Onset)');ylabel('trial no.')
+title('Epochs sorted by pupil phase');
+
+subplot(2,3,2);
+imagesc(WTtimelockedPSS.timestamps(:,1),[1 size(WTtimelockedPSS.data,2)],...
+    WTtimelockedPSS.data(:,WTwhisksorts.duridx)'); 
+hold on
+plot(WTwhisksorts.dur(WTwhisksorts.duridx),[1:size(WTtimelockedPSS.data,2)],'.r','markersize',1)
+plot([0 0],[0 size(WTtimelockedPSS.data,2)],'b')
+axis tight
+xlim([-2 5])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Wh Onset)');ylabel('trial no.')
+title('Epochs sorted by Wh duration');
+
+subplot(2,3,5);
+imagesc(KOtimelockedPSS.timestamps(:,1),[1 size(KOtimelockedPSS.data,2)],...
+    KOtimelockedPSS.data(:,KOwhisksorts.duridx)')
+hold on
+plot(KOwhisksorts.dur(KOwhisksorts.duridx),[1:size(KOtimelockedPSS.data,2)],'.r','markersize',1)
+plot([0 0],[0 size(KOtimelockedPSS.data,2)],'b')
+axis tight
+xlim([-2 5])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Wh Onset)');ylabel('trial no.')
+title('Epochs sorted by Wh duration');
+
+subplot(2,3,3);
+imagesc(WTtimelockedPSS.timestamps(:,1),[1 size(WTtimelockedPSS.data,2)],...
+    WTtimelockedPSS.data(:,WTwhisksorts.ampidx)'); 
+hold on
+plot(WTwhisksorts.dur(WTwhisksorts.ampidx),[1:size(WTtimelockedPSS.data,2)],'.r','markersize',1)
+plot([0 0],[0 size(WTtimelockedPSS.data,2)],'b')
+axis tight
+xlim([-2 5])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Wh Onset)');ylabel('trial no.')
+title('Epochs sorted by Wh amp');
+
+subplot(2,3,6);
+imagesc(KOtimelockedPSS.timestamps(:,1),[1 size(KOtimelockedPSS.data,2)],...
+    KOtimelockedPSS.data(:,KOwhisksorts.ampidx)')
+hold on
+plot(KOwhisksorts.dur(KOwhisksorts.ampidx),[1:size(KOtimelockedPSS.data,2)],'.r','markersize',1)
+plot([0 0],[0 size(KOtimelockedPSS.data,2)],'b')
+axis tight
+xlim([-2 5])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Wh Onset)');ylabel('trial no.')
+title('Epochs sorted by Wh amp');
+
+NiceSave('PSS_sortedWhisks',figfolder,baseName)
+
+%%
+[WTEMGPhase.meanZ,WTEMGPhase.N,WTEMGPhase.Xbins,WTEMGPhase.Ybins ] = ConditionalHist3( log10(WTwhisksorts.dur),...
+    log10(WTwhisksorts.amp),WTwhisksorts.phase,...
+    'minXY',0,'Xbounds',[-1 1.5],'Ybounds',[-1 1.5],...
+    'numXbins',100,'numYbins',100);
+
+[WTEMGPSS.meanZ,WTEMGPSS.N,WTEMGPSS.Xbins,WTEMGPSS.Ybins ] = ConditionalHist3( log10(WTwhisksorts.dur),...
+    log10(WTwhisksorts.amp),WTwhisksorts.maxpss,...
+    'minXY',0,'Xbounds',[-1 1.5],'Ybounds',[-1 1.5],...
+    'numXbins',100,'numYbins',100);
+
+[KOEMGPhase.meanZ,KOEMGPhase.N,KOEMGPhase.Xbins,KOEMGPhase.Ybins ] = ConditionalHist3( log10(KOwhisksorts.dur),...
+    log10(KOwhisksorts.amp),KOwhisksorts.phase,...
+    'minXY',0,'Xbounds',[-1 1.5],'Ybounds',[-1 1.5],...
+    'numXbins',100,'numYbins',100);
+
+[KOEMGPSS.meanZ,KOEMGPSS.N,KOEMGPSS.Xbins,KOEMGPSS.Ybins ] = ConditionalHist3( log10(KOwhisksorts.dur),...
+    log10(KOwhisksorts.amp),KOwhisksorts.maxpss,...
+    'minXY',0,'Xbounds',[-1 1.5],'Ybounds',[-1 1.5],...
+    'numXbins',100,'numYbins',100);
+
+%% FIGURE:
+cmin = min([min(min(WTEMGPhase.meanZ))...
+    min(min(KOEMGPhase.meanZ))]);
+cmax = max([max(max(WTEMGPhase.meanZ))...
+    max(max(KOEMGPhase.meanZ))]);
+
+figure;    
+subplot(2,2,1);
+h = imagesc(WTEMGPhase.Xbins,WTEMGPhase.Ybins,WTEMGPhase.meanZ');
+colormap(gca,'jet')
+set(h,'AlphaData',~isnan(WTEMGPhase.meanZ'));
+LogScale('x',10); LogScale('y',10);
+axis xy
+caxis([cmin cmax]);
+colorbar
+xlabel('Wh duration (s)')
+ylabel('EMG amplitude (modZ)')
+title('Pupil phase')
+
+subplot(2,2,3);
+h = imagesc(KOEMGPhase.Xbins,KOEMGPhase.Ybins,KOEMGPhase.meanZ');
+colormap(gca,'jet')
+set(h,'AlphaData',~isnan(KOEMGPhase.meanZ'));
+LogScale('x',10); LogScale('y',10);
+axis xy
+caxis([cmin cmax]);
+colorbar
+xlabel('Wh duration (s)')
+ylabel('EMG amplitude (modZ)')
+title('Pupil phase')
+
+cmin = min([min(min(WTEMGPSS.meanZ))...
+    min(min(KOEMGPSS.meanZ))]);
+cmax = max([max(max(WTEMGPSS.meanZ))...
+    max(max(KOEMGPSS.meanZ))]);
+
+subplot(2,2,2);
+h = imagesc(WTEMGPSS.Xbins,WTEMGPSS.Ybins,WTEMGPSS.meanZ');
+colormap(gca,'jet')
+set(h,'AlphaData',~isnan(WTEMGPSS.meanZ'));
+LogScale('x',10); LogScale('y',10);
+axis xy
+caxis([cmin cmax]);
+colorbar
+xlabel('Wh duration (s)')
+ylabel('EMG amplitude (modZ)')
+title('PSS')
+
+subplot(2,2,4);
+h = imagesc(KOEMGPSS.Xbins,KOEMGPSS.Ybins,KOEMGPSS.meanZ');
+colormap(gca,'jet')
+set(h,'AlphaData',~isnan(KOEMGPSS.meanZ'));
+LogScale('x',10); LogScale('y',10);
+axis xy
+caxis([cmin cmax]);
+colorbar
+xlabel('Wh duration (s)')
+ylabel('EMG amplitude (modZ)')
+title('PSS')
+
+NiceSave('PSS_EMGSpace',figfolder,baseName)
+
+%%
+[~,WTpupsorts.Pupwhdiffidx] = sort(WTpupsorts.Pupwhdiff);
+[~,WTpupsorts.dPidx] = sort(WTpupsorts.dP);
+[~,WTpupsorts.duridx] = sort(WTpupsorts.dur);
+[~,WTpupsorts.peakidx] = sort(WTpupsorts.peak);
+[~,WTpupsorts.phaseidx] = sort(WTpupsorts.phase);
+[~,WTpupsorts.powidx] = sort(WTpupsorts.pow);
+
+[~,KOpupsorts.Pupwhdiffidx] = sort(KOpupsorts.Pupwhdiff);
+[~,KOpupsorts.dPidx] = sort(KOpupsorts.dP);
+[~,KOpupsorts.duridx] = sort(KOpupsorts.dur);
+[~,KOpupsorts.peakidx] = sort(KOpupsorts.peak);
+[~,KOpupsorts.phaseidx] = sort(KOpupsorts.phase);
+[~,KOpupsorts.powidx] = sort(KOpupsorts.pow);
+
+%% FIGURE:
+figure;
+subplot(2,3,1);
+imagesc(WTpuplockedPSS.timestamps(:,1),[1 size(WTpuplockedPSS.data,2)],...
+    WTpuplockedPSS.data(:,WTpupsorts.phaseidx)')
+hold on
+%plot(WTwhisksorts.dur(WTwhisksorts.phaseidx),[1:size(WTpuplockedPSS.data,2)],'.r','markersize',2)
+plot([0 0],[0 size(WTpuplockedPSS.data,2)],'b')
+axis tight
+xlim([-10 10])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Sorted by pupil phase');
+
+subplot(2,3,4);
+imagesc(KOpuplockedPSS.timestamps(:,1),[1 size(KOpuplockedPSS.data,2)],...
+    KOpuplockedPSS.data(:,KOpupsorts.phaseidx)')
+hold on
+%plot(KOwhisksorts.dur(KOwhisksorts.phaseidx),[1:size(KOpuplockedPSS.data,2)],'.r','markersize',2)
+plot([0 0],[0 size(KOpuplockedPSS.data,2)],'b')
+axis tight
+xlim([-10 10])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Sorted by pupil phase');
+
+subplot(2,3,2);
+imagesc(WTpuplockedPSS.timestamps(:,1),[1 size(WTpuplockedPSS.data,2)],...
+    WTpuplockedPSS.data(:,WTpupsorts.powidx)')
+hold on
+%plot(WTwhisksorts.dur(WTwhisksorts.powidx),[1:size(WTpuplockedPSS.data,2)],'.r','markersize',2)
+plot([0 0],[0 size(WTpuplockedPSS.data,2)],'b')
+axis tight
+xlim([-10 10])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Sorted by pupil power');
+
+subplot(2,3,5);
+imagesc(KOpuplockedPSS.timestamps(:,1),[1 size(KOpuplockedPSS.data,2)],...
+    KOpuplockedPSS.data(:,KOpupsorts.powidx)')
+hold on
+%plot(KOwhisksorts.dur(KOwhisksorts.powidx),[1:size(KOpuplockedPSS.data,2)],'.r','markersize',2)
+plot([0 0],[0 size(KOpuplockedPSS.data,2)],'b')
+axis tight
+xlim([-10 10])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Sorted by pupil power');
+
+subplot(2,3,3);
+imagesc(WTpuplockedPSS.timestamps(:,1),[1 size(WTpuplockedPSS.data,2)],...
+    WTpuplockedPSS.data(:,WTpupsorts.Pupwhdiffidx)')
+hold on
+plot(WTpupsorts.Pupwhdiff(WTpupsorts.Pupwhdiffidx),[1:size(WTpuplockedPSS.data,2)],'.r','markersize',2)
+plot([0 0],[0 size(WTpuplockedPSS.data,2)],'b')
+axis tight
+xlim([-10 10])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Sorted by Wh-Pup interval');
+
+subplot(2,3,6);
+imagesc(KOpuplockedPSS.timestamps(:,1),[1 size(KOpuplockedPSS.data,2)],...
+    KOpuplockedPSS.data(:,KOpupsorts.Pupwhdiffidx)')
+hold on
+plot(KOpupsorts.Pupwhdiff(KOpupsorts.Pupwhdiffidx),[1:size(KOpuplockedPSS.data,2)],'.r','markersize',2)
+plot([0 0],[0 size(KOpuplockedPSS.data,2)],'b')
+axis tight
+xlim([-10 10])
+colorbar; caxis([-3 -1])
+xlabel('t (s, aligned to Pup Onset)'); ylabel('trial no.')
+title('Sorted by Wh-Pup interval');
+
+NiceSave('PSS_sortedPupil',figfolder,baseName)
