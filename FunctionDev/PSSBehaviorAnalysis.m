@@ -435,6 +435,43 @@ pupilPSSdist.conditional_high = bsxfun(@rdivide,...
 pupilPSSdist.conditional_low = bsxfun(@rdivide,...
     pupilPSSdist.counts_low,sum(pupilPSSdist.counts_low,2));
 
+% sorting nonwhisking/lohipup
+tempidx = interp1(PSS.timestamps,PSS.timestamps,EMGwhisk.ints.Wh,'nearest');
+PSS.whisktimes = zeros(length(PSS.timestamps),1);
+for i = 1:size(EMGwhisk.ints.Wh,1)
+    temps = find(PSS.timestamps == tempidx(i,1));
+    tempe = find(PSS.timestamps == tempidx(i,2));
+    
+    if ~isempty(temps)
+        PSS.whisktimes(temps:tempe) = 1;
+    else
+    end
+end
+
+[pupilPSSdist.counts_highnow] = hist3([PSS.pupphase(logical(PSS.highpup.*~PSS.whisktimes)),...
+    PSS.data(logical(PSS.highpup.*~PSS.whisktimes))],...
+    'Edges',pupilPSSdist.edges);
+pupilPSSdist.conditional_highnow = bsxfun(@rdivide,...
+    pupilPSSdist.counts_highnow,sum(pupilPSSdist.counts_highnow,2));
+
+[pupilPSSdist.counts_lownow] = hist3([PSS.pupphase(logical(~PSS.highpup.*~PSS.whisktimes)),...
+    PSS.data(logical(~PSS.highpup.*~PSS.whisktimes))],...
+    'Edges',pupilPSSdist.edges);
+pupilPSSdist.conditional_lownow = bsxfun(@rdivide,...
+    pupilPSSdist.counts_lownow,sum(pupilPSSdist.counts_lownow,2));
+
+[pupilPSSdist.counts_highw] = hist3([PSS.pupphase(logical(PSS.highpup.*PSS.whisktimes)),...
+    PSS.data(logical(PSS.highpup.*PSS.whisktimes))],...
+    'Edges',pupilPSSdist.edges);
+pupilPSSdist.conditional_highw = bsxfun(@rdivide,...
+    pupilPSSdist.counts_highw,sum(pupilPSSdist.counts_highw,2));
+
+[pupilPSSdist.counts_loww] = hist3([PSS.pupphase(logical(~PSS.highpup.*PSS.whisktimes)),...
+    PSS.data(logical(~PSS.highpup.*PSS.whisktimes))],...
+    'Edges',pupilPSSdist.edges);
+pupilPSSdist.conditional_loww = bsxfun(@rdivide,...
+    pupilPSSdist.counts_loww,sum(pupilPSSdist.counts_loww,2));
+
 % Saving to struct
 PSSBehavior.pupilPSSdist = pupilPSSdist;
 
@@ -481,6 +518,50 @@ xlabel('Pupil Phase');ylabel('PSS')
 title('<median pupil');
 
 NiceSave('PSSbyPupilPhase',figfolder,baseName)
+
+%% FIGURE:
+figure;
+subplot(2,2,1);
+imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional_highw')
+hold on
+imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.conditional_highw')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+xlabel('Pupil phase');ylabel('PSS')
+title('>median pupil, whisky times');
+
+subplot(2,2,3);
+imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional_loww')
+hold on
+imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.conditional_loww')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+xlabel('Pupil Phase');ylabel('PSS')
+title('<median pupil, whisky times');
+
+subplot(2,2,2);
+imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional_highnow')
+hold on
+imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.conditional_highnow')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+xlabel('Pupil phase');ylabel('PSS')
+title('>median pupil, no whisky times');
+
+subplot(2,2,4);
+imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional_lownow')
+hold on
+imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.conditional_lownow')
+plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+xlabel('Pupil Phase');ylabel('PSS')
+title('<median pupil, no whisky times');
+
+NiceSave('PSSbyPupilPhase_Whisksep',figfolder,baseName)
 
 %% Distribution of EMG given pupil phase
 pupilEMGdist.edges = {linspace(-pi,pi,40),linspace(-2,1,50)};
@@ -718,11 +799,39 @@ timelockedPSS.highpupil = logical(timelockedPSS.highpupil); %Why?
 [whisksorts.phaseval,whisksorts.phase] = sort(EMGwhisk.phase);
 [whisksorts.durval,whisksorts.dur] = sort(EMGwhisk.dur);
 
+% 
+tempidx = interp1(PSS.timestamps,PSS.timestamps,EMGwhisk.ints.Wh,'nearest');
+whints_maxpss = NaN(size(EMGwhisk.ints.Wh,1),1);
+for i = 1:size(EMGwhisk.ints.Wh,1)
+    temps = find(PSS.timestamps == tempidx(i,1));
+    tempe = find(PSS.timestamps == tempidx(i,2));
+    
+    if ~isempty(temps)
+        whints_maxpss(i) = max(PSS.data(temps:tempe));
+    else
+    end
+end
+
+tempidx = interp1(EMGwhisk.timestamps,EMGwhisk.timestamps,EMGwhisk.ints.Wh,'nearest');
+whints_amp = NaN(size(EMGwhisk.ints.Wh,1),1);
+for i = 1:size(EMGwhisk.ints.Wh,1)
+    temps = find(EMGwhisk.timestamps == tempidx(i,1));
+    tempe = find(EMGwhisk.timestamps == tempidx(i,2));
+    
+    if ~isempty(temps)
+        whints_amp(i) = max(EMGwhisk.EMGenvelope(temps:tempe));
+    else
+    end
+end
+
 % Saving to struct
 PSSBehavior.whiskPETH = whiskPETH;
 PSSBehavior.timelockedPSS = timelockedPSS;
 PSSBehavior.phasePETH = phasePETH;
-PSSBehavior.whisksorts = whisksorts;
+PSSBehavior.whiskidx_phase = EMGwhisk.phase;
+PSSBehavior.whiskidx_dur = EMGwhisk.dur;
+PSSBehavior.whiskidx_maxpss = whints_maxpss;
+PSSBehavior.whiskidx_amp = whints_amp;
 
 %% FIGURE:
 figure;
@@ -826,8 +935,13 @@ end
 [pupsorts.peakval,pupsorts.peak] = sort(pup_peak);
 
 % Saving to struct
-PSSBehavior.pupsorts = pupsorts;
 PSSBehavior.puplockedPSS = puplockedPSS;
+PSSBehavior.pupidx_pupwhdiff = Pupon.pupwhdiff;
+PSSBehavior.pupidx_dur = Pupdur;
+PSSBehavior.pupidx_dPpeak = dPpeak;
+PSSBehavior.pupidx_amp = pup_peak;
+PSSBehavior.pupidx_phase = Pupon.phase; 
+PSSBehavior.pupidx_pow = Pupon.power;
 
 save(savefile,'PSSBehavior');
 
