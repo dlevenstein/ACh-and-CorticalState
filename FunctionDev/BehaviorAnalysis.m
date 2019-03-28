@@ -430,6 +430,18 @@ whints_pupildt = interp1(pupildilation.timestamps(1:end-1),pupildilation.dpdt,EM
 whints_pupilphase = interp1(lowpupildata.timestamps,lowpupildata.phase,EMGwhisk.ints.Wh);
 whints_pupilamp = interp1(lowpupildata.timestamps,lowpupildata.amp,EMGwhisk.ints.Wh);
 
+tempidx = interp1(lowpupildata.timestamps,lowpupildata.timestamps,EMGwhisk.ints.Wh,'nearest');
+whints_maxamp = NaN(size(EMGwhisk.ints.Wh,1),1);
+for i = 1:size(EMGwhisk.ints.Wh,1)
+    temps = find(lowpupildata.timestamps == tempidx(i,1));
+    tempe = find(lowpupildata.timestamps == tempidx(i,2));
+    
+    if ~isnan(temps)
+        whints_maxamp(i) = max(lowpupildata.amp(temps:tempe));
+    else
+    end
+end
+
 X = whints_pupilphase(:,1);
 Y = log10(whints_pupilamp(:,1));
 Y = Y(~isnan(X));
@@ -454,6 +466,7 @@ PupEMG.whints_pupil = whints_pupil;
 PupEMG.whints_pupildt = whints_pupildt;
 PupEMG.whints_pupilphase = whints_pupilphase;
 PupEMG.whints_pupilamp = whints_pupilamp;
+PupEMG.whints_maxamp = whints_maxamp;
 PupEMG.whints_durs = EMGwhisk.Whdurs(:,1);
 
 %% FIGURE 3:
