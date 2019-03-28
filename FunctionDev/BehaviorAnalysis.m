@@ -436,7 +436,7 @@ for i = 1:size(EMGwhisk.ints.Wh,1)
     temps = find(lowpupildata.timestamps == tempidx(i,1));
     tempe = find(lowpupildata.timestamps == tempidx(i,2));
     
-    if ~isnan(temps)
+    if ~isempty(temps) || ~isempty(tempe)
         whints_maxamp(i) = max(lowpupildata.amp(temps:tempe));
     else
     end
@@ -707,53 +707,53 @@ PupEMG.PhaseAmpCoup = PhaseAmpCoup;
 save(savefile,'PupEMG');
 
 %% FIGURE 6:
-% rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
-% plotx = linspace(-pi,3*pi,100);
-% 
-% figure
-% subplot(3,2,1)
-% imagesc(PhaseAmpCoup.phasebins,PhaseAmpCoup.ampbins,PhaseAmpCoup.phaseamphist); hold on;
-% imagesc(PhaseAmpCoup.phasebins+2*pi,PhaseAmpCoup.ampbins,PhaseAmpCoup.phaseamphist)
-% plot(PhaseAmpCoup.sig2prefangle,PhaseAmpCoup.ampbins,'.k')
-% plot(PhaseAmpCoup.sig2prefangle+2*pi,PhaseAmpCoup.ampbins,'.k')
-% plot(plotx,cos(plotx),'k')
-% colormap(gca,rwbcolormap)
-% axis xy
-% axis tight
-% ColorbarWithAxis([-0.5 0.5],['Phase-EMG dist'])
-% caxis([-0.5 0.5])
-% xlim([-pi 3*pi]); ylim(PhaseAmpCoup.ampbins([1 end]))
-% xlabel('Pupil phase'); ylabel('Pupil (Z)')
-% 
-% subplot(3,2,2);
-% plot(log10(wavespec.freqs),coupling,'r','LineWidth',2)
-% LogScale('x',10);
-% xlabel('f (Hz)');
-% axis tight
-% title('Pupil-EMG phase coupling')
-% 
-% subplot(3,2,3)
-% plot(PhaseAmpCoup.ampbins,PhaseAmpCoup.sig2powerskew,'k','LineWidth',1)
-% xlabel('Pupil (Z)');
-% ylabel('Phase-EMG MI (mrl)')
-% axis tight
-% 
-% subplot(3,2,4)
-% histogram(PhaseAmpCoup.sig1amp,PhaseAmpCoup.ampbins)
-% xlabel('Pupil (Z)');
-% ylabel('Occupancy')
-% axis tight
-% 
-% subplot(3,2,6)
-% histogram(PhaseAmpCoup.sig2amp,PhaseAmpCoup.ampbins)
-% xlabel('EMG (Z)');
-% ylabel('Occupancy')
-% axis tight
-% 
-% subplot(3,2,5)
-% imagesc(PhaseAmpCoup.ampbins,PhaseAmpCoup.ampbins,PhaseAmpCoup.gasphist)
-% colormap(gca,'jet');
-% axis xy
-% ylabel('EMG (Z)'); xlabel('Pupil (Z)')
-% 
-% NiceSave('Pupil_EMG_PhaseAmpCoup',figfolder,baseName)
+rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
+plotx = linspace(-pi,3*pi,100);
+
+figure
+subplot(3,2,1)
+imagesc(PhaseAmpCoup.phasebins,PhaseAmpCoup.ampbins,PhaseAmpCoup.phaseamphist); hold on;
+imagesc(PhaseAmpCoup.phasebins+2*pi,PhaseAmpCoup.ampbins,PhaseAmpCoup.phaseamphist)
+plot(PhaseAmpCoup.sig2prefangle,PhaseAmpCoup.ampbins,'.k')
+plot(PhaseAmpCoup.sig2prefangle+2*pi,PhaseAmpCoup.ampbins,'.k')
+plot(plotx,cos(plotx),'k')
+colormap(gca,rwbcolormap)
+axis xy
+axis tight
+ColorbarWithAxis([-0.5 0.5],['Phase-EMG dist'])
+caxis([-0.5 0.5])
+xlim([-pi 3*pi]); ylim(PhaseAmpCoup.ampbins([1 end]))
+xlabel('Pupil phase'); ylabel('Pupil (Z)')
+
+subplot(3,2,2);
+plot(log10(wavespec.freqs),coupling,'r','LineWidth',2)
+LogScale('x',10);
+xlabel('f (Hz)');
+axis tight
+title('Pupil-EMG phase coupling')
+
+subplot(3,2,3)
+plot(PhaseAmpCoup.ampbins,PhaseAmpCoup.sig2powerskew,'k','LineWidth',1)
+xlabel('Pupil (Z)');
+ylabel('Phase-EMG MI (mrl)')
+axis tight
+
+subplot(3,2,4)
+histogram(PhaseAmpCoup.sig1amp,PhaseAmpCoup.ampbins)
+xlabel('Pupil (Z)');
+ylabel('Occupancy')
+axis tight
+
+subplot(3,2,6)
+histogram(PhaseAmpCoup.sig2amp,PhaseAmpCoup.ampbins)
+xlabel('EMG (Z)');
+ylabel('Occupancy')
+axis tight
+
+subplot(3,2,5)
+imagesc(PhaseAmpCoup.ampbins,PhaseAmpCoup.ampbins,PhaseAmpCoup.gasphist)
+colormap(gca,'jet');
+axis xy
+ylabel('EMG (Z)'); xlabel('Pupil (Z)')
+
+NiceSave('Pupil_EMG_PhaseAmpCoup',figfolder,baseName)
