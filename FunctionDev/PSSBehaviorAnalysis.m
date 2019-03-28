@@ -443,7 +443,10 @@ for i = 1:size(EMGwhisk.ints.Wh,1)
     tempe = find(PSS.timestamps == tempidx(i,2));
     
     if ~isempty(temps)
+        if ~isempty(tempe)
         PSS.whisktimes(temps:tempe) = 1;
+        else
+        end
     else
     end
 end
@@ -807,7 +810,10 @@ for i = 1:size(EMGwhisk.ints.Wh,1)
     tempe = find(PSS.timestamps == tempidx(i,2));
     
     if ~isempty(temps)
+        if ~isempty(tempe)
         whints_maxpss(i) = max(PSS.data(temps:tempe));
+        else
+        end
     else
     end
 end
@@ -819,7 +825,10 @@ for i = 1:size(EMGwhisk.ints.Wh,1)
     tempe = find(EMGwhisk.timestamps == tempidx(i,2));
     
     if ~isempty(temps)
+        if ~isempty(tempe)
         whints_amp(i) = max(EMGwhisk.EMGenvelope(temps:tempe));
+        else
+        end
     else
     end
 end
