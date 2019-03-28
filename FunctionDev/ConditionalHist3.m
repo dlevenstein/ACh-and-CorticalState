@@ -1,5 +1,5 @@
 function [ meanZ,N,Xbins,Ybins ] = ConditionalHist3( X,Y,Z,varargin )
-%[ jointXYZ ] = ConditionalHist3( X,Y,Z ) for a set of observations [X,Y,Z] this 
+%[ jointXYZ ] = ConditionalHist3( X,Y,Z ) for a set of observations [X,Y,Z] this
 %function calculates the statistics of Z given X and Y.
 %%
 p = inputParser;
@@ -9,6 +9,8 @@ addParameter(p,'Xbounds',[])
 addParameter(p,'Ybounds',[])
 addParameter(p,'minXY',25)
 addParameter(p,'sigma',[])
+addParameter(p,'circstats',false,@islogical)
+
 parse(p,varargin{:})
 numXbins = p.Results.numXbins;
 numYbins = p.Results.numYbins;
@@ -16,6 +18,7 @@ Xbounds = p.Results.Xbounds;
 Ybounds = p.Results.Ybounds;
 minXY = p.Results.minXY;
 sig = p.Results.sigma;
+circstats = p.Results.circstats;
 
 if ~isempty(sig)
     bintype = 'gaussian';
@@ -43,24 +46,28 @@ Yedges(1) = -inf;Yedges(end) = inf;
 %%
 [n,~,~,BINX,BINY] = histcounts2(X,Y,Xedges,Yedges);
 meanZ = zeros(numXbins,numYbins);
-      
+
 switch bintype
     case 'bins'
         for xx = 1:length(Xbins)
             for yy = 1:length(Ybins)
-                meanZ(xx,yy) = nanmean(Z(BINX==xx & BINY==yy));
+                if circstats
+                    [meanZ(xx,yy),~,~] = circ_mean(Z(BINX==xx & BINY==yy),[],1);
+                else
+                    meanZ(xx,yy) = nanmean(Z(BINX==xx & BINY==yy));
+                end
             end
         end
         meanZ(n<minXY)=nan;
         N = n;
-
+        
     case 'gaussian'
         gaussN = zeros(numXbins,numYbins);
         for xx = 1:length(Xbins)
             for yy = 1:length(Ybins)
                 pointdist = sqrt((X-Xbins(xx)).^2 + (Y-Ybins(yy)).^2);
                 weight = exp(-.5 * (pointdist/sig) .^ 2) ./ (sig * sqrt(2*pi));   %Weight by gaussian
-
+                
                 gaussN(xx,yy) = sum(weight);
                 %N(xx,yy) = sum(weight);
                 meanZ(xx,yy) = sum(Z.*weight)./gaussN(xx,yy);
@@ -69,7 +76,6 @@ switch bintype
         meanZ(gaussN<minXY)=nan;
         N = gaussN./length(Z);
         N = N.*sum(N(:));
-
 end
 
 %meanZ(N<minXY)=nan;
@@ -82,7 +88,7 @@ end
 % imagesc(Xbins,Ybins,weightmean')
 % hold on
 % %plot(X,Y,'k.')
-% 
+%
 % subplot(2,2,2)
 % imagesc(Xbins,Ybins,totweight')
 % hold on
@@ -105,7 +111,7 @@ end
 % subplot(2,2,2)
 % imagesc(Xbins,Ybins,N)
 % axis xy
-% 
+%
 % subplot(2,2,3)
 % imagesc(Xbins,Ybins,meanZ)
 % colorbar
