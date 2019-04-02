@@ -60,6 +60,7 @@ EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 
 EMGwhisk.pupiltime = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,pupildilation.timestamps,'nearest');
 
+
 [~,pupildilation.iswhisk] = RestrictInts(pupildilation.timestamps,EMGwhisk.ints.Wh);
 
 %% PUPIL dilation ONsets/OFFsets

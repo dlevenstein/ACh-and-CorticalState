@@ -212,7 +212,18 @@ PSS.amp = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
     PSS.timestamps,'nearest');
 
 PSS.pupthresh = nanmedian(PSS.pupil); 
-PSS.highpup = PSS.pupil>PSS.pupthresh; 
+
+[ ~,~,~,~,~, binsig,threshsig] = PhaseAmpCouplingByAmp2(PSS.pupphase,PSS.amp,...
+PSS.EMG,'showFig',true,'AmpBounds',[-1.25 -0.25],...
+'shufflesig',true,'AmpZNorm',false,'numAmpbins',10);
+
+%the two posible thresholds
+%binsig.sigthresh   %more sensitive to spurious significant bins
+%threshsig.sigthresh  %more conservataive
+
+PSS.pupthresh = binsig.sigthresh;
+%PSS.pupthresh = threshsig.sigthresh;
+PSS.highpup = PSS.amp>PSS.pupthresh; 
 
 %% PSS-Pupil phase and dPdt codist
 % numbins = 15;
@@ -388,9 +399,10 @@ cosx = linspace(-pi,3*pi,100);
 
 figure;
 subplot(2,2,1);
-hist(PSS.pupil); hold on;
+hist(PSS.amp); hold on;
 plot(PSS.pupthresh.*[1 1],get(gca,'ylim'));
-xlabel('Pupil diameter'); ylabel('counts (au)');
+xlim([-3 1]);
+xlabel('Filt-Pupil amplitude'); ylabel('counts (au)');
 
 subplot(2,2,3);
 imagesc(pupildist.bins{1},pupildist.bins{2},pupildist.joint')
@@ -400,8 +412,8 @@ plot(cosx,cos(cosx)./3-1.1,'w','linewidth',2)
 plot([-pi 3*pi],PSS.pupthresh.*[1 1],'k--')
 xlim([-pi 3*pi])
 axis xy
-xlabel('Pupil Phase');ylabel('Pupil Power')
-title('P(Pupil power,phase)')
+xlabel('Pupil phase');ylabel('Pupil amp')
+title('P(Pupil amp,phase)')
 
 subplot(2,2,4);
 imagesc(pupildist.bins{1},pupildist.bins{2},pupildist.conditional')
@@ -411,8 +423,8 @@ plot(cosx,cos(cosx)./3-1.1,'w','linewidth',2)
 plot([-pi 3*pi],PSS.pupthresh.*[1 1],'k--')
 xlim([-pi 3*pi])
 axis xy
-xlabel('Pupil Phase');ylabel('Pupil Power')
-title('P(Pupil power|phase)')
+xlabel('Pupil phase');ylabel('Pupil amp')
+title('P(Pupil amp|phase)')
 
 NiceSave('PSS_PhasePow',figfolder,baseName)
 
@@ -501,24 +513,24 @@ xlabel('Pupil phase');ylabel('PSS')
 title('P(PSS|phase)')
 
 subplot(2,2,2);
-imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.counts_high')
+imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional_high')
 hold on
-imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.counts_high')
+imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.conditional_high')
 plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil phase');ylabel('PSS')
-title('>median pupil');
+title('sig pupil amp');
 
 subplot(2,2,4);
-imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.counts_low')
+imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional_low')
 hold on
-imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.counts_low')
-plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.conditional_low')
+plot(cosx,0.2.*cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil Phase');ylabel('PSS')
-title('<median pupil');
+title('ns pupil amp');
 
 NiceSave('PSSbyPupilPhase',figfolder,baseName)
 
@@ -532,17 +544,17 @@ plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil phase');ylabel('PSS')
-title('>median pupil, whisky times');
+title('sig pupil amp, whisky times');
 
 subplot(2,2,3);
 imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional_loww')
 hold on
 imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.conditional_loww')
-plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+plot(cosx,0.2.*cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil Phase');ylabel('PSS')
-title('<median pupil, whisky times');
+title('ns pupil amp, whisky times');
 
 subplot(2,2,2);
 imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional_highnow')
@@ -552,17 +564,17 @@ plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil phase');ylabel('PSS')
-title('>median pupil, no whisky times');
+title('sig pupil amp, no whisky times');
 
 subplot(2,2,4);
 imagesc(pupilPSSdist.bins{1},pupilPSSdist.bins{2},pupilPSSdist.conditional_lownow')
 hold on
 imagesc(pupilPSSdist.bins{1}+2*pi,pupilPSSdist.bins{2},pupilPSSdist.conditional_lownow')
-plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+plot(cosx,0.2.*cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil Phase');ylabel('PSS')
-title('<median pupil, no whisky times');
+title('ns pupil amp, no whisky times');
 
 NiceSave('PSSbyPupilPhase_Whisksep',figfolder,baseName)
 
@@ -615,26 +627,26 @@ xlabel('Pupil phase');ylabel('EMG')
 title('P(EMG|phase)')
 
 subplot(2,2,2);
-imagesc(pupilEMGdist.bins{1},pupilEMGdist.bins{2},pupilEMGdist.counts_high')
+imagesc(pupilEMGdist.bins{1},pupilEMGdist.bins{2},pupilEMGdist.conditional_high')
 hold on
-imagesc(pupilEMGdist.bins{1}+2*pi,pupilEMGdist.bins{2},pupilEMGdist.counts_high')
+imagesc(pupilEMGdist.bins{1}+2*pi,pupilEMGdist.bins{2},pupilEMGdist.conditional_high')
 plot([-pi 3*pi],log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],'r--')
 plot(cosx,cos(cosx)./3-1.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil phase');ylabel('EMG')
-title('>median pupil');
+title('sig pupil amp');
 
 subplot(2,2,4);
-imagesc(pupilEMGdist.bins{1},pupilEMGdist.bins{2},pupilEMGdist.counts_low')
+imagesc(pupilEMGdist.bins{1},pupilEMGdist.bins{2},pupilEMGdist.conditional_low')
 hold on
-imagesc(pupilEMGdist.bins{1}+2*pi,pupilEMGdist.bins{2},pupilEMGdist.counts_low')
+imagesc(pupilEMGdist.bins{1}+2*pi,pupilEMGdist.bins{2},pupilEMGdist.conditional_low')
 plot([-pi 3*pi],log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],'r--')
-plot(cosx,cos(cosx)./3-1.6,'w','linewidth',2)
+plot(cosx,0.2.*cos(cosx)./3-1.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 xlabel('Pupil phase');ylabel('EMG')
-title('<median pupil');
+title('ns pupil amp');
 
 NiceSave('EMGbyPupilPhase',figfolder,baseName)
 
@@ -718,7 +730,7 @@ alpha(a,double(~isnan([PSSbyhiPup.meanZ; PSSbyhiPup.meanZ]')))
 ylim([-2 1.5]);
 xlabel('Pupil phase');ylabel('EMG')
 axis xy
-title('>median pupil');
+title('sig pupil amp');
 
 subplot(2,2,4);
 a = imagesc([PSSbyloPup.Xbins PSSbyloPup.Xbins+2*pi],...
@@ -730,7 +742,7 @@ alpha(a,double(~isnan([PSSbyloPup.meanZ; PSSbyloPup.meanZ]')))
 ylim([-2 1.5]);
 xlabel('Pupil phase');ylabel('EMG')
 axis xy
-title('<median pupil');
+title('ns pupil amp');
 
 %NiceSave('PupilEMGPSS',figfolder,baseName)
 
@@ -857,21 +869,21 @@ axis xy
 % caxis([max(max(phasePETH.high.mean))*-1 max(max(phasePETH.high.mean))])
 xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
-title('>median pupil')
+title('sig pupil amp')
 
 subplot(1,2,2);
 imagesc(phasePETH.low.bincenters,phasePETH.low.bincenters,phasePETH.low.mean'); hold on
 imagesc(phasePETH.low.bincenters,phasePETH.low.bincenters+2*pi,phasePETH.low.mean')
 plot(EMGwhisk.dur(~EMGwhisk.highpupil),EMGwhisk.phase(~EMGwhisk.highpupil),'r.','markersize',1)
 plot(EMGwhisk.dur(~EMGwhisk.highpupil),EMGwhisk.phase(~EMGwhisk.highpupil)+2*pi,'r.','markersize',1)
-plot(cos(cosx),cosx,'w','linewidth',2)
+plot(0.2.*cos(cosx),cosx,'w','linewidth',2)
 plot([0 0],[-pi 3*pi],'r')
 colorbar
 axis xy
 % caxis([max(max(phasePETH.high.mean))*-1 max(max(phasePETH.high.mean))])
 xlim([-1 4]);ylim([-pi 3*pi])
 xlabel('t (s, aligned to Wh Onset)');ylabel('Pupil Phase')
-title('<median pupil')
+title('ns pupil amp')
 
 NiceSave('zPSS_PETHbyPhase',figfolder,baseName)
 

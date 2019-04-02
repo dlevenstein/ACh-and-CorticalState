@@ -8,6 +8,10 @@ usechannels(ismember(usechannels,badchannels))=[];
 channels = sessionInfo.channels;
 
 figfolder = fullfile(basePath,'AnalysisFigures');
+if (~exist(figfolder,'dir'))
+    mkdir(figfolder)
+end
+
 savefile = fullfile(basePath,[baseName,'.PowerSpectrumSlope.mat']);
 
 %% Loading behavior...
@@ -217,7 +221,8 @@ for i = 1 : nwin
     %figure out timestamp associated with window i
     timestamp(i) = mean(lfp.timestamps(idx));
 end
-Frac_slow = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+%Frac_slow = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+Frac_slow = amri_sig_fractal(sig,srate,'detrend',1);
 Frac_slow.timestamps = timestamp;
 Frac_slow = amri_sig_plawfit(Frac_slow,Frange);
 
@@ -234,7 +239,8 @@ for i = 1 : nwin
     %figure out timestamp associated with window i
     timestamp(i) = mean(lfp.timestamps(idx));
 end
-Frac_fast = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+%Frac_fast = amri_sig_fractal_gpu(sig,srate,'detrend',1);
+Frac_fast = amri_sig_fractal(sig,srate,'detrend',1);
 Frac_fast.timestamps = timestamp;
 Frac_fast = amri_sig_plawfit(Frac_fast,Frange);
 
@@ -257,31 +263,34 @@ wavespec = bz_WaveSpec(intlfp,'frange',frange,'nfreqs',nfreqs,'ncyc',ncyc,...
     'samplingRate',lfp.samplingRate,'space','log');
 wavespec.data = abs(wavespec.data)';
 
+%%
 figure;
 
 h(1) = subplot(6,1,1); hold on;
 plot(Frac_fast.timestamps,Frac_fast.rsq,'k');
 plot(Frac_slow.timestamps,Frac_slow.rsq,'r');
 ylim([0 1]);
-legend({'RSQ fast','RSQ slow'},'location','southeast')
+%legend({'RSQ fast','RSQ slow'},'location','southeast')
  
 h(2) = subplot(6,1,2); hold on;
 plot(Frac_fast.timestamps,Frac_fast.Beta.*-1,'k');
 plot(Frac_slow.timestamps,Frac_slow.Beta.*-1,'r');
-legend({'Frac fast','Frac slow'},'location','southeast')
+%legend({'Frac fast','Frac slow'},'location','southeast')
+ylim([-2.6 -0.9])
 
 h(3) = subplot(6,1,3); hold on;
 plot(Frac_fast.timestamps,PSS.EMG./max(PSS.EMG),'k');
 plot(Frac_fast.timestamps,PSS.pupilsize./max(PSS.pupilsize),'r');
-legend({'EMG','Pupil diameter'},'location','southeast')
+%legend({'EMG','Pupil diameter'},'location','southeast')
 
 h(5) = subplot(6,1,4); hold on;
 plot(intlfp.timestamps,intlfp.data,'g');
-legend({'LFP'},'location','southeast')
+%legend({'LFP'},'location','southeast')
 
 h(6) = subplot(6,1,5:6); hold on;
 imagesc(wavespec.timestamps,log10(wavespec.freqs),wavespec.data);
-caxis([min(min(wavespec.data)) max(max(wavespec.data))]);
+%caxis([min(min(log10(wavespec.data)))/25 max(max(log10(wavespec.data)))]);
+%caxis([-2 6]);
 LogScale('y',10);
 ylabel('f (Hz)'); ylim(log10([1 128]));
 colormap(gca,'jet');
@@ -289,10 +298,11 @@ set(gca,'YDir','normal');
 %legend({'Spectrogram'},'location','southeast')
 
 linkaxes(h,'x');
-xlim([imagewind(1) imagewind(2)]);
+xlim([550 600]);
+%xlim([imagewind(1) imagewind(2)]);
 xlabel('time (s)');
 
-NiceSave('Example_PSS_rsq_osci_behavior',figfolder,baseName);
+NiceSave('Example_PSS_rsq_osci_behavior_zoom',figfolder,baseName);
 
 %% Correlating PSS/Oscillatory component to EMG/Pupil diameter by depth
 % Assuming that LFP still remains loaded from prior analysis...

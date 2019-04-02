@@ -96,7 +96,6 @@ NiceSave('PSS_SlowWaves',figfolder,baseName)
 
 %% FIGURE:
 figure;
-subplot(2,4,1)
 bar(WTPSSBehavior.PSShist.bins(:,:,1),nanmean(WTPSSBehavior.PSShist.hist,3),...
     'facecolor','k','facealpha',0.65); hold on;
 errorbar(WTPSSBehavior.PSShist.bins(:,:,1),...
@@ -111,16 +110,28 @@ xlabel('PSS (au)'); ylabel('counts (norm.)');
 axis tight
 xlim([-3.5 0]); %ylim([0 1])
 
-cmin = min([min(min(nanmean(WTPSSBehavior.pupcyclePSS.meanZ,3)))...
-    min(min(nanmean(KOPSSBehavior.pupcyclePSS.meanZ,3)))]);
-cmax = max([max(max(nanmean(WTPSSBehavior.pupcyclePSS.meanZ,3)))...
-    max(max(nanmean(KOPSSBehavior.pupcyclePSS.meanZ,3)))]);
+NiceSave('PSS_Dists',figfolder,baseName)
 
-subplot(2,4,2)    
+%% FIGURE:
+figure;
+temp = nanmean(WTPSSBehavior.pupcyclePSS.meanZ,3);
+temp(nanmean(WTPSSBehavior.pupcyclePSS.N,3)<0.1) = NaN;
+
+% cmin = min([min(min(nanmean(WTPSSBehavior.pupcyclePSS.meanZ,3)))...
+%     min(min(nanmean(KOPSSBehavior.pupcyclePSS.meanZ,3)))]);
+% cmax = max([max(max(nanmean(WTPSSBehavior.pupcyclePSS.meanZ,3)))...
+%     max(max(nanmean(KOPSSBehavior.pupcyclePSS.meanZ,3)))]);
+% 
+cmin = min([min(min(temp))...
+    min(min(temp))]);
+cmax = max([max(max(temp))...
+    max(max(temp))]);
+
+subplot(2,3,1)    
 h = imagesc(WTPSSBehavior.pupcyclePSS.Xbins(:,:,1),WTPSSBehavior.pupcyclePSS.Ybins(:,:,1),...
-    nanmean(WTPSSBehavior.pupcyclePSS.meanZ,3)');
+    temp');
 colormap(gca,'jet')
-set(h,'AlphaData',~isnan(nanmean(WTPSSBehavior.pupcyclePSS.meanZ,3)'));
+set(h,'AlphaData',~isnan(temp'));
 hold on
 plot(WTPSSBehavior.pupcyclePSS.Xbins([1 end],:,1),[0 0],'k--')
 %ColorbarWithAxis([min(min(pupcyclePSS.meanZ)) max(max(pupcyclePSS.meanZ))],['PSS (au)'])
@@ -130,11 +141,13 @@ axis xy
 xlabel('Pupil Area (med^-^1)')
 ylabel('dp/dt')
 
-subplot(2,4,6)    
+temp = nanmean(KOPSSBehavior.pupcyclePSS.meanZ,3);
+temp(nanmean(KOPSSBehavior.pupcyclePSS.N,3)<0.1) = NaN;
+subplot(2,3,4)    
 h = imagesc(KOPSSBehavior.pupcyclePSS.Xbins(:,:,1),KOPSSBehavior.pupcyclePSS.Ybins(:,:,1),...
-    nanmean(KOPSSBehavior.pupcyclePSS.meanZ,3)');
+    temp');
 colormap(gca,'jet')
-set(h,'AlphaData',~isnan(nanmean(KOPSSBehavior.pupcyclePSS.meanZ,3)'));
+set(h,'AlphaData',~isnan(temp'));
 hold on
 plot(KOPSSBehavior.pupcyclePSS.Xbins([1 end],:,1),[0 0],'k--')
 %ColorbarWithAxis([min(min(pupcyclePSS.meanZ)) max(max(pupcyclePSS.meanZ))],['PSS (au)'])
@@ -144,7 +157,7 @@ axis xy
 xlabel('Pupil Area (med^-^1)')
 ylabel('dp/dt')
 
-subplot(2,4,3)
+subplot(2,3,2)
 imagesc(WTPSSBehavior.PSSPupdynhist.bins{:,1,1},WTPSSBehavior.PSSPupdynhist.bins{:,2,1},...
     log10(nanmean(WTPSSBehavior.PSSPupdynhist.Pupcounts,3))'); hold on;
 colormap(gca,'jet')
@@ -154,7 +167,7 @@ xlabel('PSS (au)'); ylabel('Pupil Area (med^-^1)')
 %axis square
 axis xy
 
-subplot(2,4,7)
+subplot(2,3,5)
 imagesc(KOPSSBehavior.PSSPupdynhist.bins{:,1,1},KOPSSBehavior.PSSPupdynhist.bins{:,2,1},...
     log10(nanmean(KOPSSBehavior.PSSPupdynhist.Pupcounts,3))'); hold on;
 colormap(gca,'jet')
@@ -164,7 +177,7 @@ xlabel('PSS (au)'); ylabel('Pupil Area (med^-^1)')
 %axis square
 axis xy
 
-subplot(2,4,4)
+subplot(2,3,3)
 imagesc(WTPSSBehavior.PSSPupdynhist.bins{:,1,1},WTPSSBehavior.PSSPupdynhist.bins{:,2,1},...
     log10(nanmean(WTPSSBehavior.PSSPupdynhist.dPcounts,3))'); hold on;
 colormap(gca,'jet')
@@ -174,7 +187,7 @@ xlabel('PSS (au)'); ylabel('dPdt (med^-^1s^-^1)')
 ylim([-0.4 0.4])
 axis xy
 
-subplot(2,4,8)
+subplot(2,3,6)
 imagesc(KOPSSBehavior.PSSPupdynhist.bins{:,1,1},KOPSSBehavior.PSSPupdynhist.bins{:,2,1},...
     log10(nanmean(KOPSSBehavior.PSSPupdynhist.dPcounts,3))'); hold on;
 colormap(gca,'jet')

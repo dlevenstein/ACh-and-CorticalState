@@ -73,7 +73,7 @@ NiceSave('PupilStats',figfolder,baseName)
 
 %% FIGURE:
 figure;
-subplot(2,2,1)
+subplot(1,2,1)
 a = imagesc(WTBehavior.phasedynamics.Xbins(:,:,1),WTBehavior.phasedynamics.Ybins(:,:,1),...
     circ_mean(WTBehavior.phasedynamics.meanZ,[],3)');
 colormap(gca,'hsv')
@@ -84,7 +84,7 @@ xlabel('diameter');ylabel('dP/dt')
 axis square
 title('floxed M1M3');
 
-subplot(2,2,2)
+subplot(1,2,2)
 a = imagesc(KOBehavior.phasedynamics.Xbins(:,:,1),KOBehavior.phasedynamics.Ybins(:,:,1),...
     circ_mean(KOBehavior.phasedynamics.meanZ,[],3)');
 colormap(gca,'hsv')
@@ -95,31 +95,36 @@ xlabel('diameter');ylabel('dP/dt')
 axis square
 title('Emx1;M1M3');
 
-subplot(2,2,3);
-a = imagesc(WTBehavior.ampdynamics.Xbins(:,:,1),WTBehavior.ampdynamics.Ybins(:,:,1),...
-    nanmean(WTBehavior.ampdynamics.meanZ,3)');
-colormap(gca,'jet')
-alpha(a,double(~isnan(nanmean(WTBehavior.ampdynamics.meanZ,3)')))
-%ColorbarWithAxis([0 1.2],'power')
-caxis([0 1.2])
-axis xy
-xlabel('diameter');ylabel('dP/dt')
-axis square
-
-subplot(2,2,4);
-a = imagesc(KOBehavior.ampdynamics.Xbins(:,:,1),KOBehavior.ampdynamics.Ybins(:,:,1),...
-    nanmean(KOBehavior.ampdynamics.meanZ,3)');
-colormap(gca,'jet')
-alpha(a,double(~isnan(nanmean(KOBehavior.ampdynamics.meanZ,3)')))
-%ColorbarWithAxis([0 1.2],'power')
-caxis([0 1.2])
-axis xy
-xlabel('diameter');ylabel('dP/dt')
-axis square
+% subplot(2,2,3);
+% a = imagesc(WTBehavior.ampdynamics.Xbins(:,:,1),WTBehavior.ampdynamics.Ybins(:,:,1),...
+%     nanmean(WTBehavior.ampdynamics.meanZ,3)');
+% colormap(gca,'jet')
+% alpha(a,double(~isnan(nanmean(WTBehavior.ampdynamics.meanZ,3)')))
+% %ColorbarWithAxis([0 1.2],'power')
+% caxis([0 1.2])
+% axis xy
+% xlabel('diameter');ylabel('dP/dt')
+% axis square
+% 
+% subplot(2,2,4);
+% a = imagesc(KOBehavior.ampdynamics.Xbins(:,:,1),KOBehavior.ampdynamics.Ybins(:,:,1),...
+%     nanmean(KOBehavior.ampdynamics.meanZ,3)');
+% colormap(gca,'jet')
+% alpha(a,double(~isnan(nanmean(KOBehavior.ampdynamics.meanZ,3)')))
+% %ColorbarWithAxis([0 1.2],'power')
+% caxis([0 1.2])
+% axis xy
+% xlabel('diameter');ylabel('dP/dt')
+% axis square
 
 NiceSave('Pupil_PupSpace1',figfolder,baseName)
 
 %% FIGURE:
+cmin = min([min(min(nanmean(WTBehavior.areadynamics.meanZ,3)))...
+    min(min(nanmean(KOBehavior.areadynamics.meanZ,3)))]);
+cmax = max([max(max(nanmean(WTBehavior.areadynamics.meanZ,3)))...
+    max(max(nanmean(KOBehavior.areadynamics.meanZ,3)))]);
+
 figure;
 subplot(2,2,1);
 a = imagesc([WTBehavior.areadynamics.Xbins(:,:,1) WTBehavior.areadynamics.Xbins(:,:,1)+2*pi],...
@@ -129,8 +134,8 @@ colormap(gca,'jet')
 alpha(a,double(~isnan([nanmean(WTBehavior.areadynamics.meanZ,3);...
     nanmean(WTBehavior.areadynamics.meanZ,3)]')))
 %ColorbarWithAxis([min(min(areadynamics.meanZ)) max(max(areadynamics.meanZ))],'pupil area (au)')
-caxis([min(min(nanmean(KOBehavior.areadynamics.meanZ,3))) max(max(nanmean(KOBehavior.areadynamics.meanZ,3)))])
-ylim([-3 1]);
+caxis([cmin cmax/2])
+ylim([-1.5 0]);
 xlabel('Phase');ylabel('Amplitude')
 axis xy
 
@@ -142,10 +147,15 @@ colormap(gca,'jet')
 alpha(a,double(~isnan([nanmean(KOBehavior.areadynamics.meanZ,3);...
     nanmean(KOBehavior.areadynamics.meanZ,3)]')))
 %ColorbarWithAxis([min(min(areadynamics.meanZ)) max(max(areadynamics.meanZ))],'pupil area (au)')
-caxis([min(min(nanmean(KOBehavior.areadynamics.meanZ,3))) max(max(nanmean(KOBehavior.areadynamics.meanZ,3)))])
-ylim([-3 1]);
+caxis([cmin cmax/2])
+ylim([-1.5 0]);
 xlabel('Phase');ylabel('Amplitude')
 axis xy
+
+cmin = min([min(min(nanmean(WTBehavior.dpdtdynamics.meanZ,3)))...
+    min(min(nanmean(KOBehavior.dpdtdynamics.meanZ,3)))]);
+cmax = max([max(max(nanmean(WTBehavior.dpdtdynamics.meanZ,3)))...
+    max(max(nanmean(KOBehavior.dpdtdynamics.meanZ,3)))]);
 
 subplot(2,2,3);
 a = imagesc([WTBehavior.dpdtdynamics.Xbins(:,:,1) WTBehavior.dpdtdynamics.Xbins(:,:,1)+2*pi],...
@@ -155,8 +165,8 @@ colormap(gca,'jet')
 alpha(a,double(~isnan([nanmean(WTBehavior.dpdtdynamics.meanZ,3);...
     nanmean(WTBehavior.dpdtdynamics.meanZ,3)]')))
 %ColorbarWithAxis([min(min(dpdtdynamics.meanZ)) max(max(dpdtdynamics.meanZ))],'pupil area (au)')
-caxis([min(min(nanmean(WTBehavior.dpdtdynamics.meanZ,3))) max(max(nanmean(WTBehavior.dpdtdynamics.meanZ,3)))])
-ylim([-3 1]);
+caxis([cmin/2 cmax])
+ylim([-1.5 0]);
 xlabel('Phase');ylabel('Amplitude')
 axis xy
 
@@ -168,8 +178,8 @@ colormap(gca,'jet')
 alpha(a,double(~isnan([nanmean(KOBehavior.dpdtdynamics.meanZ,3);...
     nanmean(KOBehavior.dpdtdynamics.meanZ,3)]')))
 %ColorbarWithAxis([min(min(dpdtdynamics.meanZ)) max(max(dpdtdynamics.meanZ))],'pupil area (au)')
-caxis([min(min(nanmean(KOBehavior.dpdtdynamics.meanZ,3))) max(max(nanmean(KOBehavior.dpdtdynamics.meanZ,3)))])
-ylim([-3 1]);
+caxis([cmin/2 cmax])
+ylim([-1.5 0]);
 xlabel('Phase');ylabel('Amplitude')
 axis xy
 
@@ -262,9 +272,11 @@ LogScale('y',10); axis xy
 caxis([cmin cmax/1.5]);
 xlabel('Pupil diameter (med norm.)'); ylabel('EMG');
 
+temp = nanmean(WTBehavior.pupildynamicsEMG.meanZ,3);
+temp(nanmean(WTBehavior.pupildynamicsEMG.N,3)<2) = NaN;
 subplot(2,3,2);
 imagesc(WTBehavior.pupildynamicsEMG.Xbins(:,:,1),WTBehavior.pupildynamicsEMG.Ybins(:,:,1),...
-    nanmean(WTBehavior.pupildynamicsEMG.meanZ,3)');
+    temp');
 colormap(gca,[1 1 1; colormap('jet')])
 axis xy
 xlim([-0.5 0.5]);ylim([-0.5 0.5])
@@ -276,9 +288,11 @@ hold on
 %LogScale('c',10)
 plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color','k')
 
+temp = nanmean(KOBehavior.pupildynamicsEMG.meanZ,3);
+temp(nanmean(KOBehavior.pupildynamicsEMG.N,3)<2) = NaN;
 subplot(2,3,5);
 imagesc(KOBehavior.pupildynamicsEMG.Xbins(:,:,1),KOBehavior.pupildynamicsEMG.Ybins(:,:,1),...
-    nanmean(KOBehavior.pupildynamicsEMG.meanZ,3)');
+    temp');
 colormap(gca,[1 1 1; colormap('jet')])
 axis xy
 xlim([-0.5 0.5]);ylim([-0.5 0.5])
@@ -290,9 +304,11 @@ hold on
 %LogScale('c',10)
 plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color','k')
 
+temp = nanmean(WTBehavior.pupildynamicsEMG.pWhisk,3);
+temp(nanmean(WTBehavior.pupildynamicsEMG.N,3)<2) = NaN;
 subplot(2,3,3);
 imagesc(WTBehavior.pupildynamicsEMG.Xbins(:,:,1),WTBehavior.pupildynamicsEMG.Ybins(:,:,1),...
-    nanmean(WTBehavior.pupildynamicsEMG.pWhisk,3)');
+    temp');
 colormap(gca,[1 1 1; colormap('jet')])
 axis xy
 xlim([-0.5 0.5]);ylim([-0.5 0.5])
@@ -303,9 +319,11 @@ title('p(Whisking)')
 hold on
 plot(get(gca,'xlim'),[0 0],'--','linewidth',0.5,'color','k')
 
+temp = nanmean(KOBehavior.pupildynamicsEMG.pWhisk,3);
+temp(nanmean(KOBehavior.pupildynamicsEMG.N,3)<2) = NaN;
 subplot(2,3,6);
 imagesc(KOBehavior.pupildynamicsEMG.Xbins(:,:,1),KOBehavior.pupildynamicsEMG.Ybins(:,:,1),...
-    nanmean(KOBehavior.pupildynamicsEMG.pWhisk,3)');
+    temp');
 colormap(gca,[1 1 1; colormap('jet')])
 axis xy
 xlim([-0.5 0.5]);ylim([-0.5 0.5])
@@ -364,10 +382,10 @@ alpha(a,double(~isnan([WTpupilphaseEMG.meanWhdur; WTpupilphaseEMG.meanWhdur]')))
 %ColorbarWithAxis(log10([min(min(pupilphaseEMG.meanWhdur)) max(max(pupilphaseEMG.meanWhdur))]),'EMG Envelope')
 ylim([-1.5 0]);  xlim([-pi 3*pi])
 caxis([cmin cmax])
-LogScale('c',10)
 xlabel('Phase');ylabel('Amplitude')
 colorbar
 axis xy
+LogScale('c',10)
 title('Whisk duration (s)')
 
 subplot(2,2,3);
@@ -382,6 +400,7 @@ LogScale('c',10)
 xlabel('Phase');ylabel('Amplitude')
 colorbar
 axis xy
+LogScale('c',10)
 title('Whisk duration (s)')
 
 cmin = min([min(min(log10(WTpupilphaseEMG.Whstartrate)))...
@@ -396,11 +415,11 @@ colormap(gca,'jet')
 alpha(a,double(~isnan([WTpupilphaseEMG.Whstartrate; WTpupilphaseEMG.Whstartrate]')))
 %ColorbarWithAxis(log10([min(min(pupilphaseEMG.Whstartrate)) max(max(pupilphaseEMG.Whstartrate))]),'EMG Envelope')
 ylim([-1.5 0]); xlim([-pi 3*pi])
-LogScale('c',10)
-caxis([cmin cmax/2])
 xlabel('Phase');ylabel('Amplitude')
 colorbar
 axis xy
+caxis([cmin 1.5])
+LogScale('c',10)
 title('Whisk start rate')
 
 subplot(2,2,4);
@@ -410,11 +429,11 @@ colormap(gca,'jet')
 alpha(a,double(~isnan([KOpupilphaseEMG.Whstartrate; KOpupilphaseEMG.Whstartrate]')))
 %ColorbarWithAxis(log10([min(min(pupilphaseEMG.Whstartrate)) max(max(pupilphaseEMG.Whstartrate))]),'EMG Envelope')
 ylim([-1.5 0]); xlim([-pi 3*pi])
-LogScale('c',10)
-caxis([cmin cmax/2])
 xlabel('Phase');ylabel('Amplitude')
 colorbar
 axis xy
+caxis([cmin 1.5])
+LogScale('c',10)
 title('Whisk start rate')
 
 NiceSave('EMG_PupSpace2',figfolder,baseName);
@@ -434,7 +453,7 @@ colormap(gca,'jet')
 alpha(a,double(~isnan([nanmean(WTBehavior.pupilphaseEMG.meanZ,3); nanmean(WTBehavior.pupilphaseEMG.meanZ,3)]')))
 colorbar
 %ColorbarWithAxis([min(min(pupilphaseEMG.meanZ)) max(max(pupilphaseEMG.meanZ))],'EMG')
-%caxis([min(min(pupilphaseEMG.meanZ)) max(max(pupilphaseEMG.meanZ))])
+caxis([cmin cmax])
 ylim([-1.5 0]);
 xlabel('Phase');ylabel('Amplitude')
 title('EMG')
@@ -448,7 +467,7 @@ colormap(gca,'jet')
 alpha(a,double(~isnan([nanmean(KOBehavior.pupilphaseEMG.meanZ,3); nanmean(KOBehavior.pupilphaseEMG.meanZ,3)]')))
 colorbar
 %ColorbarWithAxis([min(min(pupilphaseEMG.meanZ)) max(max(pupilphaseEMG.meanZ))],'EMG')
-%caxis([min(min(pupilphaseEMG.meanZ)) max(max(pupilphaseEMG.meanZ))])
+caxis([cmin cmax])
 ylim([-1.5 0]);
 xlabel('Phase');ylabel('Amplitude')
 title('EMG')
