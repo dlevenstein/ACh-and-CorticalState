@@ -213,9 +213,8 @@ PSS.amp = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
 
 PSS.pupthresh = nanmedian(PSS.pupil); 
 
-[ ~,~,~,~,~, binsig,threshsig] = PhaseAmpCouplingByAmp2(PSS.pupphase,PSS.amp,...
-PSS.EMG,'showFig',true,'AmpBounds',[-1.25 -0.25],...
-'shufflesig',true,'AmpZNorm',false,'numAmpbins',10);
+[amp1bins,phasebins,sig2powerskew,sig2prefangle,phaseamphist,binsig,threshsig] = PhaseAmpCouplingByAmp2(PSS.pupphase,...
+    PSS.amp,PSS.EMG,'showFig',true,'AmpBounds',[-1.25 -0.25],'shufflesig',true,'AmpZNorm',false,'numAmpbins',10);
 
 %the two posible thresholds
 %binsig.sigthresh   %more sensitive to spurious significant bins
@@ -224,6 +223,15 @@ PSS.EMG,'showFig',true,'AmpBounds',[-1.25 -0.25],...
 PSS.pupthresh = binsig.sigthresh;
 %PSS.pupthresh = threshsig.sigthresh;
 PSS.highpup = PSS.amp>PSS.pupthresh; 
+
+% Saving to struct
+PSSBehavior.amp1bins = amp1bins;
+PSSBehavior.phasebins = phasebins;
+PSSBehavior.sig2powerskew = sig2powerskew;
+PSSBehavior.sig2prefangle = sig2prefangle;
+PSSBehavior.phaseamphist = phaseamphist;
+PSSBehavior.binsig = binsig;
+PSSBehavior.threshsig = threshsig;
 
 %% PSS-Pupil phase and dPdt codist
 % numbins = 15;

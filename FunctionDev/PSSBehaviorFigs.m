@@ -7,14 +7,14 @@ if (~exist(figfolder,'dir'))
     mkdir(figfolder)
 end
 
-load(fullfile(basePath,['WT_EM1M3.PSSBehaviorAnalysis2.mat']));
+load(fullfile(basePath,['WT_EM1M3.PSSBehaviorAnalysis3.mat']));
 WTPSSBehavior = groupPSSBehavior;
 WTpupsorts = pupsorts;
 WTpuplockedPSS = puplockedPSS;
 WTwhisksorts = whisksorts;
 WTtimelockedPSS = timelockedPSS;
 
-load(fullfile(basePath,['KO_EM1M3.PSSBehaviorAnalysis2.mat']));
+load(fullfile(basePath,['KO_EM1M3.PSSBehaviorAnalysis3.mat']));
 KOPSSBehavior = groupPSSBehavior;
 KOpupsorts = pupsorts;
 KOpuplockedPSS = puplockedPSS;
@@ -373,7 +373,7 @@ imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1},WTPSSBehavior.pupilPSSdist.bins{:
 hold on
 imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
     nanmean(WTPSSBehavior.pupilPSSdist.conditional_low,3)')
-plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+plot(cosx,0.2.*cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 caxis([cmin cmax]);
@@ -386,7 +386,7 @@ imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1},KOPSSBehavior.pupilPSSdist.bins{:
 hold on
 imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
     nanmean(KOPSSBehavior.pupilPSSdist.conditional_low,3)')
-plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+plot(cosx,0.2.*cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 caxis([cmin cmax]);
@@ -439,7 +439,7 @@ imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1},WTPSSBehavior.pupilPSSdist.bins{:
 hold on
 imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
     nanmean(WTPSSBehavior.pupilPSSdist.conditional_loww,3)')
-plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+plot(cosx,0.2.*cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 caxis([cmin cmax]);
@@ -452,7 +452,7 @@ imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1},KOPSSBehavior.pupilPSSdist.bins{:
 hold on
 imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
     nanmean(KOPSSBehavior.pupilPSSdist.conditional_loww,3)')
-plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+plot(cosx,0.2.*cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 caxis([cmin cmax]);
@@ -501,7 +501,7 @@ imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1},WTPSSBehavior.pupilPSSdist.bins{:
 hold on
 imagesc(WTPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,WTPSSBehavior.pupilPSSdist.bins{:,2,1},...
     nanmean(WTPSSBehavior.pupilPSSdist.conditional_lownow,3)')
-plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+plot(cosx,0.2.*cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 caxis([cmin cmax]);
@@ -514,7 +514,7 @@ imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1},KOPSSBehavior.pupilPSSdist.bins{:
 hold on
 imagesc(KOPSSBehavior.pupilPSSdist.bins{:,1,1}+2*pi,KOPSSBehavior.pupilPSSdist.bins{:,2,1},...
     nanmean(KOPSSBehavior.pupilPSSdist.conditional_lownow,3)')
-plot(cosx,cos(cosx)./3-3.6,'w','linewidth',2)
+plot(cosx,0.2.*cos(cosx)./3-3.6,'w','linewidth',2)
 xlim([-pi 3*pi])
 axis xy
 caxis([cmin cmax]);
@@ -524,11 +524,11 @@ title('<median pupil, no whisky');
 NiceSave('PSSbyPupilPhase_Whisksep',figfolder,baseName)
 
 %%
-load(fullfile(basePath,['WT_EM1M3.BehaviorAnalysis2.mat']));
-WTthresh = nanmean(groupBehaviorInts.whthresh);
-
-load(fullfile(basePath,['KO_EM1M3.BehaviorAnalysis2.mat']));
-KOthresh = nanmean(groupBehaviorInts.whthresh);
+% load(fullfile(basePath,['WT_EM1M3.BehaviorAnalysis2.mat']));
+% WTthresh = nanmean(groupBehaviorInts.whthresh);
+% 
+% load(fullfile(basePath,['KO_EM1M3.BehaviorAnalysis2.mat']));
+% KOthresh = nanmean(groupBehaviorInts.whthresh);
 
 %% FIGURE:
 cosx = linspace(-pi,3*pi,100);
@@ -597,6 +597,75 @@ xlabel('Pupil phase');ylabel('EMG')
 title('P(EMG|phase)')
 
 NiceSave('EMGbyPupilPhase',figfolder,baseName)
+
+%% FIGURE:
+
+cosx = linspace(-pi,3*pi,100);
+
+cmin = min([min(min(nanmean(WTPSSBehavior.pupilEMGdist.conditional_high,3)))...
+    min(min(nanmean(KOPSSBehavior.pupilEMGdist.conditional_high,3)))]);
+cmax = max([max(max(nanmean(WTPSSBehavior.pupilEMGdist.conditional_high,3)))...
+    max(max(nanmean(KOPSSBehavior.pupilEMGdist.conditional_high,3)))]);
+
+figure;
+subplot(2,2,1);
+imagesc(WTPSSBehavior.pupilEMGdist.bins{:,1,1},WTPSSBehavior.pupilEMGdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilEMGdist.conditional_high,3)')
+hold on
+imagesc(WTPSSBehavior.pupilEMGdist.bins{:,1,1}+2*pi,WTPSSBehavior.pupilEMGdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilEMGdist.conditional_high,3)')
+plot(cosx,cos(cosx)./3-1.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('EMG')
+title('sig pupil amp');
+
+subplot(2,2,3);
+imagesc(KOPSSBehavior.pupilEMGdist.bins{:,1,1},KOPSSBehavior.pupilEMGdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilEMGdist.conditional_high,3)')
+hold on
+imagesc(KOPSSBehavior.pupilEMGdist.bins{:,1,1}+2*pi,KOPSSBehavior.pupilEMGdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilEMGdist.conditional_high,3)')
+plot(cosx,cos(cosx)./3-1.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('EMG')
+title('sig pupil amp');
+
+cmin = min([min(min(nanmean(WTPSSBehavior.pupilEMGdist.conditional_low,3)))...
+    min(min(nanmean(KOPSSBehavior.pupilEMGdist.conditional_low,3)))]);
+cmax = max([max(max(nanmean(WTPSSBehavior.pupilEMGdist.conditional_low,3)))...
+    max(max(nanmean(KOPSSBehavior.pupilEMGdist.conditional_low,3)))]);
+
+subplot(2,2,2);
+imagesc(WTPSSBehavior.pupilEMGdist.bins{:,1,1},WTPSSBehavior.pupilEMGdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilEMGdist.conditional_low,3)')
+hold on
+imagesc(WTPSSBehavior.pupilEMGdist.bins{:,1,1}+2*pi,WTPSSBehavior.pupilEMGdist.bins{:,2,1},...
+    nanmean(WTPSSBehavior.pupilEMGdist.conditional_low,3)')
+plot(cosx,0.2.*cos(cosx)./3-1.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('EMG')
+title('ns pupil amp');
+
+subplot(2,2,4);
+imagesc(KOPSSBehavior.pupilEMGdist.bins{:,1,1},KOPSSBehavior.pupilEMGdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilEMGdist.conditional_low,3)')
+hold on
+imagesc(KOPSSBehavior.pupilEMGdist.bins{:,1,1}+2*pi,KOPSSBehavior.pupilEMGdist.bins{:,2,1},...
+    nanmean(KOPSSBehavior.pupilEMGdist.conditional_low,3)')
+plot(cosx,0.2.*cos(cosx)./3-1.6,'w','linewidth',2)
+xlim([-pi 3*pi])
+axis xy
+caxis([cmin cmax]);
+xlabel('Pupil phase');ylabel('EMG')
+title('ns pupil amp');
+
+NiceSave('EMGbyPupilPhase_lohi',figfolder,baseName)
 
 %% FIGURE:
 cmin = min([min(min(nanmean(WTPSSBehavior.PSSEMGdist.joint,3)))...
@@ -786,7 +855,7 @@ imagesc(WTPSSBehavior.phasePETH.low.bincenters(:,:,1),WTPSSBehavior.phasePETH.lo
     nanmean(WTPSSBehavior.phasePETH.low.mean,3)'); hold on
 imagesc(WTPSSBehavior.phasePETH.low.bincenters(:,:,1),WTPSSBehavior.phasePETH.low.bincenters(:,:,1)+2*pi,...
     nanmean(WTPSSBehavior.phasePETH.low.mean,3)')
-plot(cos(cosx),cosx,'w','linewidth',2)
+plot(0.2.*cos(cosx),cosx,'w','linewidth',2)
 plot([0 0],[-pi 3*pi],'r')
 colorbar
 axis xy
@@ -800,7 +869,7 @@ imagesc(KOPSSBehavior.phasePETH.low.bincenters(:,:,1),KOPSSBehavior.phasePETH.lo
     nanmean(KOPSSBehavior.phasePETH.low.mean,3)'); hold on
 imagesc(KOPSSBehavior.phasePETH.low.bincenters(:,:,1),KOPSSBehavior.phasePETH.low.bincenters(:,:,1)+2*pi,...
     nanmean(KOPSSBehavior.phasePETH.low.mean,3)')
-plot(cos(cosx),cosx,'w','linewidth',2)
+plot(0.2.*cos(cosx),cosx,'w','linewidth',2)
 plot([0 0],[-pi 3*pi],'r')
 colorbar
 axis xy
