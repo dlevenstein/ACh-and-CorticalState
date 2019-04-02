@@ -429,6 +429,7 @@ title('P(Pupil amp|phase)')
 NiceSave('PSS_PhasePow',figfolder,baseName)
 
 %% Pupil phase-PSS codistribution
+%Can replace with ConditionalHist here
 pupilPSSdist.edges = {linspace(-pi,pi,40),linspace(-4,0,50)};
 [pupilPSSdist.counts,pupilPSSdist.bins] = hist3([PSS.pupphase,PSS.data],...
     'Edges',pupilPSSdist.edges);
