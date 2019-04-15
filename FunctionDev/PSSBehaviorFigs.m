@@ -22,6 +22,97 @@ KOwhisksorts = whisksorts;
 KOtimelockedPSS = timelockedPSS;
 
 %% FIGURE:
+rwbcolormap = makeColorMap([0 0 0.8],[1 1 1],[0.8 0 0]);
+plotx = linspace(-pi,3*pi,100);
+AmpBounds = [-1.25 -0.25];
+
+figure;
+subplot(2,2,1)
+hold on
+imagesc(WTPSSBehavior.phasebins(:,:,1),WTPSSBehavior.amp1bins(:,:,1),...
+    nanmean(WTPSSBehavior.phaseamphist,3));
+imagesc(WTPSSBehavior.phasebins(:,:,1)+2*pi,WTPSSBehavior.amp1bins(:,:,1),...
+    nanmean(WTPSSBehavior.phaseamphist,3))
+plot(circ_mean(WTPSSBehavior.sig2prefangle,[],3),WTPSSBehavior.amp1bins(:,:,1),'.k')
+plot(circ_mean(WTPSSBehavior.sig2prefangle,[],3)+2*pi,WTPSSBehavior.amp1bins(:,:,1),'.k')
+plot(plotx,bz_NormToRange(cos(plotx),AmpBounds),'k')
+colormap(gca,rwbcolormap)
+axis xy
+axis tight
+ColorbarWithAxis([-1 1],['Mean Amp.'])
+%caxis([0 2])
+%  xlim([-pi 3*pi]);ylim(amp1bins([1 end]))
+xlabel('Signal 1 Phase');ylabel('Signal 1 Amp (Z)')
+
+subplot(2,2,2)
+shadederror(WTPSSBehavior.amp1bins(:,:,1),...
+    nanmean(WTPSSBehavior.sig2powerskew,3),...
+    nanstd(WTPSSBehavior.sig2powerskew,0,3),'k','none',1,'k');
+hold on;box off
+shadederror(WTPSSBehavior.amp1bins(:,:,1),...
+    nanmean(WTPSSBehavior.binsig.perc_bin,3)',...
+    nanstd(WTPSSBehavior.binsig.perc_bin,0,3)','r','none',1,'r');
+plot([nanmean(WTPSSBehavior.binsig.sigthresh,3) nanmean(WTPSSBehavior.binsig.sigthresh,3)],...
+    [0 2],'k');
+plot([nanmean(WTPSSBehavior.binsig.sigthresh,3)-nanstd(WTPSSBehavior.binsig.sigthresh,0,3)...
+    nanmean(WTPSSBehavior.binsig.sigthresh,3)-nanstd(WTPSSBehavior.binsig.sigthresh,0,3)],...
+    [0 2],'k--');
+plot([nanmean(WTPSSBehavior.binsig.sigthresh,3)+nanstd(WTPSSBehavior.binsig.sigthresh,0,3)...
+    nanmean(WTPSSBehavior.binsig.sigthresh,3)+nanstd(WTPSSBehavior.binsig.sigthresh,0,3)],...
+    [0 2],'k--');
+xlabel('Signal 1 Amp. (Z)');
+ylabel('Phase-Amp. Modulation (mrl)')
+axis tight
+ylim([0 2]); xlim(AmpBounds);
+title('binned above/below');
+
+subplot(2,2,3)
+shadederror(WTPSSBehavior.amp1bins(:,:,1),...
+    nanmean(WTPSSBehavior.threshsig.coupling_above,3)',...
+    nanstd(WTPSSBehavior.threshsig.coupling_above,0,3)','k','none',1,'k');
+hold on;box off
+shadederror(WTPSSBehavior.amp1bins(:,:,1),...
+    nanmean(WTPSSBehavior.threshsig.perc_above,3)',...
+    nanstd(WTPSSBehavior.threshsig.perc_above,0,3)','r','none',1,'r');
+plot([nanmean(WTPSSBehavior.threshsig.sigthresh,3) nanmean(WTPSSBehavior.threshsig.sigthresh,3)],...
+    [0 2],'k');
+plot([nanmean(WTPSSBehavior.threshsig.sigthresh,3)-nanstd(WTPSSBehavior.threshsig.sigthresh,0,3)...
+    nanmean(WTPSSBehavior.threshsig.sigthresh,3)-nanstd(WTPSSBehavior.threshsig.sigthresh,0,3)],...
+    [0 2],'k--');
+plot([nanmean(WTPSSBehavior.threshsig.sigthresh,3)+nanstd(WTPSSBehavior.threshsig.sigthresh,0,3)...
+    nanmean(WTPSSBehavior.threshsig.sigthresh,3)+nanstd(WTPSSBehavior.threshsig.sigthresh,0,3)],...
+    [0 2],'k--');
+xlabel('Signal 1 Amp. (Z)');
+ylabel('Phase-Amp. Modulation (mrl)')
+axis tight
+ylim([0 2]); xlim(AmpBounds);
+title('thresh above');
+
+subplot(2,2,4);
+shadederror(WTPSSBehavior.amp1bins(:,:,1),...
+    nanmean(WTPSSBehavior.threshsig.coupling_below,3)',...
+    nanstd(WTPSSBehavior.threshsig.coupling_below,0,3)','k','none',1,'k');
+hold on;box off
+shadederror(WTPSSBehavior.amp1bins(:,:,1),...
+    nanmean(WTPSSBehavior.threshsig.perc_below,3)',...
+    nanstd(WTPSSBehavior.threshsig.perc_below,0,3)','r','none',1,'r');
+plot([nanmean(WTPSSBehavior.threshsig.sigthresh,3) nanmean(WTPSSBehavior.threshsig.sigthresh,3)],...
+    [0 2],'k');
+plot([nanmean(WTPSSBehavior.threshsig.sigthresh,3)-nanstd(WTPSSBehavior.threshsig.sigthresh,0,3)...
+    nanmean(WTPSSBehavior.threshsig.sigthresh,3)-nanstd(WTPSSBehavior.threshsig.sigthresh,0,3)],...
+    [0 2],'k--');
+plot([nanmean(WTPSSBehavior.threshsig.sigthresh,3)+nanstd(WTPSSBehavior.threshsig.sigthresh,0,3)...
+    nanmean(WTPSSBehavior.threshsig.sigthresh,3)+nanstd(WTPSSBehavior.threshsig.sigthresh,0,3)],...
+    [0 2],'k--');
+xlabel('Signal 1 Amp. (Z)');
+ylabel('Phase-Amp. Modulation (mrl)')
+axis tight
+ylim([0 2]); xlim(AmpBounds);
+title('thresh below');
+
+NiceSave('PhaseAmpCoupling',figfolder,baseName)
+
+%% FIGURE:
 upcolor = [1 1 1;makeColorMap([1 1 1],[0.8 0 0])];
 downcolor = [1 1 1;makeColorMap([1 1 1],[0 0 0.8])];
 

@@ -220,7 +220,8 @@ PSS.pupthresh = nanmedian(PSS.pupil);
 %binsig.sigthresh   %more sensitive to spurious significant bins
 %threshsig.sigthresh  %more conservataive
 
-PSS.pupthresh = binsig.sigthresh;
+PSS.pupthresh = -0.8;
+%PSS.pupthresh = binsig.sigthresh;
 %PSS.pupthresh = threshsig.sigthresh;
 PSS.highpup = PSS.amp>PSS.pupthresh; 
 
