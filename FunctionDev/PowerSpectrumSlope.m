@@ -12,7 +12,7 @@ if (~exist(figfolder,'dir'))
     mkdir(figfolder)
 end
 
-savefile = fullfile(basePath,[baseName,'.PowerSpectrumSlope.mat']);
+savefile = fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']);
 
 %% Loading behavior...
 % Pupil diameter
