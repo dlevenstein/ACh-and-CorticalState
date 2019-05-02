@@ -211,7 +211,7 @@ PSS.pupphase = interp1(lowpupildata.timestamps,lowpupildata.phase,...
 PSS.amp = interp1(lowpupildata.timestamps,log10(lowpupildata.amp),...
     PSS.timestamps,'nearest');
 
-PSS.pupthresh = nanmedian(PSS.pupil); 
+%PSS.pupthresh = nanmedian(PSS.pupil); 
 
 [amp1bins,phasebins,sig2powerskew,sig2prefangle,phaseamphist,binsig,threshsig] = PhaseAmpCouplingByAmp2(PSS.pupphase,...
     PSS.amp,PSS.EMG,'showFig',true,'AmpBounds',[-1.25 -0.25],'shufflesig',true,'AmpZNorm',false,'numAmpbins',10);
@@ -220,7 +220,7 @@ PSS.pupthresh = nanmedian(PSS.pupil);
 %binsig.sigthresh   %more sensitive to spurious significant bins
 %threshsig.sigthresh  %more conservataive
 
-PSS.pupthresh = -0.7;
+PSS.pupthresh = -0.8;
 %PSS.pupthresh = binsig.sigthresh;
 %PSS.pupthresh = threshsig.sigthresh;
 PSS.highpup = PSS.amp>PSS.pupthresh; 
