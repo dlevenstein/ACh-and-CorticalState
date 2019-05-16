@@ -1,15 +1,15 @@
-function [  ] = UPDOWNDurationAnalysis(basePath,figfolder)
+function [PSShist,ConditionalUPDOWN,ReturnHist  ] = UPDOWNDurationAnalysis(basePath,figfolder)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %%
 %basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
 %basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
-%basePath = '/Users/dlevenstein/Desktop/171206_WT_EM1M3';
-basePath = '/Users/dlevenstein/Desktop/180704_KO_EM1M3';
+basePath = '/Users/dlevenstein/Desktop/171206_WT_EM1M3';
+%basePath = '/Users/dlevenstein/Desktop/180704_KO_EM1M3';
 %basePath = pwd;
-figfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNDurationAnalysis';
+%figfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNDurationAnalysis';
 %figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNandPupilAnalysis';
-
+figfolder = fullfile(basePath,'AnalysisFigures');
 %%
 baseName = bz_BasenameFromBasepath(basePath);
 recparms = bz_getSessionInfo(basePath,'noPrompts',true);
@@ -237,6 +237,8 @@ for uu = 1:2; for ww = 1:2;
     axis xy; box off;axis tight
    % xlim([-1.5 1])
     LogScale('y',10)
+    colorbar
+    caxis([0 0.125])
     if uu==2
     xlabel('PSS')
     else
@@ -268,6 +270,7 @@ for uu = 1:2; for ww = 1:2; for pp=1:2;
     if uu==2
     xlabel('PSS')
     end
+NiceSave('UDbyPSS_hilopup',figfolder,baseName)
        
 end;end;end
 
@@ -357,8 +360,8 @@ NiceSave('UDbyPupilCycle',figfolder,baseName)
 figure
 for uu = 1:2
     subplot(2,2,uu)
-        plot(log10(SlowWaves.durs.(UPDOWN{uu})(SlowWaves.nwh_doubles.(UPDOWN{uu}))),...
-            log10(SlowWaves.durs_np1.(UPDOWN{uu})(SlowWaves.nwh_doubles.(UPDOWN{uu}))),...
+        plot(log10(SlowWaves.durs.(UPDOWN{uu})(SlowWaves.doubles.nwh.(UPDOWN{uu}))),...
+            log10(SlowWaves.durs_np1.(UPDOWN{uu})(SlowWaves.doubles.nwh.(UPDOWN{uu}))),...
             '.','color',UDcolor{uu})
         
         xlim([-2 1.5]);ylim([-2 1.5])
