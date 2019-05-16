@@ -4,12 +4,12 @@ function [PSShist,ConditionalUPDOWN,ReturnHist  ] = UPDOWNDurationAnalysis(baseP
 %%
 %basePath = '/mnt/proraidDL/Database/WMProbeData/180213_WT_M1M3_LFP_Layers_Pupil_EMG_Pole/180213_WT_M1M3_LFP_Layers_Pupil_EMG_180213_113045';
 %basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
-basePath = '/Users/dlevenstein/Desktop/171206_WT_EM1M3';
+%basePath = '/Users/dlevenstein/Desktop/171206_WT_EM1M3';
 %basePath = '/Users/dlevenstein/Desktop/180704_KO_EM1M3';
 %basePath = pwd;
 %figfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNDurationAnalysis';
 %figfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/UPDOWNandPupilAnalysis';
-figfolder = fullfile(basePath,'AnalysisFigures');
+%figfolder = fullfile(basePath,'AnalysisFigures');
 %%
 baseName = bz_BasenameFromBasepath(basePath);
 recparms = bz_getSessionInfo(basePath,'noPrompts',true);
