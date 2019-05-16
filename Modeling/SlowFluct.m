@@ -1,3 +1,7 @@
+
+figfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/Modeling/ModelingFigs';
+
+
 %% Load I Bif'n
 
 addpath('/Users/dlevenstein/Dropbox/Research/Current Projects/SlowOscillation/Modeling/simresults');
@@ -22,14 +26,14 @@ simtime = 50000;
 dt = 1;
 
 parms.N_neurons = 1;
-parms.I_in = -1.7;
+parms.I_in = -1.65;
 parms.W = 5;
 parms.beta = 1;
 parms.tau_r = 1;
 parms.tau_a = 25;
 parms.A0 = 0.5;
 parms.Ak = 15;
-parms.noiseamp = [0.05 0.1];
+parms.noiseamp = [0.1 0.1];
 parms.noisefreq = [1 0.005];
 [ T, Y_sol,Inoise,Ipulse ] = WCadapt_run(simtime,dt,parms);
 
@@ -93,3 +97,5 @@ figure
             bar(bins,counts,'FaceColor',UDcolor{uu})
         end
         LogScale('x',10)
+        
+        NiceSave('SlowFluct',figfolder,'WCadapt')
