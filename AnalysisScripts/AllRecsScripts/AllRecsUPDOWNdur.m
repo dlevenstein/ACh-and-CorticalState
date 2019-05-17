@@ -62,7 +62,9 @@ for gi=1:length(groups{ff})
         plot(cosx,(cos(cosx)+1).*cospamp(pp)-1.5,'k')
         LogScale('y',10)
          xlim([-pi 3*pi])
-         caxis([0 0.15])
+         %colorbar
+         
+         caxis([0 0.08])
          if uu==2
             %xlabel('Pup Phase')
          end
@@ -142,7 +144,7 @@ for gi=1:length(groups{ff})
    % xlim([-1.5 1])
     LogScale('y',10)
     %colorbar
-    caxis([0 0.125])
+    caxis([0 0.1])
     if uu==2 & ww == 2
         xlabel('PSS')
     end
@@ -178,7 +180,7 @@ for gi=1:length(groups{ff})
     axis xy
    % xlim([-1.5 1])
     LogScale('y',10)
-    caxis([0 0.125])
+    caxis([0 0.08])
     if uu==2 & ww == 2
         xlabel('Pupil (log)')
     end
