@@ -159,7 +159,7 @@ end
 
 %% Histograms
 
-durrange = [-1.5 1.3]; %range for UP/DOWN durations - log
+durrange = [-1.5 1.5]; %range for UP/DOWN durations - log
 
 for uu = 1:2
     for ww = 1:2
