@@ -7,10 +7,65 @@ UPDOWNDur = bz_CollapseStruct(UPDOWNDurAll);
 
 %%
 animalname = extractBefore(UPDOWNDur.name, '_');
-genotype = extractBetween(UPDOWNDur.name,'_','_');
-genotype = genotype(:,:,1);
+genotype = extractBetween(UPDOWNDur.name,'_','.');
+%genotype = extractBetween(UPDOWNDur.name,'_','_');
+%genotype = genotype(:,:,1);
+WTKOtype = extractBefore(genotype,'_');
+KOtype = extractAfter(genotype,'_');
 [genotypes,~,genotypeidx] = unique(genotype);
 %genotypes = char(genotypes);
+genotypes{7} = 'AllWT';
+KOgeneotypes = find(strncmpi(genotypes,'KO',2));
+KOgeneotypes = [7,KOgeneotypes]; %add allWT to KO comparison
+%%
+for gg = 1:6
+    ConditionalUPDOWN.(genotypes{gg}) = bz_CollapseStruct(UPDOWNDur.ConditionalUPDOWN(genotypeidx==gg),3,'mean',true);
+end
+ConditionalUPDOWN.AllWT = bz_CollapseStruct(UPDOWNDur.ConditionalUPDOWN(strcmp(WTKOtype,'WT')),3,'mean',true);
+%%
+UPDOWN = {'UP','DOWN'};
+UDcolor = {'r','b'};
+WHNWH = {'wh','nwh'};
+HILO = {'hipup','lopup'};
+UDcmap = {makeColorMap([1 1 1],[0.8 0 0]),makeColorMap([1 1 1],[0 0 0.8])};
+
+cosx = linspace(-pi,3*pi,100);
+cospamp = [0.6 0.05];
+figure
+for gi=1:4
+    uu=1;
+    gg = KOgeneotypes(gi);
+    for ww = 1:2; for pp = 1:2
+    subplot(4,4,4*(gi-1)+pp+2*(ww-1))
+    colormap(gca,UDcmap{uu})
+        imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Xbins,...
+            ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Ybins,...
+            ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).pYX')
+        hold on; axis xy; box off
+        imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Xbins+2*pi,...
+            ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Ybins,...
+            ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).pYX')
+        plot(cosx,(cos(cosx)+1).*cospamp(pp)-1.5,'k')
+        LogScale('y',10)
+         xlim([-pi 3*pi])
+         caxis([0 0.15])
+         if uu==2
+            xlabel('Pup Phase')
+         end
+        if ww == 1 &pp==1
+            ylabel({genotypes{gg},'UP Dur (s)'})
+        end
+        if gi==1
+            title([(WHNWH{ww}),' ',(HILO{pp})])
+        end
+    
+end;end;end
+
+
+
+
+
+
 %%
 pupcycleUPDOWN.ALL = bz_CollapseStruct(UPDOWNDur.pupcycleUPDOWN,3);
 pupcycleUPDOWN.bins = UPDOWNDur.pupcycleUPDOWN.bincenters;
