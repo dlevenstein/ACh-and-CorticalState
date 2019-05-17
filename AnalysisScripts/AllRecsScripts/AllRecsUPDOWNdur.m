@@ -25,9 +25,13 @@ groupnames = {'KOs','WTctr'};
 for gg = 1:6
     ConditionalUPDOWN.(genotypes{gg}) = bz_CollapseStruct(UPDOWNDur.ConditionalUPDOWN(genotypeidx==gg),3,'mean',true);
     ReturnHist.(genotypes{gg}) = bz_CollapseStruct(UPDOWNDur.ReturnHist(genotypeidx==gg),3,'mean',true);
+    PSShist.(genotypes{gg}) = bz_CollapseStruct(UPDOWNDur.PSShist(genotypeidx==gg),3,'mean',true);
+    PSShist.std.(genotypes{gg}) = bz_CollapseStruct(UPDOWNDur.PSShist(genotypeidx==gg),3,'std',true);
 end
 ConditionalUPDOWN.AllWT = bz_CollapseStruct(UPDOWNDur.ConditionalUPDOWN(strcmp(WTKOtype,'WT')),3,'mean',true);
 ReturnHist.AllWT = bz_CollapseStruct(UPDOWNDur.ReturnHist(strcmp(WTKOtype,'WT')),3,'mean',true);
+PSShist.AllWT = bz_CollapseStruct(UPDOWNDur.PSShist(strcmp(WTKOtype,'WT')),3,'mean',true);
+PSShist.std.AllWT = bz_CollapseStruct(UPDOWNDur.PSShist(strcmp(WTKOtype,'WT')),3,'std',true);
 %%
 UPDOWN = {'UP','DOWN'};
 UDcolor = {'r','b'};
@@ -89,21 +93,106 @@ for ff = 1:2
 figure
 for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
-    for ww = 1:2; for pp = 1:2;for uu = 1:2
-    subplot(4,4,9+(uu-1)*4+(ww-1)*2)
+    for ww = 1:2; for uu = 1:2
+    %subplot(4,4,9+(uu-1)*4+(ww-1)*2)
+    subplot(4,4,(ww-1)*8+(uu-1)*4+gi)
     colormap(gca,UDcmap{uu})
     imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Ybins,...
         ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Ybins,...
         ReturnHist.(genotypes{gg}).(UPDOWN{uu}).allpup.(WHNWH{ww}))
     axis xy
     LogScale('xy',10)
-    if uu==2
-        xlabel('Dur (n-1)')
+    if uu==2 & ww == 2
+        xlabel('Dur_n (s)')
     end
-    if ww == 1
-        ylabel('Dur')
+    if gi == 1
+        ylabel({(WHNWH{ww}),'Dur_n_+_1 (s)'})
     end
+        if ww == 1 & uu==1
+            %ylabel({genotypes{gg},[(UPDOWN{uu}),' Dur (s)']})
+            title(genotypes{gg})
+        end
     
-            end;end;end
+            end;end
 end
+
+NiceSave(['Return Maps'],analysisfolder,groupnames{ff})
+
+end
+
+
+%%
+for ff = 1:2
+
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+    for ww = 1:2; for uu = 1:2
+    subplot(4,4,(ww-1)*8+(uu-1)*4+gi)
+    colormap(gca,UDcmap{uu})
+    imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).Xbins,...
+        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).Ybins,...
+        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).pYX')
+    hold on
+%     plot(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).Xbins([1 end]),...
+%         log10(PSS.winsize*[1 1]),'k--')
+    plot(PSShist.(genotypes{gg}).bins,PSShist.(genotypes{gg}).allpup.(WHNWH{ww})*8+...
+        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).Ybins(1)-0.5,'k','linewidth',1)
+    axis xy; box off;axis tight
+   % xlim([-1.5 1])
+    LogScale('y',10)
+    %colorbar
+    caxis([0 0.125])
+    if uu==2 & ww == 2
+        xlabel('PSS')
+    end
+    if gi == 1
+        ylabel({(WHNWH{ww}),'Dur (s)'})
+    end
+        if ww == 1 & uu==1
+            %ylabel({genotypes{gg},[(UPDOWN{uu}),' Dur (s)']})
+            title(genotypes{gg})
+        end
+       
+            end;end
+end
+
+NiceSave('DurByPSS',analysisfolder,groupnames{ff})
+
+end
+
+
+%% UD by pupil size
+
+for ff = 1:2
+
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+    for ww = 1:2; for uu = 1:2
+    subplot(4,4,(ww-1)*8+(uu-1)*4+gi)
+    colormap(gca,UDcmap{uu})
+    imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).pupmag.(WHNWH{ww}).Xbins,...
+        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).pupmag.(WHNWH{ww}).Ybins,...
+        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).pupmag.(WHNWH{ww}).pYX')
+    axis xy
+   % xlim([-1.5 1])
+    LogScale('y',10)
+    caxis([0 0.125])
+    if uu==2 & ww == 2
+        xlabel('Pupil (log)')
+    end
+    if gi == 1
+        ylabel({(WHNWH{ww}),'Dur (s)'})
+    end
+        if ww == 1 & uu==1
+            %ylabel({genotypes{gg},[(UPDOWN{uu}),' Dur (s)']})
+            title(genotypes{gg})
+        end
+       
+            end;end
+end
+
+NiceSave('DurByPupSize',analysisfolder,groupnames{ff})
+
 end
