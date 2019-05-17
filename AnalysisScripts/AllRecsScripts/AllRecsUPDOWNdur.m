@@ -16,6 +16,7 @@ KOtype = extractAfter(genotype,'_');
 %genotypes = char(genotypes);
 genotypes{7} = 'AllWT';
 KOgeneotypes = find(strncmpi(genotypes,'KO',2));
+WTgeneotypes = find(strncmpi(genotypes,'WT',2));
 KOgeneotypes = [7,KOgeneotypes]; %add allWT to KO comparison
 %%
 for gg = 1:6
@@ -31,10 +32,13 @@ UDcmap = {makeColorMap([1 1 1],[0.8 0 0]),makeColorMap([1 1 1],[0 0 0.8])};
 
 cosx = linspace(-pi,3*pi,100);
 cospamp = [0.6 0.05];
+
+groups = {KOgeneotypes,WTgeneotypes};
+for ff = 1:2
+for uu = 1:2
 figure
-for gi=1:4
-    uu=1;
-    gg = KOgeneotypes(gi);
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
     for ww = 1:2; for pp = 1:2
     subplot(4,4,4*(gi-1)+pp+2*(ww-1))
     colormap(gca,UDcmap{uu})
@@ -53,15 +57,15 @@ for gi=1:4
             xlabel('Pup Phase')
          end
         if ww == 1 &pp==1
-            ylabel({genotypes{gg},'UP Dur (s)'})
+            ylabel({genotypes{gg},[(UPDOWN{uu}),' Dur (s)']})
         end
         if gi==1
             title([(WHNWH{ww}),' ',(HILO{pp})])
         end
     
 end;end;end
-
-
+end
+end
 
 
 
