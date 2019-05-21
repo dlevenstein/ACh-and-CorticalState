@@ -36,54 +36,46 @@ PSShist.std.AllWT = bz_CollapseStruct(UPDOWNDur.PSShist(strcmp(WTKOtype,'WT')),3
 UPDOWN = {'UP','DOWN'};
 UDcolor = {'r','b'};
 WHNWH = {'wh','nwh'};
-HILO = {'hipup','lopup'};
+HILO = {'lopup','hipup'};
 UDcmap = {makeColorMap([1 1 1],[0.8 0 0]),makeColorMap([1 1 1],[0 0 0.8])};
 
-cosx = linspace(-pi,3*pi,100);
-cospamp = [0.6 0.05];
+cosx = linspace(-pi,pi,100);
+cospamp = [0.05 0.6];
 
 
 for ff = 1:2
-for uu = 1:2
-figure
-for gi=1:length(groups{ff})
+    figure
+    for uu = 1:2; for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
-    for ww = 1:2; for pp = 1:2
-    %subplot(4,4,4*(gi-1)+pp+2*(ww-1))
-    subplot(4,4,(ww-1)*8+(pp-1)*4+gi)
-    colormap(gca,UDcmap{uu})
-        imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Xbins,...
+    for ww = 1:2 
+    subplot(4,4,(ww-1)*4+gi+(uu-1)*8)
+        colormap(gca,UDcmap{uu})
+    
+        for pp = 1:2
+        imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Xbins+2*pi*(pp-1),...
             ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Ybins,...
             ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).pYX')
         hold on; axis xy; box off
-        imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Xbins+2*pi,...
-            ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Ybins,...
-            ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).pYX')
-        plot(cosx,(cos(cosx)+1).*cospamp(pp)-1.5,'k')
+        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1.5,'k')
+        end
         LogScale('y',10)
          xlim([-pi 3*pi])
          %colorbar
          
          caxis([0 0.08])
-         if uu==2
-            %xlabel('Pup Phase')
-         end
-        if ww == 1 & pp==1
-            %ylabel({genotypes{gg},[(UPDOWN{uu}),' Dur (s)']})
+        if ww == 1 & uu ==1
             title(genotypes{gg})
         end
-        if ww == 2 & pp==2
-            %ylabel({genotypes{gg},[(UPDOWN{uu}),' Dur (s)']})
+        if ww == 2
             xlabel('Pup Phase')
         end
         if gi==1
-            %title([(WHNWH{ww}),' ',(HILO{pp})]
             ylabel({(WHNWH{ww}),[(UPDOWN{uu}),' Dur (s)']})
         end
     
 end;end;end
 
-NiceSave([(UPDOWN{uu}),'DurbyPupCycle'],analysisfolder,groupnames{ff})
+NiceSave('UPDOWNDurbyPupCycle',analysisfolder,groupnames{ff})
 
 end
 end
