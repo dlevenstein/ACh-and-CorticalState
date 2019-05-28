@@ -8,7 +8,7 @@ function [puphist,pupACG,pupPSD,pupdthist,...
 %% DEV
 %basePath = '/mnt/proraidDL/Database/WMProbeData/170421_Layers_LFP_Pupil_EMG_Emx1M1M3/170421_Layers_LFP_Pupil_EMG_170421_180427/';
 %basePath = '/mnt/proraidDL/Database/WMProbeData/170606_Layers_LFP_Pupil_EMG_Emx1M2M4/170606_Layers_LFP_Pupil_EMG_170606_204730/';
-%basePath= '/mnt/proraidDL/Database/WMProbeData/170421_Layers_LFP_Pupil_EMG_Emx1M1M3/170421_Layers_LFP_Pupil_EMG_170421_180427';
+basePath= '/mnt/proraidDL/Database/WMProbeData/170421_Layers_LFP_Pupil_EMG_Emx1M1M3/170421_Layers_LFP_Pupil_EMG_170421_180427';
 %basePath = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/Dataset/180605_WT_M1M3_LFP_Layers_Pupil_EMG_180605_121846';
 %basePath = 'R:\rudylab\archive\William\181205_ChrmKO_Layers_Analysis\180706_WT_EM1M3';
 %basePath = 'R:\rudylab\archive\William\181205_ChrmKO_Layers_Analysis\180525_KO_EM1M3\Spont2';
