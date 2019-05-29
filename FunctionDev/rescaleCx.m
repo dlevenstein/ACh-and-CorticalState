@@ -35,10 +35,10 @@ chandist = [0:20:1275];
 lnorm = [0 0.1 0.35 0.5 0.6 0.9 1]; %tentative given lack of 5b-6 boundary
 
 %% Loading data
-[baseFolder,baseName] = fileparts(basePath);
+%[baseFolder,baseName] = fileparts(basePath);
 %data = load(fullfile(basePath,[baseName,'.',analysisName,'.lfp.mat']));
 
-load(fullfile(basePath,[baseName,'.sessionInfo.mat']));
+sessionInfo = bz_getSessionInfo(basePath);
 usechannels = sessionInfo.AnatGrps.Channels;
 %lborders = [NaN 20 18 62 16 36 33 32]; %DEV
 lborders = sessionInfo.layerborders;
