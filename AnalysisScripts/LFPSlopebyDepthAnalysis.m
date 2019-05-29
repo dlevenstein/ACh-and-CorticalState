@@ -1,4 +1,4 @@
-function [ ] = AnalysisXXXXXXXX(basePath,figfolder)
+function [PSScomponents,PSSdepth ] = LFPSlopebyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -9,12 +9,12 @@ function [ ] = AnalysisXXXXXXXX(basePath,figfolder)
 %
 %% Load Header
 %Initiate Paths
-reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
+%reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
-basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
+%basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
 %basePath = pwd;
-figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
+%figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
@@ -125,54 +125,42 @@ PSS.depthinterp = interp1(PSS.depth',PSS.data',PSS.interpdepth')';
 
 %% Identifying components: 
 %PSS correlation by depth
-PSS.depthcorr = corr(PSS.depthinterp);
+PSScomponents.corr = corr(PSS.depthinterp);
+PSScomponents.depth = PSS.interpdepth;
 
 %PCA
 [COEFF, SCORE, LATENT, TSQUARED, EXPLAINED] = pca(PSS.data);
 
 %ICA
-[weights,sphere,compvars,bias,signs,lrates,activations] ...
-                              = runica(PSS.data','pca',6,'sphering','off');
-                          
+% [weights,sphere,compvars,bias,signs,lrates,activations] ...
+%                               = runica(PSS.data','pca',10,'sphering','off');
+%                           
+nPC = 10;
+PSScomponents.PCAcoeff = interp1(PSS.depth',COEFF(:,1:nPC),PSS.interpdepth');
+PSScomponents.EV = EXPLAINED(1:nPC);
+
 %%
-figure
-subplot(2,2,1)
-plot(compvars,'o-')
-xlim([0 6])
-xlabel('IC');ylabel('% EV')
-subplot(2,2,2)
-plot(activations(1,:),activations(2,:),'.')
-xlabel('IC 1');ylabel('IC 2')
+% figure
+% subplot(2,2,1)
+% plot(compvars,'o-')
+% xlim([0 6])
+% xlabel('IC');ylabel('% EV')
+% subplot(2,2,2)
+% plot(activations(1,:),activations(2,:),'.')
+% xlabel('IC 1');ylabel('IC 2')
+% 
+% subplot(2,2,3)
+% plot(PSS.depth,weights(1:3,:))
+% hold on
+% plot(PSS.depth([1 end]),[0 0],'k--')                
 
-subplot(2,2,3)
-plot(PSS.depth,weights(1:3,:))
-hold on
-plot(PSS.depth([1 end]),[0 0],'k--')                
-%%
-figure
-subplot(2,2,1)
-plot(log10(EXPLAINED),'o-')
-xlim([0 6])
-xlabel('PC');ylabel('% EV')
-LogScale('y',10)
-subplot(2,2,2)
-plot3(SCORE(:,1),SCORE(:,2),SCORE(:,3),'.')
-xlabel('PC 1');ylabel('PC 2')
-rotate3d
-grid on
-
-
-subplot(2,2,3)
-plot(PSS.depth,COEFF(:,1:3))
-hold on
-plot(PSS.depth([1 end]),[0 0],'k--')
-legend('PC1','PC2','PC3')
 
 %%
 WHNWH = {'Wh','NWh'};
 HILO = {'lopup','hipup'};
 %% Mean depth activation by pupil size, phase and whisking
 %prepare for LFPspec....
+PSSdepth.depth = PSS.interpdepth;
 for ww = 1:2
 [ ~,PSSdepth.pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( PSS.data(PSS.(WHNWH{ww}),:),...
     log10(PSS.pup(PSS.(WHNWH{ww}),:)),'specparms','input',...
@@ -209,16 +197,30 @@ subplot(2,1,1)
     xlabel('t (s)');ylabel('Depth')
     
     subplot(2,2,3)
-    imagesc(PSS.interpdepth,PSS.interpdepth,PSS.depthcorr)
+    imagesc(PSScomponents.depth,PSScomponents.depth,PSScomponents.corr)
     colorbar
     axis xy
     xlabel('Depth');ylabel('Depth')
+    title('PSS Corr')
     
 %     subplot(2,2,4)
 %         imagesc(PSSdepth.byPup.varbins,PSS.interpdepth,PSSdepth.byPup.mean)
 %         axis xy
+subplot(4,2,6)
+    plot(log10(PSScomponents.EV),'o-')
+    xlim([1 6])
+    xlabel('PC');ylabel('% EV')
+    LogScale('y',10)
 
-NiceSave('DepthPSSEx',figfolder,baseName)
+subplot(4,2,8)
+    plot(PSScomponents.depth,PSScomponents.PCAcoeff(:,1:3))
+    hold on
+    plot(PSScomponents.depth([1 end]),[0 0],'k--')
+    legend('PC1','PC2','PC3','location','eastoutside')
+    xlabel('Deptah');ylabel('Weight')
+    
+        NiceSave('DepthPSSEx',figfolder,baseName)
+
 
 %%
 cosx = linspace(-pi,pi,100);
