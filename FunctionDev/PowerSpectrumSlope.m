@@ -327,7 +327,7 @@ Frac = amri_sig_plawfit(Frac,Frange);
 Frange = [2.5, 100]; % define frequency range for power-law fitting
 
 % Now calculating corrs...
-PSS = []; Osci = [];
+PSS = []; OSCI = []; Osci = [];
 Deltaosci = []; Thetaosci = []; Gammaosci = [];
 PSSEMGxcorr = []; PSSPupxcorr = [];
 PSSEMGlag = []; PSSPuplag = [];
@@ -392,6 +392,7 @@ for cc = 1:length(channels)
     Frac = amri_sig_plawfit(Frac,Frange);
     
     PSS = cat(2,PSS,Frac.Beta.*-1);
+    OSCI = cat(3,OSCI,Frac.osci);
     Osci = cat(2,Osci,mean(Frac.osci,2));
     
     deltaidx = find(Frac.freq >= 0.5 & Frac.freq <= 3);
@@ -473,10 +474,12 @@ end
 
 % Saving to struct
 PSpecSlope.Shortwin.channels = channels;
+PSpecSlope.Shortwin.freqs = Frac.freq;
 PSpecSlope.Shortwin.movingwin = movingwin./srate;
 PSpecSlope.Shortwin.Frange = Frange;
 PSpecSlope.Shortwin.timestamps = Frac.timestamps;
-PSpecSlope.Shortwin.PSS = PSS; 
+PSpecSlope.Shortwin.PSS = PSS;
+PSpecSlope.Shortwin.OSCI = OSCI;
 PSpecSlope.Shortwin.Osci = Osci;
 PSpecSlope.Shortwin.Deltaosci = Deltaosci; 
 PSpecSlope.Shortwin.Thetaosci = Thetaosci; 
@@ -740,7 +743,7 @@ Frac = amri_sig_plawfit(Frac,Frange);
 Frange = [2.5, 100]; % define frequency range for power-law fitting
 
 % Now calculating corrs...
-PSS = []; Osci = [];
+PSS = []; OSCI = []; Osci = [];
 Deltaosci = []; Thetaosci = []; Gammaosci = [];
 PSSEMGxcorr = []; PSSPupxcorr = [];
 PSSEMGlag = []; PSSPuplag = [];
@@ -805,6 +808,7 @@ for cc = 1:length(channels)
     Frac = amri_sig_plawfit(Frac,Frange);
     
     PSS = cat(2,PSS,Frac.Beta.*-1);
+    OSCI = cat(3,OSCI,Frac.osci);
     Osci = cat(2,Osci,mean(Frac.osci,2));
     
     deltaidx = find(Frac.freq >= 0.5 & Frac.freq <= 3);
@@ -886,10 +890,12 @@ end
 
 % Saving to struct
 PSpecSlope.Longwin.channels = channels;
+PSpecSlope.Longwin.freqs = Frac.freq;
 PSpecSlope.Longwin.movingwin = movingwin./srate;
 PSpecSlope.Longwin.Frange = Frange;
 PSpecSlope.Longwin.timestamps = Frac.timestamps;
 PSpecSlope.Longwin.PSS = PSS; 
+PSpecSlope.Longwin.OSCI = OSCI; 
 PSpecSlope.Longwin.Osci = Osci;
 PSpecSlope.Longwin.Deltaosci = Deltaosci; 
 PSpecSlope.Longwin.Thetaosci = Thetaosci; 
@@ -1069,7 +1075,7 @@ PSpecSlope.Longwin.gxcorr = gxcorr;
 PSpecSlope.Longwin.gxcorr_p = gxcorr_p;
 
 % Saving finally...
-save(savefile,'PSpecSlope');
+save(savefile,'PSpecSlope','-v7.3');
 
 %% FIGURE
 figure;
