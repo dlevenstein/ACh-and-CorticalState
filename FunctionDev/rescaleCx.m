@@ -38,7 +38,7 @@ lnorm = [0 0.1 0.35 0.5 0.6 0.9 1]; %tentative given lack of 5b-6 boundary
 %[baseFolder,baseName] = fileparts(basePath);
 %data = load(fullfile(basePath,[baseName,'.',analysisName,'.lfp.mat']));
 
-sessionInfo = bz_getSessionInfo(basePath);
+sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 usechannels = sessionInfo.AnatGrps.Channels;
 %lborders = [NaN 20 18 62 16 36 33 32]; %DEV
 lborders = sessionInfo.layerborders;
