@@ -18,7 +18,7 @@ function [PSScomponents,PSSdepth ] = LFPSlopebyDepthAnalysis(basePath,figfolder)
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
-sessionInfo = bz_getSessionInfo(basePath);
+sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 
 %% Load the LFP if needed
