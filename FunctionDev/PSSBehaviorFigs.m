@@ -1,20 +1,28 @@
 %%
 basePath = pwd;
-baseName = 'EM1M3';
+%baseName = 'EM1M3';
+%baseName = 'EM2M4';
+baseName = 'SM1M3';
 
 figfolder = fullfile(basePath,'SummaryFigures');
 if (~exist(figfolder,'dir'))
     mkdir(figfolder)
 end
 
-load(fullfile(basePath,['WT_EM1M3.PSSBehaviorAnalysis3.mat']));
+%load(fullfile(basePath,['WT_EM1M3.PSSBehaviorAnalysis3.mat']));
+%load(fullfile(basePath,['WT_EM2M4.PSSBehaviorAnalysis3.mat']));
+load(fullfile(basePath,['WT_SM1M3.PSSBehaviorAnalysis3.mat']));
+
 WTPSSBehavior = groupPSSBehavior;
 WTpupsorts = pupsorts;
 WTpuplockedPSS = puplockedPSS;
 WTwhisksorts = whisksorts;
 WTtimelockedPSS = timelockedPSS;
 
-load(fullfile(basePath,['KO_EM1M3.PSSBehaviorAnalysis3.mat']));
+%load(fullfile(basePath,['KO_EM1M3.PSSBehaviorAnalysis3.mat']));
+%load(fullfile(basePath,['KO_EM2M4.PSSBehaviorAnalysis3.mat']));
+load(fullfile(basePath,['KO_SM1M3.PSSBehaviorAnalysis3.mat']));
+
 KOPSSBehavior = groupPSSBehavior;
 KOpupsorts = pupsorts;
 KOpuplockedPSS = puplockedPSS;
