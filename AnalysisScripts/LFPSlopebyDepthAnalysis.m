@@ -1,4 +1,4 @@
-function [PSScomponents,PSSdepth ] = LFPSlopebyDepthAnalysis(basePath,figfolder)
+function [PSScomponents,PSSdepth,OSCdepth ] = LFPSlopebyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -535,7 +535,7 @@ for oo = 1:2
 
 subplot(6,4,(dd-1)*4+oo)
         imagesc( OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all.varbins,...
-            PSS.freqs,...
+            OSCdepth.freqs,...
             OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean)
         hold on; axis xy; box off
         plot([0 0],[0 max(PSS.freqs)],'w')
@@ -553,7 +553,7 @@ end
  
 subplot(6,4,(dd-1)*4+4)
         imagesc( OSCdepth.(LAYERS{dd}).EMG.varbins,...
-            PSS.freqs,...
+            OSCdepth.freqs,...
             OSCdepth.(LAYERS{dd}).EMG.mean)
         hold on; axis xy; box off
         plot(OSCdepth.(LAYERS{dd}).EMG.varbins,OSCdepth.(LAYERS{dd}).EMG.vardist*1000,'w')
