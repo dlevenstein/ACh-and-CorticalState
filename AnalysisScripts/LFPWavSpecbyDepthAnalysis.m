@@ -1,4 +1,4 @@
-function [ ] = AnalysisXXXXXXXX(basePath,figfolder)
+function [ SPECdepth,OSCdepth] = LFPSpecbyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -9,12 +9,12 @@ function [ ] = AnalysisXXXXXXXX(basePath,figfolder)
 %
 %% Load Header
 %Initiate Paths
-reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
+%reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
-basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
+%basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
 %basePath = pwd;
-figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
+%figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
@@ -98,10 +98,6 @@ for cc =1:length(spec.channels)
     spec.freqs = wavespec.freqs; 
     clear wavespec
 end
-%%
-
-%spec.data(:,:,cc)
-%[wavespec] = bz_WaveSpec(lfp,'frange',spec.frange,'nfreqs',spec.nfreqs);
 %% Take Mean Specgram by layer and calculate irasa
 
 LAYERS = depthinfo.lnames;
@@ -257,7 +253,6 @@ for ww = 1:2
         
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
         clim([1.5 3.5])
-        %colorbar
         xlim([-pi 3*pi])
         if dd == 6
         xlabel('Pupil Phase');
@@ -584,5 +579,7 @@ end
 NiceSave('DepthOSCandWhisk',figfolder,baseName)
 
 
-
+%%
+figure
+imagesc(spec.osci(:,:,2))
 
