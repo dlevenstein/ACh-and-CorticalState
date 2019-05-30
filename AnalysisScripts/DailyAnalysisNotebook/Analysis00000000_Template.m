@@ -12,12 +12,13 @@ function [ ] = AnalysisXXXXXXXX(basePath,figfolder)
 reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
 basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
+%basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
 %basePath = pwd;
 figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
-sessionInfo = bz_getSessionInfo(basePath);
+sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 
 %% Load the LFP if needed
