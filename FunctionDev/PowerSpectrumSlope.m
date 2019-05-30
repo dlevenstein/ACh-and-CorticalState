@@ -327,7 +327,7 @@ Frac = amri_sig_plawfit(Frac,Frange);
 Frange = [2.5, 100]; % define frequency range for power-law fitting
 
 % Now calculating corrs...
-PSS = []; OSCI = []; Osci = [];
+PSS = []; SPEC = []; OSCI = []; Osci = [];
 Deltaosci = []; Thetaosci = []; Gammaosci = [];
 PSSEMGxcorr = []; PSSPupxcorr = [];
 PSSEMGlag = []; PSSPuplag = [];
@@ -392,6 +392,7 @@ for cc = 1:length(channels)
     Frac = amri_sig_plawfit(Frac,Frange);
     
     PSS = cat(2,PSS,Frac.Beta.*-1);
+    SPEC = cat(3,SPEC,Frac.mixd);
     OSCI = cat(3,OSCI,Frac.osci);
     Osci = cat(2,Osci,mean(Frac.osci,2));
     
@@ -479,6 +480,7 @@ PSpecSlope.Shortwin.movingwin = movingwin./srate;
 PSpecSlope.Shortwin.Frange = Frange;
 PSpecSlope.Shortwin.timestamps = Frac.timestamps;
 PSpecSlope.Shortwin.PSS = PSS;
+PSpecSlope.Shortwin.SPEC = SPEC;
 PSpecSlope.Shortwin.OSCI = OSCI;
 PSpecSlope.Shortwin.Osci = Osci;
 PSpecSlope.Shortwin.Deltaosci = Deltaosci; 
@@ -743,7 +745,7 @@ Frac = amri_sig_plawfit(Frac,Frange);
 Frange = [2.5, 100]; % define frequency range for power-law fitting
 
 % Now calculating corrs...
-PSS = []; OSCI = []; Osci = [];
+PSS = []; SPEC = []; OSCI = []; Osci = [];
 Deltaosci = []; Thetaosci = []; Gammaosci = [];
 PSSEMGxcorr = []; PSSPupxcorr = [];
 PSSEMGlag = []; PSSPuplag = [];
@@ -808,6 +810,7 @@ for cc = 1:length(channels)
     Frac = amri_sig_plawfit(Frac,Frange);
     
     PSS = cat(2,PSS,Frac.Beta.*-1);
+    SPEC = cat(3,SPEC,Frac.mixd);
     OSCI = cat(3,OSCI,Frac.osci);
     Osci = cat(2,Osci,mean(Frac.osci,2));
     
@@ -895,6 +898,7 @@ PSpecSlope.Longwin.movingwin = movingwin./srate;
 PSpecSlope.Longwin.Frange = Frange;
 PSpecSlope.Longwin.timestamps = Frac.timestamps;
 PSpecSlope.Longwin.PSS = PSS; 
+PSpecSlope.Longwin.SPEC = SPEC; 
 PSpecSlope.Longwin.OSCI = OSCI; 
 PSpecSlope.Longwin.Osci = Osci;
 PSpecSlope.Longwin.Deltaosci = Deltaosci; 
