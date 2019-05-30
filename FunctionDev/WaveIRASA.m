@@ -1,17 +1,34 @@
 function [frac,osci,validfreq] = WaveIRASA(spec,varargin)
 %
 % INPUT
-% data       power spectrum array in buzcode format
+% data       power spectrum array in buzcode format (complex-valued)
+%
+%(options)
+%   'logamp'    true if spectrogram is already log-amplitude transformed
+%   'freqs'     enter freqs if not using structure input
 %
 %
 % R. Hardstone & W. Munoz - 2019
 %% Parse the inputs
 % Pending: maxRescaleFactor
 %
+p = inputParser;
+addParameter(p,'logamp',false)
+addParameter(p,'freqs',[])
+parse(p,varargin{:})
+logamp = p.Results.logamp;
+freqs = p.Results.freqs;
+
 %%
-fs = spec.samplingRate;
-numFreqs = spec.nfreqs;
-freqs = spec.freqs;
+%fs = spec.samplingRate;
+if isstruct(spec)
+    numFreqs = spec.nfreqs;
+    freqs = spec.freqs;
+else
+    temp = spec; clear spec;
+    spec.data=temp;
+    numFreqs = length(freqs);
+end
 
 %%
 maxRescaleFactor = 2.9; %as per Muthukumaraswamy and Liley, NeuroImage 2018
@@ -31,12 +48,18 @@ validFreqInds = numberRescales + 1:numFreqs - numberRescales - 1;
 ampData = zeros(size(spec.data));
 resampledData = zeros(size(spec.data));
 
-for i_freq = 1:numFreqs
-    i_freq;
-    ampData(:,i_freq) = abs(spec.data(:,i_freq));
-    %smoothedData(:,i_freq) = ampData(:,i_freq); %smooth(ampData(:,i_freq),smoothingSamples);
+%Extract amplitude from the spectrogram
+if logamp
+    ampData = spec.data;
+else
+    for i_freq = 1:numFreqs
+        i_freq;
+        ampData(:,i_freq) = abs(spec.data(:,i_freq));
+        %smoothedData(:,i_freq) = ampData(:,i_freq); %smooth(ampData(:,i_freq),smoothingSamples);
+    end
 end
 
+%Median smooth the spectrum
 for i_freq = validFreqInds
     i_freq;
     inds = [i_freq-numberRescales:i_freq-1 i_freq+1:i_freq+numberRescales];
@@ -47,7 +70,12 @@ end
 % resampledData = gather(resampledData);
 
 %osci = ampData(:,validFreqInds)-resampledData(:,validFreqInds);
-osci = log10(ampData(:,validFreqInds))-log10(resampledData(:,validFreqInds));
+switch logamp
+    case false
+        osci = log10(ampData(:,validFreqInds))-log10(resampledData(:,validFreqInds));
+    case true
+        osci = (ampData(:,validFreqInds))-(resampledData(:,validFreqInds));
+end
 frac = resampledData(:,validFreqInds);
 validfreq = freqs(validFreqInds);
 
