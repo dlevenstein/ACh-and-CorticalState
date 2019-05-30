@@ -17,6 +17,8 @@ function [rescaled] = rescaleCx( basePath, varargin )
 %    .depth          [1 x Nd] vector of absolute distance to match LFP data
 %    .ndepth         [1 x Nd] vector of normalized depth (0-1) to match LFP data
 %    .channels       [1 x Nd] vector of channel ID's
+%    .lnames         cell array of layernames
+%    .layer          layer assigned to each channel
 %
 % WMunoz - 02/28/2019
 %
@@ -33,6 +35,7 @@ chandist = [0:20:1275];
 %lnorm = [0 0.1 0.35 0.5 0.6 0.75 0.9 1]; %including 6a-6b division
 %lnorm = [0 0.1 0.35 0.5 0.6 0.75 1]; %proper 5b and 6 layers
 lnorm = [0 0.1 0.35 0.5 0.6 0.9 1]; %tentative given lack of 5b-6 boundary
+lnames = {'L1','L23','L4','L5a','L5b6','WM'};
 
 %% Loading data
 %[baseFolder,baseName] = fileparts(basePath);
@@ -48,6 +51,7 @@ truelayer1 = chandist(usechannels == lborders(end))*lnorm(2);
 chandist = chandist-(chandist(usechannels == lborders(2))-truelayer1); 
 truecolumn = chandist(usechannels == lborders(end));
 normdepth = NaN(1,length(usechannels));
+layer = cell(size(normdepth));
 
 for i = 2:length(lnorm)-1
     lb1 = find(usechannels == lborders(i));
@@ -78,7 +82,15 @@ if BADOUT
     normdepth(badidx) = NaN;
 end
 
+
+for ii = 1:length(lnames)
+    inlayerchans = normdepth>lnorm(ii) & normdepth<lnorm(ii+1);
+    layer(inlayerchans) = lnames(ii);
+end
+
 %% Rescaled data to struct
 rescaled.depth = chandist;
 rescaled.ndepth = normdepth;
 rescaled.channels = usechannels;
+rescaled.layer = layer;
+rescaled.lnames = lnames;
