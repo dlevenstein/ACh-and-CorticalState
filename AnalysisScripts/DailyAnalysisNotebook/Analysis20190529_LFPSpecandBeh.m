@@ -457,13 +457,7 @@ end
     log10(PSS.EMG),'specparms','input',...
     'figparms',true,'numvarbins',40,'varlim',[-1.7 0.9]);
 end
-    %%
-    figure
-    imagesc(PSS.timestamps,PSS.freqs,squeeze(PSS.osci(:,1,:))')
-    colorbar
-    clim([-3 50])
-  %%  
-  %PSS.oscLayer(PSS.oscLayer<0) = 0;
+
   %%
   xwinsize = 30;
 xwin = bz_RandomWindowInIntervals(PSS.timestamps([1 end]),xwinsize);
@@ -541,10 +535,6 @@ end
 end
 
 NiceSave('DepthOSCandPup',figfolder,baseName)
-
-
-
-%%
 
 %%
 
