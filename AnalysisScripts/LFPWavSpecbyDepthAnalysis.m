@@ -102,7 +102,7 @@ for cc =1:length(spec.channels)
 %     spec.freqs = wavespec.freqs; 
 
     %Loaded Wavelets
-    load(fullfile(basePath,'WaveSpec_Downsampled',['171209_WT_EM1M3.',num2str(spec.channels(cc)),'.WaveSpec.lfp.mat']));
+    load(fullfile(basePath,'WaveSpec_Downsampled',[baseName,'.',num2str(spec.channels(cc)),'.WaveSpec.lfp.mat']));
     inspont = InIntervals(wavespec.timestamps,sponttimes);
     spec.data(:,:,cc) = log10(abs(wavespec.data(inspont,:)));
     spec.timestamps = wavespec.timestamps(inspont,:);

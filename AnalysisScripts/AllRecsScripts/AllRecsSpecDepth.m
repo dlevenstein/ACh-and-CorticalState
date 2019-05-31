@@ -79,6 +79,75 @@ end
 
 
 
+
+  %%
+  
+  cosx = linspace(-pi,pi,100);
+cospamp = [0.025 0.3]*2;
+
+
+
+
+figure
+for dd = 1:6
+for ww = 1:2
+    subplot(6,4,(dd-1)*4+ww)
+        for pp = 1:2
+        imagesc( SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
+            log10(SPECdepth.freqs),...
+            SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean)
+        hold on; axis xy; box off
+        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'w')
+        end   
+        LogScale('y',10)
+        
+        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        clim([3 5])
+        xlim([-pi 3*pi])
+        if dd == 6
+        xlabel('Pupil Phase');
+        end
+        if ww == 1
+            ylabel({LAYERS{dd},'Freq'})
+        end
+        if dd == 1
+        title((WHNWH{ww}))
+        end
+
+        
+        
+    subplot(6,4,(dd-1)*4+ww+2)
+        imagesc( SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).varbins,...
+            log10(SPECdepth.freqs),...
+            SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean)
+        hold on; axis xy; box off
+        LogScale('y',10)
+        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        clim([3 5])
+        if dd == 6
+        xlabel('Pupil Size');
+        end
+        if ww == 1
+            ylabel('Freq')
+        end
+        if dd == 1
+        title((WHNWH{ww}))
+        end
+        
+       
+        
+end
+end
+
+NiceSave('DepthSPECandPup',figfolder,baseName)
+
+
+
+
+
+
+
+
 %%
 cosx = linspace(-pi,pi,100);
 cospamp = [0.025 0.3];
