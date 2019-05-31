@@ -194,6 +194,7 @@ for wh = 2:(size(EMGwhisk.ints.Wh,1)-1)
     
 end
 
+spec = rmfield(spec,'data');
 %% Correlation with pupil
  speccorr.freqs = spec.freqs;
  speccorr.channels = spec.channels;
