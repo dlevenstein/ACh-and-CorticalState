@@ -1,4 +1,4 @@
-function [ SPECdepth,OSCdepth] = LFPSpecbyDepthAnalysis(basePath,figfolder)
+function [ SPECdepth,OSCdepth,speccorr] = LFPSpecbyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
