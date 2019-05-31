@@ -153,7 +153,7 @@ LONGSHORT = {'long','short'};
 
 %% Get Whisk On/Offset aligned spec, separated by long/short whisks
 
-window = 4; %s
+window = 2; %s
 durthresh = 1; %
 spec.whtime.WhOn = nan(size(spec.timestamps));
 spec.whtime.WhOFF = nan(size(spec.timestamps));
@@ -264,7 +264,7 @@ for oo = 1:2
     [ ~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
         spec.Layer(:,:,dd),...
         spec.whtime.(ONOFF{oo}),'specparms','input',...
-        'figparms',true,'numvarbins',80,'varlim',[-window window]);
+        'figparms',true,'numvarbins',200,'varlim',[-window window]);
     [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean_osc,SPECdepth.oscfreqs] = ...
         WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean','logamp',true,'freqs',spec.freqs);
 end
@@ -515,7 +515,7 @@ for oo = 1:2
     [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
         spec.osci(:,:,dd),...
         spec.whtime.(ONOFF{oo}),'specparms','input',...
-        'figparms',true,'numvarbins',40,'varlim',[-window window]);
+        'figparms',true,'numvarbins',200,'varlim',[-window window]);
 end
 
     
