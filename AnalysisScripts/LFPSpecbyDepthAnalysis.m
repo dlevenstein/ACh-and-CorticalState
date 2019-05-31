@@ -1,4 +1,4 @@
-function [ SPECdepth,OSCdepth] = LFPSpecbyDepthAnalysis(basePath,figfolder)
+function [ SPECdepth,OSCdepth, speccorr] = LFPSpecbyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -92,6 +92,12 @@ for cc =1:length(spec.channels)
     spec.data(:,:,cc) = log10(abs(temp))';
     spec.timestamps = spec.timestamps';
 end
+
+%% Correlation power-pupil,power-whisk
+
+
+
+
 %% Take Mean Specgram by layer and calculate irasa
 
 LAYERS = depthinfo.lnames;
@@ -103,7 +109,6 @@ for ll = 1:length(LAYERS)
         'logamp',true,'freqs',spec.freqs);
 end
 
-%% Calculate IRASA on layer-mean specgram
 
 %% Align Specgram by behavior
 maxtimejump = 1; %s
@@ -173,8 +178,50 @@ for wh = 2:(size(EMGwhisk.ints.Wh,1)-1)
     
 end
 
+%% Correlation with pupil
+ speccorr.freqs = spec.freqs;
+ speccorr.channels = spec.channels;
+for cc = 1:length(spec.channels)
+    specvarcorr = bz_LFPSpecToExternalVar( spec.data(:,:,cc),...
+        log10(spec.pup),'specparms','input',...
+        'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+    speccorr.pup(:,cc)  = specvarcorr.corr;
+    
+    specvarcorr = bz_LFPSpecToExternalVar( spec.data(:,:,cc),...
+        log10(spec.EMG),'specparms','input',...
+        'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+    speccorr.EMG(:,cc)  = specvarcorr.corr;
+    
+    close all
+end
+close all
 
-%%  Mean depth spec by pupil size, phase and whisking
+% Interpolate PSS to normalized depth
+speccorr.interpdepth = linspace(-1,0,100);
+speccorr.pupinterp = interp1(CTXdepth',speccorr.pup',speccorr.interpdepth')';
+speccorr.EMGinterp = interp1(CTXdepth',speccorr.EMG',speccorr.interpdepth')';
+%%
+figure
+
+subplot(2,2,1)
+imagesc(log10(speccorr.freqs),speccorr.interpdepth,speccorr.pupinterp')
+crameri vik
+LogScale('x',10)
+axis xy
+ColorbarWithAxis([-0.4 0.4],'Pupil Corr.')
+%clim([-0.35 0.35])
+xlabel('f (Hz)');ylabel('Depth')
+
+subplot(2,2,2)
+imagesc(log10(speccorr.freqs),speccorr.interpdepth,speccorr.EMGinterp')
+LogScale('x',10)
+axis xy
+ColorbarWithAxis([-0.4 0.4],'EMG Corr.')
+crameri vik
+xlabel('f (Hz)');ylabel('Depth')
+
+NiceSave('DepthFreqCorr',figfolder,baseName)
+%%  Mean layer spec by pupil size, phase and whisking
 %prepare for LFPspec....
 SPECdepth.freqs = spec.freqs;
 for dd = 1:length(LAYERS)
@@ -573,7 +620,4 @@ end
 NiceSave('DepthOSCandWhisk',figfolder,baseName)
 
 
-%%
-figure
-imagesc(spec.osci(:,:,2))
 
