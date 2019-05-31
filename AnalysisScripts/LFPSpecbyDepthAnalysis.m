@@ -93,9 +93,6 @@ for cc =1:length(spec.channels)
     spec.timestamps = spec.timestamps';
 end
 
-%% Correlation power-pupil,power-whisk
-
-
 
 
 %% Take Mean Specgram by layer and calculate irasa
