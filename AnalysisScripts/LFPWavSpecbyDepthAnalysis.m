@@ -180,6 +180,53 @@ for wh = 2:(size(EMGwhisk.ints.Wh,1)-1)
     
 end
 
+%% Correlation with pupil
+ speccorr.freqs = spec.freqs;
+ speccorr.channels = spec.channels;
+for cc = 1:length(spec.channels)
+    specvarcorr = bz_LFPSpecToExternalVar( spec.data(:,:,cc),...
+        log10(spec.pup),'specparms','input',...
+        'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+    speccorr.pup(:,cc)  = specvarcorr.corr;
+    
+    specvarcorr = bz_LFPSpecToExternalVar( spec.data(:,:,cc),...
+        log10(spec.EMG),'specparms','input',...
+        'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+    speccorr.EMG(:,cc)  = specvarcorr.corr;
+    
+    close all
+end
+
+
+% Interpolate PSS to normalized depth
+speccorr.interpdepth = linspace(-1,0,100);
+speccorr.pupinterp = interp1(CTXdepth',speccorr.pup',speccorr.interpdepth')';
+speccorr.EMGinterp = interp1(CTXdepth',speccorr.EMG',speccorr.interpdepth')';
+%%
+figure
+
+subplot(2,2,1)
+imagesc(log10(speccorr.freqs),speccorr.interpdepth,speccorr.pupinterp')
+hold on
+plot(log10(speccorr.freqs([1 end])),-depthinfo.boundaries'*[1 1],'k')
+crameri vik
+LogScale('x',10)
+axis xy
+ColorbarWithAxis([-0.4 0.4],'Pupil Corr.')
+%clim([-0.35 0.35])
+xlabel('f (Hz)');ylabel('Depth')
+
+subplot(2,2,2)
+imagesc(log10(speccorr.freqs),speccorr.interpdepth,speccorr.EMGinterp')
+hold on
+plot(log10(speccorr.freqs([1 end])),-depthinfo.boundaries'*[1 1],'k')
+LogScale('x',10)
+axis xy
+ColorbarWithAxis([-0.4 0.4],'EMG Corr.')
+crameri vik
+xlabel('f (Hz)');ylabel('Depth')
+
+NiceSave('DepthFreqCorr',figfolder,baseName)
 
 %%  Mean depth spec by pupil size, phase and whisking
 %prepare for LFPspec....
