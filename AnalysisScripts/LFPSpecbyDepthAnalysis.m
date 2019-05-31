@@ -205,6 +205,8 @@ figure
 
 subplot(2,2,1)
 imagesc(log10(speccorr.freqs),speccorr.interpdepth,speccorr.pupinterp')
+hold on
+plot(log10(speccorr.freqs([1 end])),-depthinfo.boundaries'*[1 1],'k')
 crameri vik
 LogScale('x',10)
 axis xy
@@ -214,6 +216,8 @@ xlabel('f (Hz)');ylabel('Depth')
 
 subplot(2,2,2)
 imagesc(log10(speccorr.freqs),speccorr.interpdepth,speccorr.EMGinterp')
+hold on
+plot(log10(speccorr.freqs([1 end])),-depthinfo.boundaries'*[1 1],'k')
 LogScale('x',10)
 axis xy
 ColorbarWithAxis([-0.4 0.4],'EMG Corr.')
