@@ -194,7 +194,7 @@ for wh = 2:(size(EMGwhisk.ints.Wh,1)-1)
     
 end
 
-spec = rmfield(spec,'data');
+
 %% Correlation with pupil
  speccorr.freqs = spec.freqs;
  speccorr.channels = spec.channels;
@@ -212,7 +212,7 @@ for cc = 1:length(spec.channels)
     
 end
 %close all
-
+spec = rmfield(spec,'data');
 % Interpolate PSS to normalized depth
 speccorr.interpdepth = linspace(-1,0,100);
 speccorr.pupinterp = interp1(CTXdepth',speccorr.pup',speccorr.interpdepth')';

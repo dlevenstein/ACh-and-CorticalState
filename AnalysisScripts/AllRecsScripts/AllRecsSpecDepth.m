@@ -38,12 +38,13 @@ ONOFF = {'WhOn','WhOFF'};
 WHNWH = {'Wh','NWh'};
 HILO = {'lopup','hipup'};
 LONGSHORT = {'long','short'};
-
+LAYERS = {'L1','L23','L4','L5a','L5b6','WM'};
+depthinfo.boundaries = [0 0.1 0.35 0.5 0.6 0.9 1];
 
 
 
 %%
-figure
+
 for ff = 1:2
 figure
 for gi=1:length(groups{ff})
@@ -51,11 +52,11 @@ for gi=1:length(groups{ff})
 subplot(4,4,gi)
 imagesc(log10(speccorr.(genotypes{gg}).freqs),speccorr.(genotypes{gg}).interpdepth,speccorr.(genotypes{gg}).pupinterp')
 hold on
-%plot(log10(speccorr.(genotypes{gg}).freqs([1 end])),-depthinfo.(genotypes{gg}).boundaries'*[1 1],'k')
+plot(log10(speccorr.(genotypes{gg}).freqs([1 end])),-depthinfo.boundaries'*[1 1],'k')
 
 LogScale('x',10)
 axis xy
-ColorbarWithAxis([-0.5 0.3],'Pupil Corr.')
+ColorbarWithAxis([-0.4 0.3],'Pupil Corr.')
 crameri('vik','pivot',0)
 %clim([-0.35 0.35])
 xlabel('f (Hz)');ylabel('Depth')
@@ -64,10 +65,10 @@ title(genotypes{gg})
 subplot(4,4,gi+4)
 imagesc(log10(speccorr.(genotypes{gg}).freqs),speccorr.(genotypes{gg}).interpdepth,speccorr.(genotypes{gg}).EMGinterp')
 hold on
-%plot(log10(speccorr.(genotypes{gg}).freqs([1 end])),-depthinfo.boundaries'*[1 1],'k')
+plot(log10(speccorr.(genotypes{gg}).freqs([1 end])),-depthinfo.boundaries'*[1 1],'k')
 LogScale('x',10)
 axis xy
-ColorbarWithAxis([-0.5 0.3],'EMG Corr.')
+ColorbarWithAxis([-0.4 0.3],'EMG Corr.')
 crameri('vik','pivot',0)
 xlabel('f (Hz)');ylabel('Depth')
 
@@ -88,14 +89,19 @@ cospamp = [0.025 0.3]*2;
 
 
 
+for ff = 1:2
+    for ww = 1:2
 figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
 for dd = 1:6
-for ww = 1:2
-    subplot(6,4,(dd-1)*4+ww)
+
+    
+    subplot(6,4,(dd-1)*4+gi)
         for pp = 1:2
-        imagesc( SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
-            log10(SPECdepth.freqs),...
-            SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean)
+        imagesc( SPECdepth.(genotypes{gg}).(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
+            log10(SPECdepth.(genotypes{gg}).freqs),...
+            SPECdepth.(genotypes{gg}).(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean)
         hold on; axis xy; box off
         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'w')
         end   
@@ -114,12 +120,20 @@ for ww = 1:2
         title((WHNWH{ww}))
         end
 
-        
-        
-    subplot(6,4,(dd-1)*4+ww+2)
-        imagesc( SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).varbins,...
-            log10(SPECdepth.freqs),...
-            SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean)
+          
+
+end
+end
+NiceSave('DepthSPECandPupPhase',analysisfolder,groupnames{ff})
+
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+for dd = 1:6
+    subplot(6,4,(dd-1)*4+gi)
+        imagesc( SPECdepth.(genotypes{gg}).(LAYERS{dd}).pup.(WHNWH{ww}).varbins,...
+            log10(SPECdepth.(genotypes{gg}).freqs),...
+            SPECdepth.(genotypes{gg}).(LAYERS{dd}).pup.(WHNWH{ww}).mean)
         hold on; axis xy; box off
         LogScale('y',10)
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
@@ -134,14 +148,12 @@ for ww = 1:2
         title((WHNWH{ww}))
         end
         
-       
-        
 end
 end
+NiceSave('DepthSPECandPup',analysisfolder,groupnames{ff})
+end
 
-NiceSave('DepthSPECandPup',figfolder,baseName)
-
-
+end
 
 
 
