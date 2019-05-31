@@ -9,12 +9,12 @@ function [ SPECdepth,OSCdepth,speccorr] = LFPSpecbyDepthAnalysis(basePath,figfol
 %
 %% Load Header
 %Initiate Paths
-%reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
+reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
-%basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
+basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
 %basePath = pwd;
-%figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
+figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
@@ -68,43 +68,57 @@ CTXdepth = -depthinfo.ndepth(inCTX);
 
 
 %% Load only the cortex channels in the spontaneous time window
-downsamplefactor = 2;
-lfp = bz_GetLFP(CTXchans,...
-    'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
-    'intervals',sponttimes);
-lfp.chanlayers = depthinfo.layer(inCTX);
+% downsamplefactor = 2;
+% lfp = bz_GetLFP(CTXchans,...
+%     'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
+%     'intervals',sponttimes);
+% lfp.chanlayers = depthinfo.layer(inCTX);
 %% Calculate Spectrogram on all channels
 clear spec
-%dt = 0.1;
-spec.winsize = 1;
-spec.frange = [0.5 312]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
-spec.nfreqs = 200;
-
-% noverlap = spec.winsize-dt;
-% spec.freqs = logspace(log10(spec.frange(1)),log10(spec.frange(2)),spec.nfreqs);
-% winsize_sf = round(spec.winsize .*lfp.samplingRate);
-% noverlap_sf = round(noverlap.*lfp.samplingRate);
-
-spec.channels = lfp.channels;
+% %dt = 0.1;
+% spec.winsize = 1;
+% spec.frange = [0.5 312]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
+% spec.nfreqs = 200;
+% 
+% % noverlap = spec.winsize-dt;
+% % spec.freqs = logspace(log10(spec.frange(1)),log10(spec.frange(2)),spec.nfreqs);
+% % winsize_sf = round(spec.winsize .*lfp.samplingRate);
+% % noverlap_sf = round(noverlap.*lfp.samplingRate);
+% 
+% spec.channels = lfp.channels;
+spec.channels = CTXchans;
 for cc =1:length(spec.channels)
     cc
+    %FFT
     %[temp,~,spec.timestamps] = spectrogram(single(lfp.data(:,cc)),winsize_sf,noverlap_sf,spec.freqs,lfp.samplingRate);
 %     spec.data(:,:,cc) = log10(abs(temp))';
 %     spec.timestamps = spec.timestamps';
-    
-    [wavespec] = bz_WaveSpec(lfp,'frange',spec.frange,'nfreqs',spec.nfreqs,...
-        'chanID',lfp.channels(cc),'ncyc',10); 
-    spec.data(:,:,cc) = log10(abs(downsample(wavespec.data,5)));
-    spec.timestamps = downsample(wavespec.timestamps,5);
+
+    %Wavelets
+%     [wavespec] = bz_WaveSpec(lfp,'frange',spec.frange,'nfreqs',spec.nfreqs,...
+%         'chanID',lfp.channels(cc),'ncyc',10); 
+%     spec.data(:,:,cc) = log10(abs(downsample(wavespec.data,5)));
+%     spec.timestamps = downsample(wavespec.timestamps,5);
+%     spec.freqs = wavespec.freqs; 
+
+    %Loaded Wavelets
+    load(fullfile(basePath,'WaveSpec_Downsampled',['171209_WT_EM1M3.',num2str(spec.channels(cc)),'.WaveSpec.lfp.mat']));
+    inspont = InIntervals(wavespec.timestamps,sponttimes);
+    spec.data(:,:,cc) = log10(abs(wavespec.data(inspont,:)));
+    spec.timestamps = wavespec.timestamps(inspont,:);
     spec.freqs = wavespec.freqs; 
+
     clear wavespec
 end
+%%
+spec.winsize = 1;
+spec.chanlayers = depthinfo.layer(inCTX);
 %% Take Mean Specgram by layer and calculate irasa
 
 LAYERS = depthinfo.lnames;
 
 for ll = 1:length(LAYERS)
-    layerchans = strcmp(LAYERS{ll},lfp.chanlayers);
+    layerchans = strcmp(LAYERS{ll},spec.chanlayers);
     spec.Layer(:,:,ll) = mean(spec.data(:,:,layerchans),3);
     [~,spec.osci(:,:,ll),spec.oscifreqs] = WaveIRASA(spec.Layer(:,:,ll),...
         'logamp',true,'freqs',spec.freqs);
@@ -186,23 +200,23 @@ end
 for cc = 1:length(spec.channels)
     specvarcorr = bz_LFPSpecToExternalVar( spec.data(:,:,cc),...
         log10(spec.pup),'specparms','input',...
-        'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+        'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25]);
     speccorr.pup(:,cc)  = specvarcorr.corr;
     
     specvarcorr = bz_LFPSpecToExternalVar( spec.data(:,:,cc),...
         log10(spec.EMG),'specparms','input',...
-        'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+        'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25]);
     speccorr.EMG(:,cc)  = specvarcorr.corr;
     
-    close all
+    
 end
-
+%close all
 
 % Interpolate PSS to normalized depth
 speccorr.interpdepth = linspace(-1,0,100);
 speccorr.pupinterp = interp1(CTXdepth',speccorr.pup',speccorr.interpdepth')';
 speccorr.EMGinterp = interp1(CTXdepth',speccorr.EMG',speccorr.interpdepth')';
-%%
+%% Figure: Correlation
 figure
 
 subplot(2,2,1)
@@ -235,7 +249,7 @@ for dd = 1:length(LAYERS)
 for ww = 1:2
 [ ~,SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( spec.Layer(spec.(WHNWH{ww}),:,dd),...
     log10(spec.pup(spec.(WHNWH{ww}),:)),'specparms','input',...
-    'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+    'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25]);
     [~,SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean_osc,SPECdepth.oscfreqs] = ...
         WaveIRASA(SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean','logamp',true,'freqs',spec.freqs);
 
@@ -244,7 +258,7 @@ for ww = 1:2
     [ ~,SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}) ] = bz_LFPSpecToExternalVar(...
         spec.Layer(spec.(WHNWH{ww})&spec.(HILO{pp}),:,dd),...
         spec.pupphase(spec.(WHNWH{ww})&spec.(HILO{pp})),'specparms','input',...
-        'figparms',true,'numvarbins',25,'varlim',[-pi pi]);
+        'figparms',[],'numvarbins',25,'varlim',[-pi pi]);
     [~,SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean_osc,SPECdepth.oscfreqs] = ...
         WaveIRASA(SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean','logamp',true,'freqs',spec.freqs);
 
@@ -256,7 +270,7 @@ for oo = 1:2
         [ ~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}) ] = bz_LFPSpecToExternalVar(...
             spec.Layer(spec.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
             spec.whtime.(ONOFF{oo})(spec.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
-            'figparms',true,'numvarbins',80,'varlim',[-window window]);
+            'figparms',[],'numvarbins',80,'varlim',[-window window]);
         [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean_osc,SPECdepth.oscfreqs] = ...
             WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean','logamp',true,'freqs',spec.freqs);
     end
@@ -264,7 +278,7 @@ for oo = 1:2
     [ ~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
         spec.Layer(:,:,dd),...
         spec.whtime.(ONOFF{oo}),'specparms','input',...
-        'figparms',true,'numvarbins',200,'varlim',[-window window]);
+        'figparms',[],'numvarbins',200,'varlim',[-window window]);
     [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean_osc,SPECdepth.oscfreqs] = ...
         WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean','logamp',true,'freqs',spec.freqs);
 end
@@ -272,7 +286,7 @@ end
     
 [ ~,SPECdepth.(LAYERS{dd}).EMG ] = bz_LFPSpecToExternalVar( spec.Layer(:,:,dd),...
     log10(spec.EMG),'specparms','input',...
-    'figparms',true,'numvarbins',40,'varlim',[-1.7 0.9]);
+    'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9]);
 [~,SPECdepth.(LAYERS{dd}).EMG.mean_osc,SPECdepth.oscfreqs] = ...
     WaveIRASA(SPECdepth.(LAYERS{dd}).EMG.mean','logamp',true,'freqs',spec.freqs);
 end
@@ -493,13 +507,13 @@ for dd = 1:length(LAYERS)
 for ww = 1:2
 [ ~,OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( spec.osci(spec.(WHNWH{ww}),:,dd),...
     log10(spec.pup(spec.(WHNWH{ww}),:)),'specparms','input',...
-    'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+    'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25]);
 
     for pp= 1:2
     [ ~,OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}) ] = bz_LFPSpecToExternalVar(...
         spec.osci(spec.(WHNWH{ww})&spec.(HILO{pp}),:,dd),...
         spec.pupphase(spec.(WHNWH{ww})&spec.(HILO{pp})),'specparms','input',...
-        'figparms',true,'numvarbins',20,'varlim',[-pi pi]);
+        'figparms',[],'numvarbins',20,'varlim',[-pi pi]);
 
     end
 end
@@ -509,19 +523,19 @@ for oo = 1:2
         [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}) ] = bz_LFPSpecToExternalVar(...
             spec.osci(spec.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
             spec.whtime.(ONOFF{oo})(spec.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
-            'figparms',true,'numvarbins',40,'varlim',[-window window]);
+            'figparms',[],'numvarbins',40,'varlim',[-window window]);
     end
     
     [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
         spec.osci(:,:,dd),...
         spec.whtime.(ONOFF{oo}),'specparms','input',...
-        'figparms',true,'numvarbins',200,'varlim',[-window window]);
+        'figparms',[],'numvarbins',200,'varlim',[-window window]);
 end
 
     
 [ ~,OSCdepth.(LAYERS{dd}).EMG ] = bz_LFPSpecToExternalVar( spec.osci(:,:,dd),...
     log10(spec.EMG),'specparms','input',...
-    'figparms',true,'numvarbins',40,'varlim',[-1.7 0.9]);
+    'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9]);
 end
 
   %%
@@ -627,7 +641,5 @@ end
 NiceSave('DepthOSCandWhisk',figfolder,baseName)
 
 
-%%
-figure
-imagesc(spec.osci(:,:,2))
+
 
