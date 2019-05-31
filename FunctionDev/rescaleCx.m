@@ -94,3 +94,4 @@ rescaled.ndepth = normdepth;
 rescaled.channels = usechannels;
 rescaled.layer = layer;
 rescaled.lnames = lnames;
+rescaled.boundaries = lnorm;
