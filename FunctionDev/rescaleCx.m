@@ -84,7 +84,7 @@ end
 
 
 for ii = 1:length(lnames)
-    inlayerchans = normdepth>lnorm(ii) & normdepth<lnorm(ii+1);
+    inlayerchans = normdepth>=lnorm(ii) & normdepth<lnorm(ii+1);
     layer(inlayerchans) = lnames(ii);
 end
 

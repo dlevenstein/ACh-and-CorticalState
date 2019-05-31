@@ -75,7 +75,7 @@ lfp = bz_GetLFP(CTXchans,...
 lfp.chanlayers = depthinfo.layer(inCTX);
 %% Calculate Spectrogram on all channels
 clear spec
-dt = 0.1;
+%dt = 0.1;
 spec.winsize = 1;
 spec.frange = [0.5 312]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
 spec.nfreqs = 200;
@@ -92,7 +92,8 @@ for cc =1:length(spec.channels)
 %     spec.data(:,:,cc) = log10(abs(temp))';
 %     spec.timestamps = spec.timestamps';
     
-    [wavespec] = bz_WaveSpec(lfp,'frange',spec.frange,'nfreqs',spec.nfreqs,'chanID',lfp.channels(cc)); 
+    [wavespec] = bz_WaveSpec(lfp,'frange',spec.frange,'nfreqs',spec.nfreqs,...
+        'chanID',lfp.channels(cc),'ncyc',10); 
     spec.data(:,:,cc) = log10(abs(downsample(wavespec.data,5)));
     spec.timestamps = downsample(wavespec.timestamps,5);
     spec.freqs = wavespec.freqs; 
@@ -152,7 +153,7 @@ LONGSHORT = {'long','short'};
 
 %% Get Whisk On/Offset aligned spec, separated by long/short whisks
 
-window = 5; %s
+window = 4; %s
 durthresh = 1; %
 spec.whtime.WhOn = nan(size(spec.timestamps));
 spec.whtime.WhOFF = nan(size(spec.timestamps));
@@ -196,7 +197,7 @@ for ww = 1:2
     [ ~,SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}) ] = bz_LFPSpecToExternalVar(...
         spec.Layer(spec.(WHNWH{ww})&spec.(HILO{pp}),:,dd),...
         spec.pupphase(spec.(WHNWH{ww})&spec.(HILO{pp})),'specparms','input',...
-        'figparms',true,'numvarbins',20,'varlim',[-pi pi]);
+        'figparms',true,'numvarbins',25,'varlim',[-pi pi]);
     [~,SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean_osc,SPECdepth.oscfreqs] = ...
         WaveIRASA(SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean','logamp',true,'freqs',spec.freqs);
 
@@ -208,7 +209,7 @@ for oo = 1:2
         [ ~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}) ] = bz_LFPSpecToExternalVar(...
             spec.Layer(spec.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
             spec.whtime.(ONOFF{oo})(spec.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
-            'figparms',true,'numvarbins',40,'varlim',[-window window]);
+            'figparms',true,'numvarbins',80,'varlim',[-window window]);
         [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean_osc,SPECdepth.oscfreqs] = ...
             WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean','logamp',true,'freqs',spec.freqs);
     end
@@ -216,7 +217,7 @@ for oo = 1:2
     [ ~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
         spec.Layer(:,:,dd),...
         spec.whtime.(ONOFF{oo}),'specparms','input',...
-        'figparms',true,'numvarbins',40,'varlim',[-window window]);
+        'figparms',true,'numvarbins',80,'varlim',[-window window]);
     [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean_osc,SPECdepth.oscfreqs] = ...
         WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean','logamp',true,'freqs',spec.freqs);
 end
@@ -252,7 +253,7 @@ for ww = 1:2
         LogScale('y',10)
         
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([1.5 3.5])
+        clim([1.5 4])
         xlim([-pi 3*pi])
         if dd == 6
         xlabel('Pupil Phase');
@@ -273,7 +274,7 @@ for ww = 1:2
         hold on; axis xy; box off
         LogScale('y',10)
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([1.5 3.5])
+        clim([1.5 4])
         if dd == 6
         xlabel('Pupil Size');
         end
@@ -303,7 +304,7 @@ subplot(6,4,(dd-1)*4+oo)
             SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean)
         hold on; axis xy; box off
         plot([0 0],[0 max(SPECdepth.freqs)],'w')
-        clim([1.5 3.5])
+        clim([1.5 4])
         LogScale('y',10)
         if dd == 6
         xlabel(['t - ',(ONOFF{oo})])
@@ -322,8 +323,8 @@ subplot(6,4,(dd-1)*4+4)
             SPECdepth.(LAYERS{dd}).EMG.mean)
         hold on; axis xy; box off
         plot(SPECdepth.(LAYERS{dd}).EMG.varbins,SPECdepth.(LAYERS{dd}).EMG.vardist*1000,'w')
-        plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
-        clim([1.5 3.5])
+        %plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
+        clim([1.5 4])
         ylabel('Freq');
         LogScale('y',10)
                 if dd == 6
