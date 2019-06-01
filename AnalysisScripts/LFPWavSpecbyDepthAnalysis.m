@@ -122,9 +122,11 @@ for ll = 1:length(LAYERS)
     spec.Layer(:,:,ll) = mean(spec.data(:,:,layerchans),3);
     [~,spec.osci(:,:,ll),spec.oscifreqs] = WaveIRASA(spec.Layer(:,:,ll),...
         'logamp',true,'freqs',spec.freqs);
+    % Median Normalize Spectrogram
+    spec.Layer(:,:,ll) = NormToInt(spec.Layer(:,:,ll),'median');
 end
 
-%% Calculate IRASA on layer-mean specgram
+
 
 %% Align Specgram by behavior
 maxtimejump = 1; %s
@@ -299,7 +301,8 @@ end
 cospamp = [0.025 0.3]*2;
 
 
-
+speclim = [2 4];
+speclim = [0.9 1.1];
 
 figure
 for dd = 1:6
@@ -313,9 +316,10 @@ for ww = 1:2
         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'w')
         end   
         LogScale('y',10)
-        
+        ylim([0 2.5])
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([2 4])
+        clim(speclim)
+        %colorbar
         xlim([-pi 3*pi])
         if dd == 6
         xlabel('Pupil Phase');
@@ -336,7 +340,8 @@ for ww = 1:2
         hold on; axis xy; box off
         LogScale('y',10)
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([2 4])
+        clim(speclim)
+        ylim([0 2.5])
         if dd == 6
         xlabel('Pupil Size');
         end
@@ -366,7 +371,8 @@ subplot(6,4,(dd-1)*4+oo)
             SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean)
         hold on; axis xy; box off
         plot([0 0],[0 max(SPECdepth.freqs)],'w')
-        clim([1.5 4])
+        clim(speclim)
+        ylim([0 2.5])
         LogScale('y',10)
         if dd == 6
         xlabel(['t - ',(ONOFF{oo})])
@@ -386,7 +392,8 @@ subplot(6,4,(dd-1)*4+4)
         hold on; axis xy; box off
         plot(SPECdepth.(LAYERS{dd}).EMG.varbins,SPECdepth.(LAYERS{dd}).EMG.vardist*1000,'w')
         %plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
-        clim([2 4])
+        clim(speclim)
+        ylim([0 2.5])
         ylabel('Freq');
         LogScale('y',10)
                 if dd == 6
