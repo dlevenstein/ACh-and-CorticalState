@@ -490,6 +490,8 @@ for ww = 1:2
     crameri bilbao
 end
 end
+
+NiceSave('LayerPSSandBehavior',figfolder,baseName)
 %%
 % 
 % %% Mean depth osci by pupil size, phase and whisking
