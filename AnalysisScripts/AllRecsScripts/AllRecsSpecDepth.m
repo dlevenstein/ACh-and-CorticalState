@@ -44,7 +44,7 @@ depthinfo.boundaries = [0 0.1 0.35 0.5 0.6 0.9 1];
 
 
 %%
-
+%band = [
 for ff = 1:2
 figure
 for gi=1:length(groups{ff})
@@ -113,7 +113,7 @@ for dd = 1:6
         if dd == 6
         xlabel('Pupil Phase');
         end
-        if ww == 1
+        if gi == 1
             ylabel({LAYERS{dd},'Freq'})
         end
         if dd == 1
@@ -141,8 +141,8 @@ for dd = 1:6
         if dd == 6
         xlabel('Pupil Size');
         end
-        if ww == 1
-            ylabel('Freq')
+        if gi == 1
+            ylabel({LAYERS{dd},'Freq'})
         end
         if dd == 1
         title({WHNWH{ww},genotypes{gg}})
@@ -183,7 +183,7 @@ for dd = 1:6
         if dd == 6
         xlabel('Pupil Phase');
         end
-        if ww == 1
+        if gi == 1
             ylabel({LAYERS{dd},'Freq'})
         end
         if dd == 1
@@ -213,8 +213,8 @@ for dd = 1:6
         if dd == 6
         xlabel('Pupil Size');
         end
-        if ww == 1
-            ylabel('Freq')
+        if gi == 1
+            ylabel({LAYERS{dd},'Freq'})
         end
         if dd == 1
         title({WHNWH{ww},genotypes{gg}})

@@ -251,8 +251,8 @@ for ww = 1:2
 [ ~,SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( spec.Layer(spec.(WHNWH{ww}),:,dd),...
     log10(spec.pup(spec.(WHNWH{ww}),:)),'specparms','input',...
     'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25]);
-    [~,SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean_osc,SPECdepth.oscfreqs] = ...
-        WaveIRASA(SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean','logamp',true,'freqs',spec.freqs);
+%     [~,SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean_osc,SPECdepth.oscfreqs] = ...
+%         WaveIRASA(SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean','logamp',true,'freqs',spec.freqs);
 
 
     for pp= 1:2
@@ -260,8 +260,8 @@ for ww = 1:2
         spec.Layer(spec.(WHNWH{ww})&spec.(HILO{pp}),:,dd),...
         spec.pupphase(spec.(WHNWH{ww})&spec.(HILO{pp})),'specparms','input',...
         'figparms',[],'numvarbins',25,'varlim',[-pi pi]);
-    [~,SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean_osc,SPECdepth.oscfreqs] = ...
-        WaveIRASA(SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean','logamp',true,'freqs',spec.freqs);
+%     [~,SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean_osc,SPECdepth.oscfreqs] = ...
+%         WaveIRASA(SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean','logamp',true,'freqs',spec.freqs);
 
     end
 end
@@ -272,24 +272,24 @@ for oo = 1:2
             spec.Layer(spec.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
             spec.whtime.(ONOFF{oo})(spec.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
             'figparms',[],'numvarbins',80,'varlim',[-window window]);
-        [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean_osc,SPECdepth.oscfreqs] = ...
-            WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean','logamp',true,'freqs',spec.freqs);
+%         [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean_osc,SPECdepth.oscfreqs] = ...
+%             WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean','logamp',true,'freqs',spec.freqs);
     end
     
     [ ~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
         spec.Layer(:,:,dd),...
         spec.whtime.(ONOFF{oo}),'specparms','input',...
         'figparms',[],'numvarbins',400,'varlim',[-window window]);
-    [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean_osc,SPECdepth.oscfreqs] = ...
-        WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean','logamp',true,'freqs',spec.freqs);
+%     [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean_osc,SPECdepth.oscfreqs] = ...
+%         WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean','logamp',true,'freqs',spec.freqs);
 end
 
     
 [ ~,SPECdepth.(LAYERS{dd}).EMG ] = bz_LFPSpecToExternalVar( spec.Layer(:,:,dd),...
     log10(spec.EMG),'specparms','input',...
     'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9]);
-[~,SPECdepth.(LAYERS{dd}).EMG.mean_osc,SPECdepth.oscfreqs] = ...
-    WaveIRASA(SPECdepth.(LAYERS{dd}).EMG.mean','logamp',true,'freqs',spec.freqs);
+% [~,SPECdepth.(LAYERS{dd}).EMG.mean_osc,SPECdepth.oscfreqs] = ...
+%     WaveIRASA(SPECdepth.(LAYERS{dd}).EMG.mean','logamp',true,'freqs',spec.freqs);
 end
 
 
@@ -396,110 +396,110 @@ subplot(6,4,(dd-1)*4+4)
 end
 NiceSave('DepthSPECandWhisk',figfolder,baseName)
 
-
-  %%
-  
-  cosx = linspace(-pi,pi,100);
-cospamp = [0.025 0.3]*2;
-
-
-
-
-figure
-for dd = 1:6
-for ww = 1:2
-    subplot(6,4,(dd-1)*4+ww)
-        for pp = 1:2
-        imagesc( SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
-            log10(SPECdepth.oscfreqs),...
-            SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean_osc')
-        hold on; axis xy; box off
-        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'w')
-        end   
-        LogScale('y',10)
-        
-        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([-0.2 0.2])
-        xlim([-pi 3*pi])
-        if dd == 6
-        xlabel('Pupil Phase');
-        end
-        if ww == 1
-            ylabel({LAYERS{dd},'Freq'})
-        end
-        if dd == 1
-        title((WHNWH{ww}))
-        end
-
-        
-        
-    subplot(6,4,(dd-1)*4+ww+2)
-        imagesc( SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).varbins,...
-            log10(SPECdepth.oscfreqs),...
-            SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean_osc')
-        hold on; axis xy; box off
-        LogScale('y',10)
-        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([-0.2 0.2])
-        if dd == 6
-        xlabel('Pupil Size');
-        end
-        if ww == 1
-            ylabel('Freq')
-        end
-        if dd == 1
-        title((WHNWH{ww}))
-        end
-        
-       
-        
-end
-end
-
-NiceSave('DepthSPECremandPup',figfolder,baseName)
-
 %%
-
-figure
-for dd = 1:6
-for oo = 1:2
-
-subplot(6,4,(dd-1)*4+oo)
-        imagesc( SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.varbins,...
-            log10(SPECdepth.oscfreqs),...
-            SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean_osc')
-        hold on; axis xy; box off
-        plot([0 0],[0 max(SPECdepth.oscfreqs)],'w')
-        clim([-0.2 0.2])
-        LogScale('y',10)
-        if dd == 6
-        xlabel(['t - ',(ONOFF{oo})])
-        end
-        if oo == 1
-            ylabel({LAYERS{dd},'Freq'})
-        end
-        if dd == 1
-        title((ONOFF{oo}))
-        end
-end
- 
-subplot(6,4,(dd-1)*4+4)
-        imagesc( SPECdepth.(LAYERS{dd}).EMG.varbins,...
-            log10(SPECdepth.oscfreqs),...
-            SPECdepth.(LAYERS{dd}).EMG.mean_osc')
-        hold on; axis xy; box off
-        plot(SPECdepth.(LAYERS{dd}).EMG.varbins,SPECdepth.(LAYERS{dd}).EMG.vardist*1000,'w')
-        plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.oscfreqs)],'k--')
-        clim([-0.2 0.2])
-        LogScale('y',10)
-        ylabel('Freq');
-                if dd == 6
-        xlabel('EMG')
-        end
-        
-end
-NiceSave('DepthSPECremandWhisk',figfolder,baseName)
-
+%   %%
+%   
+%   cosx = linspace(-pi,pi,100);
+% cospamp = [0.025 0.3]*2;
+% 
+% 
+% 
+% 
+% figure
+% for dd = 1:6
+% for ww = 1:2
+%     subplot(6,4,(dd-1)*4+ww)
+%         for pp = 1:2
+%         imagesc( SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
+%             log10(SPECdepth.oscfreqs),...
+%             SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean_osc')
+%         hold on; axis xy; box off
+%         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'w')
+%         end   
+%         LogScale('y',10)
+%         
+%         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+%         clim([-0.2 0.2])
+%         xlim([-pi 3*pi])
+%         if dd == 6
+%         xlabel('Pupil Phase');
+%         end
+%         if ww == 1
+%             ylabel({LAYERS{dd},'Freq'})
+%         end
+%         if dd == 1
+%         title((WHNWH{ww}))
+%         end
+% 
+%         
+%         
+%     subplot(6,4,(dd-1)*4+ww+2)
+%         imagesc( SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).varbins,...
+%             log10(SPECdepth.oscfreqs),...
+%             SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean_osc')
+%         hold on; axis xy; box off
+%         LogScale('y',10)
+%         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+%         clim([-0.2 0.2])
+%         if dd == 6
+%         xlabel('Pupil Size');
+%         end
+%         if ww == 1
+%             ylabel('Freq')
+%         end
+%         if dd == 1
+%         title((WHNWH{ww}))
+%         end
+%         
+%        
+%         
+% end
+% end
+% 
+% NiceSave('DepthSPECremandPup',figfolder,baseName)
+% 
+% %%
+% 
+% figure
+% for dd = 1:6
+% for oo = 1:2
+% 
+% subplot(6,4,(dd-1)*4+oo)
+%         imagesc( SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.varbins,...
+%             log10(SPECdepth.oscfreqs),...
+%             SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean_osc')
+%         hold on; axis xy; box off
+%         plot([0 0],[0 max(SPECdepth.oscfreqs)],'w')
+%         clim([-0.2 0.2])
+%         LogScale('y',10)
+%         if dd == 6
+%         xlabel(['t - ',(ONOFF{oo})])
+%         end
+%         if oo == 1
+%             ylabel({LAYERS{dd},'Freq'})
+%         end
+%         if dd == 1
+%         title((ONOFF{oo}))
+%         end
+% end
+%  
+% subplot(6,4,(dd-1)*4+4)
+%         imagesc( SPECdepth.(LAYERS{dd}).EMG.varbins,...
+%             log10(SPECdepth.oscfreqs),...
+%             SPECdepth.(LAYERS{dd}).EMG.mean_osc')
+%         hold on; axis xy; box off
+%         plot(SPECdepth.(LAYERS{dd}).EMG.varbins,SPECdepth.(LAYERS{dd}).EMG.vardist*1000,'w')
+%         plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.oscfreqs)],'k--')
+%         clim([-0.2 0.2])
+%         LogScale('y',10)
+%         ylabel('Freq');
+%                 if dd == 6
+%         xlabel('EMG')
+%         end
+%         
+% end
+% NiceSave('DepthSPECremandWhisk',figfolder,baseName)
+% 
 
 %%  Mean depth spec by pupil size, phase and whisking
 %prepare for LFPspec....
