@@ -25,16 +25,19 @@ groupnames = {'KOs','WTctr'};
 for gg = 1:6
     PSScomponents.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSScomponents(genotypeidx==gg),3,'mean',true);
     PSSdepth.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSSdepth(genotypeidx==gg),3,'mean',true);
+    PSSdist.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSSdist(genotypeidx==gg),3,'mean',true);
 end
 
 PSScomponents.AllWT = bz_CollapseStruct(SlopeDepth.PSScomponents(strcmp(WTKOtype,'WT')),3,'mean',true);
 PSSdepth.AllWT = bz_CollapseStruct(SlopeDepth.PSSdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
+PSSdist.AllWT = bz_CollapseStruct(SlopeDepth.PSSdist(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
 
 WHNWH = {'Wh','NWh'};
 HILO = {'lopup','hipup'};
-
+LAYERS = {'L1','L23','L4','L5a','L5b6','WM'};
+depthinfo.boundaries = [0 0.1 0.35 0.5 0.6 0.9 1];
 %%
 cosx = linspace(-pi,pi,100);
 cospamp = [0.025 0.3];
@@ -53,8 +56,9 @@ for ww = 1:2
         hold on; axis xy; box off
         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1,'k')
         end   
-        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
+        %colorbar
         xlim([-pi 3*pi])
         
         if ww == 2
@@ -74,7 +78,7 @@ for ww = 1:2
              PSSdepth.(genotypes{gg}).depth,...
             PSSdepth.(genotypes{gg}).pup.(WHNWH{ww}).mean_interp)
         hold on; axis xy; box off
-        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
         if ww == 2
             xlabel('Pupil Size');
@@ -86,19 +90,19 @@ for ww = 1:2
 end
 
 subplot(5,4,gi+16)
-        imagesc( PSSdepth.(genotypes{gg}).whOn.varbins,...
+        imagesc( PSSdepth.(genotypes{gg}).WhOn.all.varbins,...
             PSSdepth.(genotypes{gg}).depth,...
-            PSSdepth.(genotypes{gg}).whOn.mean_interp)
+            PSSdepth.(genotypes{gg}).WhOn.all.mean_interp)
         hold on; axis xy; box off
         plot([0 0],[-1 0],'w')
-        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
         xlabel('t (s - relative to WhOn');ylabel('Depth')
 
 
 
 end
-NiceSave('DepthPSSandBeh',analysisfolder,groupnames{ff})
+NiceSave('DepthPSSandBeh',analysisfolder,groupnames{ff},'figtype','epsc')
 end
 
 %%
@@ -132,156 +136,119 @@ subplot(3,4,4+gi)
     ylim([-0.25 0.4])
 end
 
-NiceSave('PSSDepthComponents',analysisfolder,groupnames{ff})
+NiceSave('PSSDepthComponents',analysisfolder,groupnames{ff},'figtype','epsc')
 end
+
 
 %%
 
+%%
+cosx = linspace(-pi,pi,100);
+cospamp = [0.05 0.5];
+
 
 for ff = 1:2
-    figure
-    for uu = 1:2; for gi=1:length(groups{ff})
+    for ww = 1:2
+figure
+for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
-    for ww = 1:2 
-    subplot(4,4,(ww-1)*4+gi+(uu-1)*8)
-        colormap(gca,UDcmap{uu})
     
+for ll = 1:length(LAYERS)
+
+    subplot(6,4,(ll-1)*4+gi)
         for pp = 1:2
-        imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Xbins+2*pi*(pp-1),...
-            ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Ybins,...
-            ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).pYX')
+        imagesc( PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Xbins+2*pi*(pp-1),...
+            PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Ybins,...
+            PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).pYX')
         hold on; axis xy; box off
-        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1.5,'k')
+        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-3.1,'w')
+        end   
+        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        xlim([-pi 3*pi])
+        
+        %title(genotypes{gg})
+    crameri bilbao
+        if ll == 6
+        xlabel('Pupil Phase');
         end
-        LogScale('y',10)
-         xlim([-pi 3*pi])
-         %colorbar
-         
-         caxis([0 0.08])
-        if ww == 1 & uu ==1
-            title(genotypes{gg})
+        if gi == 1
+            ylabel({LAYERS{ll},'PSS'})
         end
-        if ww == 2
-            xlabel('Pup Phase')
+        if ll == 1
+        title({WHNWH{ww},genotypes{gg}})
         end
-        if gi==1
-            ylabel({(WHNWH{ww}),[(UPDOWN{uu}),' Dur (s)']})
-        end
-    
-end;end;end
-
-NiceSave('UPDOWNDurbyPupCycle',analysisfolder,groupnames{ff})
-
 end
 end
 
+NiceSave(['PSSDistPupCycle_',WHNWH{ww}],analysisfolder,groupnames{ff},'figtype','epsc')
 
-%% Figure: return maps
-for ff = 1:2
-
-figure
-for gi=1:length(groups{ff})
-    gg = groups{ff}(gi);
-    for ww = 1:2; for uu = 1:2
-    %subplot(4,4,9+(uu-1)*4+(ww-1)*2)
-    subplot(4,4,(ww-1)*8+(uu-1)*4+gi)
-    colormap(gca,UDcmap{uu})
-    imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Ybins,...
-        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).(HILO{pp}).(WHNWH{ww}).Ybins,...
-        ReturnHist.(genotypes{gg}).(UPDOWN{uu}).allpup.(WHNWH{ww}))
-    axis xy
-    LogScale('xy',10)
-    if uu==2 & ww == 2
-        xlabel('Dur_n (s)')
     end
-    if gi == 1
-        ylabel({(WHNWH{ww}),'Dur_n_+_1 (s)'})
-    end
-        if ww == 1 & uu==1
-            %ylabel({genotypes{gg},[(UPDOWN{uu}),' Dur (s)']})
-            title(genotypes{gg})
-        end
-    
-            end;end
 end
-
-NiceSave(['Return Maps'],analysisfolder,groupnames{ff})
-
-end
-
 
 %%
 for ff = 1:2
-
+    for ww = 1:2
 figure
 for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
-    for ww = 1:2; for uu = 1:2
-    subplot(4,4,(ww-1)*8+(uu-1)*4+gi)
-    colormap(gca,UDcmap{uu})
-    imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).Xbins,...
-        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).Ybins,...
-        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).pYX')
-    hold on
-%     plot(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).Xbins([1 end]),...
-%         log10(PSS.winsize*[1 1]),'k--')
-    plot(PSShist.(genotypes{gg}).bins,PSShist.(genotypes{gg}).allpup.(WHNWH{ww})*8+...
-        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).PSS.(WHNWH{ww}).Ybins(1)-0.5,'k','linewidth',1)
-    axis xy; box off;axis tight
-   % xlim([-1.5 1])
-    LogScale('y',10)
-    %colorbar
-    caxis([0 0.1])
-    if uu==2 & ww == 2
-        xlabel('PSS')
-    end
-    if gi == 1
-        ylabel({(WHNWH{ww}),'Dur (s)'})
-    end
-        if ww == 1 & uu==1
-            %ylabel({genotypes{gg},[(UPDOWN{uu}),' Dur (s)']})
-            title(genotypes{gg})
+    
+for ll = 1:length(LAYERS)
+    subplot(6,4,(ll-1)*4+gi)
+        imagesc( PSSdist.(genotypes{gg}).(LAYERS{ll}).pup.(WHNWH{ww}).Xbins,...
+            PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Ybins,...
+            PSSdist.(genotypes{gg}).(LAYERS{ll}).pup.(WHNWH{ww}).pYX')
+        hold on; axis xy; box off
+        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        if ll == 6
+        xlabel('Pupil Size');
         end
-       
-            end;end
+        if gi == 1
+            ylabel({LAYERS{ll},'PSS'})
+        end
+        if ll == 1
+        title({WHNWH{ww},genotypes{gg}})
+        end
+   crameri bilbao
+      
+end
 end
 
-NiceSave('DurByPSS',analysisfolder,groupnames{ff})
+NiceSave(['PSSDistPupSize_',WHNWH{ww}],analysisfolder,groupnames{ff},'figtype','epsc')
 
+    end
 end
-
-
-%% UD by pupil size
-
+%%
+        
 for ff = 1:2
 
 figure
 for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
-    for ww = 1:2; for uu = 1:2
-    subplot(4,4,(ww-1)*8+(uu-1)*4+gi)
-    colormap(gca,UDcmap{uu})
-    imagesc(ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).pupmag.(WHNWH{ww}).Xbins,...
-        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).pupmag.(WHNWH{ww}).Ybins,...
-        ConditionalUPDOWN.(genotypes{gg}).(UPDOWN{uu}).pupmag.(WHNWH{ww}).pYX')
-    axis xy
-   % xlim([-1.5 1])
-    LogScale('y',10)
-    caxis([0 0.08])
-    if uu==2 & ww == 2
-        xlabel('Pupil (log)')
-    end
-    if gi == 1
-        ylabel({(WHNWH{ww}),'Dur (s)'})
-    end
-        if ww == 1 & uu==1
-            %ylabel({genotypes{gg},[(UPDOWN{uu}),' Dur (s)']})
-            title(genotypes{gg})
+    
+for ll = 1:length(LAYERS)
+    subplot(6,4,(ll-1)*4+gi)
+        imagesc( PSSdist.(genotypes{gg}).(LAYERS{ll}).EMG.Xbins,...
+            PSSdist.(genotypes{gg}).(LAYERS{ll}).EMG.Ybins,...
+            PSSdist.(genotypes{gg}).(LAYERS{ll}).EMG.pYX')
+        hold on; axis xy; box off
+        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        colorbar
+        if ll == 6
+        xlabel('EMG');
         end
-       
-            end;end
+        if gi == 1
+            ylabel({LAYERS{ll},'PSS'})
+        end
+        if ll == 1
+        title(genotypes{gg})
+        end
+        
+    crameri bilbao
 end
 
-NiceSave('DurByPupSize',analysisfolder,groupnames{ff})
 
+end
+NiceSave('PSSDistEMG',analysisfolder,groupnames{ff},'figtype','epsc')
+
+%NiceSave('LayerPSSandBehavior',analysisfolder,groupnames{ff})
 end

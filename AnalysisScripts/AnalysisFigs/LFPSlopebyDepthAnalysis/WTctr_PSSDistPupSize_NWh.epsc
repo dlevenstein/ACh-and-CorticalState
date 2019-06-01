@@ -1,0 +1,4878 @@
+%!PS-Adobe-3.0 EPSF-3.0
+%%Creator: (MATLAB, The Mathworks, Inc. Version 9.2.0.556344 \(R2017a\). Operating System: Mac OS X)
+%%Title: (/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSlopebyDepthAnalysis/WTctr_PSSDistPupSize_NWh.epsc)
+%%CreationDate: 2019-06-01T17:48:40
+%%Pages: (atend)
+%%BoundingBox:    61    37   554   596
+%%LanguageLevel: 3
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset (Apache XML Graphics Std ProcSet) 1.2 0
+%%Version: 1.2 0
+%%Copyright: (Copyright 2001-2003,2010 The Apache Software Foundation. License terms: http://www.apache.org/licenses/LICENSE-2.0)
+/bd{bind def}bind def
+/ld{load def}bd
+/GR/grestore ld
+/M/moveto ld
+/LJ/setlinejoin ld
+/C/curveto ld
+/f/fill ld
+/LW/setlinewidth ld
+/GC/setgray ld
+/t/show ld
+/N/newpath ld
+/CT/concat ld
+/cp/closepath ld
+/S/stroke ld
+/L/lineto ld
+/CC/setcmykcolor ld
+/A/ashow ld
+/GS/gsave ld
+/RC/setrgbcolor ld
+/RM/rmoveto ld
+/ML/setmiterlimit ld
+/re {4 2 roll M
+1 index 0 rlineto
+0 exch rlineto
+neg 0 rlineto
+cp } bd
+/_ctm matrix def
+/_tm matrix def
+/BT { _ctm currentmatrix pop matrix _tm copy pop 0 0 moveto } bd
+/ET { _ctm setmatrix } bd
+/iTm { _ctm setmatrix _tm concat } bd
+/Tm { _tm astore pop iTm 0 0 moveto } bd
+/ux 0.0 def
+/uy 0.0 def
+/F {
+  /Tp exch def
+  /Tf exch def
+  Tf findfont Tp scalefont setfont
+  /cf Tf def  /cs Tp def
+} bd
+/ULS {currentpoint /uy exch def /ux exch def} bd
+/ULE {
+  /Tcx currentpoint pop def
+  gsave
+  newpath
+  cf findfont cs scalefont dup
+  /FontMatrix get 0 get /Ts exch def /FontInfo get dup
+  /UnderlinePosition get Ts mul /To exch def
+  /UnderlineThickness get Ts mul /Tt exch def
+  ux uy To add moveto  Tcx uy To add lineto
+  Tt setlinewidth stroke
+  grestore
+} bd
+/OLE {
+  /Tcx currentpoint pop def
+  gsave
+  newpath
+  cf findfont cs scalefont dup
+  /FontMatrix get 0 get /Ts exch def /FontInfo get dup
+  /UnderlinePosition get Ts mul /To exch def
+  /UnderlineThickness get Ts mul /Tt exch def
+  ux uy To add cs add moveto Tcx uy To add cs add lineto
+  Tt setlinewidth stroke
+  grestore
+} bd
+/SOE {
+  /Tcx currentpoint pop def
+  gsave
+  newpath
+  cf findfont cs scalefont dup
+  /FontMatrix get 0 get /Ts exch def /FontInfo get dup
+  /UnderlinePosition get Ts mul /To exch def
+  /UnderlineThickness get Ts mul /Tt exch def
+  ux uy To add cs 10 mul 26 idiv add moveto Tcx uy To add cs 10 mul 26 idiv add lineto
+  Tt setlinewidth stroke
+  grestore
+} bd
+/QT {
+/Y22 exch store
+/X22 exch store
+/Y21 exch store
+/X21 exch store
+currentpoint
+/Y21 load 2 mul add 3 div exch
+/X21 load 2 mul add 3 div exch
+/X21 load 2 mul /X22 load add 3 div
+/Y21 load 2 mul /Y22 load add 3 div
+/X22 load /Y22 load curveto
+} bd
+/SSPD {
+dup length /d exch dict def
+{
+/v exch def
+/k exch def
+currentpagedevice k known {
+/cpdv currentpagedevice k get def
+v cpdv ne {
+/upd false def
+/nullv v type /nulltype eq def
+/nullcpdv cpdv type /nulltype eq def
+nullv nullcpdv or
+{
+/upd true def
+} {
+/sametype v type cpdv type eq def
+sametype {
+v type /arraytype eq {
+/vlen v length def
+/cpdvlen cpdv length def
+vlen cpdvlen eq {
+0 1 vlen 1 sub {
+/i exch def
+/obj v i get def
+/cpdobj cpdv i get def
+obj cpdobj ne {
+/upd true def
+exit
+} if
+} for
+} {
+/upd true def
+} ifelse
+} {
+v type /dicttype eq {
+v {
+/dv exch def
+/dk exch def
+/cpddv cpdv dk get def
+dv cpddv ne {
+/upd true def
+exit
+} if
+} forall
+} {
+/upd true def
+} ifelse
+} ifelse
+} if
+} ifelse
+upd true eq {
+d k v put
+} if
+} if
+} if
+} forall
+d length 0 gt {
+d setpagedevice
+} if
+} bd
+/RE { % /NewFontName [NewEncodingArray] /FontName RE -
+  findfont dup length dict begin
+  {
+    1 index /FID ne
+    {def} {pop pop} ifelse
+  } forall
+  /Encoding exch def
+  /FontName 1 index def
+  currentdict definefont pop
+  end
+} bind def
+%%EndResource
+%%BeginResource: procset (Apache XML Graphics EPS ProcSet) 1.0 0
+%%Version: 1.0 0
+%%Copyright: (Copyright 2002-2003 The Apache Software Foundation. License terms: http://www.apache.org/licenses/LICENSE-2.0)
+/BeginEPSF { %def
+/b4_Inc_state save def         % Save state for cleanup
+/dict_count countdictstack def % Count objects on dict stack
+/op_count count 1 sub def      % Count objects on operand stack
+userdict begin                 % Push userdict on dict stack
+/showpage { } def              % Redefine showpage, { } = null proc
+0 setgray 0 setlinecap         % Prepare graphics state
+1 setlinewidth 0 setlinejoin
+10 setmiterlimit [ ] 0 setdash newpath
+/languagelevel where           % If level not equal to 1 then
+{pop languagelevel             % set strokeadjust and
+1 ne                           % overprint to their defaults.
+{false setstrokeadjust false setoverprint
+} if
+} if
+} bd
+/EndEPSF { %def
+count op_count sub {pop} repeat            % Clean up stacks
+countdictstack dict_count sub {end} repeat
+b4_Inc_state restore
+} bd
+%%EndResource
+%FOPBeginFontDict
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Helvetica
+%%IncludeResource: font Courier-BoldOblique
+%%IncludeResource: font Courier-Oblique
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Helvetica-BoldOblique
+%%IncludeResource: font Helvetica-Bold
+%%IncludeResource: font Helvetica-Oblique
+%%IncludeResource: font Times-BoldItalic
+%%IncludeResource: font Courier
+%%IncludeResource: font Times-Italic
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Symbol
+%%IncludeResource: font ZapfDingbats
+%FOPEndFontDict
+%%BeginResource: encoding WinAnsiEncoding
+/WinAnsiEncoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /.notdef /.notdef /.notdef
+/.notdef /.notdef /space /exclam /quotedbl
+/numbersign /dollar /percent /ampersand /quotesingle
+/parenleft /parenright /asterisk /plus /comma
+/hyphen /period /slash /zero /one
+/two /three /four /five /six
+/seven /eight /nine /colon /semicolon
+/less /equal /greater /question /at
+/A /B /C /D /E
+/F /G /H /I /J
+/K /L /M /N /O
+/P /Q /R /S /T
+/U /V /W /X /Y
+/Z /bracketleft /backslash /bracketright /asciicircum
+/underscore /quoteleft /a /b /c
+/d /e /f /g /h
+/i /j /k /l /m
+/n /o /p /q /r
+/s /t /u /v /w
+/x /y /z /braceleft /bar
+/braceright /asciitilde /bullet /Euro /bullet
+/quotesinglbase /florin /quotedblbase /ellipsis /dagger
+/daggerdbl /circumflex /perthousand /Scaron /guilsinglleft
+/OE /bullet /Zcaron /bullet /bullet
+/quoteleft /quoteright /quotedblleft /quotedblright /bullet
+/endash /emdash /asciitilde /trademark /scaron
+/guilsinglright /oe /bullet /zcaron /Ydieresis
+/space /exclamdown /cent /sterling /currency
+/yen /brokenbar /section /dieresis /copyright
+/ordfeminine /guillemotleft /logicalnot /sfthyphen /registered
+/macron /degree /plusminus /twosuperior /threesuperior
+/acute /mu /paragraph /middot /cedilla
+/onesuperior /ordmasculine /guillemotright /onequarter /onehalf
+/threequarters /questiondown /Agrave /Aacute /Acircumflex
+/Atilde /Adieresis /Aring /AE /Ccedilla
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave
+/Iacute /Icircumflex /Idieresis /Eth /Ntilde
+/Ograve /Oacute /Ocircumflex /Otilde /Odieresis
+/multiply /Oslash /Ugrave /Uacute /Ucircumflex
+/Udieresis /Yacute /Thorn /germandbls /agrave
+/aacute /acircumflex /atilde /adieresis /aring
+/ae /ccedilla /egrave /eacute /ecircumflex
+/edieresis /igrave /iacute /icircumflex /idieresis
+/eth /ntilde /ograve /oacute /ocircumflex
+/otilde /odieresis /divide /oslash /ugrave
+/uacute /ucircumflex /udieresis /yacute /thorn
+/ydieresis
+] def
+%%EndResource
+%FOPBeginFontReencode
+/Courier-Bold findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Courier-Bold exch definefont pop
+/Helvetica findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Helvetica exch definefont pop
+/Courier-BoldOblique findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Courier-BoldOblique exch definefont pop
+/Courier-Oblique findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Courier-Oblique exch definefont pop
+/Times-Roman findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Times-Roman exch definefont pop
+/Helvetica-BoldOblique findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Helvetica-BoldOblique exch definefont pop
+/Helvetica-Bold findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Helvetica-Bold exch definefont pop
+/Helvetica-Oblique findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Helvetica-Oblique exch definefont pop
+/Times-BoldItalic findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Times-BoldItalic exch definefont pop
+/Courier findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Courier exch definefont pop
+/Times-Italic findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Times-Italic exch definefont pop
+/Times-Bold findfont
+dup length dict begin
+  {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding WinAnsiEncoding def
+  currentdict
+end
+/Times-Bold exch definefont pop
+%FOPEndFontReencode
+%%EndProlog
+%%Page: 1 1
+%%PageBoundingBox: 0 0 792 612
+%%BeginPageSetup
+[1 0 0 -1 0 612] CT
+%%EndPageSetup
+GS
+1 GC
+N
+0 0 792 612 re
+f
+GR
+GS
+1 GC
+N
+0 0 792 612 re
+f
+GR
+GS
+1 GC
+N
+103 108 M
+227 108 L
+227 46 L
+103 46 L
+cp
+f
+GR
+GS
+[1 0 0 1 152 24] CT
+/Helvetica-Bold 11 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(NWh) t 
+GR
+GR
+GS
+[1 0 0 1 136 38] CT
+/Helvetica-Bold 11 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(WT) t 
+GR
+GR
+GS
+[1 0 0 1 154 43] CT
+/Helvetica-Bold 8.8 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(E) t 
+GR
+GR
+GS
+[1 0 0 1 160 38] CT
+/Helvetica-Bold 11 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(M1M3) t 
+GR
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [103.0 46.0 227.0 108.0]
+/PaintProc
+{
+pop
+103.0 46.0 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcfffffffdfdfdfffffffffffffffffffcfcfc
+fffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffffffffdfdfdfffffffffffffffffffcfcfcfffffffffffffffffffdfdfd
+fdfdfdfffffffdfdfdfdfdfdfffffffffffffffffffdfdfdfffffffdfdfdfdfdfdfffffffdfdfdfdfdfdfcfcfcf7f7f7fcfcfcfffffffdfdfdfafafa
+fdfdfdfffffffcfcfcfdfdfdfcfcfcfdfdfdfcfcfcfcfcfcfdfdfdfdfdfdfcfcfcfafafafcfcfcfdfdfdfdfdfdf9f9f9fafafafcfcfcfffffffafafa
+fafafafdfdfdfcfcfcfcfcfcfdfdfdfdfdfdfcfcfcfdfdfdfafafafafafafcfcfcfafafaf9f9f9fffffffdfdfdf7f7f7efefeff7f7f7f3f3f3ececec
+f9f9f9f7f7f7fcfcfcf5f5f5f9f9f9fcfcfcfafafaf9f9f9f9f9f9f9f9f9f7f7f7f9f9f9f9f9f9f9f9f9f5f5f5e8e8e8f9f9f9ddddddf3f3f3efefef
+f6f6f6f6f6f6f7f7f7f5f5f5f3f3f3f6f6f6f6f6f6f6f6f6f6f6f6f9f9f9f6f6f6f2f2f2f3f3f3f2f2f2f3f3f3f0f0f0ebebebe5e5e5ecececdadada
+f2f2f2f2f2f2f6f6f6efefeff2f2f2f6f6f6f3f3f3f0f0f0f5f5f5efefeff5f5f5f2f2f2efefefeeeeeee9e9e9dedededededec9c7c1e1e1e1e0e0e0
+ececece7e7e7f0f0f0ececece7e7e7eeeeeeebebebecececf2f2f2e9e9e9ececece5e5e5ebebebe4e4e4e1e1e1d2d1d0d5d5d4c8c6bed3d3d2c7c5bb
+e2e2e2dededee8e8e8e2e2e2e8e8e8e9e9e9e8e8e8e7e7e7e7e7e7e2e2e2e8e8e8e5e5e5e1e1e1e2e2e2dededec8c6bec3bfaeb9b08cd6d6d6c2bdaa
+dadadacecdcbd5d5d4ddddddd0cfcddcdcdbddddddd5d5d4dcdcdbd8d8d7dadadadcdcdbd0cfcdd4d4d3d6d6d6c8c6bebeb79cbab18dc5c1b4c1bca7
+d1d0cfcac9c3d6d6d6d3d3d2cccbc8d1d0cfcbcac5cdccc9cdccc9cbcac5cdccc9cecdcbcbcac6cbcac5c8c6bec0bba5beb79cb6ab81bdb597b9b08a
+c9c8c2c7c5bccecdcbc7c5bcc8c7bfc5c2b5c7c5bcc7c4bac7c5bbc7c5bbc4c0b0c3beadc4c0b1c7c5bcc0bba5bab18db4a77ab4a77ab9af89b7ad85
+c5c2b5bdb597c2bdaac1bba6bfb9a0c4c0b1c2beacc0bba5c2bdaac3beadbeb89ec2bdaabdb698bdb69abab18fb1a071b5aa7da88464bbb290ad936a
+c0baa2b6ab81bdb69ab6ab81bcb495bab18dbab18dbeb79cbeb79bbcb495bab18db6ab81b8ae88bbb393af9c6eae976cad946ba3725cad926aae976c
+bcb494b1a071bab18fb09e70b4a87bb5aa7db6ab81b6ab80b8ae88b6ab81b5aa7db3a677b7ac82b2a475b1a172ad926aa88464a5785faa8a669e5e54
+b4a778ac8f69af9a6daf9b6ead926ab09d6faf9c6eb1a172b1a172b09d6faf9b6eaf996dae966caa8a66a77e61a5785fa168589f6356ab8d68a67a60
+ac9069aa8966aa8a66a77f62ab8c68a88263ab8d68a98765a88364aa8a67a98665a77d61a88364a98564a88364a77e61a06758a26e5b9f6255944948
+a67b60a26d5aa77e61a77e61a3725ca4765ea16959a4735da5785fa6795fa3705ba5775ea77f62a16a59a26e5ba067589b55509f6356a5775e9c5a52
+a67a60a16b599e60549f64569c59519b57519f6356a16a599e61559f64569f64569d5b52a067589a544f954a49a065579f62559b5751a168588b3e3e
+9f6356a064569c5951964b4a9a534e8d414099514d984f4c9b575199514d9c5a529a544f964b4a8c3f3f9e60549348478d41408f43439b55507b2e2e
+9c5951934847904444752828984f4c7b2e2e9449488d4140954a499044448f43439145458e42429c58518d4140893d3d974c4a9d5d53803333823636
+9a534e813434823636742727772b2b762a29853838833737702423853838893d3d7a2d2d6f22228d4140702423893d3d8f43439e6155a065577b2e2e
+7528288236367125258033336519196c20207f3232772b2b7427276b1f1f6c20206a1e1d6a1e1d5c1011742727883c3c9c59519b56508236367b2e2e
+7f3232772b2b893d3d8b3e3e661a1a6b1f1f6316176f2222641818661a1a6519197a2d2d5b0f1085383870242391454599524e9c5a527226269c5a52
+5f13136f2222681b1b873b3a7024236e21217c302f5f13136a1e1d661a1a5f13136115156115155f13138033338236369c58519c5a5282363699514d
+7427277024234c0000813434772b2b7d3131691c1c5a0e0f6b1f1f681b1b5b0f10691c1c661a1a752828803333954a49954a499e6054782c2c9e6155
+8033337f32325e12127d31316e2121681b1b782c2c6a1e1d8033336f22227024235f1313813434873b3a8b3e3e9e6155a16a59a168589a544fa26e5b
+772b2b964b4a833737772b2b984f4c8538388337378337378d4140813434873b3a873b3a893d3d7d3131924746a3725ca5775ea88263a3715ca88163
+98504d9e6155924746893d3d9247469e5f54924746954a4998504d984f4c974c4a9d5b529b56509c5851a16959a67c61a4745dac9069a98765ad936a
+a16959a780629e5e549d5d53a3715ca36f5ba06657a066579c5851a06758a3705ba4745d9c5951a4735da4755dac8f69ae976cb2a273a88364b3a475
+a36f5bad936aa5775ea4755da88263a67c61a4765ea78062a5775ea88163aa8966ab8c68ab8c68a67c61b09d6faf9a6db2a374bab18fa98564bcb494
+a77f62ab8e68ae986db2a273b09d6fb09e70af9a6db2a374ae976cb09e70af996daf9b6eb5aa7db3a576b4a778b4a778b7ac82b7ac82b3a576c5c1b4
+b5a97cb8ae86bab18fb9af89bdb597bab18db8ae86b9b08ab8ae86b9af89bdb597beb89ec0baa2bdb69abeb79cbdb698c0baa2c6c3b7bbb391c6c3b8
+b1a071bab18fc1bca7c6c3b8c5c1b4c2bda9c0baa2c3beadc0bba5c1bca7c4c1b3c4c0b1c8c7bfc4c1b3c6c3b8c2bdaac4c1b3c9c7c1c6c3b7c9c8c2
+bdb69ac1bca7cac9c3cccbc8c7c4bad0cfcdc8c7bfcbcac6c9c7c1cbcac5cecdcbd1d0cfd3d3d2d4d4d3d2d1d0cdccc9c9c7c1d5d5d4cecdcbdcdcdb
+c5c1b4d2d1d0d0cfcdddddddd8d8d7dcdcdbdadadaddddddd8d8d7d9d9d9dddddddcdcdbe1e1e1dedededdddddd5d5d4d5d5d4d8d8d7dadadae4e4e4
+d1d0cfe5e5e5e5e5e5e8e8e8e4e4e4e8e8e8e8e8e8e5e5e5e1e1e1e8e8e8e8e8e8e9e9e9e7e7e7eeeeeee2e2e2e7e7e7e2e2e2e2e2e2e8e8e8e9e9e9
+f9f9f9e8e8e8efefeff0f0f0eeeeeef0f0f0f0f0f0f0f0f0f3f3f3f0f0f0f2f2f2f3f3f3f2f2f2efefefecececebebebebebebecececeeeeeef9f9f9
+efefefeeeeeef7f7f7f9f9f9f6f6f6f6f6f6f6f6f6f6f6f6f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f6f6f6f3f3f3f3f3f3f0f0f0f3f3f3f7f7f7fafafa
+f3f3f3fafafaf5f5f5fcfcfcfafafafcfcfcfcfcfcfcfcfcfafafafafafafafafafdfdfdfafafaf7f7f7f7f7f7fafafaf5f5f5f6f6f6f7f7f7f9f9f9
+fcfcfcf6f6f6fdfdfdfcfcfcfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfffffffdfdfdfffffffdfdfdfcfcfcfcfcfcfafafaf9f9f9fcfcfcfafafaffffff
+fdfdfdfcfcfcfdfdfdfdfdfdfffffffffffffffffffffffffffffffffffffdfdfdfffffffdfdfdfffffffdfdfdfdfdfdfffffffffffffcfcfcfdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdffffff
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+/f2028718440{103 108 M
+227 108 L
+227 46 L
+103 46 L
+cp}def
+f2028718440
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 108 M
+227 108 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+115.4 108 M
+115.4 106.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+165 108 M
+165 106.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+214.6 108 M
+214.6 106.76 L
+S
+GR
+GS
+[1 0 0 1 115.4 112] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 165 112] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 214.60001 112] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 108 M
+103 46 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 108 M
+104.24 108 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 83.2 M
+104.24 83.2 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 58.4 M
+104.24 58.4 L
+S
+GR
+GS
+[1 0 0 1 99 108] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 99 83.2] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 99 58.4] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 76.99997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-6.5 -17 moveto 
+1 -1 scale
+(L1) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 76.99997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-11 -3 moveto 
+1 -1 scale
+(PSS) t 
+GR
+GR
+GS
+1 GC
+N
+/f-1031330062{103 195 M
+227 195 L
+227 133 L
+103 133 L
+cp}def
+f-1031330062
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [103.0 133.0 227.0 195.0]
+/PaintProc
+{
+pop
+103.0 133.0 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfcfcfcfffffffafafafdfdfd
+fffffffcfcfcfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcfcfcfcfcfcfcfcfcfcfafafa
+fffffffdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffafafafcfcfcfafafaf9f9f9fcfcfc
+fdfdfdfcfcfcfffffffdfdfdfffffffffffffffffffdfdfdfffffffdfdfdfdfdfdfdfdfdfcfcfcfdfdfdfdfdfdf9f9f9f6f6f6f9f9f9f7f7f7f9f9f9
+fcfcfcfcfcfcfdfdfdfdfdfdfffffffffffffffffffdfdfdfdfdfdfdfdfdfdfdfdfafafafafafafcfcfcfcfcfcf9f9f9f3f3f3f7f7f7f2f2f2ebebeb
+f9f9f9f7f7f7fdfdfdfcfcfcfcfcfcfcfcfcfdfdfdfcfcfcfcfcfcfafafafdfdfdfafafaf9f9f9f9f9f9f3f3f3f6f6f6ecececf3f3f3ecececdddddd
+f9f9f9f7f7f7fafafaf9f9f9fafafafcfcfcfcfcfcfafafafafafafafafafafafaf3f3f3f6f6f6f7f7f7f3f3f3eeeeeeebebebe9e9e9ecececd9d9d9
+f5f5f5f5f5f5f9f9f9f7f7f7f9f9f9fafafaf9f9f9f7f7f7f7f7f7f7f7f7f7f7f7f2f2f2f3f3f3f2f2f2f0f0f0e9e9e9e9e9e9d6d6d6d9d9d9cac9c3
+f0f0f0f2f2f2f5f5f5f5f5f5f6f6f6f5f5f5f6f6f6f3f3f3f6f6f6f5f5f5f2f2f2f0f0f0ebebebefefefebebebdddddde2e2e2cfceccd3d3d2c6c3b8
+f2f2f2e9e9e9f0f0f0f3f3f3f3f3f3f2f2f2f3f3f3eeeeeeeeeeeef2f2f2ecececebebebe7e7e7e5e5e5e2e2e2e0e0e0d2d1d0c3beadcccbc8c1bca7
+e9e9e9e4e4e4eeeeeeeeeeeeececececececececece8e8e8e9e9e9e8e8e8e4e4e4e1e1e1e2e2e2dcdcdbdadadacbcac6cccbc8c0bba5c3beadb9b08c
+e0e0e0dcdcdbe7e7e7e9e9e9e2e2e2e0e0e0e4e4e4e2e2e2e4e4e4e0e0e0dadadad6d6d6d9d9d9d3d3d2d1d0cfc6c3b8c1bba6bab18fb8ae88b7ac82
+d9d9d9d4d4d3dadadadddddddcdcdbd9d9d9d8d8d7d9d9d9dcdcdbd4d4d3d0cfcdd0cfcdcbcac5cccbc8c7c4bac2bdaac1bba6b4a77ab6ab81b1a071
+cecdcbcfcecccfceccd5d5d4cecdcbd2d1d0cfcecccccbc8cecdcbcecdcbc8c6bec8c6bec7c4bac6c3b7beb89ebbb290b9b08aaf9a6db6ab81b09e70
+c7c5bbc3bfaec8c6becbcac5cbcac5cbcac6c7c4bac7c4bac7c5bcc7c5bcc4c0b0c4c0b0c2bdaac0baa3bbb393b1a071b4a77aab8c68b3a677a88464
+c4c1b3c0baa2c4c1b3c4c0b0c4c0b1c4c0b1c3bfaec1bca7c2bda9c1bca7bdb597c0baa2bdb698b6ab81b6ab80ad946bac8f69ac916aae966cad926a
+beb89eb8ae88bbb391beb79bbcb494bdb69abdb597bcb495bcb495bcb494b6ab81b8ae86b6ab81b3a475b5aa7dac8f69a77f62a78062a6795fa67a60
+bab18fb4a77ab5a97cb5aa7db3a475b3a677b4a77ab3a677b5a97cb5aa7eb1a172b3a475b09e70ae986daf996da3715ca26d5aa06557a77d61a16959
+b4a77aab8e68ae986dad946bad956bae986daf9a6dac8f69ad926aad956bae986dac916aaa8a66ab8d68a88263a3725ca16858a6795fa16b599d5b52
+a88364a3725ca88464a67c61a77d61a67b60a78062a77f62a67c61a88364a88263a67b60a67a60a3715ca06557a06456a168589e61559c5a529c5a52
+a4765ea16959a4755da4755da4735da06557a16b59a16a59a16959a26d5aa3715c9e6054a065579f63569d5d539a534e9a544f944948893d3d9e5f54
+9e5e54a06557a169599b57519a544f9a534e9c59519a534e9c58519c58519d5b529449489c585199524e934847964b4a974c4a9e61559b55509a534e
+9449489044448c3f3f944948782c2c8c3f3f8337378b3e3e8639398639398639398033338b3e3e974d4b893d3d9b55509247469d5c539d5c539d5c53
+914545803333681b1b883c3c6a1e1d7125257a2d2d7d3131742727772b2b762a29722626722626893d3d782c2c9b57519c58519a544f9b56509d5b52
+762a296c20207024235c1011611515580c0d7125257024236e2121641818661a1a691c1c6014148033339145459d5c539044449e60549449489f6255
+7024237125256316175205075e12125104055f13135c101156090b5307085b0f106f2222570b0c712525691c1c9d5c539b5751a4745d9e5f54a4745d
+772b2b7f32324f01034c0000661a1a56090b5b0f106519196115155c10115a0e0f7024235b0f106014148639399d5d53a3715ca67b609f6356aa8866
+7d31318b3e3e641818762a29641818661a1a681b1b7125256c2020681b1b7226267f3232904444782c2c99514da06456a88163aa8866a67a60ae966c
+893d3d9c5a528538388033338c3f3f873b3a8c3f3f8e42428e42428538388f4343964b4a9c595198504da06657a67a60a88163a77f62ad946bb4a778
+974c4a9f63569e5e54873b3a9d5c539b555098504d9c59519e60549d5c53a06758a06557a4745da67a60a06758aa8a67ad946bad956bb1a071bbb391
+9b5550a88263a3705ba06758a67a60a88263a4735da5785fa77f62a77f62a88364a88364ab8d68ab8d68a98564b2a475b2a475b7ad85b9b08abcb494
+aa8866ae986daf9b6eae966cae986dae986dad926aae966caf9a6dae986db1a172b2a273b2a374b3a576b8ae86b7ad85beb79cc0bba5beb79bc8c6be
+b09d6fb4a87bb9af89bcb495b9af89bbb290b9b08ab9b08cb6ab81bdb597bbb393beb79bbfb89fbbb393c2bdaabeb79bc4c0b1cdccc9c6c3b8c7c5bc
+b7ad84bab18fc1bca7c4c0b0c6c3b7c5c1b4c4c0b0c2beacc2bda9c4c1b3c7c4bac6c3b8c9c8c2c7c5bccecdcbc7c5bbc6c3b8cccbc8d9d9d9d2d1d0
+c6c3b7c6c3b8c8c7bfd3d3d2cecdcbd3d3d2cccbc8cecdcbcdccc9d1d0cfd2d1d0d4d4d3d4d4d3d8d8d7dededed9d9d9d9d9d9e4e4e4ececece7e7e7
+d5d5d4d4d4d3d8d8d7e2e2e2e1e1e1e7e7e7e0e0e0e1e1e1e2e2e2dadadae5e5e5e8e8e8e5e5e5ebebebefefefe1e1e1e8e8e8f0f0f0f0f0f0f3f3f3
+e5e5e5eeeeeee8e8e8eeeeeeefefeff2f2f2efefeff0f0f0eeeeeeeeeeeef3f3f3f2f2f2efefefefefeff5f5f5ebebebeeeeeef5f5f5f9f9f9f0f0f0
+f7f7f7f3f3f3f3f3f3f7f7f7f7f7f7f6f6f6f7f7f7f7f7f7f9f9f9f7f7f7f9f9f9f9f9f9f9f9f9fafafaf7f7f7f9f9f9f7f7f7f9f9f9fafafaf7f7f7
+fcfcfcf7f7f7f9f9f9f9f9f9fcfcfcfcfcfcfcfcfcfafafafcfcfcfcfcfcfcfcfcfcfcfcfafafafafafafcfcfcfafafaf7f7f7fcfcfcf9f9f9f9f9f9
+fcfcfcfcfcfcfffffffdfdfdfffffffffffffdfdfdfdfdfdfdfdfdfffffffdfdfdfdfdfdfdfdfdfcfcfcfffffffcfcfcfdfdfdfdfdfdfdfdfdffffff
+fcfcfcfcfcfcfffffffdfdfdfdfdfdfffffffdfdfdfdfdfdfffffffffffffcfcfcfdfdfdfcfcfcfdfdfdfdfdfdfdfdfdfafafafffffff9f9f9ffffff
+fcfcfcfcfcfcfffffffdfdfdfdfdfdfffffffdfdfdfdfdfdfffffffffffffcfcfcfdfdfdfcfcfcfdfdfdfdfdfdfdfdfdfafafafffffff9f9f9ffffff
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f-1031330062
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 195 M
+227 195 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+115.4 195 M
+115.4 193.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+165 195 M
+165 193.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+214.6 195 M
+214.6 193.76 L
+S
+GR
+GS
+[1 0 0 1 115.4 199] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 165 199] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 214.60001 199] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 195 M
+103 133 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 195 M
+104.24 195 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 170.2 M
+104.24 170.2 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 145.4 M
+104.24 145.4 L
+S
+GR
+GS
+[1 0 0 1 99 195] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 99 170.2] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 99 145.39999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 163.99997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-9.5 -17 moveto 
+1 -1 scale
+(L23) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 163.99997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-11 -3 moveto 
+1 -1 scale
+(PSS) t 
+GR
+GR
+GS
+1 GC
+N
+/f1994523226{103 282.5 M
+227 282.5 L
+227 220.5 L
+103 220.5 L
+cp}def
+f1994523226
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [103.0 220.5 227.0 282.5]
+/PaintProc
+{
+pop
+103.0 220.5 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffdfdfdffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f7f7fffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffcfcfcfffffffdfdfd
+fffffffcfcfcfffffffffffffffffffffffffffffffdfdfdfffffffffffffdfdfdfffffffdfdfdfffffffdfdfdf9f9f9fcfcfcf9f9f9fafafaf3f3f3
+fffffffcfcfcfffffffdfdfdfffffffffffffffffffdfdfdfdfdfdfffffffffffffdfdfdfdfdfdfffffffcfcfcf5f5f5f9f9f9efefeffcfcfcf3f3f3
+fffffffdfdfdfffffffdfdfdfffffffdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfcfcfcfdfdfdfcfcfcfcfcfcf7f7f7f2f2f2f7f7f7f7f7f7f6f6f6
+fdfdfdfcfcfcfffffffcfcfcfdfdfdfcfcfcfdfdfdfcfcfcfcfcfcfdfdfdfcfcfcfafafafafafafcfcfcfafafaf5f5f5ecececefefeff2f2f2f2f2f2
+fdfdfdfdfdfdfdfdfdfcfcfcfdfdfdfdfdfdfcfcfcfcfcfcfafafafdfdfdf9f9f9f7f7f7f7f7f7f6f6f6f5f5f5f7f7f7efefefefefefefefefe9e9e9
+fdfdfdf9f9f9fdfdfdfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcfafafafafafaf7f7f7f2f2f2f2f2f2f2f2f2f2f2f2eeeeeee4e4e4d6d6d6e8e8e8dedede
+fafafafafafafdfdfdfcfcfcfafafaf9f9f9f9f9f9f9f9f9f9f9f9f7f7f7f6f6f6f5f5f5f2f2f2f0f0f0e9e9e9e2e2e2dcdcdbc8c6beddddddd1d0cf
+f9f9f9f6f6f6f7f7f7fafafaf9f9f9f7f7f7f7f7f7f7f7f7f6f6f6f9f9f9f3f3f3efefefecececeeeeeeebebebddddddd9d9d9beb79cd4d4d3cbcac5
+f7f7f7efefeff2f2f2f9f9f9f6f6f6f7f7f7f6f6f6f2f2f2f2f2f2f6f6f6ecececebebebe7e7e7ecececdededed9d9d9cdccc9c4c0b1cbcac6c3bfae
+f5f5f5efefefeeeeeef6f6f6f3f3f3f6f6f6f0f0f0f0f0f0eeeeeeeeeeeee4e4e4e7e7e7e2e2e2e5e5e5d5d5d4c9c8c2c4c0b1c0bba5c2bdaabdb69a
+eeeeeeebebebf0f0f0e9e9e9ecececeeeeeeeeeeeeeeeeeee9e9e9e2e2e2dededee5e5e5e2e2e2d3d3d2cdccc9c3beadc0bba5bab18fbab18fbbb391
+e4e4e4e5e5e5efefefeeeeeeececece4e4e4e5e5e5e5e5e5e7e7e7e0e0e0ddddddddddddd5d5d4cccbc8c7c5bbc3bfaebbb393b8ae86b7ad85b2a475
+dedededcdcdbdcdcdbe5e5e5e5e5e5dddddddedededddddde2e2e2d6d6d6d1d0cfcfcecccccbc8cbcac5c4c1b3bdb69abdb69ab2a374b5a97cac9069
+dcdcdbd5d5d4d6d6d6dadadaddddddd9d9d9dcdcdbd8d8d7dcdcdbd2d1d0cdccc9cbcac5c8c6bec6c3b8bfb89fb7ad85b7ad85ad926aaa8a67a67b60
+d5d5d4d1d0cfd6d6d6d5d5d4d3d3d2d5d5d4d1d0cfcac9c3d1d0cfcdccc9c9c7c1c4c1b3c7c4bac0bba5bbb393b5a97cb5a97cac9069ae966ca67c61
+cecdcbcbcac5cbcac5c9c8c2cecdcbcfceccc8c6bec6c3b8c8c7bfc7c5bbc3beadc1bba6beb79cbcb494bcb494b2a374ad956bab8e68ac8f69ae986d
+cac9c3c7c4bac6c3b8c9c8c2c7c5bcc8c6bec4c1b3c6c3b8c2beacc2bdaabeb79cbdb597b9b08ab3a475b6ab80ab8e68ac8f69ab8b67a98765ac916a
+c5c1b4c0bba5c2beacc2beacc3bfaec0baa3c0baa2beb89ebfb89fbdb597b9b08ab9b08cb4a87bb09e70b2a475a5785fa88163a77d61a78062a67c61
+bfb89fb5aa7db5aa7ebdb597bcb495bdb698bcb494b5a97cbab18fb7ac82b3a677b19f71ae986dad936aaf9b6ea4735da5785fa5785fa4745d9f6255
+bab18daf9a6db1a071b5a97cb5a97cb4a77ab5aa7db3a475b2a273b2a475b09e70b09d6fac9069ab8c68ab8b67a5785fa5785fa4765ea4755d9d5d53
+af9b6ea67a60ad946bb09e70ad926aad946bac916aab8d68ab8e68ad946baa8a67a98665a98765a98765a67c61a3715ca06456a5785fa36f5ba4765e
+a67c61a4765eab8e68ab8c68aa8a67a77e61a6795fa98665a67c61a77d61a77f62a3705ba5785fa5775ea3715ca06657a3705baa8a66974d4ba4735d
+a77e61a5785fa6795fa78062a67b60a4735da3725ca16858a36f5ba06557a06758a06456a26d5aa169599c5a52a36f5ba26e5baa8a66a5775ea4745d
+a3705b98504d9a534ea4745d99514d9c59519f62559e6155954a49984f4c9d5b529a544f9a544fa06557984f4ca26e5b9e5f54a26d5aa16a599c5a52
+9449488c3f3f7d31319d5d53803333893d3d8f43438d4140762a299044449348478033338337379c5a5298504d9c5951a26d5a9d5b529f6356a06758
+772b2b7c302f893d3d9247465f1313762a297d31317c302f702423853838823636772b2b661a1a9247469e5e54a067589f6255a26c5aa26c5a9b5751
+752828712525722626661a1a661a1a6a1e1d691c1c611515691c1c631617691c1c7f3232661a1a7f32329c5a52a26c5aa06657a78062a36f5ba77d61
+782c2c6f2222631617580c0d641818580c0d570b0c5b0f105f13135c1011661a1a762a297a2d2d6c2020984f4ca4735da67b60ab8c68a3705baf996d
+702423681b1b4d00014d00016316175205076c2020681b1b5a0e0f570b0c6e212180333391454570242399514da16b59aa8a66a88464a88163b19f71
+6b1f1f823636570b0c5b0f10520507550809631617712525681b1b6a1e1d75282893484799524e9a534e98504da4735dab8e68a77f62ac9069b7ac82
+4c000099524e782c2c530708722626782c2c6519197a2d2d9247468639398c3f3f954a4998504da26c5a934847a98665aa8966b4a778b3a576b9af89
+893d3d984f4c99524e6b1f1f8639398c3f3f8033338f434399514d9a544f9e5e549d5c53a26e5ba67c61a3705baf9b6eaf9c6eb7ad84bab18dbcb494
+9b5650a5775e9d5b528538389e60549d5c539e5f54a26d5aa36f5ba5775ea4765ea6795fab8c68a98765ad926ab3a677b7ad85bcb494bbb290bfb89f
+a98765aa8a67aa8a66a77d61a77f62a98665a98665ab8b67ac8f69ab8e68af9a6db2a273b3a475ae976cae966cbbb393bab18fc5c1b4bcb495c5c2b5
+a4765eb4a778b9af89b09d6fb3a677b4a778b7ad84b5aa7eb4a77ab8ae86b8ae88b9af89c2bda9b9b08cc0baa3c2beacc1bca7c4c1b3c7c5bccccbc8
+b2a475b8ae86bbb290bbb391bfb89fbfb89fc0baa2c0bba5c0bba5c2bdaac4c0b0c5c1b4c3beadc7c5bbcccbc8c6c3b8c7c5bcc9c8c2d2d1d0d9d9d9
+c3bfaec4c0b1c4c0b0c7c5bccdccc9cac9c3c8c6becac9c3cfcecccecdcbd3d3d2d0cfcdd0cfcdd3d3d2e1e1e1cccbc8cdccc9dcdcdbdadadaececec
+d4d4d3dadadadedededddddde0e0e0e1e1e1e0e0e0e0e0e0e1e1e1dddddde4e4e4e8e8e8e4e4e4e1e1e1e7e7e7e2e2e2e2e2e2efefeff9f9f9f0f0f0
+e9e9e9e5e5e5e9e9e9f2f2f2efefeff0f0f0efefefecececf0f0f0f2f2f2f3f3f3f2f2f2ecececefefefecececececececececf0f0f0fafafaefefef
+f5f5f5f3f3f3f3f3f3f7f7f7f3f3f3f9f9f9f9f9f9f7f7f7f9f9f9f9f9f9f7f7f7f9f9f9f7f7f7f6f6f6fafafaf5f5f5f5f5f5f7f7f7f9f9f9f0f0f0
+f5f5f5f5f5f5eeeeeef5f5f5f9f9f9fcfcfcf9f9f9f7f7f7f9f9f9fafafafafafaf9f9f9f6f6f6f9f9f9fdfdfdf6f6f6eeeeeefcfcfcf6f6f6efefef
+f5f5f5f5f5f5eeeeeef5f5f5f9f9f9fcfcfcf9f9f9f7f7f7f9f9f9fafafafafafaf9f9f9f6f6f6f9f9f9fdfdfdf6f6f6eeeeeefcfcfcf6f6f6efefef
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f1994523226
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 282.5 M
+227 282.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+115.4 282.5 M
+115.4 281.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+165 282.5 M
+165 281.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+214.6 282.5 M
+214.6 281.26 L
+S
+GR
+GS
+[1 0 0 1 115.4 286.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 165 286.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 214.60001 286.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 282.5 M
+103 220.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 282.5 M
+104.24 282.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 257.7 M
+104.24 257.7 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 232.9 M
+104.24 232.9 L
+S
+GR
+GS
+[1 0 0 1 99 282.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 99 257.70001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 99 232.89999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 251.49997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-6.5 -17 moveto 
+1 -1 scale
+(L4) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 251.49997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-11 -3 moveto 
+1 -1 scale
+(PSS) t 
+GR
+GR
+GS
+1 GC
+N
+/f-1342541518{103 369.5 M
+227 369.5 L
+227 307.5 L
+103 307.5 L
+cp}def
+f-1342541518
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [103.0 307.5 227.0 369.5]
+/PaintProc
+{
+pop
+103.0 307.5 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffcfcfcfdfdfd
+fffffffdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffff9f9f9fffffffdfdfdfcfcfc
+fffffffdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfcfcfcfcfcfcfdfdfdfafafafcfcfc
+fffffffdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffdfdfdfdfdfdfafafaf9f9f9f7f7f7f7f7f7f6f6f6
+fffffffdfdfdfffffffffffffdfdfdfffffffdfdfdfdfdfdfdfdfdfffffffdfdfdfdfdfdfdfdfdfcfcfcfcfcfcf6f6f6f5f5f5f0f0f0f9f9f9f0f0f0
+fffffffdfdfdfffffffcfcfcfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfcfcfcfcfcfcf9f9f9fafafaf3f3f3f2f2f2e9e9e9f7f7f7e8e8e8
+fffffffcfcfcfffffffcfcfcfdfdfdfcfcfcfdfdfdfcfcfcfcfcfcfcfcfcfafafaf9f9f9f7f7f7f6f6f6f7f7f7eeeeeef0f0f0e8e8e8e5e5e5dddddd
+fdfdfdfafafafdfdfdfdfdfdfafafafcfcfcfafafafcfcfcfafafafafafaf7f7f7f5f5f5f5f5f5f3f3f3f0f0f0e8e8e8e7e7e7d8d8d7dadadad0cfcd
+fcfcfcfcfcfcfdfdfdfdfdfdfcfcfcfcfcfcf9f9f9f7f7f7f9f9f9f6f6f6f5f5f5f3f3f3ecececebebebebebebe2e2e2d5d5d4d0cfcdd6d6d6c7c5bb
+fafafaf7f7f7fafafaf9f9f9fcfcfcf9f9f9f7f7f7f5f5f5f6f6f6f2f2f2f0f0f0ececece8e8e8e7e7e7e2e2e2dadadacccbc8c6c3b7d0cfcdcdccc9
+fafafaf6f6f6f7f7f7f6f6f6f7f7f7f5f5f5f5f5f5f5f5f5f2f2f2f0f0f0ebebebe9e9e9e0e0e0e4e4e4d8d8d7d0cfcdc7c5bbc1bba6c3bfaec4c1b3
+f7f7f7f0f0f0f0f0f0f5f5f5f3f3f3efefefefefefefefefeeeeeee9e9e9e4e4e4e4e4e4d6d6d6d5d5d4cecdcbc7c4bac9c7c1b4a87bbfb9a0b9b08a
+f5f5f5eeeeeeecececeeeeeeefefefe9e9e9ebebebe5e5e5e8e8e8e2e2e2dadadadadadacccbc8cccbc8c7c4bac3beadbfb89fb3a677b5aa7db7ac82
+f0f0f0e7e7e7e8e8e8e8e8e8e9e9e9e4e4e4e5e5e5dededededededededed2d1d0d0cfcdcac9c3c8c6bec4c0b0beb79bb7ac82ad936aae976cac9069
+ecececdcdcdbe5e5e5e1e1e1e0e0e0d8d8d7ddddddd9d9d9d3d3d2d0cfcdcac9c3c8c6bec6c3b8bfb89fbeb79bb5a97cb1a172a6795fab8d68a4745d
+e8e8e8d8d8d7d9d9d9ddddddd6d6d6d2d1d0cfcecccdccc9c9c7c1c8c6bec4c0b1c5c1b4c1bba6bdb597b4a87bac8f69aa8866a4755da5785f9a544f
+dededecdccc9cecdcbd2d1d0d0cfcdc9c8c2cbcac6c5c2b5c6c3b8c6c3b7bfb9a0bdb69abbb391b6ab81b5aa7da78062a98564a6795fa5775e9c5951
+cecdcbc7c4bac9c7c1c8c6bec9c7c1c4c0b1c5c2b5c1bba6c2bdaabeb89ebcb494b9af89b4a77ab4a778af9c6ea4735da16b59a3705ba3715ca06557
+c9c7c1c0bba5c2bdaac3bfaec3beadc1bca7c2bda9bcb494bbb393b9b08ab6ab81b2a273b09e70b09e70ad946ba26c5aa4755da168589c5851a06456
+c3bfaebab18fbbb391c0baa2c0baa3bdb597bcb494b8ae88b5a97cb4a87bb1a071ad956bad946bab8e68a98665a5775e9f6456a064569e6155954a49
+c1bba6bab18db8ae86bbb393b8ae86b6ab80b6ab80b4a87bb19f71af9b6eaf9a6da98564ab8d68a88464a88364a067589f6456a4735d9e5f549e5f54
+bbb393b3a475b2a374b4a77ab3a677b09e70af9a6daf9b6ead956baa8a66ab8b67a88263a5775ea3725ca5785f9e60549e6155a26c5a9247469e6155
+b9af89ac8f69b1a172b2a273ac916aab8d68ad926aa98665aa8a66a88163a67c61a36f5ba4765ea26e5ba26c5aa16b599f63569e5f54a065579f6456
+b1a172a98765ac916aaa8a66a98765a98564aa8966a67b60a67a60a3715ca26e5ba16b59a064569d5d53a3705b9f6356a26e5ba3725ca16858a06557
+ac8f69a5785fa5775ea98665a77f62a4745da5785fa26e5ba36f5b9f6356a16858a064569e5f54a16a599e5f54a3715ca36f5ba67a60a3705ba06557
+a3725ca36f5ba16858a5785fa26e5ba168589d5d539e5f549d5d539a544f9e5f549d5b529b5751a26e5ba06657a16858a168589f64569e5f54a16858
+9f6255a065579f6356a36f5b9c58519d5d539c58519e5e54924746964b4a99514d99524e9a544f9e61559f6356a26c5aa77d61a77d619e6155a5785f
+9c5a529b57518033339f645691454599524e9449489b55508b3e3e974d4b99514d974c4a9348479e6155a06657a4735da88464a77d61a78062a3725c
+9e615599514d5e12129b5650944948904444893d3d934847873b3a893d3d8d414099524e9145459b5650a26d5aa26c5aa88464aa8a66a88364ad926a
+9247469c5951893d3d8d41408134348b3e3e8236368538388538389044448e4242974d4b9348479d5d53a06758a67c61a98765a88464ac916aac9069
+762a297d3131580c0d7a2d2d742727893d3d7c302f7f3232863939873b3a8d41409a544f9b56509e6155a3705ba88364aa8966af996daa8a66ae986d
+4c00008033337125257b2e2e7b2e2e8b3e3e762a29681b1b823636893d3d883c3c99524e9d5c539e6155a06456aa8a66a98765b1a172b09e70b3a677
+5a0e0f7226266115156e21216c2020722626661a1a6c2020893d3d893d3d964b4a9a544fa26d5aa16858a16a59ac8f69b1a071b5aa7db4a87bb9af89
+5c1011954a49661a1a7a2d2d5e1212752828782c2c883c3c893d3d974c4a98504d9c5851a16a59a4745da67c61ad956bb5a97cb4a77ab3a475bbb290
+681b1b762a29964b4a641818782c2c7c302f8b3e3e8e42429449489f62559f6356a06456a5775ea4755da36f5bb2a273bab18db2a475b5aa7ebdb69a
+772b2b8639399b57517f3232883c3c954a4999514d974d4b9e5e54a16858a16858a5785fa98765a77f62a88364b2a374b5a97cbdb698b9b08ac3bead
+863939a06657a168588b3e3e9c58519d5b529f6456a4735da77e61a4765ea88263ac9069ac916aab8c68a67b60b7ac82b3a677b9af89bdb698cdccc9
+9b5650a67b60aa8a669b5751a6795fa3705ba67c61a98765ab8e68ad946bac8f69b19f71b3a475b2a374b19f71bdb69ab9b08ac6c3b8c2bdaacbcac6
+a77f62aa8966b09e70a67b60ac8f69ad956baf9c6eb3a576b09e70b1a172bab18db5aa7ebab18db6ab81bbb391bfb89fbab18fc7c5bbc9c7c1d9d9d9
+ac9069af9b6eb6ab81b3a576bab18db7ad84bab18fbeb79cbbb290bdb698c1bba6c1bba6c4c0b1c1bba6c4c1b3c3beadc3beadc8c7bfd1d0cfcccbc8
+b4a778b9b08ac0bba5bdb69ac4c1b3c2bdaac2bda9c7c4bac7c5bcc7c4bac9c7c1c7c4bac9c7c1c6c3b7d2d1d0c7c5bccac9c3d9d9d9e5e5e5e5e5e5
+c7c4bac6c3b7c9c7c1c3beadcccbc8cccbc8cfceccd3d3d2d4d4d3d5d5d4d6d6d6d3d3d2d9d9d9d3d3d2dcdcdbd2d1d0d1d0cfe9e9e9f2f2f2ebebeb
+d1d0cfd3d3d2d8d8d7d2d1d0d8d8d7dddddde0e0e0e2e2e2e2e2e2e9e9e9e9e9e9ebebebe2e2e2dededee2e2e2e2e2e2d6d6d6f3f3f3f7f7f7efefef
+dddddddddddde4e4e4ebebebe7e7e7eeeeeef2f2f2f0f0f0efefeff3f3f3f0f0f0f5f5f5efefeff0f0f0efefeff2f2f2f6f6f6eeeeeefffffff2f2f2
+e8e8e8eeeeeeefefeff5f5f5f3f3f3f6f6f6f7f7f7f6f6f6f9f9f9fafafafafafaf9f9f9f6f6f6fafafafcfcfcfafafaf0f0f0fdfdfdfdfdfdfafafa
+efefeff2f2f2f7f7f7f5f5f5f3f3f3f9f9f9f7f7f7f9f9f9f9f9f9f9f9f9f7f7f7fcfcfcf9f9f9fcfcfcfdfdfdf6f6f6f0f0f0fdfdfdfcfcfcfcfcfc
+efefeff2f2f2f7f7f7f5f5f5f3f3f3f9f9f9f7f7f7f9f9f9f9f9f9f9f9f9f7f7f7fcfcfcf9f9f9fcfcfcfdfdfdf6f6f6f0f0f0fdfdfdfcfcfcfcfcfc
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f-1342541518
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 369.5 M
+227 369.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+115.4 369.5 M
+115.4 368.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+165 369.5 M
+165 368.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+214.6 369.5 M
+214.6 368.26 L
+S
+GR
+GS
+[1 0 0 1 115.4 373.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 165 373.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 214.60001 373.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 369.5 M
+103 307.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 369.5 M
+104.24 369.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 344.7 M
+104.24 344.7 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 319.9 M
+104.24 319.9 L
+S
+GR
+GS
+[1 0 0 1 99 369.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 99 344.70001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 99 319.89999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 338.49997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-9.5 -17 moveto 
+1 -1 scale
+(L5a) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 338.49997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-11 -3 moveto 
+1 -1 scale
+(PSS) t 
+GR
+GR
+GS
+1 GC
+N
+/f1711458188{103 456.5 M
+227 456.5 L
+227 394.5 L
+103 394.5 L
+cp}def
+f1711458188
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [103.0 394.5 227.0 456.5]
+/PaintProc
+{
+pop
+103.0 394.5 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfc
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffafafaf9f9f9fcfcfcfffffffafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfffffffdfdfdfafafafafafafcfcfcfafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfffffffcfcfcfafafafafafaf5f5f5f3f3f3
+fffffffdfdfdfffffffffffffdfdfdfffffffffffffffffffffffffdfdfdfdfdfdfcfcfcfdfdfdfafafafcfcfcf7f7f7e9e9e9f2f2f2f2f2f2e7e7e7
+fffffffdfdfdfdfdfdfffffffffffffdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfcfcfcfcfcfcf9f9f9f7f7f7fcfcfceeeeeeebebebe5e5e5e9e9e9e4e4e4
+fffffffafafafdfdfdfffffffdfdfdfdfdfdfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf7f7f7f9f9f9f5f5f5f7f7f7f2f2f2dededeececece5e5e5d3d3d2
+fdfdfdfcfcfcfafafafcfcfcfcfcfcfcfcfcfafafafafafafafafafafafafafafaf9f9f9f5f5f5efefefefefefeeeeeed8d8d7d2d1d0d9d9d9cecdcb
+fdfdfdfafafafafafafcfcfcfafafafafafafafafaf7f7f7f9f9f9f5f5f5f6f6f6f6f6f6ebebebefefefe9e9e9e8e8e8d2d1d0c8c6bed5d5d4c8c7bf
+fcfcfcfafafaf7f7f7f9f9f9f7f7f7f7f7f7f5f5f5f6f6f6f6f6f6f2f2f2efefefececece5e5e5e5e5e5e0e0e0d3d3d2cdccc9c3bfaec8c7bfc4c1b3
+f9f9f9f7f7f7f7f7f7f6f6f6f6f6f6f5f5f5f2f2f2f2f2f2f0f0f0ececece7e7e7e8e8e8dededed6d6d6cdccc9c4c0b1c7c5bcbfb9a0bfb9a0bcb495
+f6f6f6f2f2f2f3f3f3f2f2f2f3f3f3f0f0f0efefefe9e9e9ececece0e0e0e0e0e0dcdcdbd1d0cfd0cfcdc7c4bac3beadc2bdaab09e70b9af89b8ae88
+f2f2f2ecececeeeeeeebebebefefefe8e8e8e8e8e8e2e2e2e2e2e2dcdcdbd6d6d6cfcecccac9c3c8c7bfc5c2b5bbb393beb79cac916aaa8866ae966c
+f2f2f2e4e4e4e1e1e1e5e5e5e4e4e4dededee0e0e0dadadadcdcdbd8d8d7cecdcbcdccc9c6c3b7c4c1b3c0baa2b7ad84b09e70a5785fac8f69a77d61
+e8e8e8d8d8d7d9d9d9e1e1e1d9d9d9d2d1d0d6d6d6d4d4d3cbcac5cbcac6c7c5bbc5c1b4c0baa2beb79bbab18db19f71a98765a06456a6795f9f6356
+dededecbcac6cdccc9d6d6d6d5d5d4cac9c3c8c6becac9c3c5c2b5c5c2b5c2beacbeb79bbbb290b4a77ab5a97cac8f69a883649d5c53a26c5a9d5d53
+dededec8c6bec4c1b3cccbc8c9c8c2c7c4bac4c0b1c7c4bac1bba6c2beacbeb79bbbb393b4a77ab1a071ae966ca26d5aa67c619d5b52a26c5a803333
+d1d0cfc0baa3c2bda9c5c1b4c3bfaebbb391c0bba5beb89ebcb495bcb495b7ad85b1a172af996da98765a881639c58519b5550964b4a9f63568e4242
+c5c1b4bbb290bbb290c0baa2bdb69ab8ae86bcb495b7ad84b6ab81b4a77ab09e70ab8e68a98765a88163a5785f99524e8c3f3f9e5e548f4343914545
+c1bca7b7ad85b9af89bbb290bab18fb7ad85b9b08ab2a374af996dad936aa98564a5785fa5785fa6795fa26e5b9c58519d5d539e61558e42428d4140
+beb79bb4a778b5a97cb4a87bb3a677b09d6fb19f71aa8866aa8a67a67c61a5785fa16a59a169599f6456a26e5b9044449d5b529c59516e2121853838
+bab18db3a576b2a475b19f71ae966caa8a67aa8a66a88163a77e61a16858a3705ba065579e5e549d5d539e60549b55509348479c5851772b2b7a2d2d
+af996daf9a6dad956bab8e68aa8a66a5785fa77f62a4765ea26e5b9c59519f635699524e9c58519b5650984f4c99514d99524e964b4a944948873b3a
+ab8b67a4765eaa8a67a98564a77d61a3715ca16a599e61559d5b529b55509b5550914545974c4a7d31319449489d5c539e61559a544f974d4b964b4a
+a98765a3705b9d5b52a5785fa36f5ba16a59a168589c5a52954a49914545974c4a974c4a8b3e3e9b5550954a499d5d539f6356a26c5a984f4ca16858
+a88464a06557a16959a3725c9a544f9e61559e5e5498504d9145458b3e3e8538389145459044449f62559d5d539c5a52a16858a16a599e5e54a16b59
+a066579e6155a26d5a9f6456954a499c5a5293484799514d8f43437d3131964b4a954a499449489e61559e61559f6356a98564a987659e6155a16b59
+9c58519c5851964b4a9e615599524e974d4b8e42429449488d41408337379348479449489b55509e61559c5851a4755dac916aa88464a77e61ad956b
+9c59519c58517a2d2d98504d964b4a924746813434924746893d3d873b3a9145459b55509a534e9e5f54a77f62a3715cab8c68ac9069b5a97cb3a475
+9145458236366014149449488c3f3f8b3e3e883c3c8236367f3232803333873b3a9e5e549a534e9f6456a3725ca98665ab8e68af996db1a172b4a77a
+681b1b883c3c611515782c2c772b2b8033338b3e3e7f32328d41409247468d4140a16b599c59519f6456a88364ac8f69aa8866b09d6fb2a374bcb494
+5c1011954a496e21218639396b1f1f98504d762a297d313192474699514d964b4a9a544fa3715ca78062a77f62ab8e68b1a071bbb290b3a677beb79c
+4c00008236365508097a2d2d702423863939863939873b3a7d31319d5b5299524e9d5c53a3705ba88464a3705bb2a273b5a97cbcb495b8ae88bfb9a0
+6519198538387d3131873b3a7a2d2d873b3a8c3f3f893d3d9d5b529f64569e5f54a16b59ab8c68ab8b67a26e5bb4a87bb5aa7ebdb597c0bba5c2bdaa
+6a1e1d9449489b57518134348e4242914545883c3c9c5951a06456a4745da3715ca4735dad926aab8e68ad956bb9b08cb9b08cbfb9a0c0baa2c0baa3
+873b3a9c5a52a16b59893d3d964b4a9a534e9c5a52a06657a6795fa88163ab8b67ac8f69ae986dac9069b3a576bab18dbab18dc5c1b4c0baa2c5c1b4
+752828984f4ca5775e9e5e54a3705ba16b59a6795fa5785faa8866ab8d68ae976cb4a77ab2a374b3a677b09e70beb79bb7ad85cbcac6c7c5bcd6d6d6
+a06456a77e61a881639b5751a88364a78062ac8f69ac916aae976cb2a273b3a475b7ac82bcb494b4a77ab6ab80c1bca7c1bca7c7c5bccbcac6e9e9e9
+a4765ea88464af9a6d9d5d53a98665ae986db2a273b7ac82b8ae88bab18dbeb89eb7ad85c0baa2b7ad84c4c0b0c5c1b4c7c5bbc5c1b4d8d8d7e2e2e2
+af9b6eb1a172b9af89b09e70b3a576b9af89b9b08cc0baa2bfb9a0c2bdaac7c5bbc2bda9c5c1b4c3bfaec6c3b8d0cfcdc4c0b0c7c5bbe2e2e2e7e7e7
+b8ae88bbb290bbb393bdb698beb79cc2beacc2bdaac7c4bac8c6becdccc9cdccc9cecdcbc9c7c1d2d1d0c5c1b4cecdcbc7c4bae7e7e7efefefe4e4e4
+c0bba5beb89ec5c2b5c8c6becbcac6cccbc8cbcac5d5d5d4d5d5d4dddddde0e0e0e0e0e0dcdcdbe0e0e0dcdcdbddddddd2d1d0f2f2f2eeeeeee4e4e4
+cac9c3cac9c3d0cfcdcbcac5d6d6d6d6d6d6dadadae4e4e4e9e9e9e9e9e9e7e7e7ecececebebebe5e5e5ececece7e7e7e1e1e1f9f9f9fafafae9e9e9
+cfceccdededee0e0e0dadadae9e9e9e5e5e5e9e9e9efefefefefeff3f3f3efefeff5f5f5f0f0f0efefeff2f2f2f0f0f0f2f2f2f6f6f6f7f7f7fcfcfc
+e0e0e0dcdcdbeeeeeeeeeeeef2f2f2f0f0f0f2f2f2f6f6f6f7f7f7f7f7f7f6f6f6f7f7f7f6f6f6f3f3f3f7f7f7f3f3f3f9f9f9efefeffafafafdfdfd
+efefefeeeeeef9f9f9f3f3f3f9f9f9f5f5f5f7f7f7f7f7f7fafafaf9f9f9fcfcfcfcfcfcf6f6f6fafafaf7f7f7f9f9f9fafafafcfcfcfffffffdfdfd
+ebebebf2f2f2f6f6f6efefeff5f5f5f2f2f2f5f5f5f9f9f9f9f9f9f9f9f9fafafafafafaf7f7f7f5f5f5f9f9f9f6f6f6f6f6f6f6f6f6fdfdfdffffff
+ebebebf2f2f2f6f6f6efefeff5f5f5f2f2f2f5f5f5f9f9f9f9f9f9f9f9f9fafafafafafaf7f7f7f5f5f5f9f9f9f6f6f6f6f6f6f6f6f6fdfdfdffffff
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f1711458188
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 456.5 M
+227 456.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+115.4 456.5 M
+115.4 455.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+165 456.5 M
+165 455.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+214.6 456.5 M
+214.6 455.26 L
+S
+GR
+GS
+[1 0 0 1 115.4 460.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 165 460.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 214.60001 460.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 456.5 M
+103 394.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 456.5 M
+104.24 456.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 431.7 M
+104.24 431.7 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 406.9 M
+104.24 406.9 L
+S
+GR
+GS
+[1 0 0 1 99 456.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 99 431.70001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 99 406.89999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 425.49997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-12.5 -17 moveto 
+1 -1 scale
+(L5b6) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 425.49997] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-11 -3 moveto 
+1 -1 scale
+(PSS) t 
+GR
+GR
+GS
+1 GC
+N
+/f1375972072{103 544 M
+227 544 L
+227 482 L
+103 482 L
+cp}def
+f1375972072
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [103.0 482.0 227.0 544.0]
+/PaintProc
+{
+pop
+103.0 482.0 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcfffffffffffffdfdfdffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffdfdfdfffffffffffffffffffafafafffffffcfcfcffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfffffffffffffffffffffffffffffff5f5f5fdfdfdfcfcfc
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffcfcfcfcfcfcf9f9f9fdfdfdf3f3f3
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffcfcfcfdfdfdfcfcfcfffffffcfcfcfafafaf7f7f7f2f2f2e5e5e5
+fffffffcfcfcfafafafffffffdfdfdfdfdfdfdfdfdfdfdfdfffffffcfcfcfdfdfdfafafafdfdfdfafafaf9f9f9fafafaebebebf0f0f0efefefe1e1e1
+fffffffdfdfdfafafafdfdfdfdfdfdfcfcfcfcfcfcfcfcfcfcfcfcfafafafcfcfcfafafaf7f7f7f9f9f9f5f5f5f6f6f6e9e9e9f5f5f5e9e9e9efefef
+fdfdfdf7f7f7fcfcfcfcfcfcfcfcfcfafafafcfcfcf6f6f6fafafaf7f7f7fafafaf9f9f9f0f0f0f2f2f2eeeeeef2f2f2dcdcdbdddddde4e4e4d8d8d7
+fcfcfcf7f7f7fcfcfcf7f7f7fcfcfcfafafaf5f5f5f7f7f7f9f9f9f2f2f2f7f7f7f5f5f5efefefefefefe9e9e9e2e2e2d3d3d2d8d8d7d4d4d3d8d8d7
+f7f7f7f9f9f9f7f7f7fcfcfcf5f5f5f9f9f9f7f7f7f6f6f6f6f6f6f2f2f2f0f0f0ebebebebebebdededee7e7e7d6d6d6cac9c3c6c3b7c4c0b1d1d0cf
+f6f6f6f6f6f6f5f5f5f5f5f5f0f0f0f2f2f2f5f5f5f2f2f2efefefe8e8e8ecececebebebe2e2e2e0e0e0d2d1d0c4c0b1c3bfaebeb89ebdb698bdb69a
+f3f3f3f2f2f2efefefececece8e8e8e9e9e9ecececeeeeeee8e8e8e4e4e4e4e4e4e2e2e2dadadadcdcdbcccbc8c1bca7bfb9a0bbb391bdb597b7ad84
+f0f0f0e9e9e9e5e5e5ececece5e5e5e7e7e7e7e7e7e4e4e4e8e8e8dededed1d0cfd8d8d7cfcecccccbc8c7c5bcc3beadbeb79ca98665ae976ca77d61
+ebebebe5e5e5d1d0cfe7e7e7e1e1e1dddddddadadadededecfceccd5d5d4cccbc8c9c7c1c8c6bec6c3b7c3bfaeb9b08cbab18da88364af9a6daf9a6d
+e8e8e8d3d3d2dcdcdbdcdcdbd1d0cfdcdcdbd1d0cfcfcecccac9c3c8c7bfc8c7bfc4c1b3bfb9a0b9b08cbdb698b09e70b3a576a6795fae966ca77f62
+dededecbcac5cbcac6cbcac5c9c8c2cdccc9c8c6bec6c3b7c4c1b3c6c3b7c1bca7beb79cbab18db4a77ab9af89a78062a98765a06657ad956ba77f62
+d8d8d7c8c6bec7c4bac6c3b8c8c7bfc2bdaac7c5bbc2beacbfb9a0bfb9a0bbb393b9b08ab4a77ab3a677b4a778a88263a5775e823636a67a60934847
+cbcac6c2bdaac2bda9c2bdaac2bdaabbb391bfb89fbcb495b7ad84b9b08cb8ae88b19f71ae986dad946baa8a67a3705bab8e68a06456a06557984f4c
+c9c8c2bdb597bfb89fbfb89fbfb89fbbb391b8ae88b3a475b9af89b19f71af996dab8d68ab8b67a88464a5785fa26d5aa78062a26e5b9f62558d4140
+beb89ebdb698b7ad85bab18fbdb597b3a576b5aa7db09d6faf996dab8b67a88364a4745da5785fa77e61a067589a544f99524e9f62558236367b2e2e
+c0baa3b4a778b2a475b4a778b4a77aad956bb09e70ac916aa98765a77e61a3715c9c5851a06456a066579e60549e60549f6356a67b607c302f8f4343
+b7ac82af996dae986dad956bad956ba88163ac9069a67c61a67c61a4745da16b59a066579e5e5498504d9d5c539b55509e5f549b5550661a1a803333
+b09d6fae966cb09e70ae966caa8a66a67a60a5785fa4765ea066579e5e549f63569b5751873b3a7528288f43439b5650782c2c964b4a8c3f3f873b3a
+af9c6ea4765ea78062a5785f9f6356a4745da06557a067589a544f964b4a9a534e9449488639398134348639399a544f9c5851893d3d944948944948
+a67b60a4735da06758a77d61a3725c9e60549f63569c595199524e8d41408e424298504d93484799514d9247468b3e3e9d5c538b3e3e904444a06456
+a5785fa5785fa26d5aa67b60a065579e5e5499524e954a498d41408236368d41408d41408f4343964b4a9d5b529a544fa3725c9d5b529e6155a4765e
+a16a59a26c5a8c3f3fa065579e61559b57519b5650924746863939772b2b873b3a984f4c99524e9f62559e60549e6155a77d61aa8966a26e5ba88163
+9145459b5751934847904444954a4999524e984f4c833737883c3c8639398b3e3e974d4b9b57519b5751a06657a67b60a16959ae966cab8b67ae986d
+9d5d53984f4c883c3c974d4b9348478639398033338b3e3e8538389044449a544f9a534ea06456a4755da67b60a67c61a26e5bae966caf9b6eaf996d
+9d5c5399524e681b1b9c58517a2d2d964b4a823636954a4998504d974d4b9c5a529d5d53a4765ea67b60a88163ae976cac9069b6ab80b6ab81b4a778
+7a2d2d954a49742727914545782c2c964b4a8d41409a534e9b57519d5c5399524ea3725ca3715caa8a67aa8a66b3a677ad956bc0baa3b09d6fbbb290
+5a0e0f934847984f4c974d4b99524e99514d9348479a544f9c5851a16a59a06557a77d61ab8c68ac8f69ad926ab19f71b4a778b9b08ab9b08abdb698
+4c0000782c2c853838a064568f43439d5b529c58519e5f54a36f5ba67a60a88163a88263ac8f69b19f71af9a6db6ab81b4a87bc0baa2c4c1b3c5c2b5
+82363699524ea26e5b9247469a544f9d5d539e6155a4745da77d61a98665ac916aaf996db19f71b4a778af9b6eb9b08cbbb393cbcac5c7c4bac2beac
+a06657a77e61a6795f99524ea06758a6795fa5775ea5785fa88364ac916aad936ab09e70b5aa7db7ad84b5aa7ebbb391c1bca7cbcac5c4c1b3c8c7bf
+9e6155a78062a985649a534ea36f5ba78062a98564ab8c68ad936ab2a273af9c6eb7ac82bab18fb7ac82b7ad84beb79bc4c0b1c6c3b7c8c6bededede
+a06657a5785faa8866a26c5aad926aac916aaf996db19f71b4a87bb7ac82b6ab80b8ae88b9b08cb7ac82beb89ec6c3b8c0baa3c7c5bccbcac5e1e1e1
+a5775eaa8a67af9a6da88364b2a374b2a273b5aa7db7ac82bbb290bdb69abdb69abeb89ec0baa3c4c0b0c1bca7cccbc8d0cfcdc7c5bbdededee4e4e4
+a88263af996db4a77ab4a77ab3a677b7ad85bbb393bdb597c1bba6c1bca7c8c7bfc0baa3c0baa3c0baa2c6c3b8d1d0cfd4d4d3ddddddebebebe9e9e9
+bbb391b7ad84beb89ebbb290bcb494c0baa2c0baa2c2bdaac8c6bececdcbcac9c3c8c7bfcac9c3c4c0b0c4c0b0d3d3d2cac9c3e5e5e5e8e8e8e5e5e5
+bfb89fc0baa3c6c3b8c6c3b8c7c5bcc8c6bec9c7c1d1d0cfd1d0cfd3d3d2dadadad5d5d4d3d3d2dadadadededee2e2e2d5d5d4f3f3f3eeeeeef5f5f5
+c8c6bec6c3b8cccbc8c7c4bacdccc9d2d1d0d4d4d3dcdcdbd3d3d2e0e0e0dddddde2e2e2e1e1e1dddddddddddddededee0e0e0f2f2f2f6f6f6e9e9e9
+cfcecccac9c3d5d5d4d3d3d2dadadadcdcdbdadadae5e5e5ebebebeeeeeee8e8e8ebebebeeeeeee9e9e9e8e8e8ebebebdededef7f7f7f7f7f7f7f7f7
+d5d5d4d6d6d6e2e2e2e1e1e1e9e9e9e9e9e9e9e9e9efefeff3f3f3f5f5f5f0f0f0f6f6f6f5f5f5f2f2f2eeeeeef2f2f2eeeeeef6f6f6f2f2f2ffffff
+e1e1e1ddddddf2f2f2ecececf2f2f2eeeeeef3f3f3f3f3f3f6f6f6f6f6f6f9f9f9f7f7f7f2f2f2f6f6f6e4e4e4f2f2f2f5f5f5f2f2f2f9f9f9fdfdfd
+cfceccd8d8d7e4e4e4d8d8d7e2e2e2dededee5e5e5eeeeeef0f0f0f0f0f0f0f0f0f3f3f3f0f0f0e4e4e4ebebebe5e5e5efefefdededef9f9f9fdfdfd
+cfceccd8d8d7e4e4e4d8d8d7e2e2e2dededee5e5e5eeeeeef0f0f0f0f0f0f0f0f0f3f3f3f0f0f0e4e4e4ebebebe5e5e5efefefdededef9f9f9fdfdfd
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f1375972072
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 544 M
+227 544 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+115.4 544 M
+115.4 542.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+165 544 M
+165 542.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+214.6 544 M
+214.6 542.76 L
+S
+GR
+GS
+[1 0 0 1 115.4 548] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 165 548] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 214.60001 548] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+[1 0 0 1 165.00006 561.5] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-24.5 11 moveto 
+1 -1 scale
+(Pupil Size) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 544 M
+103 482 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 544 M
+104.24 544 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 519.2 M
+104.24 519.2 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+103 494.4 M
+104.24 494.4 L
+S
+GR
+GS
+[1 0 0 1 99 544] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 99 519.20001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 99 494.39999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 513] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-10 -17 moveto 
+1 -1 scale
+(WM) t 
+GR
+GR
+GS
+[0 -1 1 0 86.5 513] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-11 -3 moveto 
+1 -1 scale
+(PSS) t 
+GR
+GR
+GS
+1 GC
+N
+/f-854502540{266 108 M
+390.5 108 L
+390.5 46 L
+266 46 L
+cp}def
+f-854502540
+f
+GR
+GS
+[1 0 0 1 315 24] CT
+/Helvetica-Bold 11 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(NWh) t 
+GR
+GR
+GS
+[1 0 0 1 299 38] CT
+/Helvetica-Bold 11 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(WT) t 
+GR
+GR
+GS
+[1 0 0 1 317 43] CT
+/Helvetica-Bold 8.8 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(E) t 
+GR
+GR
+GS
+[1 0 0 1 323 38] CT
+/Helvetica-Bold 11 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(M2M4) t 
+GR
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.5
+/YStep 62.0
+/BBox [266.0 46.0 390.5 108.0]
+/PaintProc
+{
+pop
+266.0 46.0 translate
+6.225 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9f9f9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfafafafffffffffffffcfcfc
+fffffffffffffcfcfcfffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffdfdfdfafafafafafafcfcfcfffffffffffff6f6f6
+fffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfafafafffffff6f6f6fffffff9f9f9
+fcfcfcfcfcfcfdfdfdfffffffdfdfdfcfcfcfffffffffffffcfcfcfdfdfdfcfcfcfdfdfdfcfcfcfdfdfdfafafafdfdfdfdfdfdf6f6f6f2f2f2ececec
+fcfcfcfdfdfdfcfcfcfffffffdfdfdfffffffdfdfdfcfcfcfdfdfdf9f9f9fcfcfcfafafafafafaf7f7f7f6f6f6f3f3f3f9f9f9ebebebe9e9e9e0e0e0
+f6f6f6f6f6f6f9f9f9fffffff7f7f7fdfdfdfcfcfcfafafafafafaf7f7f7f7f7f7f9f9f9f6f6f6f9f9f9f5f5f5eeeeeeecececf9f9f9e5e5e5d0cfcd
+efefeff2f2f2f3f3f3fcfcfcf3f3f3f9f9f9f6f6f6f6f6f6f7f7f7f7f7f7f5f5f5f5f5f5f5f5f5f3f3f3efefefe7e7e7d9d9d9e7e7e7d0cfcdcdccc9
+e4e4e4f0f0f0eeeeeef6f6f6f7f7f7f7f7f7f3f3f3f0f0f0f3f3f3f0f0f0f2f2f2f2f2f2ebebebefefefe5e5e5e1e1e1cccbc8e0e0e0c9c7c1c3bfae
+dededee2e2e2e5e5e5e5e5e5f2f2f2eeeeeeececece9e9e9ebebebe9e9e9ececece5e5e5dddddddedededadadad6d6d6c8c7bfc6c3b8c2bda9bab18f
+d4d4d3dcdcdbe1e1e1efefefe9e9e9e8e8e8ececece4e4e4e2e2e2e0e0e0dcdcdbdadadad6d6d6dcdcdbcac9c3c7c5bcc6c3b7c2bdaabfb89fb4a778
+cfceccd0cfcdd8d8d7d4d4d3dededee0e0e0e2e2e2d6d6d6d4d4d3d8d8d7d1d0cfd2d1d0d2d1d0cbcac6c4c0b1c5c2b5bcb494b09e70b5aa7daf996d
+c3beadc1bba6cdccc9d9d9d9d4d4d3d8d8d7d5d5d4cccbc8c9c7c1c9c7c1c7c5bcc7c5bcc3bfaec4c0b1b9b08abdb69ab3a576a77d61b09e70aa8866
+c4c0b1c1bca7c7c4bac7c5bbcdccc9cdccc9c5c2b5c6c3b7c3beadc2bda9c1bba6c1bca7bdb69abcb494b8ae88b09e70b4a87bab8d68a36f5bad946b
+b9b08cb3a576bdb69abbb290c4c0b1c0baa3beb79cbeb79bbdb597bab18fbbb290b6ab81b4a778af9a6db19f71ae976cb09e70ad956baf9b6ea36f5b
+af996dab8d68b2a475b9b08abdb597b9b08cb7ad85b5aa7eb4a87bb2a374b3a576b1a172ae966caa8866ab8d68a5785fa5785fa06657a4765ea06657
+a98765a67a60ac9069bbb393b09e70b2a273b2a374ad956bac9069ac916aac8f69a98765a78062a67a60a5785fa4765ea16a59a26d5aa26c5a954a49
+a16a59a4765ea4755db2a273ae966cad956baa8a66a98564a6795fa67c61a3705ba4745da06657a06456a26c5a9b55509f6356853838570b0c99514d
+9e5e549d5c539a534ea77f62a6795fa67a60a4765ea5785f9e5f54a16b59a067589f63569d5d539d5c538d4140944948883c3c883c3c9e5e54873b3a
+8c3f3f9044449e5e549f6456a26c5a9e60549b55509c5a52954a49944948873b3a964b4a8e4242944948904444883c3c9247469044448639399a544f
+7a2d2d9044448e424292474699514d8e4242873b3a893d3d873b3a904444873b3a8639398e42428c3f3f863939803333a06657924746a16a59a26e5b
+7226268c3f3f893d3d7125259348477f32327b2e2e7b2e2e7f32328134347d3131813434722626883c3c863939893d3d9f64569f6456984f4ca3705b
+7c302f8b3e3e9449488236369145457427277c302f8639398f43437f32328b3e3e883c3c8d4140883c3c9a534e9e6155a06657a4765ea3715ca98665
+9044449d5c5399514d4c00009449488b3e3e904444873b3a924746833737924746974c4a9348478e4242a064569e6155a5785fa77f62a6795fad946b
+9c5851a16a599c5a5298504d7f32328236369a544f99524e974c4a9b565098504d954a499d5c539b5751a3725ca26d5aa5785faa8a67af9c6eb9b08c
+a4765ea77d619c5a52a1695999514d9a534e9b5650a06456a065579f6356a06758a16b59a4735da36f5ba77e61aa8a66aa8a67af996db4a87bbeb79c
+aa8966a4735da77e61aa88669145459d5d53a06657a16b59a4755da4755da88364a77f62ad926aaf9c6eb3a576b3a576b09d6fbcb494c6c3b8c4c1b3
+b6ab81b3a576a98564a16959a98765ab8d68a88464aa8a67ae976cad956bae966caf9b6eb3a677b9b08ab8ae86bfb9a0c2beaccac9c3c5c2b5c9c8c2
+bfb89fb7ad84b4a778a67c61b09e70b4a778ad956bb3a677b4a778b5aa7eb9af89b9b08abbb391beb89ebdb69ac7c5bcc2bdaae0e0e0e4e4e4d3d3d2
+c7c4bac4c0b1b6ab81bbb290b9af89b7ac82b7ad85bcb494c0bba5c2bda9c4c0b0c2bdaac7c4bacbcac5cbcac5ddddddd0cfcddedededddddde4e4e4
+d3d3d2c9c8c2c7c4bac0baa2bcb494beb89ec4c0b0c5c1b4c8c6becac9c3cbcac5cecdcbd1d0cfd9d9d9d8d8d7e5e5e5d3d3d2eeeeeee2e2e2efefef
+f2f2f2ddddddd1d0cfc8c7bfc0baa3c7c4bad1d0cfcecdcbd8d8d7d8d8d7dcdcdbdededeececece4e4e4e5e5e5ececece8e8e8efefeff2f2f2fafafa
+ececece9e9e9ebebebd8d8d7d1d0cfdadadadedededddddde8e8e8ebebebebebebeeeeeef0f0f0f2f2f2f5f5f5f6f6f6efefeff5f5f5fcfcfcfafafa
+f6f6f6f7f7f7f6f6f6efefefececece9e9e9f5f5f5eeeeeef2f2f2f2f2f2f2f2f2f6f6f6f7f7f7f6f6f6f5f5f5f9f9f9f6f6f6f7f7f7ffffffffffff
+fcfcfcfcfcfcfcfcfcfcfcfcf2f2f2fcfcfcfafafaf7f7f7fafafafafafaf9f9f9fcfcfcfcfcfcfcfcfcfdfdfdfcfcfcfcfcfcfdfdfdfffffffdfdfd
+fcfcfcfcfcfcfffffffffffffafafafafafafdfdfdfafafafdfdfdfdfdfdfcfcfcfffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+fffffffffffffffffffffffff6f6f6fffffffffffffdfdfdfffffffffffffdfdfdfffffffffffffcfcfcfffffffffffffffffffffffff5f5f5ffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffafafaffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f-854502540
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 108 M
+390.5 108 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+278.45 108 M
+278.45 106.755 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+328.25 108 M
+328.25 106.755 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+378.05 108 M
+378.05 106.755 L
+S
+GR
+GS
+[1 0 0 1 278.45001 112] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 328.25 112] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 378.04999 112] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 108 M
+266 46 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 108 M
+267.245 108 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 83.2 M
+267.245 83.2 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 58.4 M
+267.245 58.4 L
+S
+GR
+GS
+[1 0 0 1 262 108] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 262 83.2] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 262 58.4] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f1697564482{266 195 M
+390.5 195 L
+390.5 133 L
+266 133 L
+cp}def
+f1697564482
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.5
+/YStep 62.0
+/BBox [266.0 133.0 390.5 195.0]
+/PaintProc
+{
+pop
+266.0 133.0 translate
+6.225 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdffffffffffffffffff
+fdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffdfdfdfdfdfdfffffffffffffafafa
+fdfdfdfdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffff9f9f9fdfdfdfdfdfdfffffff3f3f3
+fdfdfdfcfcfcfffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfdfdfdfdfdfdf7f7f7fdfdfdfcfcfcfffffff0f0f0
+fafafafdfdfdfdfdfdfffffffffffffffffffffffffcfcfcfdfdfdfdfdfdfdfdfdfcfcfcfcfcfcfcfcfcfafafaf5f5f5fdfdfdf6f6f6f3f3f3eeeeee
+f7f7f7fcfcfcfffffffffffffffffffcfcfcfdfdfdfcfcfcfcfcfcfcfcfcfafafafafafaf9f9f9fafafaf9f9f9f3f3f3f5f5f5efefefecececececec
+f2f2f2f7f7f7f6f6f6fdfdfdfafafafcfcfcfdfdfdfafafafcfcfcfafafaf7f7f7f6f6f6f6f6f6fafafaf6f6f6f2f2f2e8e8e8e9e9e9e4e4e4e1e1e1
+f5f5f5f5f5f5f3f3f3fcfcfcfafafafafafafcfcfcf9f9f9f9f9f9f7f7f7f5f5f5f5f5f5efefeff0f0f0efefefe5e5e5e0e0e0e1e1e1d6d6d6d6d6d6
+ebebebefefefeeeeeef9f9f9f9f9f9f5f5f5fafafaf6f6f6f5f5f5f3f3f3f0f0f0ecececececece5e5e5e7e7e7dededed9d9d9d4d4d3c3bfaec2bdaa
+e1e1e1e4e4e4eeeeeef7f7f7f6f6f6f3f3f3f6f6f6efefeff0f0f0e9e9e9e9e9e9e8e8e8e1e1e1dededed9d9d9cecdcbc8c7bfcac9c3c4c1b3bfb89f
+d6d6d6dadadae8e8e8f2f2f2f2f2f2efefefefefefe8e8e8e7e7e7e2e2e2e2e2e2dcdcdbdadadad1d0cfcecdcbc9c7c1c4c0b1bcb495c2bda9bbb290
+d9d9d9dddddde4e4e4ebebebebebebe7e7e7e2e2e2dcdcdbdededed6d6d6d6d6d6d4d4d3d1d0cfcccbc8c4c1b3c2bda9bbb290b09e70b5a97cb09e70
+cbcac6d3d3d2d5d5d4d9d9d9e2e2e2d9d9d9dcdcdbd8d8d7d3d3d2cbcac5cccbc8cac9c3c4c0b0c7c5bcc0baa2bcb495b6ab81b19f71b19f71a88464
+c8c7bfcecdcbd0cfcdd1d0cfcfceccd2d1d0cbcac6cdccc9cac9c3c7c5bbc5c1b4c2bda9beb89ebeb79cb9af89bab18dab8c68a88163aa8a66a77f62
+c0bba5c2beacc4c0b0d4d4d3c9c7c1c8c7bfc5c1b4c6c3b7c4c1b3bfb9a0beb79bbbb290b6ab81b6ab80b3a475ae986dae966caa8a67ae966c9d5c53
+b8ae88bbb290beb89ec3bfaec2bda9c2beacbeb89ebfb89fbbb391b7ac82b5aa7eb7ac82b1a172ad956bab8b67aa8a66a98765a883649b57519e5f54
+b5a97cb5aa7eb6ab80c0bba5beb79cb9b08cb8ae88b5aa7eb1a172b2a374ae966cae966ca98665a88464a4755da67a60a88263a168588c3f3f98504d
+ac9069af9b6eb2a475b9af89b3a677b2a475b1a172b09e70ab8e68ab8e68a88364aa8866a4755da26d5aa06657a06758a3715c9c59519e6155914545
+a67c61aa8966ab8c68b4a778ae986dab8d68aa8a66a88364a4755da5775ea4745da4745d9c5a529c59519b57519b56509e60549c5a5299524e9f6356
+9e61559f6356a4765ea26e5baa8966a67c61a3705ba16a599e5f549f625599524e99514d954a49873b3a9247468e424299514d8f4343883c3ca16b59
+98504d984f4ca06758a06758a4755d9f64569c58519b55508d41409b5550893d3d813434873b3a7b2e2e893d3d8b3e3e9247467226269145459f6456
+9a534e9b55509d5d539e60549b55509a544f8d4140883c3c7c302f7c302f8236366e21216f22227c302f7c302f8b3e3e8d41409a534e9a534e9e6054
+8236369e60549c5851883c3c8d41407d31317f32326e2121722626661a1a7a2d2d6418186e21216519197125257c302f9d5c53a06456a16858a4745d
+9145457a2d2d9a534e5c1011782c2c7226266e2121681b1b7125256316177d31316115157427278337379044448e4242974d4b9d5b52a77d61a88364
+762a297b2e2e8e4242641818681b1b4c00006014147125256a1e1d7024237b2e2e7125259145458d4140924746974d4ba06657a4745da98564af9a6d
+9449489b5650873b3a6e21216a1e1d5e1212702423782c2c85383886393983373799514d9a534e99514d9e5e54a16b59a36f5ba77d61b4a778b19f71
+9d5d538c3f3f772b2b7125257528287528287f32327f32328e4242974c4a9a534ea06456a3715ca3725ca78062aa8a67ae966cb1a172b9b08ab6ab81
+a26c5a9f62559e5f5499524e7f323298504d9a544f9c59519e6155a16b59a36f5ba77e61a98765ad946bb2a475b5a97cb7ac82c0baa3bcb494bfb89f
+a6795fa77f62a169599f63569b5550a5785fa26d5aa67c61ab8d68a98665ad946baf9c6eb4a87bbab18dbeb79cbdb698bdb69ac1bca7c2bdaac8c7bf
+af9a6dab8d68a88163a5775e9c5a52aa8a66aa8a66ad956bb2a273b4a778b5aa7ebdb69abfb9a0c4c0b0c8c6bec6c3b8c6c3b8d5d5d4c9c8c2d0cfcd
+b9af89b09d6fa88364af9b6eab8b67b1a172b4a778bab18dbdb698bfb9a0c2beacc6c3b8c9c8c2cecdcbcccbc8d9d9d9cac9c3e0e0e0d2d1d0dadada
+c2bda9beb79bb4a87bb8ae88b9b08cbeb79cc3beadc5c2b5c8c6bed0cfcdd1d0cfd3d3d2dededee1e1e1dededee8e8e8dededee9e9e9dcdcdbeeeeee
+d2d1d0c8c7bfbeb79bbfb9a0d1d0cfc9c8c2d1d0cfd1d0cfd5d5d4e0e0e0e0e0e0e2e2e2ecececeeeeeee8e8e8eeeeeeebebebf6f6f6ecececf0f0f0
+e0e0e0cdccc9cccbc8c9c7c1e8e8e8dededee2e2e2e7e7e7eeeeeef0f0f0eeeeeeecececf7f7f7f3f3f3f2f2f2f5f5f5ecececf7f7f7f3f3f3fafafa
+eeeeeedededeefefefebebebf5f5f5efefeff3f3f3f2f2f2f7f7f7f7f7f7f7f7f7fafafafcfcfcfafafafafafafafafaf7f7f7f9f9f9fcfcfcf9f9f9
+f6f6f6f7f7f7f7f7f7f2f2f2fafafaf7f7f7fafafaf9f9f9fafafafcfcfcfcfcfcfdfdfdfdfdfdfdfdfdfafafafafafaf9f9f9fffffffdfdfdfafafa
+f9f9f9fdfdfdf9f9f9fcfcfcfdfdfdfcfcfcfdfdfdfdfdfdfffffffdfdfdfffffffffffffdfdfdfdfdfdfffffffffffffafafafffffffffffffdfdfd
+fffffffffffffffffffdfdfdfdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffafafafffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfafafaffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f1697564482
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 195 M
+390.5 195 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+278.45 195 M
+278.45 193.755 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+328.25 195 M
+328.25 193.755 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+378.05 195 M
+378.05 193.755 L
+S
+GR
+GS
+[1 0 0 1 278.45001 199] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 328.25 199] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 378.04999 199] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 195 M
+266 133 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 195 M
+267.245 195 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 170.2 M
+267.245 170.2 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 145.4 M
+267.245 145.4 L
+S
+GR
+GS
+[1 0 0 1 262 195] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 262 170.2] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 262 145.39999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f1552807210{266 282.5 M
+390.5 282.5 L
+390.5 220.5 L
+266 220.5 L
+cp}def
+f1552807210
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.5
+/YStep 62.0
+/BBox [266.0 220.5 390.5 282.5]
+/PaintProc
+{
+pop
+266.0 220.5 translate
+6.225 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfffffffffffffffffffafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffff9f9f9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfffffffdfdfdfafafafffffffafafafffffff7f7f7
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfcfcfcfffffffdfdfdfcfcfcfffffffafafafffffff3f3f3
+fdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfcfcfcfffffffdfdfdf6f6f6fcfcfcf2f2f2efefeff2f2f2
+fcfcfcfcfcfcfffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffcfcfcfafafafcfcfcfafafaf6f6f6f9f9f9f2f2f2e2e2e2e4e4e4
+fdfdfdfdfdfdfdfdfdfffffffffffffffffffdfdfdfdfdfdfffffffcfcfcfdfdfdfafafaf9f9f9fcfcfcf7f7f7e9e9e9f3f3f3f0f0f0f5f5f5e9e9e9
+fcfcfcfcfcfcfffffffffffffffffffffffffffffffafafafdfdfdfcfcfcfafafaf9f9f9f7f7f7f7f7f7f5f5f5e9e9e9dcdcdbe8e8e8e0e0e0d1d0cf
+fcfcfcfcfcfcfdfdfdfffffffffffffcfcfcfffffffcfcfcfcfcfcf9f9f9f7f7f7f7f7f7f5f5f5f2f2f2f0f0f0dededed1d0cfd8d8d7c9c8c2c7c5bb
+f7f7f7fcfcfcfafafafdfdfdfdfdfdfafafafdfdfdfafafafafafaf6f6f6f5f5f5f2f2f2f0f0f0ececece0e0e0d3d3d2d8d8d7cdccc9c4c1b3c7c5bb
+f6f6f6fcfcfcf6f6f6fcfcfcfafafaf9f9f9fafafaf3f3f3f6f6f6f5f5f5efefefefefefe8e8e8dadadad9d9d9d0cfcdd1d0cfd4d4d3bcb494c4c0b0
+f0f0f0f2f2f2f7f7f7fafafafafafaf6f6f6f5f5f5f5f5f5efefeff2f2f2ebebebe1e1e1e0e0e0d5d5d4d5d5d4c7c4bac9c7c1b7ad85bab18daf9b6e
+e9e9e9efefeff7f7f7f9f9f9f7f7f7f3f3f3f5f5f5efefefececece5e5e5e4e4e4d8d8d7d8d8d7d1d0cfc9c8c2c5c2b5c3bfaeb7ad85bbb290b5aa7e
+dddddde4e4e4f3f3f3f3f3f3efefefefefefefefefe9e9e9e5e5e5dededed3d3d2d2d1d0cac9c3cdccc9c3beadc0baa2bdb69ab7ac82bcb495ad936a
+e0e0e0e1e1e1e9e9e9f0f0f0efefefe9e9e9e5e5e5e0e0e0e0e0e0d5d5d4cdccc9cdccc9c5c1b4c7c5bbc1bba6beb79bb2a273b09d6fbdb69aa88163
+dadadae1e1e1ddddddececece7e7e7e1e1e1e1e1e1dcdcdbcecdcbcac9c3c9c7c1c5c2b5c1bba6bfb9a0bdb597beb79bb8ae88b09e70b2a273a88464
+d2d1d0d6d6d6d5d5d4e2e2e2e5e5e5dcdcdbd1d0cfd0cfcdc9c7c1c6c3b7c5c1b4c1bca7bdb69abdb597b9b08ab9b08aad956bad956bbdb597a6795f
+cdccc9c9c8c2cecdcbd3d3d2d5d5d4cfceccc9c8c2c6c3b7c4c0b1c1bca7beb79cbdb69ab8ae86b4a77ab5a97cb6ab81ad926ab2a475b3a576ab8e68
+c1bba6c5c2b5cbcac5c7c5bccbcac5cecdcbc6c3b8c4c0b0bdb69abeb79cb7ad84b7ad84b1a172ad956baf9b6eb2a374ad956bb09d6f9e5e54a98765
+bcb494beb79cc2beaccac9c3beb79bc1bca7c2bda9bdb698bbb391b6ab81b2a273b7ad84ab8e68ab8b67ab8c68ae966cb3a475aa8a66904444ac9069
+bab18fbeb79bbab18fc9c8c2beb79bbfb9a0b8ae88b6ab80b4a87bb19f71af9b6eb19f71ad936aac916aa88163a3715caa8a67ac9069a06758a88464
+b19f71b4a87bb6ab81c0baa2bcb494b4a778b5a97cb2a374af9b6ead946bab8c68aa8a67a88364a67b60a5785fa77d61aa8a66aa8866a5785fae976c
+ab8b67ae986db09d6fb2a374b5aa7eab8d68b09d6faf996da98564a88364a4755da4765ea4745da4755da26d5aa16a59a4745da4765ea78062af9a6d
+a98765a88263a98665a26e5bb3a475a88263a67c61a3725ca16a59a3705b9f6456a065579f64569e5e54a4765e9f6456a26c5a9f6255a98564b09e70
+a4745da98765aa8a66a77d61a26e5ba67c61a26c5aa16b599e60549f62559f62559d5b52a0645699524e9e5e549d5c53a06758a67b60af9b6ead956b
+9c5851a06657a26e5ba064569b57519f62559e5f549b5650974c4a9c58519a534e8c3f3f9c59519b57519a534e9e6054a26e5ba67a60af9a6da77e61
+9c5a528e42429f63569f63569c58519044449b5650954a49873b3a8c3f3f99514d883c3c924746974d4b98504d9e6155a26e5ba3705bab8b67ae976c
+99524e8b3e3e9b555099524e964b4a8538388538388033338f43439044449c5851924746984f4c9a534e904444a6795fa5785fa78062ab8e68b1a071
+9348478c3f3f883c3c8f43437024236e21216b1f1f803333893d3d8033339449489348479a544f9c59519e6155a5785fab8e68a78062b4a87bb3a576
+762a299348477d3131873b3a7f32326c20207c302f7d313182363686393999524e99514d9e5e54a3725caa8a67a67c61ad936aaa8866b6ab81b6ab80
+99524e924746883c3c5b0f108538387f32327b2e2e954a49954a499b56509e6155a06758a5775ea98665ae966cad926ab2a273af9b6eb8ae88b5aa7d
+9f64569d5d539a534e9247467427278c3f3f9145459b55509e6155a26d5aa4745da98564ab8d68ad946bb3a677b7ad84b9af89bcb495bbb290c2bda9
+a6795f9e5f5499524e4c00009a534ea06557a16858a3705ba98765a88163ad926ab2a273b3a677b7ac82beb79bbdb597c1bca7c2bdaac2bda9c4c0b1
+a77f62a3725c9e5f54a5775e9d5b52a77d61a88464ac9069b2a374b3a475b6ab80bcb494beb89ec4c0b0c2bdaac4c0b1c1bba6cecdcbc8c7bfcbcac5
+b09e70af9b6ea88263af9a6daa8866af9a6db2a273b5a97cbbb391beb79cc0bba5c3beadc9c7c1c9c8c2cdccc9cccbc8c4c1b3d6d6d6c7c4bad9d9d9
+b8ae86beb89eb09e70ae976caf9b6ebdb597bcb494beb79cc3bfaec7c5bcc8c6becac9c3dddddddededed4d4d3e4e4e4dadadae8e8e8d2d1d0e5e5e5
+c0bba5bbb290bdb698bcb495c4c1b3c6c3b8c6c3b8c8c6becdccc9d6d6d6d9d9d9e4e4e4ebebebeeeeeeebebebe5e5e5d6d6d6f3f3f3e0e0e0f2f2f2
+d0cfcdc5c1b4c8c7bfcdccc9d8d8d7d3d3d2d8d8d7dddddde4e4e4ececece5e5e5f0f0f0f2f2f2f0f0f0eeeeeef3f3f3f2f2f2f9f9f9e5e5e5e8e8e8
+e5e5e5e4e4e4e8e8e8dededee1e1e1e8e8e8e9e9e9f2f2f2f2f2f2f5f5f5f3f3f3f5f5f5f7f7f7f6f6f6f6f6f6f7f7f7f2f2f2f7f7f7e9e9e9f2f2f2
+eeeeeeebebebf0f0f0e9e9e9f0f0f0f2f2f2f6f6f6f7f7f7f9f9f9fcfcfcfafafafcfcfcfcfcfcf9f9f9f7f7f7fcfcfcf3f3f3fcfcfcf2f2f2f2f2f2
+fafafaf7f7f7f7f7f7f5f5f5fcfcfcf6f6f6f9f9f9fcfcfcfcfcfcfdfdfdfdfdfdfdfdfdfffffffcfcfcfcfcfcfdfdfdfffffffcfcfcfcfcfcf9f9f9
+fffffffdfdfdfffffff9f9f9fdfdfdfdfdfdfdfdfdfcfcfcfffffffffffffffffffdfdfdfffffffdfdfdfffffffcfcfcfcfcfcfffffff9f9f9f9f9f9
+fffffffffffffdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdf2f2f2ffffffffffffffffff
+fffffffdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9f9f9fffffffffffffdfdfd
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f1552807210
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 282.5 M
+390.5 282.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+278.45 282.5 M
+278.45 281.255 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+328.25 282.5 M
+328.25 281.255 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+378.05 282.5 M
+378.05 281.255 L
+S
+GR
+GS
+[1 0 0 1 278.45001 286.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 328.25 286.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 378.04999 286.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 282.5 M
+266 220.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 282.5 M
+267.245 282.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 257.7 M
+267.245 257.7 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 232.9 M
+267.245 232.9 L
+S
+GR
+GS
+[1 0 0 1 262 282.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 262 257.70001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 262 232.89999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f-1681628286{266 369.5 M
+390.5 369.5 L
+390.5 307.5 L
+266 307.5 L
+cp}def
+f-1681628286
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.5
+/YStep 62.0
+/BBox [266.0 307.5 390.5 369.5]
+/PaintProc
+{
+pop
+266.0 307.5 translate
+6.225 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfc
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffffffffafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffafafaffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffff9f9f9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffcfcfcf6f6f6fcfcfcfcfcfcf9f9f9
+fdfdfdfffffffffffffffffffffffffffffffdfdfdfffffffdfdfdfffffffffffffffffffafafafffffffafafafdfdfdf2f2f2f7f7f7fdfdfdf5f5f5
+fdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdf9f9f9fdfdfdfcfcfcf3f3f3fdfdfdefefefeeeeeee8e8e8
+fdfdfdfafafafffffffffffffffffffffffffffffffdfdfdfffffffdfdfdfdfdfdfdfdfdfafafafcfcfcfcfcfceeeeeefafafae9e9e9e9e9e9d1d0cf
+fdfdfdfffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfcfcfcfcfcfcf9f9f9f6f6f6f7f7f7f6f6f6e7e7e7efefefefefefd0cfcdd2d1d0
+fdfdfdfafafafffffffffffffffffffffffffdfdfdfcfcfcfdfdfdf9f9f9f7f7f7f7f7f7f2f2f2f0f0f0e9e9e9ebebebd8d8d7d1d0cfd6d6d6c8c7bf
+fafafafdfdfdfcfcfcfffffffffffffffffffdfdfdfafafafafafaf5f5f5f5f5f5f3f3f3f0f0f0ececece9e9e9e4e4e4d1d0cfd8d8d7c3beadc7c5bc
+fafafafafafaf7f7f7fcfcfcfdfdfdfafafafdfdfdf9f9f9f7f7f7f2f2f2f2f2f2ebebebf0f0f0e2e2e2ddddddd2d1d0c9c8c2d2d1d0d0cfcdc2beac
+f6f6f6fafafaf9f9f9fdfdfdfcfcfcf2f2f2fcfcfcf6f6f6f0f0f0efefefebebebe2e2e2e2e2e2ddddddd5d5d4cdccc9cbcac6c0baa2c0bba5bfb89f
+eeeeeef5f5f5f9f9f9fafafaf7f7f7f3f3f3f7f7f7f6f6f6f2f2f2ebebebe4e4e4dededed6d6d6d5d5d4c7c5bbc3bfaebcb494c0baa3ae966caf996d
+e9e9e9efefeff5f5f5f9f9f9f6f6f6efefeff2f2f2eeeeeee9e9e9e0e0e0d9d9d9dadadacbcac6cccbc8c7c4babfb89fb9b08cad946baa8866ac9069
+e1e1e1e9e9e9f3f3f3f5f5f5f2f2f2efefefefefefe1e1e1dededed4d4d3cccbc8c7c5bcc6c3b7c5c1b4c2bda9bbb290af9a6db5aa7db3a677a06758
+e5e5e5e7e7e7ecececf2f2f2e8e8e8e8e8e8e7e7e7d3d3d2d5d5d4cfceccc8c6bec6c3b8bfb9a0c0baa2b6ab80b5a97cb19f71af9a6db8ae86a77f62
+dadadae8e8e8ebebebefefefe9e9e9e9e9e9d8d8d7cecdcbc9c8c2c8c6bec2beacc2beacbbb290b7ad85b6ab81ae976cb1a071a5775eb09d6fa36f5b
+cfceccd3d3d2d6d6d6e8e8e8e5e5e5e1e1e1cccbc8cecdcbc7c4bac3beadc1bca7beb89eb6ab80b2a374b7ac82af9c6ea77d61a77f62a4735da6795f
+c8c6bec9c7c1d6d6d6e1e1e1d6d6d6d8d8d7c9c7c1c8c6bec2bda9bfb9a0b9b08ab5aa7eb09e70b19f71af9b6eac9069af996dab8b67a3725ca3715c
+c4c0b1c8c7bfcac9c3d4d4d3c4c0b1c8c6bec8c6bec2beacbbb290bcb495b1a172b2a374ad956bac9069a88263af996dad926aa98564a88364a98765
+c2bdaabfb89fc8c6bec2bda9c2bda9c0baa3c0baa3bdb597b7ad85b5a97caf9a6daf9b6ead926aa98665a06557a88263a88263a67c619c5951ab8c68
+beb89ebfb89fb9b08cc2beacc2bdaab9b08abab18db3a576b1a071ae976cab8c68ad936aa77f62a6795fa77d61a4765ea77d61ac8f69a98765ad936a
+b9af89b6ab81b5aa7dbdb597b5aa7daf9b6eb1a172b09d6fa98765a98564a67a60a67b60a77e61a16a59a77d61a3715cad956baa8966b09d6fac916a
+b1a172af996db09d6faf9b6eb2a374a88263ab8d68a88464a88364a5775ea77f62a16a59a16b599d5d53a4745da16a59a77f62aa8966a78062af9a6d
+ad926aad956bab8c68b5aa7daa8a67a88263a67c61a6795fa4745da06456a06456a06456a26c5a9d5c53a26e5ba4755da6795fa98564a98564b4a77a
+a4745da88364a88364a78062a67a60a5785fa4755da16b599e60549a534e9c59519b56509f64569247469e60549e6054a4755da36f5bb2a374af9c6e
+9e5f54a065579e61559d5b52a0645698504d9c5a529a534e8c3f3f954a4999524e8d41409e5f549f63569b5650a16858a6795fa98765ac916ab2a475
+944948702423974c4a8f43439f6356954a49904444954a49813434964b4a964b4a944948974c4a9d5d539e5f54a67c61ad946ba5785fb4a77ab09e70
+944948893d3d98504d7f3232823636873b3a7f32327c302f7c302f8f43439b5550974c4a9e5f54a16858a06758a88163a36f5ba4755db9b08ab09e70
+9a544f99524e99524e99514d691c1c6c2020691c1c762a29893d3d85383899514d984f4c9e6054a064569d5d53a98564ac9069aa8a67b1a071b6ab80
+893d3d782c2c772b2b7c302f8e4242803333772b2b833737974d4b9145459d5d539d5c539e6054a88263ac8f69ae986daf9a6daf9a6dbab18db7ad84
+99514d8639396f22224c00005f13138236367b2e2e893d3d9044449d5b52a16a59a5775ea06758ab8e68ad956bb19f71b19f71b5aa7eb5aa7dbab18d
+954a498d4140954a496e212170242398504d9044449b5550a16b59a4755da5785fa98765ab8e68af9a6db9b08cb4a87bbbb393bfb9a0bfb89fbfb9a0
+9e5f549e61559d5d536014149c58519e6054a06557a16858a98564ab8b67ad936ab4a778b4a778b7ad84bdb69abdb698c4c1b3c2beacbcb495c5c2b5
+a06557a883649c5a52a16959964b4a9f6456a3725ca67c61b2a273b1a172b5aa7eb9b08ac1bba6c0baa2c2bdaac0baa3c2bdaac7c5bcc2bdaacac9c3
+a88464aa8966a06758a26d5aa98765aa8a67b19f71b4a778b7ad85b9af89c0baa3c2bdaacecdcbcccbc8c9c8c2c8c7bfc6c3b7d1d0cfcfceccdcdcdb
+b2a475ab8b67ab8e68b09e70b2a273bbb391b6ab80beb89ebeb89ec6c3b7c5c2b5c8c7bfd3d3d2dadadad4d4d3dadadacdccc9e1e1e1c8c6bee4e4e4
+b3a576b8ae86b4a77abbb391bbb391bfb89fc4c1b3c6c3b8cbcac6d3d3d2d2d1d0dcdcdbe2e2e2eeeeeee9e9e9e7e7e7e2e2e2f3f3f3e1e1e1e8e8e8
+beb79cc1bba6c2bdaac4c0b0cac9c3c7c5bcd2d1d0d9d9d9ddddddebebebe0e0e0eeeeeef0f0f0efefeff0f0f0f0f0f0ebebebf5f5f5e0e0e0f0f0f0
+cfcecccfceccd9d9d9ecececd1d0cfe2e2e2dededeeeeeeeecececf2f2f2f0f0f0f3f3f3f9f9f9f2f2f2f0f0f0f7f7f7ebebebfafafae7e7e7f6f6f6
+e4e4e4e5e5e5eeeeeee7e7e7ececece8e8e8ebebebf0f0f0f5f5f5f6f6f6fafafaf7f7f7fcfcfcf9f9f9f7f7f7f9f9f9fafafaf7f7f7dededef3f3f3
+f5f5f5fdfdfdf0f0f0f9f9f9f6f6f6f7f7f7f7f7f7fafafafcfcfcfcfcfcfafafafdfdfdfafafafcfcfcf9f9f9f9f9f9f0f0f0f7f7f7fafafaf9f9f9
+fcfcfcfdfdfdfcfcfcf0f0f0f9f9f9fffffffdfdfdfdfdfdfdfdfdfffffffffffffffffffdfdfdfdfdfdfdfdfdf9f9f9fafafaf9f9f9fafafaebebeb
+fdfdfdfafafaffffffecececf5f5f5fffffffffffffffffffdfdfdfffffffffffffffffffffffffcfcfcfdfdfdfffffff7f7f7fffffffffffffcfcfc
+fffffff7f7f7fcfcfcfdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f7f7fffffffffffffdfdfd
+fffffffffffffffffffdfdfdfffffffffffffdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfc
+fffffffffffffffffffdfdfdfffffffffffffdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfc
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f-1681628286
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 369.5 M
+390.5 369.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+278.45 369.5 M
+278.45 368.255 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+328.25 369.5 M
+328.25 368.255 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+378.05 369.5 M
+378.05 368.255 L
+S
+GR
+GS
+[1 0 0 1 278.45001 373.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 328.25 373.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 378.04999 373.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 369.5 M
+266 307.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 369.5 M
+267.245 369.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 344.7 M
+267.245 344.7 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 319.9 M
+267.245 319.9 L
+S
+GR
+GS
+[1 0 0 1 262 369.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 262 344.70001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 262 319.89999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f-271895268{266 456.5 M
+390.5 456.5 L
+390.5 394.5 L
+266 394.5 L
+cp}def
+f-271895268
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.5
+/YStep 62.0
+/BBox [266.0 394.5 390.5 456.5]
+/PaintProc
+{
+pop
+266.0 394.5 translate
+6.225 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffcfcfcfcfcfcfdfdfd
+fdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfcfcfcfafafaf6f6f6f9f9f9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffff9f9f9fafafafafafaf6f6f6f6f6f6f7f7f7
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfcfcfcfdfdfdf9f9f9f9f9f9f6f6f6f2f2f2ebebebf0f0f0
+fffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfdfdfdfcfcfcfafafaf9f9f9fdfdfdf7f7f7f9f9f9f2f2f2efefefebebebefefef
+fdfdfdfdfdfdfffffffffffffffffffffffffdfdfdfdfdfdfcfcfcfcfcfcfcfcfcfafafaf6f6f6fafafaf0f0f0f5f5f5efefeff0f0f0dededee7e7e7
+fcfcfcfcfcfcfffffffdfdfdfffffffffffffdfdfdfcfcfcfcfcfcf9f9f9f9f9f9f5f5f5f2f2f2f2f2f2ecececececece2e2e2e1e1e1d1d0cfd2d1d0
+fafafafcfcfcfffffffdfdfdfdfdfdfcfcfcfdfdfdf9f9f9f9f9f9f6f6f6f6f6f6eeeeeeececece9e9e9e2e2e2e1e1e1dcdcdbd3d3d2d1d0cfc8c6be
+f6f6f6fdfdfdfcfcfcfcfcfcfcfcfcfafafafafafaf5f5f5f3f3f3efefefececece9e9e9e4e4e4e4e4e4dadadad6d6d6d0cfcdc6c3b7c5c2b5c5c2b5
+f3f3f3f7f7f7fdfdfdfafafafafafaf9f9f9f9f9f9f5f5f5f0f0f0e9e9e9e9e9e9dddddddadadad9d9d9d4d4d3c7c5bcc4c0b1c0baa3bcb495b9af89
+efefeff2f2f2fafafaf7f7f7f9f9f9f3f3f3f7f7f7ebebebebebebe5e5e5ddddddd9d9d9cfcecccbcac6c8c7bfc2bda9bbb391c1bba6b5aa7eae986d
+e4e4e4f0f0f0f0f0f0f6f6f6f6f6f6eeeeeef3f3f3e5e5e5e2e2e2dededed1d0cfcecdcbc7c5bbc5c1b4c5c1b4b5aa7ebbb393b8ae86ab8b67a88263
+e5e5e5ecececefefeff3f3f3ecececeeeeeee5e5e5dededed8d8d7d0cfcdc9c7c1c8c7bfc0bba5c2bda9bdb698b3a677b1a071b2a475ae966ca4765e
+e4e4e4dededee9e9e9ecececececece5e5e5e0e0e0d5d5d4cbcac6c8c7bfc3bfaec2bdaabab18dbbb391b5a97cb19f71ae966cac8f69a985649e6155
+d6d6d6dcdcdbecececececece5e5e5e0e0e0d2d1d0cbcac6c4c0b0c4c0b0bdb597bdb597b4a778b1a172b09e70aa8a67ac8f69a6795fa77e619b5550
+cecdcbd2d1d0d4d4d3dededed5d5d4d4d4d3cbcac5c7c5bbc0baa3beb89eb5aa7eb6ab80b2a475ab8c68aa8a67a6795fa5775e9a534ea16858954a49
+cac9c3c9c8c2cbcac5dadadad2d1d0cac9c3c4c0b0c2bda9bdb597b7ad84b2a273ae966cab8d68a67c61a98665a3725c934847954a4998504d9b5650
+c5c1b4c7c5bcc8c7bfd0cfcdc7c5bbc2bdaabeb89ebdb597b6ab80b1a172ad946ba77e61a88263a26c5aa4765ea066579c59519e5e549a544fa16b59
+c1bba6c7c4bac0bba5cccbc8bdb698bbb391b8ae86b5a97cb09e70ad926aa88263a67c61a4755d9c5a529e6155a26d5aa26e5b9e6054a36f5ba16959
+c1bca7c3bfaebab18fc5c1b4b6ab81b2a374b3a677b09e70ab8e68a98564a5785fa3715ca26e5b9e5f54964b4aa06657a26d5aa36f5baa8a67974d4b
+bab18fb4a778b3a677beb89eb09d6fac916aac916aa88464a78062a5775ea3705ba16a59a065579c59519e5e54a16b599c5951a4745dab8b67a5785f
+b4a87bac8f69ad926aaf9c6ead956bab8e68a67b60a4765ea3715ca064569f63569b55509e615599524e9f6356a26c5aa4765ea36f5bab8b67a78062
+ac8f69a88364aa8a66ad946baa8966a4755da06557a168589e61559c59519e5e549449489e60549c5a52a06456a06557a5785fa36f5ba77e61ac8f69
+a67b60a16b59a36f5ba16959a16a599c59519c59519e5f5499514d98504d9c5951964b4a9c58519b55509e6054a16858a98564a4745da88464b09d6f
+9f64569d5d539f6255a3725ca26c5a98504d974d4b9a534e9449489348479c58519b5550974c4a9c5a529f6356a16a59a3715ca78062ae986db19f71
+9c5a52964b4a964b4aa066579b555090444498504d883c3c8f43438d414098504d9c59519a534e9f62559f6255a5785fa88464a88364af9b6eb5a97c
+8639397f3232934847974c4a8d41408538389145457226267f323292474699514d9c59519d5c53a3715ca06456a88263ad926aab8d68b09e70b7ad84
+8134347c302f8e4242813434964b4a8639397a2d2d8e42428b3e3e9247469b55509e6155a4735da4765ea88263ad926aaf996dae976cb5aa7db7ac82
+8033337024237b2e2e7a2d2d893d3d873b3a712525893d3d9a534e98504d9e5f54a26e5ba5775eaa8866ac916ab1a071b3a475b5a97cb4a87bbdb69a
+813434742727782c2c4c0000803333904444914545883c3c9e5f549f6356a3705ba67a60a67c61ae966cab8e68b3a677b6ab81b4a77abdb597c2bda9
+8e42427c302f6e21214c0000641818954a49984f4c9a534ea26c5aa4765ea77f62ac8f69ac916ab2a273b6ab80b7ac82b4a87bbdb69ac1bba6c4c0b0
+984f4c893d3d7c302f5c10117024239c5951a16a59a26c5aa78062aa8866af9c6eb2a273b5aa7dbbb290beb79bbeb89ec3beadcbcac6c5c1b4c5c1b4
+914545a065578e42429a534e9a544fa16858a4755da98765ac916ab3a576b6ab80b9b08abdb698c1bca7c5c1b4c2bda9d0cfcddcdcdbc2beaccbcac6
+a06657a88364a066579f6255a5785fa98665ad936ab1a071b4a87bb9b08cbbb393c0baa3c4c0b1c9c8c2cac9c3c4c1b3cfceccd6d6d6c2beacd6d6d6
+a88464aa8a67ab8e68a16a59ae986dae976cb3a576b9b08cbdb597c2bda9c1bca7c5c1b4cfceccd5d5d4d2d1d0cbcac5d3d3d2d4d4d3cccbc8e9e9e9
+b4a77ab09e70b5aa7eaa8a67bab18fb5aa7dbdb698c3beadc4c0b1c8c7bfcdccc9d1d0cfdededee1e1e1dcdcdbdadadad4d4d3e4e4e4d4d4d3f0f0f0
+b9b08abeb89ec1bca7beb79cb9b08ac6c3b7c5c1b4cbcac6d2d1d0d9d9d9d8d8d7e4e4e4ebebebe8e8e8e5e5e5e9e9e9dcdcdbe5e5e5dededeefefef
+c0baa3cbcac6c8c7bfd1d0cfc5c2b5cbcac5cdccc9d6d6d6dddddde4e4e4e7e7e7efefeff3f3f3efefefeeeeeef7f7f7d5d5d4e9e9e9d9d9d9ebebeb
+d3d3d2dddddddadadad8d8d7d0cfcdd8d8d7e1e1e1ebebebe9e9e9f0f0f0f2f2f2f6f6f6f7f7f7f7f7f7f3f3f3f9f9f9e4e4e4eeeeeeebebebf7f7f7
+e8e8e8ebebebebebebe8e8e8f5f5f5e5e5e5f2f2f2f5f5f5f5f5f5f6f6f6f7f7f7fafafafafafaf9f9f9f6f6f6f6f6f6f5f5f5fafafaf2f2f2f2f2f2
+f3f3f3f0f0f0f3f3f3fafafaf3f3f3f7f7f7f7f7f7f7f7f7fafafafcfcfcfafafafdfdfdfdfdfdfcfcfcfafafaf9f9f9f9f9f9fcfcfcf3f3f3f6f6f6
+fafafafafafaf9f9f9fdfdfdf7f7f7fcfcfcfafafafdfdfdfcfcfcfffffffdfdfdfffffffffffffffffffcfcfcfdfdfdfffffffffffffcfcfcfcfcfc
+fdfdfdfdfdfdf9f9f9fdfdfdf7f7f7fffffffdfdfdfdfdfdfffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffff5f5f5
+fffffffffffffffffff2f2f2f5f5f5fffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffffffffffffffcfcfc
+fffffffffffffffffff5f5f5fafafafffffffdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffafafa
+fffffffffffffffffff6f6f6fcfcfcfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfc
+fffffffffffffffffff6f6f6fcfcfcfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfc
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f-271895268
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 456.5 M
+390.5 456.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+278.45 456.5 M
+278.45 455.255 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+328.25 456.5 M
+328.25 455.255 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+378.05 456.5 M
+378.05 455.255 L
+S
+GR
+GS
+[1 0 0 1 278.45001 460.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 328.25 460.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 378.04999 460.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 456.5 M
+266 394.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 456.5 M
+267.245 456.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 431.7 M
+267.245 431.7 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 406.9 M
+267.245 406.9 L
+S
+GR
+GS
+[1 0 0 1 262 456.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 262 431.70001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 262 406.89999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f-306579144{266 544 M
+390.5 544 L
+390.5 482 L
+266 482 L
+cp}def
+f-306579144
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.5
+/YStep 62.0
+/BBox [266.0 482.0 390.5 544.0]
+/PaintProc
+{
+pop
+266.0 482.0 translate
+6.225 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f7f7ffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffff2f2f2fafafafafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfdfdfdfffffffafafaffffffffffffffffffeeeeeefdfdfd
+fdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfafafafffffffafafafafafafcfcfcfafafae9e9e9f7f7f7
+fcfcfcfdfdfdfffffffdfdfdfdfdfdfffffffffffffdfdfdfffffffcfcfcfcfcfcfdfdfdfcfcfcfdfdfdf2f2f2f7f7f7eeeeeefcfcfceeeeeef6f6f6
+fafafafdfdfdfffffffcfcfcfdfdfdfdfdfdfffffffcfcfcfdfdfdfafafafcfcfcfafafaf9f9f9f7f7f7f7f7f7fafafaf0f0f0e7e7e7e4e4e4ebebeb
+f6f6f6fafafafffffffafafafffffffffffffffffffdfdfdfafafafcfcfcf7f7f7f6f6f6f6f6f6f0f0f0ebebebefefefebebebe2e2e2d8d8d7d9d9d9
+f6f6f6fcfcfcfdfdfdf9f9f9fdfdfdfafafafcfcfcfafafaf6f6f6f7f7f7f3f3f3f0f0f0f3f3f3eeeeeee9e9e9e1e1e1e9e9e9e4e4e4e0e0e0cbcac6
+f5f5f5f6f6f6fdfdfdfcfcfcfdfdfdf7f7f7fcfcfcf6f6f6f3f3f3f6f6f6efefefefefefe4e4e4e0e0e0e1e1e1cccbc8d5d5d4d5d5d4dcdcdbc2bda9
+efefeff7f7f7fafafafafafaf7f7f7f5f5f5f9f9f9f2f2f2efefefeeeeeeeeeeeee2e2e2e0e0e0d3d3d2d1d0cfc8c6bed6d6d6c3bfaedadadabdb597
+ecececf0f0f0f2f2f2f5f5f5f6f6f6f3f3f3f3f3f3ebebebe5e5e5e9e9e9e2e2e2d9d9d9d3d3d2d2d1d0dcdcdbd3d3d2bdb597c2beacbeb79cb2a475
+ebebebe7e7e7f7f7f7efefeff5f5f5f3f3f3e4e4e4e1e1e1e1e1e1dcdcdbd3d3d2d4d4d3c7c5bcc6c3b8c7c4babbb391c0baa3b6ab80b09e70af9b6e
+e4e4e4e7e7e7efefefeeeeeee9e9e9efefefe7e7e7dadadad3d3d2d0cfcdc8c6bec7c5bbbeb89ec0bba5beb79bbab18fb8ae86b09e70aa8966a98564
+d3d3d2e2e2e2dededee7e7e7e7e7e7d9d9d9d8d8d7d4d4d3cfceccc7c5bbc3beadbdb69abcb494b7ac82b9b08cb4a87bad936aab8c68a5785f9e5e54
+d0cfcddedededadadadddddddededecfcecccdccc9cac9c3c2beacc2bdaac0baa2b7ac82b7ad85b2a374ae986dab8d68af9c6eaa8a66a26d5a9f6356
+c9c8c2cbcac5d1d0cfc8c7bfd3d3d2d0cfcdcac9c3c4c0b1bdb69abab18db4a778b2a374b09e70aa8a67ad926aa3715c9a534ea3705b9c5a52a06456
+c7c5bcc9c7c1c9c8c2e2e2e2c9c8c2c6c3b8bfb89fbeb79bb7ac82b3a576b09e70ad956bab8c68a5785fa5785fa3715c9f6255a4735da36f5ba16959
+c7c5bcc6c3b8c6c3b7dededebdb69ac1bca7b7ac82b7ad84b2a273ad946baa8866a5785fa5785fa67a60a064569c5a52a06456a5775ea26e5b9b5751
+c4c1b3bfb89fbeb79bc4c1b3b8ae88b7ac82b1a071b5aa7eab8d68ac916aa77f62a4735da16858a16b59a16b59a16959a064569e6054a3715ca06657
+beb79cbdb69ab6ab81bbb290bab18db2a475ae976ca77d61a77f62a67b609f6356a066579f64569a534e9a534ea8836499514d9e6155a4765e8e4242
+b9af89b9b08cb3a677a88464ab8c68aa8966a77d61a88364a26c5a9e5f549d5b52984f4c9c5a52954a499a544fa067588e4242954a49a3705ba4755d
+b09e70ae976cae986db6ab81a67b60a88364a06758a3725ca16a599e5e54a06557954a499d5d5394494898504d9e5e54a169599f6456a4755da88464
+af9a6da3705ba5775eb7ad84a3705b9e5e549f625599524e9e6054964b4a9f625598504d9a544f9a544fa067589f6255ae986da67b60ac916aab8d68
+a5775ea26c5aa67b60a986659e5e5499524e954a499a544f954a49954a4999514d9a544f9b5650a3715c9f62559e6155ad936aa4755da26c5aab8e68
+a26c5aa5785fa06758a5775e9e5f54823636944948813434904444954a4999514d9e5e549d5c53a4735da16b59a06758a98765a77f62bbb290ac8f69
+a067587c302f7f32328236369e61558134348b3e3e823636873b3a8e4242954a499e60549e6054a3705ba26e5ba4765ea4765ea98765af9b6eaf996d
+883c3c8e4242883c3c681b1b883c3c752828772b2b7c302f964b4a9348479d5d53a06657a36f5ba4735da4735da88464ab8c68a88263b3a475bdb597
+9a544f9a544f893d3d580c0d863939954a4985383899514d9b56509c5a529f6356a5785fa36f5ba67b60aa8a67b1a172ac9069b2a273bbb290b4a77a
+7226264c00008c3f3f550809873b3a9a534e99524e8f4343a06456a06456a67a60a77f62a98564aa8a66ab8b67b09e70b6ab80b5aa7db2a273bbb393
+8337378236368236365205077f32329a534e9e5e5499514da16b59a4755da5785fae976cae976cae976cb6ab80b3a677b7ad85bab18faf996dbdb698
+974d4b9a534e8e4242702423782c2c9e6155a4765e9f6456a77e61ac9069ac8f69ae986db1a071b6ab80b8ae86bcb495b9af89bfb89fb2a475c8c6be
+803333a168589c5851a26d5a99524ea3715ca67c61a98665ad936ab1a071b2a475b4a77ab6ab81beb89ec0bba5bcb495beb79bc8c6bec2beaccecdcb
+9f6255a26d5a9e61559f6255a77e61a77e61ad946bb2a374b4a778b7ac82bcb494beb79cc0baa2c4c0b0c3beadc0baa3c2bda9cbcac5c9c7c1c8c7bf
+a78062a67a60a6795fa26e5baf996db09e70b4a778bbb393bdb597bfb89fc1bba6c6c3b8c5c2b5c5c2b5c5c1b4c7c5bcc3beadcecdcbcac9c3d5d5d4
+ae986da88263b09e70bbb393bdb597bbb391beb79bc1bba6c2beacc5c2b5c9c8c2c9c8c2cecdcbd4d4d3d1d0cfcecdcbd2d1d0d5d5d4c7c5bce0e0e0
+b2a273bdb698beb89eaf9c6ebab18dbeb79bc4c1b3cccbc8c7c5bcd1d0cfd4d4d3d0cfcddededed9d9d9d8d8d7d4d4d3d1d0cfcfceccc9c8c2e8e8e8
+beb79bc2bda9b9af89c4c1b3c4c1b3c7c5bccccbc8e0e0e0d1d0cfdddddddadadae1e1e1ebebebe9e9e9e0e0e0e5e5e5f3f3f3dadadad5d5d4e9e9e9
+beb89ec8c7bfdadadad0cfcdd3d3d2d1d0cfe2e2e2e5e5e5e5e5e5e4e4e4ebebebefefeff3f3f3f3f3f3efefeff0f0f0e9e9e9e7e7e7efefeff2f2f2
+e4e4e4e9e9e9dededeefefefe0e0e0dededee4e4e4f0f0f0f3f3f3f2f2f2f3f3f3f6f6f6f6f6f6f7f7f7f6f6f6fafafaf6f6f6fffffffafafafafafa
+e7e7e7d2d1d0ddddddf2f2f2f3f3f3f0f0f0efefeff5f5f5f9f9f9f9f9f9f9f9f9fafafafcfcfcfafafafcfcfcfffffff9f9f9fdfdfdfdfdfdf9f9f9
+f9f9f9fdfdfdf5f5f5f7f7f7eeeeeef9f9f9f9f9f9f9f9f9fdfdfdfdfdfdfdfdfdfcfcfcfdfdfdf9f9f9f7f7f7fcfcfcf9f9f9f7f7f7fafafafcfcfc
+fcfcfcfcfcfcf7f7f7fafafaf3f3f3fafafaf9f9f9fcfcfcfcfcfcfdfdfdfdfdfdfffffffffffffdfdfdfafafafdfdfdfffffffdfdfdfffffffdfdfd
+fdfdfdfcfcfcf9f9f9f3f3f3fafafafffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfcfcfcfffffffffffffffffffffffff9f9f9
+fffffffffffffdfdfdefefeffcfcfcfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfc
+fffffffffffffffffff7f7f7fdfdfdfdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfc
+fffffffffffffffffff7f7f7fdfdfdfdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfc
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f-306579144
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 544 M
+390.5 544 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+278.45 544 M
+278.45 542.755 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+328.25 544 M
+328.25 542.755 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+378.05 544 M
+378.05 542.755 L
+S
+GR
+GS
+[1 0 0 1 278.45001 548] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 328.25 548] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 378.04999 548] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+[1 0 0 1 328.25006 561.5] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-24.5 11 moveto 
+1 -1 scale
+(Pupil Size) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 544 M
+266 482 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 544 M
+267.245 544 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 519.2 M
+267.245 519.2 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+266 494.4 M
+267.245 494.4 L
+S
+GR
+GS
+[1 0 0 1 262 544] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 262 519.20001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 262 494.39999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f-601743902{429.5 108 M
+553.5 108 L
+553.5 46 L
+429.5 46 L
+cp}def
+f-601743902
+f
+GR
+GS
+[1 0 0 1 479 24] CT
+/Helvetica-Bold 11 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(NWh) t 
+GR
+GR
+GS
+[1 0 0 1 463 38] CT
+/Helvetica-Bold 11 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(WT) t 
+GR
+GR
+GS
+[1 0 0 1 481 43] CT
+/Helvetica-Bold 8.8 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(S) t 
+GR
+GR
+GS
+[1 0 0 1 487 38] CT
+/Helvetica-Bold 11 F
+GS
+[1 0 0 1 0 0] CT
+0 0 moveto 
+1 -1 scale
+(M1M3) t 
+GR
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [429.5 46.0 553.5 108.0]
+/PaintProc
+{
+pop
+429.5 46.0 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9f9f9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffffffffcfcfc
+fdfdfdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffdfdfdfcfcfc
+fdfdfdfffffffffffffffffffdfdfdfffffffffffffdfdfdfdfdfdfdfdfdfffffffffffffffffffffffffafafafdfdfdfffffffffffffcfcfcf7f7f7
+fdfdfdfffffffffffffdfdfdfdfdfdfdfdfdfffffffdfdfdfdfdfdfdfdfdfcfcfcfffffffdfdfdfdfdfdfafafafcfcfcfffffffdfdfdf9f9f9efefef
+fcfcfcfdfdfdfdfdfdfdfdfdfdfdfdfafafafdfdfdfafafafafafafafafafafafafdfdfdfdfdfdfcfcfcf9f9f9fcfcfcfdfdfdf0f0f0fafafae9e9e9
+fafafafdfdfdfcfcfcfafafafafafafafafafafafafafafaf7f7f7f6f6f6fcfcfcfcfcfcf9f9f9fcfcfcf7f7f7f7f7f7f9f9f9e9e9e9f0f0f0e4e4e4
+f6f6f6f7f7f7fafafaf7f7f7f7f7f7f7f7f7f6f6f6f6f6f6f5f5f5f5f5f5f7f7f7f6f6f6f7f7f7f3f3f3f2f2f2f0f0f0f0f0f0e7e7e7ecececd4d4d3
+f0f0f0f5f5f5f2f2f2f3f3f3f0f0f0f2f2f2f5f5f5eeeeeef2f2f2efefeff2f2f2f0f0f0f2f2f2f2f2f2f0f0f0ecececeeeeeedadadaeeeeeed5d5d4
+ecececefefefefefefeeeeeee9e9e9eeeeeeececece9e9e9ecececebebebe2e2e2eeeeeeebebebe9e9e9e7e7e7dddddde0e0e0d6d6d6e0e0e0c9c7c1
+e7e7e7e5e5e5e4e4e4e0e0e0dcdcdbe1e1e1e4e4e4e1e1e1d8d8d7e1e1e1e0e0e0dededee1e1e1e1e1e1e1e1e1d5d5d4d1d0cfcccbc8cfceccc2beac
+d4d4d3dcdcdbd4d4d3cecdcbd4d4d3d6d6d6d3d3d2d2d1d0cecdcbd8d8d7d0cfcdd9d9d9d6d6d6cecdcbcecdcbc8c6becbcac6c7c4babfb9a0b7ad85
+c8c7bfcfcecccecdcbc9c8c2c7c5bccbcac5c8c7bfc7c4bac7c4bacbcac6c8c7bfd3d3d2cbcac6cbcac5c8c7bfc1bba6c3beadc7c4babeb79bb7ad84
+c3bfaec4c0b0c2beacc3beadc2beacc1bca7c1bca7c3beadc2bdaac5c2b5c2bda9c5c1b4c5c1b4c0baa2c0baa3bdb69abdb69abcb494c0baa2b1a071
+bcb495c0baa3bfb9a0beb79bbcb495bbb290bcb495bbb290c0baa3bcb495beb79bc0baa3c0baa2bdb597b5aa7eb5a97cb5aa7eb9af89b4a77aa67b60
+b4a77ab5aa7eb6ab80b7ad85b9af89b7ac82b7ad84b3a677b5aa7db7ac82b6ab80b4a77ab6ab80b2a374b1a071b09e70ac9069af9c6eaa8866a4735d
+ae966cb1a172ad926ab1a172b3a475ae986dad956bad926aad946baf9a6dad936ab1a071b1a172ad946bab8e68a98665a88364ad926aa4755da16858
+a77e61a78062a88464aa8966a77e61a98564a67c61aa8866a98765a98564a88163ab8d68a98665a6795fa4735da16959a16959a3715ca16959a16a59
+a06456a78062a06657a6795fa06758a16959a5785fa3715ca3725ca4755da26c5aa4735da5785fa06758a16959a16b59a06456a064569e5e54a4735d
+99514d8b3e3e9c5a529b56509d5c539c5a529f62559f62559e5f54a066579e61559f6356a26e5b984f4c9d5c53a26e5b8c3f3f9a544fa26c5a8c3f3f
+893d3d99524e8d4140934847934847974c4a984f4c9b5650934847984f4c7f3232954a499c58519a544f9d5c539b57519a544f9c5a52742727893d3d
+7024238134348033337b2e2e8b3e3e8e4242883c3c964b4a9348479044448e42429b56509348478337379044449b55509b56509b57518b3e3e9b5550
+5a0e0f782c2c7a2d2d7a2d2d580c0d7c302f974d4b883c3c7f32328e42429b5550772b2b8d41408538387c302f823636964b4a964b4a9b57519b5550
+6115155f13136f22227d31318033337d3131883c3c893d3d873b3a8b3e3e8f43437226267d3131944948924746974d4b98504d8b3e3e8c3f3fa3725c
+5a0e0f4c00006b1f1f7c302f762a297a2d2d9044448f43439449488236368639396f2222833737954a4990444498504d9e60549a544fa06456a6795f
+6519196e2121681b1b762a29873b3a833737954a49974c4a8337378538388d41407d31318538389145458f4343a26d5aa3725c9b5650a4745dab8d68
+762a29782c2c803333893d3d7c302f8c3f3f883c3c9a544f954a498d4140964b4a9a534e944948974d4b9c5a52a16b59a16858a5785fa88464af996d
+91454599524e944948883c3c914545974c4a99514d99524e9d5d539b55509c59519c59519d5c539e5f54a5775ea3715c9e6054aa8a67a4765eaa8866
+9f64569b565098504d9a534e9b56509f64569f63569f6456a16b59a3715ca5775ea26d5a9c5a52a4735da77e61a77e61a5785fa67b60a16959ab8b67
+a88163a3725ca4745da3715ca88163a6795fa06557a26d5aa88263a67a60a77d61a5775ea6795fa67a60ad926aaa8966af9a6dac9069ae976cb7ad84
+af9b6ea98564aa8966a98665ad936aac8f69a88464ab8c68ab8b67a88263aa8866ab8c68aa8966b2a273af996dab8c68b2a273ad946bbcb495b8ae88
+b8ae86b5a97cb7ac82b19f71b2a475b09e70ad926aaf996db09d6fb09d6fb1a071b09e70b09e70b4a77ab5aa7db4a778b1a071b4a77ab2a475c0baa3
+c3bfaebdb698bdb69ab9b08cb9b08cb4a77ab5a97cb5a97cb3a677b8ae88b9b08cb9b08cb6ab80bcb495b9b08ab8ae88b8ae88c2bda9bcb494bfb9a0
+cccbc8c4c0b1c5c2b5c2beacc2bdaabdb69ac0baa2bdb597bdb597beb79bbeb79bbbb391bcb494bdb698bcb494bcb495b6ab81bbb290c0bba5c3bead
+d9d9d9cac9c3cccbc8c6c3b8c9c7c1c8c7bfc4c0b0c4c1b3c3bfaec0bba5c2bdaac0baa2c3beadc4c0b0c0baa2c2bda9c2beacc4c0b1c7c5bcc7c4ba
+e8e8e8dddddddadadad4d4d3d9d9d9cfcecccac9c3c7c4bac7c5bbc7c4bac7c5bcc4c1b3c7c4bac6c3b7c6c3b8c7c5bbc7c5bbc4c0b1c7c5bccbcac6
+f2f2f2eeeeeee9e9e9e7e7e7e0e0e0dcdcdbd2d1d0cecdcbd1d0cfc9c8c2cdccc9cfcecccac9c3cccbc8cac9c3cac9c3cccbc8c7c5bbc9c8c2d1d0cf
+f6f6f6f0f0f0eeeeeeefefefebebebe8e8e8e2e2e2dadadae0e0e0d8d8d7d4d4d3d6d6d6cdccc9d0cfcdcbcac5cac9c3cecdcbc9c8c2cccbc8d5d5d4
+fafafaf5f5f5f5f5f5f9f9f9f3f3f3f3f3f3e7e7e7e8e8e8e7e7e7e4e4e4dededee4e4e4dddddddededee0e0e0d6d6d6e0e0e0d6d6d6dcdcdbdadada
+fcfcfcfafafaf7f7f7fafafaf6f6f6f3f3f3f2f2f2efefefeeeeeee9e9e9eeeeeeebebebe7e7e7e4e4e4e5e5e5dededee5e5e5d5d5d4e0e0e0e1e1e1
+fdfdfdfcfcfcfdfdfdfafafafafafaf9f9f9f9f9f9f6f6f6f2f2f2f3f3f3efefeff0f0f0e9e9e9ebebebeeeeeeecececeeeeeee2e2e2ebebebe8e8e8
+fffffffdfdfdfdfdfdfcfcfcfdfdfdfcfcfcfafafaf9f9f9f9f9f9f7f7f7f7f7f7f6f6f6f3f3f3f3f3f3efefeff0f0f0f3f3f3f2f2f2f2f2f2f3f3f3
+fffffffffffffffffffdfdfdfdfdfdfdfdfdfdfdfdfcfcfcfcfcfcfdfdfdfdfdfdfcfcfcf9f9f9fcfcfcf7f7f7f9f9f9f7f7f7f7f7f7f5f5f5f9f9f9
+fdfdfdfdfdfdfffffffdfdfdfffffffdfdfdfdfdfdfffffffcfcfcfafafafcfcfcfcfcfcfcfcfcf9f9f9f5f5f5f9f9f9f7f7f7fafafaf9f9f9f7f7f7
+fdfdfdfdfdfdfffffffdfdfdfffffffdfdfdfdfdfdfffffffcfcfcfafafafcfcfcfcfcfcfcfcfcf9f9f9f5f5f5f9f9f9f7f7f7fafafaf9f9f9f7f7f7
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f-601743902
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 108 M
+553.5 108 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+441.9 108 M
+441.9 106.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+491.5 108 M
+491.5 106.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+541.1 108 M
+541.1 106.76 L
+S
+GR
+GS
+[1 0 0 1 441.89999 112] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 491.5 112] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 541.09998 112] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 108 M
+429.5 46 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 108 M
+430.74 108 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 83.2 M
+430.74 83.2 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 58.4 M
+430.74 58.4 L
+S
+GR
+GS
+[1 0 0 1 425.5 108] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 83.2] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 58.4] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f-1005065264{429.5 195 M
+553.5 195 L
+553.5 133 L
+429.5 133 L
+cp}def
+f-1005065264
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [429.5 133.0 553.5 195.0]
+/PaintProc
+{
+pop
+429.5 133.0 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffff9f9f9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9f9f9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffdfdfdfffffffdfdfdfffffffdfdfdf3f3f3
+fdfdfdfffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffffffffffffffcfcfcfcfcfcfffffffcfcfcfcfcfcf2f2f2
+fcfcfcfffffffdfdfdfdfdfdfffffffffffffffffffdfdfdfdfdfdfdfdfdfdfdfdfffffffffffffdfdfdfcfcfcfafafafdfdfdf9f9f9f0f0f0f0f0f0
+fafafafdfdfdfdfdfdfcfcfcfdfdfdfdfdfdfcfcfcfffffffdfdfdfdfdfdfdfdfdfdfdfdfcfcfcfcfcfcf9f9f9f7f7f7fcfcfcf2f2f2f2f2f2e4e4e4
+f7f7f7fcfcfcfcfcfcf9f9f9f7f7f7fcfcfcfcfcfcfdfdfdfcfcfcfcfcfcfafafafdfdfdfdfdfdf9f9f9fafafaecececf5f5f5e4e4e4eeeeeed5d5d4
+f3f3f3f6f6f6f7f7f7f7f7f7f7f7f7f9f9f9f9f9f9fafafafafafaf9f9f9f7f7f7fafafafafafaf2f2f2f6f6f6f0f0f0ecececdededed9d9d9c9c7c1
+ecececeeeeeef5f5f5f2f2f2f5f5f5f5f5f5f2f2f2f6f6f6f7f7f7f5f5f5f6f6f6f7f7f7f6f6f6f5f5f5eeeeeee7e7e7e7e7e7d3d3d2d8d8d7c5c1b4
+e2e2e2ececececececf2f2f2eeeeeeefefeff0f0f0f3f3f3f5f5f5f2f2f2efefeff3f3f3f0f0f0f0f0f0ececece2e2e2e4e4e4d2d1d0c9c8c2c0baa2
+dcdcdbe9e9e9e7e7e7e7e7e7e9e9e9e9e9e9eeeeeeebebebececece8e8e8e8e8e8eeeeeeebebebe8e8e8e1e1e1d6d6d6d2d1d0c9c7c1cac9c3bbb290
+d3d3d2dadadadcdcdbe1e1e1e0e0e0e1e1e1e7e7e7e5e5e5e1e1e1e4e4e4e0e0e0e5e5e5dcdcdbe0e0e0d5d5d4cbcac5cbcac5cac9c3c6c3b8b7ad85
+c8c6bed0cfcdd4d4d3d9d9d9d6d6d6d2d1d0dcdcdbdadadadcdcdbddddddd2d1d0dededececdcbcecdcbc9c8c2c5c1b4c6c3b7c2bda9c0baa3b1a172
+c2bdaac8c7bfc7c5bbcbcac5c9c8c2cac9c3cdccc9cecdcbcdccc9cecdcbc8c7bfd2d1d0c7c5bbc7c5bcc7c4bac2bdaabdb597bfb89fb4a87bad936a
+bbb393c3bfaec0baa3c4c0b0c4c0b0c4c0b0c5c1b4c7c5bcc4c1b3c4c1b3c2beacc7c4bac4c1b3c0baa2beb89ebab18db9af89b9b08abcb494a5785f
+b3a475bcb495bab18fbbb393bdb597bcb495bfb9a0bdb698bfb89fbfb89fbcb494c0baa2bdb69ab7ad84b8ae88b4a77ab09e70b1a071b1a071a78062
+ad956bb2a273b2a273b2a374b4a77ab5a97cb6ab81b6ab80b4a87bbbb391b6ab81b6ab81b7ad85af9c6eb4a87bae976caf9b6eab8c68ad926aa16a59
+a67c61ad936aac8f69ad926aad936aae976cae966caf996dae976cb4a87bb19f71af9b6eaf9b6ea88263ac9069a88464a77d61ab8d68aa8966a77f62
+a06758a5785fa77e61a4765ea67a60a88464a77d61a77e61a88263aa8a67a88464a98665a98564a67b60a3725ca4745da67b60ac9069a5785fa3725c
+99514d9e5f549d5b529f63569f64569f6456a168589f6255a06758a26e5ba4745d9f6255a16b599f64569f64569e6155a3705ba4745da4735da67a60
+873b3a914545873b3a964b4a94494898504d9c5851984f4c9b57519e60549b565099514d9a534e9b56509145459d5b529d5d539a544fa06557a36f5b
+7b2e2e742727742727863939772b2b833737873b3a863939863939863939904444803333964b4a974c4a8f4343974c4a934847974c4a8639399e6155
+681b1b5a0e0f641818661a1a6a1e1d6316177a2d2d6c20207226267427278c3f3f873b3a8033337a2d2d893d3d99524e8c3f3f98504d883c3ca3715c
+6c20205f13134f01034c0000661a1a5508096c2020712525651919580c0d6c2020712525752828833737853838964b4a8d41409c5951853838a5785f
+7427275508096014145f1313651919601414611515611515661a1a6115156f22226a1e1d6e2121893d3d873b3a944948974d4b8b3e3e984f4ca78062
+8236366418187d31317528287125256e21216e2121681b1b772b2b7125257125257528287d3131893d3d974c4a9d5c539a544f9d5b52a5785fac916a
+9a544f8c3f3f8c3f3f8337378236368b3e3e853838803333823636833737823636883c3c8d414098504d9c59519d5d53a06657a5785fa77d61b1a172
+a4765ea06758a066579b555099524e9d5c53984f4c9b56509a544f9247469c595199514d9a534e9f6255a06657a26e5ba3725ca77e61ab8e68b2a475
+ae966cab8c68aa8a66a78062a67b60a3725ca16b59a4735da4745da06758a26d5aa4735da3725ca5785fa67c61a88263a98665b09e70af996dbab18d
+bbb290b4a77ab1a071b09e70af9a6dae986daa8a67ac9069ac916aac8f69ac8f69aa8866aa8866ab8c68af996db09d6fb09d6fb3a576b4a77abeb79b
+c4c0b1bfb9a0c0baa2beb79cbbb393b7ad85b4a87bb8ae88b5aa7eb5aa7eb3a677b1a071b6ab81b6ab81b5aa7ebab18fb9af89bbb391bbb393c4c1b3
+cfceccc6c3b7c8c7bfc8c6bec5c1b4c6c3b8c1bca7c0baa2c0baa2bdb597beb79bbeb79bbfb9a0c0bba5beb79cc1bca7c1bca7beb89ec4c0b1c9c7c1
+e0e0e0d5d5d4d8d8d7d4d4d3d4d4d3d1d0cfcbcac5cbcac5c8c7bfc7c5bcc6c3b8c6c3b7c6c3b7c9c8c2c7c5bcc7c5bccbcac5c6c3b8cccbc8cfcecc
+ececece7e7e7e8e8e8e4e4e4e7e7e7e4e4e4dadadadcdcdbd9d9d9d3d3d2d3d3d2d3d3d2d0cfcdd8d8d7d2d1d0d0cfcdd3d3d2cac9c3d2d1d0d9d9d9
+f5f5f5f0f0f0f0f0f0f0f0f0efefefefefefe8e8e8e8e8e8e8e8e8e7e7e7e2e2e2e0e0e0e0e0e0e0e0e0e1e1e1dededee0e0e0d1d0cfdcdcdbe1e1e1
+f9f9f9f9f9f9f9f9f9f7f7f7f6f6f6f5f5f5f5f5f5f3f3f3efefeff0f0f0f0f0f0eeeeeeececececececeeeeeee9e9e9f2f2f2dededee1e1e1e5e5e5
+fdfdfdfcfcfcfafafaf9f9f9fcfcfcfafafafafafaf9f9f9f5f5f5f6f6f6f7f7f7f5f5f5f0f0f0f5f5f5f2f2f2f0f0f0f0f0f0efefeff2f2f2f2f2f2
+fffffffdfdfdfffffffdfdfdfffffffdfdfdfcfcfcfcfcfcfafafafafafafcfcfcfafafaf7f7f7f7f7f7f9f9f9f7f7f7f6f6f6f6f6f6f7f7f7f6f6f6
+fffffffdfdfdfdfdfdfcfcfcfffffffdfdfdfdfdfdfdfdfdfdfdfdfcfcfcfcfcfcfafafafafafaf7f7f7f0f0f0fafafaf6f6f6f7f7f7f6f6f6f7f7f7
+fffffffdfdfdfdfdfdfcfcfcfffffffdfdfdfdfdfdfdfdfdfdfdfdfcfcfcfcfcfcfafafafafafaf7f7f7f0f0f0fafafaf6f6f6f7f7f7f6f6f6f7f7f7
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f-1005065264
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 195 M
+553.5 195 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+441.9 195 M
+441.9 193.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+491.5 195 M
+491.5 193.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+541.1 195 M
+541.1 193.76 L
+S
+GR
+GS
+[1 0 0 1 441.89999 199] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 491.5 199] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 541.09998 199] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 195 M
+429.5 133 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 195 M
+430.74 195 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 170.2 M
+430.74 170.2 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 145.4 M
+430.74 145.4 L
+S
+GR
+GS
+[1 0 0 1 425.5 195] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 170.2] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 145.39999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f-578797192{429.5 282.5 M
+553.5 282.5 L
+553.5 220.5 L
+429.5 220.5 L
+cp}def
+f-578797192
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [429.5 220.5 553.5 282.5]
+/PaintProc
+{
+pop
+429.5 220.5 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffff9f9f9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcfffffffdfdfdfffffffafafaf5f5f5
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffdfdfdfdfdfdfdfdfdfffffffdfdfdf7f7f7e7e7e7
+fffffffffffffdfdfdfdfdfdfffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffdfdfdfdfdfdfcfcfcfdfdfdf5f5f5f3f3f3e0e0e0
+fffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfcfcfcfdfdfdfffffffcfcfcf9f9f9fafafafcfcfcf3f3f3e1e1e1dadada
+fdfdfdfffffffffffffdfdfdfffffffffffffffffffffffffdfdfdfcfcfcfafafafdfdfdfdfdfdf9f9f9f7f7f7efefeff7f7f7dddddde1e1e1cecdcb
+fcfcfcfffffffcfcfcfdfdfdfcfcfcfffffffffffffdfdfdfdfdfdfcfcfcfcfcfcfcfcfcfdfdfdf6f6f6f5f5f5ececece5e5e5dcdcdbe1e1e1cbcac6
+fafafafcfcfcfdfdfdfafafafafafafcfcfcfdfdfdfcfcfcfafafafcfcfcfafafafafafafafafaf3f3f3f6f6f6e9e9e9e2e2e2dededee0e0e0c4c1b3
+f5f5f5fafafaf9f9f9f6f6f6fafafafafafafcfcfcfafafafcfcfcf9f9f9f5f5f5f6f6f6f6f6f6f3f3f3f3f3f3eeeeeedcdcdbe8e8e8d8d8d7beb89e
+f2f2f2f6f6f6fafafaf9f9f9f5f5f5fafafafcfcfcf9f9f9f7f7f7f3f3f3f6f6f6f9f9f9f3f3f3efefefe4e4e4dededee1e1e1cfcecccecdcbbfb9a0
+efefeff6f6f6f5f5f5f5f5f5f3f3f3f5f5f5f6f6f6f6f6f6f3f3f3f6f6f6f0f0f0efefefebebebefefefe4e4e4dddddde0e0e0c9c7c1c7c4babbb393
+ebebebefefeff2f2f2f2f2f2f0f0f0eeeeeeefefeff0f0f0eeeeeef0f0f0e7e7e7ececece4e4e4e2e2e2e0e0e0e0e0e0c9c7c1c6c3b7cdccc9b6ab81
+e4e4e4e7e7e7ebebebe9e9e9e9e9e9e9e9e9ecececeeeeeeebebebe4e4e4e7e7e7efefefddddddd6d6d6d3d3d2cccbc8c8c7bfc4c0b1beb79cb8ae86
+d6d6d6e4e4e4e2e2e2e7e7e7dededee4e4e4e4e4e4e9e9e9dedededddddddadadae5e5e5d9d9d9cecdcbc9c7c1c6c3b7c3bfaebdb597bab18fb5a97c
+cbcac6dcdcdbd8d8d7d8d8d7d5d5d4d8d8d7d9d9d9dadadad6d6d6d6d6d6d4d4d3d4d4d3c8c7bfc7c5bbc5c1b4bcb495c2beacc0baa2bbb290b3a677
+c4c1b3cbcac6c9c8c2cbcac6cdccc9d3d3d2cdccc9cbcac6cdccc9cccbc8cbcac5cecdcbc4c0b0c0baa3c0baa2b9b08abbb391c0bba5b8ae88a67a60
+c0baa3c5c2b5c4c0b1c6c3b7c7c4bac5c2b5c5c2b5c7c5bcc4c1b3c4c0b0c5c1b4c5c2b5beb79bbdb597bdb69ab8ae88b7ad85bdb698b4a77aa98765
+b8ae88bcb494bdb597bfb9a0c0baa3c0bba5c0bba5bfb9a0bdb597beb79bc0baa2c0bba5b8ae88b9b08ab7ac82af9a6daf9c6eb5a97cb9b08cb2a475
+b3a677b5aa7eb9af89b7ad84bab18fb7ad84b7ad85b8ae88b8ae86b9b08cb4a87bb5a97cb5a97cb2a475b1a172ac9069b1a071af996dab8e68ae986d
+ad926ab09d6faf9c6eb09d6fb09e70b09d6fb4a778ae966caf9b6eb19f71b09e70af9b6eaf996dab8c68ab8e68ab8b67ab8e68ab8b67a88163ad956b
+a88263ac916aa88464a67b60aa8966ab8b67aa8a67a98765aa8a67ac8f69aa8a66a88464a98665a36f5ba4745da88163a88464a06557a5785fa98564
+a26e5ba3715ca16959a5775ea3705ba4755da26d5aa26c5aa6795fa77e61a67b609e5e54a3705ba26c5aa06758a26e5ba67b60a26e5baa8866ab8b67
+9c5a529b57518f43439c595199524e9b57519e5f549b56509b55509b56509d5c539a534ea066579e5e549e6054a16a59a06456a26e5baa8966a98765
+863939762a29772b2b8b3e3e8c3f3f833737954a498236369044448e4242944948964b4a9a534e9b57519a544f954a499c5951a0675899524ea88263
+7b2e2e6f22226b1f1f6b1f1f6e2121631617823636752828772b2b7c302f8134348538388b3e3e99524e974d4ba0665799514d9d5d53a06557aa8a66
+6c20204f01036316175e12126519195508094f01036f2222661a1a8538386f22227024238337379348479247469e6155873b3a9f6255904444a88364
+742727580c0d6316175205074c00006519195307085e1212661a1a6014146014146519197f3232974d4b954a4999514d954a49a06657a3715cb09e70
+8033336f2222681b1b5f1313661a1a691c1c6b1f1f681b1b681b1b651919752828823636833737873b3a94494899524e9b5751a06758a5785fac9069
+9247468f4343904444893d3d752828752828752828722626873b3a6316178538388033338639398236369c58519e6054a26c5aa98665a5785faf9c6e
+9f62559b55509b56509b575199524e9b5550974d4b94494899524e99524e9a544f99524e9b56509b56509e5e54a16858a26d5aa88364ac8f69b3a475
+a77f62a67b60a67c61a5775ea3715ca06758a16a59a4745da3715ca06657a26e5ba26e5ba36f5ba67a60a88263ac9069ae976cae986db6ab80bbb290
+b09d6fae986db19f71ae986dad926aab8e68ac916aac916aab8c68ac916aab8c68ae976caa8a67ad956bb09e70b4a77ab7ad84b4a77ab1a172bfb89f
+bbb391b7ac82bdb698b8ae86b9b08cb8ae88b5a97cb7ad85b6ab81b9af89b6ab81b6ab81bab18dbab18fbcb495bcb495c0baa3c0bba5beb89ec6c3b7
+c3beadc0bba5c4c0b1c4c1b3c4c1b3c4c0b1c0baa2c2beacc2bda9bfb89fbfb89fbfb89fc1bca7c5c2b5c4c0b0c2bda9c3bfaec0bba5c4c1b3cbcac5
+cccbc8d3d3d2cdccc9d0cfcdcfceccd3d3d2c9c8c2c9c7c1c8c7bfc9c8c2cac9c3c7c5bbcac9c3d1d0cfcac9c3cac9c3cdccc9c8c6becbcac6d8d8d7
+e0e0e0e0e0e0dddddde1e1e1e4e4e4e7e7e7e0e0e0e1e1e1dedededddddddadadad9d9d9dddddde1e1e1dddddde1e1e1e1e1e1cfceccd9d9d9e0e0e0
+eeeeeeeeeeeee9e9e9eeeeeeefefefeeeeeef2f2f2f0f0f0ecececf0f0f0efefefe9e9e9ecececebebebe9e9e9eeeeeee9e9e9e1e1e1ebebebececec
+f5f5f5f6f6f6f6f6f6f5f5f5f9f9f9f6f6f6f6f6f6f9f9f9f5f5f5f5f5f5f7f7f7f7f7f7f5f5f5f5f5f5f3f3f3f9f9f9f2f2f2eeeeeef6f6f6f5f5f5
+f7f7f7f7f7f7f6f6f6f6f6f6fafafafafafafafafafafafafafafaf7f7f7f9f9f9f9f9f9f5f5f5f6f6f6f5f5f5f9f9f9f7f7f7f6f6f6f6f6f6f5f5f5
+f7f7f7f7f7f7f6f6f6f6f6f6fafafafafafafafafafafafafafafaf7f7f7f9f9f9f9f9f9f5f5f5f6f6f6f5f5f5f9f9f9f7f7f7f6f6f6f6f6f6f5f5f5
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f-578797192
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 282.5 M
+553.5 282.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+441.9 282.5 M
+441.9 281.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+491.5 282.5 M
+491.5 281.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+541.1 282.5 M
+541.1 281.26 L
+S
+GR
+GS
+[1 0 0 1 441.89999 286.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 491.5 286.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 541.09998 286.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 282.5 M
+429.5 220.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 282.5 M
+430.74 282.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 257.7 M
+430.74 257.7 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 232.9 M
+430.74 232.9 L
+S
+GR
+GS
+[1 0 0 1 425.5 282.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 257.70001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 232.89999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f1070788432{429.5 369.5 M
+553.5 369.5 L
+553.5 307.5 L
+429.5 307.5 L
+cp}def
+f1070788432
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [429.5 307.5 553.5 369.5]
+/PaintProc
+{
+pop
+429.5 307.5 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffafafaf7f7f7
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcfffffffffffffcfcfcfcfcfcf3f3f3
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffdfdfdfcfcfcf3f3f3f7f7f7
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffafafafcfcfcfcfcfcf9f9f9f7f7f7f7f7f7e9e9e9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffcfcfcfdfdfdf9f9f9fdfdfdf6f6f6f3f3f3d8d8d7
+fffffffffffffdfdfdfdfdfdfffffffffffffffffffffffffffffffdfdfdfafafafdfdfdfafafaf7f7f7f9f9f9f7f7f7fafafae5e5e5dadadacbcac5
+fffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffdfdfdfafafafafafaf7f7f7f7f7f7f5f5f5f7f7f7f5f5f5f3f3f3efefefc9c8c2
+fdfdfdfcfcfcfafafafafafafffffffcfcfcfffffffdfdfdfcfcfcfcfcfcf9f9f9fdfdfdf6f6f6f0f0f0f2f2f2ecececeeeeeedadadaeeeeeec5c2b5
+fdfdfdfafafafcfcfcfafafafcfcfcfafafafdfdfdfafafaf9f9f9f9f9f9f5f5f5f7f7f7f3f3f3efefefe8e8e8e9e9e9cecdcbdcdcdbe8e8e8c2bdaa
+f7f7f7fafafaf9f9f9f7f7f7f6f6f6f9f9f9f7f7f7fafafaf6f6f6f7f7f7f2f2f2f7f7f7f2f2f2eeeeeee7e7e7dadadad1d0cfd1d0cfc9c8c2c0bba5
+f6f6f6f5f5f5f0f0f0f5f5f5f3f3f3f7f7f7f5f5f5f6f6f6f3f3f3f2f2f2efefeff2f2f2ececece9e9e9dedededededecfceccc6c3b7bbb393bbb391
+f2f2f2f0f0f0f0f0f0f6f6f6f2f2f2f2f2f2f0f0f0f0f0f0efefefececece4e4e4ececece1e1e1dededed2d1d0cdccc9d2d1d0c3bfaeb4a77abbb393
+eeeeeef3f3f3eeeeeeecececefefefebebebebebebe7e7e7e8e8e8e9e9e9e1e1e1e5e5e5dcdcdbd3d3d2d3d3d2d0cfcdc6c3b8c4c0b1c0bba5b5aa7d
+ecececeeeeeee5e5e5e4e4e4e2e2e2e1e1e1e2e2e2e5e5e5dcdcdbd9d9d9d5d5d4d6d6d6d0cfcdcccbc8c9c8c2c5c1b4bfb89fc1bca7bab18fae986d
+e4e4e4dcdcdbe0e0e0d9d9d9dadadadadadadadadadadadad5d5d4d2d1d0d2d1d0d9d9d9c7c5bcc3beadc6c3b7c0baa2beb79bc1bca7b9af89ad956b
+d8d8d7d5d5d4d6d6d6cecdcbcdccc9d1d0cfcfceccd4d4d3cbcac5c7c5bbc9c8c2cfceccc4c1b3c3beadbeb79cbab18dbeb89eb9b08cbeb79bab8d68
+c9c8c2d2d1d0cecdcbc4c0b0cbcac5c8c6bec8c7bfc7c4bac4c1b3c6c3b7c2bdaac4c1b3c0baa3c0baa2bbb290b7ad84b8ae86b09d6fb8ae86ac8f69
+c4c0b0c7c5bbc5c1b4c0baa3c5c2b5c2bdaac1bba6c0baa3bfb9a0c0baa3c1bba6beb79cbcb494b7ad85b7ad84b1a172b7ad84b4a77ab6ab81a77d61
+beb79bbeb79bbeb89ebcb495bdb69abab18fbcb495bdb597b9b08cb9af89b9b08cbbb391b5aa7db19f71b5aa7dad926aad946baf996db09e70ac8f69
+b6ab80bab18dbab18fb5aa7db6ab81b6ab80b6ab81b2a475b3a475b2a374b3a576b09e70ad956bad946bae976ca88464aa8866aa8966ae986dae976c
+af9a6db09d6fb3a475b4a778ae986db09e70af9c6eae986dad956baa8866ad926aa98665ac916aa67b60aa8a66a98665ae976ca4745da5785fae986d
+ab8d68ac916aab8b67ab8c68a88364a77f62aa8966a5785fa88163a77f62a77f62a4765ea67c61a77d619d5d53a4765ea77e61a5785fa26e5ba78062
+a67a60a4755da26e5ba6795fa4765ea3705ba16a59a168589f6255a4765ea4745d9e6155a16a599f64569b5751954a499f6255a26d5aa4765eab8c68
+9f62559b555099524ea16a599e60549e5f549e61559b55509b57519e61559b5650974c4a9f64569c59519b5751a067589c5851a06557a4755dab8b67
+9a544f893d3d8538389348479044448b3e3e9a534e8134348f43439044449a534e99524e9c585199514d9d5b529c585198504d9e5f54a16a59a98665
+873b3a8033336115157427277c302f742727803333782c2c7f3232883c3c853838873b3a873b3a9c59519c585199514d9c59519e5f54a06657a3725c
+6519195003046b1f1f7226266b1f1f6e21216418187a2d2d782c2c8e42427a2d2d6e2121853838883c3c964b4a984f4c8538389d5d539c5a52ab8e68
+6e21214c00005307085e12124d00017a2d2d5b0f10691c1c691c1c6c20207528287c302f883c3c893d3d99524e9e6054964b4aa3725c9d5c53ac8f69
+681b1b641818580c0d580c0d5c10115c1011631617772b2b833737752828712525782c2c7b2e2e99524e974d4b9d5b529b5650a06657a67a60ad936a
+6b1f1f7125256c20206a1e1d6c20207d3131691c1c722626863939712525883c3c803333833737954a499a534ea36f5ba4745da88364a5775ead956b
+934847823636873b3a7d31319044448d41408d41408e4242984f4c81343498504d984f4c9c59519c59519e5f54a16858a78062a78062aa8a66ad926a
+99524e9a534e9b55509b555091454598504d9e5f54a067589c58519b56509e61559e6155a169599f6456a26e5ba77f62a88364a77f62ab8e68b4a87b
+a16b59a36f5ba78062a4755da5785fa16858a4755da3705ba4755da5785fa3705ba77e61a4765ea78062ac9069ae986daf996db3a576af996db8ae88
+a6795faf9c6eae986dae976cad926aaa8866aa8a66ac8f69ad946baf9a6dac9069ac916aae966cb5a97cb09e70b4a77ab5aa7eb9af89b5aa7ebdb698
+b2a273b3a475b9b08cb4a778b4a77ab5a97cb3a475b5aa7eb6ab81b4a87bb5a97cb5a97cb8ae86b9b08cbdb597beb79cc0baa2bbb290bfb89fc5c1b4
+bab18fbdb69abcb495beb89ec0bba5bfb9a0bdb69abeb79bbdb698bfb9a0c0baa2c2bda9c0bba5c1bca7c5c2b5c1bba6c5c1b4c4c0b0c8c7bfcbcac5
+c2bda9c2beacc7c4bac6c3b8c8c7bfc7c5bcc8c6bec6c3b7c5c2b5c9c8c2c7c4bac8c7bfcccbc8d1d0cfd2d1d0cbcac6cdccc9c7c5bccfceccd4d4d3
+cac9c3cdccc9d8d8d7d6d6d6d5d5d4dcdcdbd3d3d2d8d8d7d5d5d4d8d8d7dcdcdbd9d9d9d9d9d9e7e7e7d8d8d7e2e2e2dddddddcdcdbe7e7e7e4e4e4
+e2e2e2e4e4e4dadadae7e7e7e2e2e2e5e5e5e5e5e5e8e8e8e7e7e7e9e9e9efefefe5e5e5eeeeeee8e8e8e8e8e8efefefe7e7e7ebebebe4e4e4ececec
+ebebebefefefebebebeeeeeef2f2f2f3f3f3f5f5f5f7f7f7f0f0f0f3f3f3efefeff3f3f3f5f5f5f5f5f5f0f0f0f6f6f6f2f2f2e9e9e9f0f0f0f6f6f6
+e8e8e8f2f2f2ebebebecececf5f5f5f5f5f5f6f6f6f5f5f5f6f6f6f5f5f5f6f6f6f9f9f9f2f2f2f7f7f7f6f6f6fcfcfcf9f9f9f7f7f7f9f9f9f5f5f5
+e8e8e8f2f2f2ebebebecececf5f5f5f5f5f5f6f6f6f5f5f5f6f6f6f5f5f5f6f6f6f9f9f9f2f2f2f7f7f7f6f6f6fcfcfcf9f9f9f7f7f7f9f9f9f5f5f5
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f1070788432
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 369.5 M
+553.5 369.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+441.9 369.5 M
+441.9 368.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+491.5 369.5 M
+491.5 368.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+541.1 369.5 M
+541.1 368.26 L
+S
+GR
+GS
+[1 0 0 1 441.89999 373.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 491.5 373.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 541.09998 373.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 369.5 M
+429.5 307.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 369.5 M
+430.74 369.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 344.7 M
+430.74 344.7 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 319.9 M
+430.74 319.9 L
+S
+GR
+GS
+[1 0 0 1 425.5 369.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 344.70001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 319.89999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f1291988330{429.5 456.5 M
+553.5 456.5 L
+553.5 394.5 L
+429.5 394.5 L
+cp}def
+f1291988330
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [429.5 394.5 553.5 456.5]
+/PaintProc
+{
+pop
+429.5 394.5 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfd
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffafafa
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfffffff9f9f9
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffdfdfdfdfdfdfafafafdfdfdf6f6f6
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffcfcfcfdfdfdfafafafffffff7f7f7f2f2f2eeeeee
+fffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffffffffffdfdfdfdfdfdfafafafafafafdfdfdfafafaf3f3f3f7f7f7efefef
+fffffffffffffffffffffffffffffffffffffdfdfdfdfdfdfffffffdfdfdfcfcfcfcfcfcfdfdfdf9f9f9f9f9f9f9f9f9f5f5f5f3f3f3f5f5f5e5e5e5
+fffffffffffffdfdfdfdfdfdfffffffffffffdfdfdfdfdfdfdfdfdfcfcfcfafafafafafafafafaf9f9f9f7f7f7f6f6f6f6f6f6e9e9e9e9e9e9d9d9d9
+fffffffffffffdfdfdfcfcfcfffffffdfdfdfcfcfcfcfcfcfdfdfdfafafaf7f7f7fafafaf7f7f7f3f3f3f3f3f3ecececf0f0f0dcdcdbd3d3d2c4c1b3
+fdfdfdfcfcfcf9f9f9fcfcfcfafafafcfcfcfcfcfcfafafaf9f9f9f9f9f9f5f5f5fcfcfcf2f2f2efefefebebebe0e0e0e7e7e7d0cfcdc8c7bfbeb89e
+fcfcfcfafafaf7f7f7f7f7f7fafafaf9f9f9f9f9f9f9f9f9f6f6f6f5f5f5efefeff6f6f6efefefececece2e2e2dededed9d9d9cccbc8c8c6beb9b08c
+fafafaf7f7f7f5f5f5f3f3f3f5f5f5f5f5f5f2f2f2f6f6f6efefeff5f5f5e4e4e4f0f0f0e9e9e9e1e1e1d5d5d4d8d8d7c6c3b7d0cfcdbdb69ab7ac82
+f7f7f7f2f2f2f3f3f3efefeff2f2f2eeeeeeecececf2f2f2ebebebebebebe5e5e5e5e5e5dadadad8d8d7d4d4d3c8c6bec2bdaac2bda9c1bba6ad936a
+f3f3f3e8e8e8ececece7e7e7efefefe9e9e9e2e2e2e5e5e5e4e4e4e2e2e2dddddde1e1e1d3d3d2cdccc9c9c7c1c4c1b3bfb9a0bdb698b6ab80ac916a
+ecececebebebe4e4e4e2e2e2e7e7e7d9d9d9e1e1e1dadadaddddddd2d1d0d2d1d0d3d3d2cfceccc8c6bec5c1b4c3bfaebeb89ebab18fae966ca88464
+e4e4e4e1e1e1dedededadadae1e1e1d3d3d2d4d4d3cfceccd1d0cfcac9c3c9c8c2c7c5bcc4c0b1c0bba5beb79bbab18fb5aa7eb7ad84b7ac82a26e5b
+dedededdddddd2d1d0cfcecccbcac6cccbc8c9c8c2cbcac5c8c6bec4c0b1c4c0b0c6c3b7c0baa2bbb393bbb393b7ac82b2a374b6ab81b3a475a06657
+d3d3d2d3d3d2c9c7c1c8c6bec6c3b7c2bdaac4c1b3c4c0b0c0bba5c2beacc0baa2beb89ebab18fbab18fb2a273ae986daf9b6eae966caf9c6ea6795f
+c9c7c1c7c4bac5c1b4bfb9a0c0baa3c2bda9beb79bbdb698bab18fbbb393bbb290b7ac82b19f71b4a778b1a071ad956bad936aa5785fad926aa16a59
+c2bdaac0baa2bcb494bcb494b8ae86bbb393b8ae88b7ad85b4a87bb5a97cb4a77ab1a071ae976caf9b6eab8d68a77d61aa8866a88163ab8b679f6255
+bcb495bdb597b7ad85b4a77ab4a778b5a97cb1a071b1a071af9c6eaf9a6dad936aad936aad926aa78062a5785fa6795faa8966a4765ea6795fa36f5b
+b6ab80b3a576b2a374ac8f69ad956bad926aad956ba98665a88364a4765ea98564a88163a88364a16858a4765e9f6255a5785fa06557aa8866a77e61
+ad936aaa8a66a98765a98765a67c61a4745da88364a67a60a4735da26e5ba4735d9f6456a4745da06657a16b5998504da168589f63569f6456a5785f
+a88364a3705ba3715ca5785fa16959a16a59a168589e5f549b56509c5a52a066579b57519e6054974d4b9e5e549145459d5b52964b4a833737a3725c
+a4735da16a599c5851a066579e61559a544f9b56509b55508d41408f43439a534e823636964b4a893d3d9b555092474699514d9044446f2222a67a60
+9d5d5399524e974c4a99514d964b4a904444873b3a8236368236368e4242873b3a7d3131914545863939853838904444853838934847823636a5775e
+8e4242883c3c7a2d2d8134347f3232863939782c2c762a297125258538387c302f702423742727722626782c2c9348477f32329c58519a534ea3725c
+7c302f5c10117024236f222270242374272775282856090b681b1b893d3d651919722626691c1c742727722626893d3d6e2121964b4a9a534ea4745d
+742727570b0c691c1c63161756090b5b0f107024235b0f105c1011772b2b631617772b2b6316177b2e2e7427277d31317a2d2d8d41409b5550a98564
+681b1b4c00005c10115e12124d00016c20205f13137024238337376a1e1d611515782c2c803333863939863939934847924746a26d5aa16858ac8f69
+6115154c0000530708580c0d570b0c691c1c742727661a1a782c2c611515873b3a7b2e2e7c302f8c3f3f974c4a9d5d5399514da3725ca6795faa8866
+5e1212580c0d6e21215b0f106e21216c2020691c1c782c2c873b3a6e21217f32328033337427279a544f9d5c539f6255a5775ea77d61a5785fae966c
+6b1f1f722626782c2c772b2b8033337c302f7f3232883c3c8f43438639398639399247469b55509f63569e6054a77f62aa8966a4755dad956bb19f71
+7a2d2d883c3c8c3f3f974c4a893d3d954a498e42429a534e9f62559d5b529f64569d5c53a36f5ba36f5ba26e5baa8966ab8c68ac8f69ae976cb3a677
+9044449d5c53984f4c9f64569d5d53a06456a16959a4745da4735da36f5ba77e61a5785fa77f62aa8966ab8c68ad936aaf9b6eb09e70b09e70b8ae88
+9d5c53a06758a4745da4755da77d61a5775ea5775eaa8866a88163ab8e68a98665ab8c68ae976caf9c6eb1a172b4a778b9b08ab5aa7eb8ae86bfb9a0
+a26e5ba88464ac9069ab8b67af9a6dac9069ad936aae966caf9a6db09e70b3a475b4a778b4a77ab9af89b9b08abbb393bdb597bcb494bfb89fc4c1b3
+a88263b3a475b3a677b4a77ab5a97cb3a576b5aa7db7ad85b7ac82b9af89b8ae88bdb597bcb495bfb9a0c2bdaac3beadc4c0b1c3beadc9c8c2cfcecc
+b2a374bab18dbdb69abbb391bdb69abdb698bcb495beb79bbfb9a0c3beadc0bba5c2beacc7c5bbc8c7bfcecdcbd0cfcdcbcac6cfcecccbcac5dcdcdb
+bab18fc1bca7c0baa2c2beacc5c1b4c5c1b4c6c3b7c5c2b5c7c5bccdccc9cccbc8d2d1d0d0cfcdd8d8d7d8d8d7dadadad5d5d4dddddde5e5e5e5e5e5
+c2bda9c7c4bac7c5bbcac9c3cfceccd0cfcdd4d4d3d4d4d3d4d4d3cfceccdcdcdbe0e0e0e0e0e0e5e5e5e5e5e5e5e5e5dcdcdbe8e8e8f3f3f3eeeeee
+c9c8c2cecdcbd6d6d6dcdcdbd8d8d7dedededededee2e2e2e2e2e2e4e4e4e5e5e5e4e4e4eeeeeeecececeeeeeef2f2f2efefefefefeff5f5f5f0f0f0
+dcdcdbdededee0e0e0e4e4e4e9e9e9eeeeeeebebebf0f0f0f0f0f0f2f2f2f0f0f0f2f2f2f3f3f3f7f7f7f3f3f3f9f9f9f7f7f7f7f7f7f6f6f6fafafa
+ecececf2f2f2f0f0f0f0f0f0f3f3f3f5f5f5f6f6f6f7f7f7f7f7f7f7f7f7f9f9f9f9f9f9f9f9f9fcfcfcfafafafdfdfdfcfcfcfcfcfcfcfcfcfcfcfc
+e0e0e0efefefebebebe8e8e8f0f0f0f0f0f0fafafaf6f6f6f9f9f9fafafaf7f7f7fdfdfdf7f7f7fcfcfcfdfdfdfffffffdfdfdfffffffdfdfdfdfdfd
+e0e0e0efefefebebebe8e8e8f0f0f0f0f0f0fafafaf6f6f6f9f9f9fafafaf7f7f7fdfdfdf7f7f7fcfcfcfdfdfdfffffffdfdfdfffffffdfdfdfdfdfd
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f1291988330
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 456.5 M
+553.5 456.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+441.9 456.5 M
+441.9 455.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+491.5 456.5 M
+491.5 455.26 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+541.1 456.5 M
+541.1 455.26 L
+S
+GR
+GS
+[1 0 0 1 441.89999 460.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 491.5 460.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 541.09998 460.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 456.5 M
+429.5 394.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 456.5 M
+430.74 456.5 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 431.7 M
+430.74 431.7 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 406.9 M
+430.74 406.9 L
+S
+GR
+GS
+[1 0 0 1 425.5 456.5] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 431.70001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 406.89999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+GS
+1 GC
+N
+/f985332998{429.5 544 M
+553.5 544 L
+553.5 482 L
+429.5 482 L
+cp}def
+f985332998
+f
+GR
+GS
+<<
+/PatternType 1
+/PaintType 1
+/TilingType 3
+/XStep 124.0
+/YStep 62.0
+/BBox [429.5 482.0 553.5 544.0]
+/PaintProc
+{
+pop
+429.5 482.0 translate
+6.2 1.24 scale
+20 50 8 matrix
+{<
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcfffffff6f6f6
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcfcfcfffffffdfdfdfffffffcfcfcfffffffcfcfc
+fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffffffffffffff7f7f7fffffffcfcfc
+fffffffffffffffffffffffffffffffffffffffffffffffffdfdfdfffffffdfdfdfffffffffffffdfdfdfffffffdfdfdfcfcfcfcfcfcfdfdfdf2f2f2
+fffffffffffffdfdfdfffffffffffffffffffdfdfdfffffffffffffffffffdfdfdfdfdfdfdfdfdf7f7f7f7f7f7fafafafafafafcfcfcfffffff0f0f0
+fffffffffffffffffffffffffdfdfdfffffffdfdfdfffffffffffffdfdfdfcfcfcfdfdfdfffffffafafaf9f9f9fcfcfcf9f9f9ebebebfcfcfce8e8e8
+fdfdfdfffffffdfdfdfffffffffffffffffffdfdfdfdfdfdfffffffdfdfdfafafafdfdfdfafafafafafafafafaf0f0f0f9f9f9e8e8e8f2f2f2e7e7e7
+fdfdfdfffffffdfdfdfdfdfdfffffffffffffdfdfdfdfdfdfdfdfdfcfcfcfafafafafafaf9f9f9f2f2f2efefeff3f3f3e0e0e0e1e1e1f0f0f0d8d8d7
+fcfcfcfcfcfcfdfdfdfcfcfcfcfcfcfcfcfcfcfcfcfafafaf9f9f9fafafaf5f5f5f9f9f9fafafaf0f0f0eeeeeef0f0f0e8e8e8d6d6d6cbcac5c5c1b4
+fcfcfcfafafafafafaf9f9f9f7f7f7fafafaf7f7f7f9f9f9f6f6f6f7f7f7f7f7f7f5f5f5f5f5f5efefefe8e8e8e0e0e0dadadad8d8d7beb79bb3a677
+f9f9f9f5f5f5f7f7f7f0f0f0f7f7f7f7f7f7f2f2f2f6f6f6f5f5f5f2f2f2ebebebefefefe8e8e8e5e5e5d8d8d7d4d4d3c8c7bfd4d4d3bfb89fab8e68
+f3f3f3f7f7f7f7f7f7ebebebf3f3f3ebebebecececf3f3f3eeeeeeefefefe1e1e1efefefe2e2e2dcdcdbd3d3d2cfceccc6c3b7c4c0b1c2bdaab09e70
+f0f0f0f3f3f3ececece8e8e8f0f0f0e8e8e8e5e5e5e4e4e4e5e5e5e4e4e4d3d3d2e4e4e4dededed6d6d6c9c8c2c5c1b4c4c0b1bbb290b7ad85b3a677
+ececece8e8e8e8e8e8e7e7e7eeeeeedcdcdbd8d8d7e1e1e1ddddddddddddd3d3d2d5d5d4c7c5bbc5c1b4c0baa2c0baa2bab18db5aa7eaf9a6da26c5a
+e5e5e5d9d9d9d8d8d7dedededddddddadadacccbc8cfceccc9c7c1c8c6becbcac6c2bda9c8c6bec2bda9b9b08cb9b08caa8a66b5aa7eb3a475a5785f
+dadadad0cfcdcfcecccbcac6c9c8c2c6c3b8cbcac5c9c8c2c4c1b3c0baa2c8c6bebeb79bc2bda9bdb698bcb494ae986daa8a67ad946baf9c6e9b5751
+d6d6d6d0cfcdcbcac5c5c1b4c4c0b1c3bfaec3beadc4c1b3c1bca7bcb494c0baa2beb79cb8ae86b4a77ab3a677af9c6eb2a475b2a374af9a6da26e5b
+c7c5bbc7c4bac2bdaac2bdaabeb79cc0baa2bdb597c0bba5bbb391b7ac82b5aa7eb5aa7db1a172b4a77aaa8a66ab8e68ad926aa06557ad936a9b5550
+c3beadc2bda9b8ae86bdb69ab8ae86b6ab81b8ae86b2a475b3a677b1a172b1a071b1a071ab8c68a98765ac9069a5775ea3725ca16a59ad946b9e6054
+bcb495b7ad85b5a97cb3a576b2a475b09e70b09d6fb19f71ad936aab8e68aa8a67a67b60a98564a4745da5785f9a544fa3725ca5775e9f63569e5f54
+b5aa7eb3a677ae976caa8a67ab8d68ad956baa8966a98765a16b59a67b60a5775ea16a599e5e549e61559c5a529e6054a3715c974d4b893d3da4755d
+af9b6ea98564a77f62a78062a4765ea5785fa4765ea169599d5c53a06456a16a599d5b5298504d9348479f6456762a29a066579d5c536a1e1d974d4b
+ad936aa4745da16959a26e5ba16959a16a59a16b599d5c53974d4b964b4a9c5a52974d4b9b5550853838954a497b2e2e99524ea67c617125259f6255
+a4765ea26e5b9d5c539c58519b57518c3f3f9e5e54893d3d883c3c8d41408134347226267f32326b1f1f863939853838974c4a883c3c6b1f1fa06657
+a064569b5650883c3c7f3232924746883c3c8d41406f22228033338033337125256519197226267b2e2e6c20209c58517427277a2d2d5f13139c5951
+9a544f6a1e1d8639398033337b2e2e7a2d2d661a1a56090b782c2c7f32326418186f22227125257427277a2d2d8033334c0000742727712525a4735d
+893d3d681b1b8d4140782c2c5a0e0f7125256316176316175c10116f22226c2020772b2b772b2b6a1e1d8538386c20207b2e2e974c4a9f6456a77e61
+772b2b7528287024237a2d2d5f13138033336a1e1d6316176c20206115156a1e1d6a1e1d712525712525712525883c3c99524e893d3da4765eac8f69
+7a2d2d772b2b7528286c20206115157528286e2121702423611515570b0c6418187f32327f32329247468c3f3f974d4b9b555099514daa8966ad946b
+6a1e1d5b0f107d3131691c1c681b1b6a1e1d7528286a1e1d8538386f2222873b3a8b3e3e71252599524e974c4a9d5d539e5f54a26c5aaa8a66af9c6e
+5e12125b0f107d3131772b2b8033336c20208538388337378c3f3f883c3c8538389449488f43439f63569e6155a4745dab8b67a88163a6795fb1a172
+6b1f1f762a29772b2b9145458e4242782c2c893d3d9348479c59519e6054984f4c9c5851a06557a16b59a16959ab8b67a88163ad936ab2a374b7ad84
+8033339a544f99514d9d5c539b5650954a49984f4c9e61559f6255a26d5aa36f5ba3725ca77d61a88364aa8866b1a071b1a071b6ab80b5aa7dbcb495
+964b4a9a544f954a49a4735da16b59a26c5aa26c5aa67b60a98564a98665aa8a67aa8866ad936aaf9b6eae976cb5aa7eb6ab81b2a273b9b08ac0baa2
+9b5751a26e5ba3705ba6795fa77e61a98564a88364ae986daf9c6ead956baf9c6eaf9b6eb3a475b3a576bab18fbbb391beb79bbcb495bfb89fc7c5bc
+a26d5aaa8a66a98564a88364a98665af996dad946bb3a576b1a071b3a576bab18fb9b08abcb495bcb494c0baa3c2beacc4c0b1c3bfaec2beaccfcecc
+aa8866ad926ab3a576ae976cb6ab81b5aa7db7ad84b5aa7ebbb393c0bba5bfb9a0c6c3b8c4c0b0c6c3b7cac9c3c7c4bac9c8c2c9c7c1d6d6d6d8d8d7
+ad946bb6ab80bcb495bbb290beb79bbeb79cc1bca7c1bca7c3bfaec6c3b7c4c0b0c8c6bec6c3b7d3d3d2d4d4d3ddddddd2d1d0dededee9e9e9e4e4e4
+b5aa7ebeb79bbdb597c3beadc7c5bbc6c3b8c6c3b8c8c7bfc9c7c1d0cfcdd3d3d2d5d5d4dcdcdbe1e1e1e1e1e1e5e5e5ddddddf0f0f0f3f3f3e5e5e5
+beb89ec6c3b7cccbc8c9c8c2cdccc9d5d5d4d0cfcdd6d6d6dadadad2d1d0dadadadddddde8e8e8efefefecececebebebe2e2e2f2f2f2f7f7f7f0f0f0
+c8c6bed3d3d2d2d1d0d5d5d4dcdcdbdddddde7e7e7dededeebebebe8e8e8ebebebe8e8e8f2f2f2f6f6f6eeeeeef7f7f7f7f7f7eeeeeef2f2f2f7f7f7
+d4d4d3d9d9d9dcdcdbdadadae8e8e8ececece8e8e8f2f2f2f0f0f0f5f5f5f0f0f0f3f3f3f3f3f3f5f5f5f9f9f9f7f7f7fcfcfcfcfcfcf7f7f7fdfdfd
+e0e0e0e7e7e7dededeefefeff0f0f0f3f3f3f5f5f5f7f7f7f5f5f5fafafaf5f5f5fcfcfcfafafafdfdfdfcfcfcfcfcfcfdfdfdfffffffafafaffffff
+d1d0cfe5e5e5e7e7e7e1e1e1e9e9e9e9e9e9f7f7f7f3f3f3f7f7f7f7f7f7f9f9f9fcfcfcf6f6f6fdfdfdfcfcfcfdfdfdfcfcfcfffffffafafaffffff
+d1d0cfe5e5e5e7e7e7e1e1e1e9e9e9e9e9e9f7f7f7f3f3f3f7f7f7f7f7f7f9f9f9fcfcfcf6f6f6fdfdfdfcfcfcfdfdfdfcfcfcfffffffafafaffffff
+>} false 3 colorimage
+} bind 
+>>
+matrix
+makepattern
+/Pattern1 exch def
+/Pattern setcolorspace
+Pattern1 setcolor
+N
+f985332998
+f
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 544 M
+553.5 544 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+441.9 544 M
+441.9 542.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+491.5 544 M
+491.5 542.76 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+541.1 544 M
+541.1 542.76 L
+S
+GR
+GS
+[1 0 0 1 441.89999 548] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-9 10 moveto 
+1 -1 scale
+(-0.2) t 
+GR
+GR
+GS
+[1 0 0 1 491.5 548] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-3 10 moveto 
+1 -1 scale
+(0) t 
+GR
+GR
+GS
+[1 0 0 1 541.09998 548] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-7 10 moveto 
+1 -1 scale
+(0.2) t 
+GR
+GR
+GS
+[1 0 0 1 491.50006 561.5] CT
+0.149 GC
+/Helvetica 11 F
+GS
+[1 0 0 1 0 0] CT
+-24.5 11 moveto 
+1 -1 scale
+(Pupil Size) t 
+GR
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 544 M
+429.5 482 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 544 M
+430.74 544 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 519.2 M
+430.74 519.2 L
+S
+GR
+GS
+0.149 GC
+2 setlinecap
+1 LJ
+0.5 LW
+N
+429.5 494.4 M
+430.74 494.4 L
+S
+GR
+GS
+[1 0 0 1 425.5 544] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-3) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 519.20001] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-2) t 
+GR
+GR
+GS
+[1 0 0 1 425.5 494.39999] CT
+0.149 GC
+/Helvetica 10 F
+GS
+[1 0 0 1 0 0] CT
+-10 3.5 moveto 
+1 -1 scale
+(-1) t 
+GR
+GR
+%%Trailer
+%%Pages: 1
+%%EOF
