@@ -1,4 +1,4 @@
-function [PSScomponents,PSSdepth,OSCdepth ] = LFPSlopebyDepthAnalysis(basePath,figfolder)
+function [PSScomponents,PSSdepth,PSSdist ] = LFPSlopebyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -78,7 +78,7 @@ PSS.chanlayers = depthinfo.layer(inCTX);
 LAYERS = depthinfo.lnames;
 
 for ll = 1:length(LAYERS)
-    layerchans = strcmp(LAYERS{ll},PSS.chanlayers);
+    PSS.Lchans.(LAYERS{ll}) = strcmp(LAYERS{ll},PSS.chanlayers);
     PSS.oscLayer(:,:,ll) = squeeze(mean(PSS.osci(:,layerchans,:),2));
 end
 
@@ -212,7 +212,7 @@ PSSdepth.depth = PSS.interpdepth;
 for ww = 1:2
 [ ~,PSSdepth.pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( PSS.data(PSS.(WHNWH{ww}),:),...
     log10(PSS.pup(PSS.(WHNWH{ww}),:)),'specparms','input',...
-    'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+    'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25]);
     PSSdepth.pup.(WHNWH{ww}).mean_interp = interp1(PSS.depth',PSSdepth.pup.(WHNWH{ww}).mean,PSS.interpdepth');
     PSSdepth.pup.(WHNWH{ww}).std_interp = interp1(PSS.depth',PSSdepth.pup.(WHNWH{ww}).std,PSS.interpdepth');
     
@@ -220,7 +220,7 @@ for ww = 1:2
     [ ~,PSSdepth.(HILO{pp}).(WHNWH{ww}) ] = bz_LFPSpecToExternalVar(...
         PSS.data(PSS.(WHNWH{ww})&PSS.(HILO{pp}),:),...
         PSS.pupphase(PSS.(WHNWH{ww})&PSS.(HILO{pp}),:),'specparms','input',...
-        'figparms',true,'numvarbins',20,'varlim',[-pi pi]);
+        'figparms',[],'numvarbins',20,'varlim',[-pi pi]);
     PSSdepth.(HILO{pp}).(WHNWH{ww}).mean_interp = interp1(PSS.depth',PSSdepth.(HILO{pp}).(WHNWH{ww}).mean,PSS.interpdepth');
     PSSdepth.(HILO{pp}).(WHNWH{ww}).std_interp = interp1(PSS.depth',PSSdepth.(HILO{pp}).(WHNWH{ww}).std,PSS.interpdepth');
 
@@ -232,7 +232,7 @@ for oo = 1:2
         [ ~,PSSdepth.(ONOFF{oo}).(LONGSHORT{ll}) ] = bz_LFPSpecToExternalVar(...
             PSS.data(PSS.(LONGSHORT{ll}).(ONOFF{oo}),:),...
             PSS.whtime.(ONOFF{oo})(PSS.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
-            'figparms',true,'numvarbins',40,'varlim',[-window window]);
+            'figparms',[],'numvarbins',40,'varlim',[-window window]);
             PSSdepth.(ONOFF{oo}).(LONGSHORT{ll}).mean_interp = interp1(PSS.depth',PSSdepth.(ONOFF{oo}).(LONGSHORT{ll}).mean,PSS.interpdepth');
             PSSdepth.(ONOFF{oo}).(LONGSHORT{ll}).std_interp = interp1(PSS.depth',PSSdepth.(ONOFF{oo}).(LONGSHORT{ll}).std,PSS.interpdepth');
     end
@@ -240,7 +240,7 @@ for oo = 1:2
     [ ~,PSSdepth.(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
         PSS.data,...
         PSS.whtime.(ONOFF{oo}),'specparms','input',...
-        'figparms',true,'numvarbins',40,'varlim',[-window window]);
+        'figparms',[],'numvarbins',40,'varlim',[-window window]);
         PSSdepth.(ONOFF{oo}).all.mean_interp = interp1(PSS.depth',PSSdepth.(ONOFF{oo}).all.mean,PSS.interpdepth');
         PSSdepth.(ONOFF{oo}).all.std_interp = interp1(PSS.depth',PSSdepth.(ONOFF{oo}).all.std,PSS.interpdepth');
 end
@@ -248,7 +248,7 @@ end
     
 [ ~,PSSdepth.EMG ] = bz_LFPSpecToExternalVar( PSS.data,...
     log10(PSS.EMG),'specparms','input',...
-    'figparms',true,'numvarbins',40,'varlim',[-1.7 0.9]);
+    'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9]);
     PSSdepth.EMG.mean_interp = interp1(PSS.depth',PSSdepth.EMG.mean,PSS.interpdepth');
     PSSdepth.EMG.std_interp = interp1(PSS.depth',PSSdepth.EMG.std,PSS.interpdepth');
 
@@ -408,161 +408,242 @@ subplot(4,3,9)
         
 NiceSave('DepthPSSandWhisk',figfolder,baseName)
 
+%% PSS distirbution conditioned on pupil
 
+%Get the best l5 channel
 
+PSSdist.depth = PSS.interpdepth;
+PSSrange = [-3 -0.5];
 
-%% Mean depth osci by pupil size, phase and whisking
-%prepare for LFPspec....
-OSCdepth.freqs = PSS.freqs;
-for dd = 1:length(LAYERS)
+%for cc = 1:length(PSSdist.depth)
+
+%for cc = 1:length(CTXchans)
+%bz_Counter(cc,length(CTXchans),'Conditional Dist, Channel')
+for ll = 1:length(LAYERS)
 for ww = 1:2
-[ ~,OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( PSS.oscLayer(PSS.(WHNWH{ww}),:,dd),...
-    log10(PSS.pup(PSS.(WHNWH{ww}),:)),'specparms','input',...
-    'figparms',true,'numvarbins',20,'varlim',[-0.25 0.25]);
+PSSdist.(LAYERS{ll}).pup.(WHNWH{ww})  = ConditionalHist( log10(PSS.pup(PSS.(WHNWH{ww}))),...
+    PSS.data(PSS.(WHNWH{ww}),PSS.Lchans.(LAYERS{ll})),...
+    'numXbins',20,'Xbounds',[-0.25 0.25],'Ybounds',PSSrange,'numYbins',50);
+    PSSdist.(LAYERS{ll}).pup.(WHNWH{ww}) =  bz_CollapseStruct(PSSdist.(LAYERS{ll}).pup.(WHNWH{ww}),...
+        3,'mean',true);
 
     for pp= 1:2
-    [ ~,OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}) ] = bz_LFPSpecToExternalVar(...
-        PSS.oscLayer(PSS.(WHNWH{ww})&PSS.(HILO{pp}),:,dd),...
-        PSS.pupphase(PSS.(WHNWH{ww})&PSS.(HILO{pp})),'specparms','input',...
-        'figparms',true,'numvarbins',20,'varlim',[-pi pi]);
-
+    PSSdist.(LAYERS{ll}).(HILO{pp}).(WHNWH{ww})  = ConditionalHist(...
+        PSS.pupphase(PSS.(WHNWH{ww})&PSS.(HILO{pp}) ),...
+        PSS.data(PSS.(WHNWH{ww})&PSS.(HILO{pp}),PSS.Lchans.(LAYERS{ll})),...
+        'Ybounds',PSSrange,'numYbins',50,'numXbins',20,'Xbounds',[-pi pi]);
+    PSSdist.(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}) =  bz_CollapseStruct(PSSdist.(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}),...
+        3,'mean',true);
     end
 end
 
-for oo = 1:2
-    for ll = 1:2
-        [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}) ] = bz_LFPSpecToExternalVar(...
-            PSS.oscLayer(PSS.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
-            PSS.whtime.(ONOFF{oo})(PSS.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
-            'figparms',true,'numvarbins',40,'varlim',[-window window]);
-    end
     
-    [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
-        PSS.oscLayer(:,:,dd),...
-        PSS.whtime.(ONOFF{oo}),'specparms','input',...
-        'figparms',true,'numvarbins',40,'varlim',[-window window]);
+PSSdist.(LAYERS{ll}).EMG  = ConditionalHist( log10(PSS.EMG),PSS.data(:,PSS.Lchans.(LAYERS{ll})),...
+    'Ybounds',PSSrange,'numYbins',50,'numXbins',40,'Xbounds',[-1.7 0.9]);
+    PSSdist.(LAYERS{ll}).EMG =  bz_CollapseStruct(PSSdist.(LAYERS{ll}).EMG,...
+        3,'mean',true);
+    
 end
 
     
-[ ~,OSCdepth.(LAYERS{dd}).EMG ] = bz_LFPSpecToExternalVar( PSS.oscLayer(:,:,dd),...
-    log10(PSS.EMG),'specparms','input',...
-    'figparms',true,'numvarbins',40,'varlim',[-1.7 0.9]);
-end
-
-  %%
-  xwinsize = 30;
-xwin = bz_RandomWindowInIntervals(PSS.timestamps([1 end]),xwinsize);
-figure
-  for cc = 1:6
-
-subplot(6,1,cc)
-    imagesc(PSS.timestamps,PSS.freqs,(PSS.oscLayer(:,:,cc))')
-    hold on
-    %plot(PSS.timestamps,PSS.depthinterp(:,cc)')
-
-    plot(pupildilation.timestamps,bz_NormToRange(pupildilation.data,[-1 -0.5]),'w','linewidth',2)
-    plot(EMGwhisk.timestamps,bz_NormToRange(EMGwhisk.EMG,[-1.3 -0.8]),'k')
-    xlim(xwin)
-    axis xy
-    %ylim([-1.1 0])
-    %ColorbarWithAxis([-500 800000],'Osci')
-    xlabel('t (s)');ylabel('Depth')
-    
-  end
-  
-  
-  %%
-  
-  cosx = linspace(-pi,pi,100);
-cospamp = [0.025 0.3].*100;
+%%
+%%
+cosx = linspace(-pi,pi,100);
+cospamp = [0.05 0.5];
 
 
 figure
-for dd = 1:6
+for ll = 1:length(LAYERS)
 for ww = 1:2
-    subplot(6,4,(dd-1)*4+ww)
+    subplot(6,5,(ll-1)*5+ww)
         for pp = 1:2
-        imagesc( OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
-            PSS.freqs,...
-            OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean)
+        imagesc( PSSdist.(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Xbins+2*pi*(pp-1),...
+            PSSdist.(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Ybins,...
+            PSSdist.(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).pYX')
         hold on; axis xy; box off
-        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'w')
+        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-3.1,'w')
         end   
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([0 5e4])
         xlim([-pi 3*pi])
-        if dd == 6
-        xlabel('Pupil Phase');
-        end
-        if ww == 1
-            ylabel({LAYERS{dd},'Freq'})
-        end
-        if dd == 1
-        title((WHNWH{ww}))
-        end
-
+        xlabel('Pupil Phase');ylabel({WHNWH{ww},'PSS'})
+    crameri bilbao
         
         
-    subplot(6,4,(dd-1)*4+ww+2)
-        imagesc( OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}).varbins,...
-            PSS.freqs,...
-            OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean)
+    subplot(6,5,(ll-1)*5+ww+2)
+        imagesc( PSSdist.(LAYERS{ll}).pup.(WHNWH{ww}).Xbins,...
+            PSSdist.(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Ybins,...
+            PSSdist.(LAYERS{ll}).pup.(WHNWH{ww}).pYX')
         hold on; axis xy; box off
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([0 5e4])
-        if dd == 6
-        xlabel('Pupil Size');
-        end
-        if ww == 1
-            ylabel('Freq')
-        end
-        if dd == 1
-        title((WHNWH{ww}))
-        end
+        xlabel('Pupil Size');ylabel('PSS')
+   crameri bilbao
         
-       
         
+    subplot(6,5,(ll-1)*5+5)
+        imagesc( PSSdist.(LAYERS{ll}).EMG.Xbins,...
+            PSSdist.(LAYERS{ll}).EMG.Ybins,...
+            PSSdist.(LAYERS{ll}).EMG.pYX')
+        hold on; axis xy; box off
+        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        xlabel('EMG');ylabel('PSS')
+        
+    crameri bilbao
 end
 end
-
-NiceSave('DepthOSCandPup',figfolder,baseName)
-
 %%
-
-figure
-for dd = 1:6
-for oo = 1:2
-
-subplot(6,4,(dd-1)*4+oo)
-        imagesc( OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all.varbins,...
-            OSCdepth.freqs,...
-            OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean)
-        hold on; axis xy; box off
-        plot([0 0],[0 max(PSS.freqs)],'w')
-        clim([0 5e4])
-        if dd == 6
-        xlabel(['t - ',(ONOFF{oo})])
-        end
-        if oo == 1
-            ylabel({LAYERS{dd},'Freq'})
-        end
-        if dd == 1
-        title((ONOFF{oo}))
-        end
-end
- 
-subplot(6,4,(dd-1)*4+4)
-        imagesc( OSCdepth.(LAYERS{dd}).EMG.varbins,...
-            OSCdepth.freqs,...
-            OSCdepth.(LAYERS{dd}).EMG.mean)
-        hold on; axis xy; box off
-        plot(OSCdepth.(LAYERS{dd}).EMG.varbins,OSCdepth.(LAYERS{dd}).EMG.vardist*1000,'w')
-        plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(PSS.freqs)],'k--')
-        clim([0 5e4])
-        ylabel('Freq');
-                if dd == 6
-        xlabel('EMG')
-        end
-        
-end
-NiceSave('DepthOSCandWhisk',figfolder,baseName)
+% 
+% %% Mean depth osci by pupil size, phase and whisking
+% %prepare for LFPspec....
+% OSCdepth.freqs = PSS.freqs;
+% for dd = 1:length(LAYERS)
+% for ww = 1:2
+% [ ~,OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( PSS.oscLayer(PSS.(WHNWH{ww}),:,dd),...
+%     log10(PSS.pup(PSS.(WHNWH{ww}),:)),'specparms','input',...
+%     'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25]);
+% 
+%     for pp= 1:2
+%     [ ~,OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}) ] = bz_LFPSpecToExternalVar(...
+%         PSS.oscLayer(PSS.(WHNWH{ww})&PSS.(HILO{pp}),:,dd),...
+%         PSS.pupphase(PSS.(WHNWH{ww})&PSS.(HILO{pp})),'specparms','input',...
+%         'figparms',[],'numvarbins',20,'varlim',[-pi pi]);
+% 
+%     end
+% end
+% 
+% for oo = 1:2
+%     for ll = 1:2
+%         [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}) ] = bz_LFPSpecToExternalVar(...
+%             PSS.oscLayer(PSS.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
+%             PSS.whtime.(ONOFF{oo})(PSS.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
+%             'figparms',[],'numvarbins',40,'varlim',[-window window]);
+%     end
+%     
+%     [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
+%         PSS.oscLayer(:,:,dd),...
+%         PSS.whtime.(ONOFF{oo}),'specparms','input',...
+%         'figparms',[],'numvarbins',40,'varlim',[-window window]);
+% end
+% 
+%     
+% [ ~,OSCdepth.(LAYERS{dd}).EMG ] = bz_LFPSpecToExternalVar( PSS.oscLayer(:,:,dd),...
+%     log10(PSS.EMG),'specparms','input',...
+%     'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9]);
+% end
+% 
+%   %%
+%   xwinsize = 30;
+% xwin = bz_RandomWindowInIntervals(PSS.timestamps([1 end]),xwinsize);
+% figure
+%   for cc = 1:6
+% 
+% subplot(6,1,cc)
+%     imagesc(PSS.timestamps,PSS.freqs,(PSS.oscLayer(:,:,cc))')
+%     hold on
+%     %plot(PSS.timestamps,PSS.depthinterp(:,cc)')
+% 
+%     plot(pupildilation.timestamps,bz_NormToRange(pupildilation.data,[-1 -0.5]),'w','linewidth',2)
+%     plot(EMGwhisk.timestamps,bz_NormToRange(EMGwhisk.EMG,[-1.3 -0.8]),'k')
+%     xlim(xwin)
+%     axis xy
+%     %ylim([-1.1 0])
+%     %ColorbarWithAxis([-500 800000],'Osci')
+%     xlabel('t (s)');ylabel('Depth')
+%     
+%   end
+%   
+%   
+%   %%
+%   
+%   cosx = linspace(-pi,pi,100);
+% cospamp = [0.025 0.3].*100;
+% 
+% 
+% figure
+% for dd = 1:6
+% for ww = 1:2
+%     subplot(6,4,(dd-1)*4+ww)
+%         for pp = 1:2
+%         imagesc( OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
+%             PSS.freqs,...
+%             OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean)
+%         hold on; axis xy; box off
+%         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'w')
+%         end   
+%         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+%         clim([0 5e4])
+%         xlim([-pi 3*pi])
+%         if dd == 6
+%         xlabel('Pupil Phase');
+%         end
+%         if ww == 1
+%             ylabel({LAYERS{dd},'Freq'})
+%         end
+%         if dd == 1
+%         title((WHNWH{ww}))
+%         end
+% 
+%         
+%         
+%     subplot(6,4,(dd-1)*4+ww+2)
+%         imagesc( OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}).varbins,...
+%             PSS.freqs,...
+%             OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean)
+%         hold on; axis xy; box off
+%         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+%         clim([0 5e4])
+%         if dd == 6
+%         xlabel('Pupil Size');
+%         end
+%         if ww == 1
+%             ylabel('Freq')
+%         end
+%         if dd == 1
+%         title((WHNWH{ww}))
+%         end
+%         
+%        
+%         
+% end
+% end
+% 
+% NiceSave('DepthOSCandPup',figfolder,baseName)
+% 
+% %%
+% 
+% figure
+% for dd = 1:6
+% for oo = 1:2
+% 
+% subplot(6,4,(dd-1)*4+oo)
+%         imagesc( OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all.varbins,...
+%             OSCdepth.freqs,...
+%             OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean)
+%         hold on; axis xy; box off
+%         plot([0 0],[0 max(PSS.freqs)],'w')
+%         clim([0 5e4])
+%         if dd == 6
+%         xlabel(['t - ',(ONOFF{oo})])
+%         end
+%         if oo == 1
+%             ylabel({LAYERS{dd},'Freq'})
+%         end
+%         if dd == 1
+%         title((ONOFF{oo}))
+%         end
+% end
+%  
+% subplot(6,4,(dd-1)*4+4)
+%         imagesc( OSCdepth.(LAYERS{dd}).EMG.varbins,...
+%             OSCdepth.freqs,...
+%             OSCdepth.(LAYERS{dd}).EMG.mean)
+%         hold on; axis xy; box off
+%         plot(OSCdepth.(LAYERS{dd}).EMG.varbins,OSCdepth.(LAYERS{dd}).EMG.vardist*1000,'w')
+%         plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(PSS.freqs)],'k--')
+%         clim([0 5e4])
+%         ylabel('Freq');
+%                 if dd == 6
+%         xlabel('EMG')
+%         end
+%         
+% end
+% NiceSave('DepthOSCandWhisk',figfolder,baseName)

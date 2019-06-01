@@ -68,17 +68,17 @@ CTXdepth = -depthinfo.ndepth(inCTX);
 
 
 %% Load only the cortex channels in the spontaneous time window
-downsamplefactor = 2;
-lfp = bz_GetLFP(CTXchans,...
-    'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
-    'intervals',sponttimes);
-lfp.chanlayers = depthinfo.layer(inCTX);
+% downsamplefactor = 2;
+% lfp = bz_GetLFP(CTXchans,...
+%     'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
+%     'intervals',sponttimes);
+% lfp.chanlayers = depthinfo.layer(inCTX);
 %% Calculate Spectrogram on all channels
 clear spec
 % %dt = 0.1;
 % spec.winsize = 1;
  spec.frange = [0.5 312]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
- spec.nfreqs = 200;
+ spec.nfreqs = 100;
 % 
 % % noverlap = spec.winsize-dt;
 % % spec.freqs = logspace(log10(spec.frange(1)),log10(spec.frange(2)),spec.nfreqs);
@@ -94,19 +94,19 @@ for cc =1:length(spec.channels)
 %     spec.data(:,:,cc) = log10(abs(temp))';
 %     spec.timestamps = spec.timestamps';
 
-    %Wavelets
-    [wavespec] = bz_WaveSpec(lfp,'frange',spec.frange,'nfreqs',spec.nfreqs,...
-        'chanID',lfp.channels(cc),'ncyc',12); 
-    spec.data(:,:,cc) = log10(abs(downsample(wavespec.data,5)));
-    spec.timestamps = downsample(wavespec.timestamps,5);
-    spec.freqs = wavespec.freqs; 
+    %Wavelets - recalculate
+%     [wavespec] = bz_WaveSpec(lfp,'frange',spec.frange,'nfreqs',spec.nfreqs,...
+%         'chanID',lfp.channels(cc),'ncyc',12); 
+%     spec.data(:,:,cc) = log10(abs(downsample(wavespec.data,5)));
+%     spec.timestamps = downsample(wavespec.timestamps,5);
+%     spec.freqs = wavespec.freqs; 
 
     %Loaded Wavelets
-%     load(fullfile(basePath,'WaveSpec_Downsampled',[baseName,'.',num2str(spec.channels(cc)),'.WaveSpec.lfp.mat']));
-%     inspont = InIntervals(wavespec.timestamps,sponttimes);
-%     spec.data(:,:,cc) = log10(abs(wavespec.data(inspont,:)));
-%     spec.timestamps = wavespec.timestamps(inspont,:);
-%     spec.freqs = wavespec.freqs; 
+    load(fullfile(basePath,'WaveSpec_Downsampled',[baseName,'.',num2str(spec.channels(cc)),'.WaveSpec.lfp.mat']));
+    inspont = InIntervals(wavespec.timestamps,sponttimes);
+    spec.data(:,:,cc) = log10(abs(wavespec.data(inspont,:)));
+    spec.timestamps = wavespec.timestamps(inspont,:);
+    spec.freqs = wavespec.freqs; 
 
     clear wavespec
 end
