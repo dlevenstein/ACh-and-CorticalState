@@ -79,7 +79,7 @@ LAYERS = depthinfo.lnames;
 
 for ll = 1:length(LAYERS)
     PSS.Lchans.(LAYERS{ll}) = strcmp(LAYERS{ll},PSS.chanlayers);
-    PSS.oscLayer(:,:,ll) = squeeze(mean(PSS.osci(:,layerchans,:),2));
+    PSS.oscLayer(:,:,ll) = squeeze(mean(PSS.osci(:,PSS.Lchans.(LAYERS{ll}),:),2));
 end
 
 % Interpolate PSS to normalized depth
