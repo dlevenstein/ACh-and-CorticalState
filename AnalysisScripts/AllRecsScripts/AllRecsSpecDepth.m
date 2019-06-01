@@ -1,5 +1,6 @@
 analysisfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSpecbyDepthAnalysis';
-SpecDepthAll = GetMatResults(analysisfolder,'LFPSpecbyDepthAnalysis');
+analysisfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPWavSpecbyDepthAnalysis';
+SpecDepthAll = GetMatResults(analysisfolder,'LFPWavSpecbyDepthAnalysis');
 %genotype = {PupilWhiskAll.genotype};
 %[genotypes,~,genotypeidx] = unique(genotype);
 %%
@@ -25,12 +26,12 @@ groupnames = {'KOs','WTctr'};
 for gg = 1:6
     SPECdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'mean',true);
     OSCdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.OSCdepth(genotypeidx==gg),3,'mean',true);
-    speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
+   % speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
 end
 
 SPECdepth.AllWT = bz_CollapseStruct(SpecDepth.SPECdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
 OSCdepth.AllWT = bz_CollapseStruct(SpecDepth.OSCdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
-speccorr.AllWT = bz_CollapseStruct(SpecDepth.speccorr(strcmp(WTKOtype,'WT')),3,'mean',true);
+%speccorr.AllWT = bz_CollapseStruct(SpecDepth.speccorr(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
 
@@ -108,7 +109,8 @@ for dd = 1:6
         LogScale('y',10)
         %crameri batlow
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([3 5])
+        clim([1.75 3.75])
+       ylim([0 2.5])
         xlim([-pi 3*pi])
         if dd == 6
         xlabel('Pupil Phase');
@@ -137,7 +139,8 @@ for dd = 1:6
         hold on; axis xy; box off
         LogScale('y',10)
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([3 5])
+        clim([1.75 3.75])
+        ylim([0 2.5])
         if dd == 6
         xlabel('Pupil Size');
         end
@@ -180,6 +183,7 @@ for dd = 1:6
         clim([-0.15 0.15])
         crameri('vik','pivot',0)
         xlim([-pi 3*pi])
+        ylim([0 2.5])
         if dd == 6
         xlabel('Pupil Phase');
         end
@@ -207,6 +211,7 @@ for dd = 1:6
             OSCdepth.(genotypes{gg}).(LAYERS{dd}).pup.(WHNWH{ww}).mean)
         hold on; axis xy; box off
         LogScale('y',10)
+        ylim([0 2.5])
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
         clim([-0.15 0.15])
         crameri('vik','pivot',0)
@@ -244,8 +249,9 @@ subplot(6,4,(dd-1)*4+gi)
             SPECdepth.(genotypes{gg}).(LAYERS{dd}).(ONOFF{oo}).all.mean)
         hold on; axis xy; box off
         plot([0 0],[0 max(SPECdepth.(genotypes{gg}).freqs)],'w')
-        clim([3 5])
+        clim([1.75 3.75])
         LogScale('y',10)
+        ylim([0 2.5])
         if dd == 6
         xlabel(['t - ',(ONOFF{oo})])
         end
@@ -278,9 +284,10 @@ subplot(6,4,(dd-1)*4+gi)
             log10(SPECdepth.(genotypes{gg}).freqs),...
             SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.mean)
         hold on; axis xy; box off
-        plot(SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.varbins,SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.vardist*10,'w')
+        %plot(SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.varbins,SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.vardist*10,'w')
         %plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
-        clim([3 5])
+        clim([1.75 3.75])
+        ylim([0 2.5])
         if gi == 1
             ylabel({LAYERS{dd},'Freq'})
         end
