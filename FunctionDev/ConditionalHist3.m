@@ -1,5 +1,5 @@
 function [ meanZ,N,Xbins,Ybins ] = ConditionalHist3( X,Y,Z,varargin )
-%[ jointXYZ ] = ConditionalHist3( X,Y,Z ) for a set of observations [X,Y,Z] this
+%[ meanZ,N,Xbins,Ybins ] = ConditionalHist3( X,Y,Z ) for a set of observations [X,Y,Z] this
 %function calculates the statistics of Z given X and Y.
 %%
 p = inputParser;
