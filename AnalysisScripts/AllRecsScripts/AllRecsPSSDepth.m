@@ -37,10 +37,10 @@ PSSdist.AllWT = bz_CollapseStruct(SlopeDepth.PSSdist(strcmp(WTKOtype,'WT')),3,'m
 WHNWH = {'Wh','NWh'};
 HILO = {'lopup','hipup'};
 LAYERS = {'L1','L23','L4','L5a','L5b6','WM'};
-depthinfo.boundaries = [0 0.1 0.35 0.5 0.6 0.9 1];
+depthinfo.boundaries = [0 0.1 0.35 0.5 1];
 %%
 cosx = linspace(-pi,pi,100);
-cospamp = [0.025 0.3];
+cospamp = [0.025 0.225];
 colorrange = [-2.4 -1.2];
 
 for ff = 1:2
@@ -49,13 +49,17 @@ for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
 for ww = 1:2
     subplot(5,4,(ww-1)*4+gi)
+    
         for pp = 1:2
         imagesc( PSSdepth.(genotypes{gg}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
             PSSdepth.(genotypes{gg}).depth,...
             PSSdepth.(genotypes{gg}).(HILO{pp}).(WHNWH{ww}).mean_interp)
         hold on; axis xy; box off
+        plot([-pi 3*pi],-depthinfo.boundaries'*[1 1],'w')
         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1,'k')
         end   
+        
+
         ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
         %colorbar
@@ -79,7 +83,8 @@ for ww = 1:2
             PSSdepth.(genotypes{gg}).pup.(WHNWH{ww}).mean_interp)
         hold on; axis xy; box off
         ColorbarWithAxis(colorrange,'Mean PSS')
-        clim(colorrange)
+        %clim(colorrange)
+        plot([-pi 3*pi],-depthinfo.boundaries'*[1 1],'w')
         if ww == 2
             xlabel('Pupil Size');
         end
@@ -94,6 +99,7 @@ subplot(5,4,gi+16)
             PSSdepth.(genotypes{gg}).depth,...
             PSSdepth.(genotypes{gg}).WhOn.all.mean_interp)
         hold on; axis xy; box off
+        plot(PSSdepth.(genotypes{gg}).WhOn.all.varbins([1 end]),-depthinfo.boundaries'*[1 1],'w')
         plot([0 0],[-1 0],'w')
         ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
@@ -102,7 +108,7 @@ subplot(5,4,gi+16)
 
 
 end
-NiceSave('DepthPSSandBeh',analysisfolder,groupnames{ff},'figtype','epsc')
+NiceSave('DepthPSSandBeh',analysisfolder,groupnames{ff},'figtype','pdf')
 end
 
 %%
@@ -113,6 +119,10 @@ for gi=1:length(groups{ff})
     subplot(4,4,gi)
     imagesc(PSScomponents.(genotypes{gg}).depth,PSScomponents.(genotypes{gg}).depth,...
         PSScomponents.(genotypes{gg}).corr)
+    hold on
+    plot(PSScomponents.(genotypes{gg}).depth([1 end]),-depthinfo.boundaries'*[1 1],'w')
+    plot(-depthinfo.boundaries'*[1 1],PSScomponents.(genotypes{gg}).depth([1 end]),'w')
+
     colorbar
     clim([0.6 1])
     axis xy
@@ -136,7 +146,7 @@ subplot(3,4,4+gi)
     ylim([-0.25 0.4])
 end
 
-NiceSave('PSSDepthComponents',analysisfolder,groupnames{ff},'figtype','epsc')
+NiceSave('PSSDepthComponents',analysisfolder,groupnames{ff},'figtype','pdf')
 end
 
 
@@ -161,7 +171,8 @@ for ll = 1:length(LAYERS)
             PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Ybins,...
             PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).pYX')
         hold on; axis xy; box off
-        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-3.1,'w')
+
+        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-3,'k')
         end   
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
         xlim([-pi 3*pi])
@@ -180,7 +191,7 @@ for ll = 1:length(LAYERS)
 end
 end
 
-NiceSave(['PSSDistPupCycle_',WHNWH{ww}],analysisfolder,groupnames{ff},'figtype','epsc')
+NiceSave(['PSSDistPupCycle_',WHNWH{ww}],analysisfolder,groupnames{ff},'figtype','pdf')
 
     end
 end
@@ -213,7 +224,7 @@ for ll = 1:length(LAYERS)
 end
 end
 
-NiceSave(['PSSDistPupSize_',WHNWH{ww}],analysisfolder,groupnames{ff},'figtype','epsc')
+NiceSave(['PSSDistPupSize_',WHNWH{ww}],analysisfolder,groupnames{ff},'figtype','pdf')
 
     end
 end
@@ -248,7 +259,7 @@ end
 
 
 end
-NiceSave('PSSDistEMG',analysisfolder,groupnames{ff},'figtype','epsc')
+NiceSave('PSSDistEMG',analysisfolder,groupnames{ff},'figtype','pdf')
 
 %NiceSave('LayerPSSandBehavior',analysisfolder,groupnames{ff})
 end
