@@ -60,7 +60,7 @@ for ww = 1:2
         end   
         
 
-        ColorbarWithAxis(colorrange,'Mean PSS')
+        %ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
         %colorbar
         xlim([-pi 3*pi])
@@ -82,8 +82,8 @@ for ww = 1:2
              PSSdepth.(genotypes{gg}).depth,...
             PSSdepth.(genotypes{gg}).pup.(WHNWH{ww}).mean_interp)
         hold on; axis xy; box off
-        ColorbarWithAxis(colorrange,'Mean PSS')
-        %clim(colorrange)
+        %ColorbarWithAxis(colorrange,'Mean PSS')
+        clim(colorrange)
         plot([-pi 3*pi],-depthinfo.boundaries'*[1 1],'w')
         if ww == 2
             xlabel('Pupil Size');
@@ -101,7 +101,7 @@ subplot(5,4,gi+16)
         hold on; axis xy; box off
         plot(PSSdepth.(genotypes{gg}).WhOn.all.varbins([1 end]),-depthinfo.boundaries'*[1 1],'w')
         plot([0 0],[-1 0],'w')
-        ColorbarWithAxis(colorrange,'Mean PSS')
+        %ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
         xlabel('t (s - relative to WhOn');ylabel('Depth')
 
@@ -243,7 +243,9 @@ for ll = 1:length(LAYERS)
             PSSdist.(genotypes{gg}).(LAYERS{ll}).EMG.pYX')
         hold on; axis xy; box off
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        colorbar
+        %colorbar
+        xlim([-2 1])
+        LogScale('x',10)
         if ll == 6
         xlabel('EMG');
         end
