@@ -126,7 +126,34 @@ for ll = 1:length(LAYERS)
     spec.Layer(:,:,ll) = NormToInt(spec.Layer(:,:,ll),'median');
 end
 
+%% Get PSS by layer
+load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
 
+[~,~,PSS.CTXchans] = intersect(CTXchans,PSpecSlope.Shortwin.channels,'stable');
+PSS.data = PSpecSlope.Shortwin.PSS(:,PSS.CTXchans);
+PSS.timestamps = PSpecSlope.Shortwin.timestamps;
+PSS.samplingRate = 1/mean(diff(PSS.timestamps));
+PSS.winsize = PSpecSlope.Shortwin.movingwin(1);
+PSS.depth = CTXdepth;
+
+PSS.osci = PSpecSlope.Shortwin.OSCI(:,:,PSS.CTXchans);
+PSS.osci = shiftdim(PSS.osci,1);
+PSS.freqs = PSpecSlope.Shortwin.freqs;
+PSS.chanlayers = depthinfo.layer(inCTX);
+
+inspont = InIntervals(PSS.timestamps,sponttimes);
+PSS.timestamps = PSS.timestamps(inspont);
+PSS.data = PSS.data(inspont,:);
+
+for ll = 1:length(LAYERS)
+    PSS.Lchans.(LAYERS{ll}) = strcmp(LAYERS{ll},PSS.chanlayers);
+    PSS.Layer(:,ll) = (mean(PSS.data(:,PSS.Lchans.(LAYERS{ll})),2));
+    
+    %PSS at spec times
+    spec.LayerPSS(:,ll) = interp1(PSS.timestamps, PSS.Layer(:,ll),spec.timestamps,'nearest');
+end
+
+clear PSpecSlope
 
 %% Align Specgram by behavior
 maxtimejump = 1; %s
@@ -151,6 +178,7 @@ spec.lopup = interp1(pupilcycle.timestamps,single(~pupilcycle.highpup),spec.time
 spec.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,spec.timestamps,'nearest');
 spec.pup = interp1(pupildilation.timestamps,pupildilation.data,spec.timestamps,'nearest');
 spec.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,spec.timestamps,'nearest');
+
 
 %% Whisk phase and duration
 
@@ -252,7 +280,7 @@ for dd = 1:length(LAYERS)
 for ww = 1:2
 [ ~,SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( spec.Layer(spec.(WHNWH{ww}),:,dd),...
     log10(spec.pup(spec.(WHNWH{ww}),:)),'specparms','input',...
-    'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25]);
+    'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25],'minX',500);
 %     [~,SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean_osc,SPECdepth.oscfreqs] = ...
 %         WaveIRASA(SPECdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean','logamp',true,'freqs',spec.freqs);
 
@@ -261,7 +289,7 @@ for ww = 1:2
     [ ~,SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}) ] = bz_LFPSpecToExternalVar(...
         spec.Layer(spec.(WHNWH{ww})&spec.(HILO{pp}),:,dd),...
         spec.pupphase(spec.(WHNWH{ww})&spec.(HILO{pp})),'specparms','input',...
-        'figparms',[],'numvarbins',25,'varlim',[-pi pi]);
+        'figparms',[],'numvarbins',25,'varlim',[-pi pi],'minX',500);
 %     [~,SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean_osc,SPECdepth.oscfreqs] = ...
 %         WaveIRASA(SPECdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean','logamp',true,'freqs',spec.freqs);
 
@@ -273,7 +301,7 @@ for oo = 1:2
         [ ~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}) ] = bz_LFPSpecToExternalVar(...
             spec.Layer(spec.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
             spec.whtime.(ONOFF{oo})(spec.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
-            'figparms',[],'numvarbins',80,'varlim',[-window window]);
+            'figparms',[],'numvarbins',80,'varlim',[-window window],'minX',500);
 %         [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean_osc,SPECdepth.oscfreqs] = ...
 %             WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}).mean','logamp',true,'freqs',spec.freqs);
     end
@@ -281,7 +309,7 @@ for oo = 1:2
     [ ~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
         spec.Layer(:,:,dd),...
         spec.whtime.(ONOFF{oo}),'specparms','input',...
-        'figparms',[],'numvarbins',400,'varlim',[-window window]);
+        'figparms',[],'numvarbins',400,'varlim',[-window window],'minX',500);
 %     [~,SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean_osc,SPECdepth.oscfreqs] = ...
 %         WaveIRASA(SPECdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean','logamp',true,'freqs',spec.freqs);
 end
@@ -289,9 +317,13 @@ end
     
 [ ~,SPECdepth.(LAYERS{dd}).EMG ] = bz_LFPSpecToExternalVar( spec.Layer(:,:,dd),...
     log10(spec.EMG),'specparms','input',...
-    'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9]);
+    'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9],'minX',500);
 % [~,SPECdepth.(LAYERS{dd}).EMG.mean_osc,SPECdepth.oscfreqs] = ...
 %     WaveIRASA(SPECdepth.(LAYERS{dd}).EMG.mean','logamp',true,'freqs',spec.freqs);
+
+[ ~,SPECdepth.(LAYERS{dd}).PSS ] = bz_LFPSpecToExternalVar( spec.Layer(:,:,dd),...
+    spec.LayerPSS(:,dd),'specparms','input',...
+    'figparms',[],'numvarbins',40,'varlim',[-3 -0.5],'minX',500);
 end
 
 
@@ -515,13 +547,13 @@ for dd = 1:length(LAYERS)
 for ww = 1:2
 [ ~,OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( spec.osci(spec.(WHNWH{ww}),:,dd),...
     log10(spec.pup(spec.(WHNWH{ww}),:)),'specparms','input',...
-    'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25]);
+    'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25],'minX',500);
 
     for pp= 1:2
     [ ~,OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}) ] = bz_LFPSpecToExternalVar(...
         spec.osci(spec.(WHNWH{ww})&spec.(HILO{pp}),:,dd),...
         spec.pupphase(spec.(WHNWH{ww})&spec.(HILO{pp})),'specparms','input',...
-        'figparms',[],'numvarbins',20,'varlim',[-pi pi]);
+        'figparms',[],'numvarbins',20,'varlim',[-pi pi],'minX',500);
 
     end
 end
@@ -531,19 +563,23 @@ for oo = 1:2
         [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}) ] = bz_LFPSpecToExternalVar(...
             spec.osci(spec.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
             spec.whtime.(ONOFF{oo})(spec.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
-            'figparms',[],'numvarbins',40,'varlim',[-window window]);
+            'figparms',[],'numvarbins',40,'varlim',[-window window],'minX',500);
     end
     
     [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
         spec.osci(:,:,dd),...
         spec.whtime.(ONOFF{oo}),'specparms','input',...
-        'figparms',[],'numvarbins',400,'varlim',[-window window]);
+        'figparms',[],'numvarbins',400,'varlim',[-window window],'minX',500);
 end
 
     
 [ ~,OSCdepth.(LAYERS{dd}).EMG ] = bz_LFPSpecToExternalVar( spec.osci(:,:,dd),...
     log10(spec.EMG),'specparms','input',...
-    'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9]);
+    'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9],'minX',500);
+
+[ ~,OSCdepth.(LAYERS{dd}).PSS ] = bz_LFPSpecToExternalVar( spec.osci(:,:,dd),...
+    spec.LayerPSS(:,dd),'specparms','input',...
+    'figparms',[],'numvarbins',40,'varlim',[-3 -0.5],'minX',500);
 end
 
   %%
@@ -649,5 +685,47 @@ end
 NiceSave('DepthOSCandWhisk',figfolder,baseName)
 
 
-
-
+%%
+%%
+speclim = [0.8 1.2];
+figure
+for dd = 1:6
+   subplot(6,3,(dd-1)*3+1)
+        a = imagesc( SPECdepth.(LAYERS{dd}).PSS.varbins,...
+            log10(SPECdepth.freqs),...
+            SPECdepth.(LAYERS{dd}).PSS.mean);
+        alpha(a,single(~isnan(SPECdepth.(LAYERS{dd}).PSS.mean)))
+        hold on; axis xy; box off
+        plot(SPECdepth.(LAYERS{dd}).PSS.varbins,SPECdepth.(LAYERS{dd}).PSS.vardist*10,'k','linewidth',2)
+        %plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
+        crameri vik
+        ColorbarWithAxis(speclim,'Power (med^-^1)')
+        ylim([0 2.5])
+        ylabel('Freq');
+        title('Spec')
+        LogScale('y',10)
+                if dd == 6
+        xlabel('PSS')
+                end 
+                ylabel({LAYERS{dd},'f (Hz)'})
+        
+                
+   subplot(6,3,(dd-1)*3+2)
+        a = imagesc( OSCdepth.(LAYERS{dd}).PSS.varbins,...
+            log10(OSCdepth.freqs),...
+            OSCdepth.(LAYERS{dd}).PSS.mean);
+        alpha(a,single(~isnan(OSCdepth.(LAYERS{dd}).PSS.mean)))
+        hold on; axis xy; box off
+         plot(SPECdepth.(LAYERS{dd}).PSS.varbins,SPECdepth.(LAYERS{dd}).PSS.vardist*10,'k','linewidth',2)
+        %plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
+        ColorbarWithAxis([-0.2 0.2],'PSS-subtract')
+        title('OSC')
+        crameri vik
+        ylim([0 2.5])
+        ylabel('Freq');
+        LogScale('y',10)
+                if dd == 6
+        xlabel('PSS')
+        end 
+end
+NiceSave('DepthSPECandPSS',figfolder,baseName)
