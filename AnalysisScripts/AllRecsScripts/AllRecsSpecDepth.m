@@ -113,6 +113,8 @@ for dd = 1:6
        ylim([0 2.5])
        crameri vik
         xlim([-pi 3*pi])
+                plot(pi*[1 1],get(gca,'ylim'),'k--')
+        bz_piTickLabel('x')
         if dd == 6
         xlabel('Pupil Phase');
         end
@@ -142,6 +144,8 @@ for dd = 1:6
         ColorbarWithAxis(speclim,'Power (med^-^1)')
         %clim(speclim)
         ylim([0 2.5])
+                plot(pi*[1 1],get(gca,'ylim'),'k--')
+        bz_piTickLabel('x')
         crameri vik
         if dd == 6
         xlabel('Pupil Size');
@@ -187,6 +191,8 @@ for dd = 1:6
         crameri('vik','pivot',0)
         xlim([-pi 3*pi])
         ylim([0 2.5])
+                plot(pi*[1 1],get(gca,'ylim'),'k--')
+        bz_piTickLabel('x')
         if dd == 6
         xlabel('Pupil Phase');
         end
@@ -218,6 +224,8 @@ for dd = 1:6
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
         clim([-0.15 0.15])
         crameri('vik','pivot',0)
+                plot(pi*[1 1],get(gca,'ylim'),'k--')
+        bz_piTickLabel('x')
         if dd == 6
         xlabel('Pupil Size');
         end
