@@ -40,7 +40,7 @@ HILO = {'lopup','hipup'};
 pupilcycle.pupthresh = -0.8;
 %%
 cosx = linspace(-pi,pi,100);
-cospamp = [0.08 0.8];
+cospamp = [0.08 0.6];
 
 for ff = 1:2
 figure
@@ -56,11 +56,11 @@ alpha(a,double(~isnan(pupilphaseEMG.(genotypes{gg}).meanZ')))
 %imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
 crameri lapaz
 plot([-pi 3*pi],pupilcycle.pupthresh.*[1 1],'w--')
-plot(cosx,(cos(cosx)+1).*cospamp(2)-2,'k')
+plot(cosx,(cos(cosx)+1).*cospamp(2)-2,'w')
 axis xy
 box off
 %xlim([-pi 3*pi])
-ylim([-2 0.5])
+ylim([-2 0.1])
 ColorbarWithAxis([-0.7 0.7],'Mean EMG')
 LogScale('c',10)
 LogScale('y',10)
@@ -74,11 +74,11 @@ subplot(4,4,4+gi)
             EMGdist.(genotypes{gg}).(HILO{pp}).Ybins,...
             EMGdist.(genotypes{gg}).(HILO{pp}).pYX')
         hold on; axis xy; box off
-        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-2,'k')
+        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1.75,'k')
         end   
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        colorbar
-        
+        %colorbar
+        LogScale('y',10)
         xlim([-pi 3*pi])
         xlabel('Pupil Phase');ylabel('EMG')
         crameri bilbao
@@ -93,10 +93,10 @@ subplot(4,4,8+gi)
             EMGdur.(genotypes{gg}).(HILO{pp}).pYX')
         hold on; axis xy; box off
         %plot(EMGdur.(genotypes{gg}).(HILO{pp}).Xbins+2*pi*(pp-1),EMGdur.(genotypes{gg}).(HILO{pp}).pWhisk,'k')
-        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1.2,'k')
+        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1,'k')
         end   
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        colorbar
+        %colorbar
         xlim([-pi 3*pi])
         LogScale('y',10)
         xlabel('Pupil Phase');ylabel('Duration (s)')
@@ -112,7 +112,7 @@ subplot(4,4,12+gi)
         %plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'k')
         end   
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        colorbar
+        %colorbar
         xlim([-pi 3*pi])
         ylim([0 0.6])
         xlabel('Pupil Phase');ylabel('P[Whisk] (Hz)')
@@ -121,35 +121,59 @@ subplot(4,4,12+gi)
 %subplot(12,4,4)
 
 end
-       % NiceSave('EMGPupBehavior',figfolder,baseName)
+       NiceSave('EMGbyPupilPhase',analysisfolder,groupnames{ff},'figtype','pdf')
+
 end
 
 
 %%
 
+for ff = 1:2
 figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
 
-subplot(6,4,8+gi)
+
+subplot(4,4,gi)
 
         imagesc( EMGdist.(genotypes{gg}).pup.Xbins,...
             EMGdist.(genotypes{gg}).pup.Ybins,...
             EMGdist.(genotypes{gg}).pup.pYX')
         hold on; axis xy; box off
-        colorbar
+        %colorbar
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
         xlabel('Pupil Size');ylabel('EMG')
    crameri bilbao
    
-subplot(6,4,16+gi)
+subplot(4,4,4+gi)
 
         imagesc( EMGdur.(genotypes{gg}).pup.Xbins,...
             EMGdur.(genotypes{gg}).pup.Ybins,...
             EMGdur.(genotypes{gg}).pup.pYX')
         hold on; axis xy; box off
-        plot(EMGdur.(genotypes{gg}).pup.Xbins,EMGdur.(genotypes{gg}).pup.pWhisk,'k')
-        colorbar
+        %plot(EMGdur.(genotypes{gg}).pup.Xbins,EMGdur.(genotypes{gg}).pup.pWhisk,'k')
+        %colorbar
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
         xlabel('Pupil Size');ylabel('Dur')
         LogScale('y',10)
    crameri bilbao
+
+subplot(4,4,8+gi)
+
+        plot(EMGdur.(genotypes{gg}).pup.Xbins,EMGdur.(genotypes{gg}).pup.pWhisk,'k')
+        errorshade(EMGdur.(genotypes{gg}).pup.Xbins,EMGdur.(genotypes{gg}).pup.pWhisk,...
+            EMGdur_std.(genotypes{gg}).pup.pWhisk,EMGdur_std.(genotypes{gg}).pup.pWhisk,'k','scalar')
+        %plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'k') 
+        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        %colorbar
+        %xlim([-pi 3*pi])
+        xlim(EMGdur.(genotypes{gg}).pup.Xbins([1 end]))
+        ylim([0 0.6])
+        xlabel('Pupil Size');ylabel('P[Whisk] (Hz)')
+        %crameri bilbao  
    
+   
+end
+NiceSave('EMGbyPupilSize',analysisfolder,groupnames{ff},'figtype','pdf')
+
+end
