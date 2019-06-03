@@ -14,6 +14,11 @@ baseName = bz_BasenameFromBasepath(basePath);
 %Load Stuff
 sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
+%%
+%Restricting SPONT UP/DOWNs
+load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
+sidx = find(startsWith(MergePoints.foldernames,"Spont"));
+sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
 
 %% Loading behavior...
 % Pupil diameter
@@ -70,18 +75,14 @@ for ee = 1:length(exdepths)
     exChanIDX(ee) = find(distfromdepth == min(distfromdepth),1);
 end
 
-exChan = depthinfo.channels(exChans);
+exChan = depthinfo.channels(exChanIDX);
 
 %Get depth info for all cortical channels (for PSS)
 inCTX = find(~isnan(depthinfo.ndepth));
 CTXchans = depthinfo.channels(inCTX);
 CTXdepth = -depthinfo.ndepth(inCTX);
 
-%%
-%Restricting SPONT UP/DOWNs
-load(fullfile(basePath,[baseName,'.MergePoints.events.mat']),'MergePoints');
-sidx = find(startsWith(MergePoints.foldernames,"Spont"));
-sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end),2)];
+
 
 %% Load only the cortex channels in the spontaneous time window
 downsamplefactor = 5;
@@ -89,7 +90,7 @@ lfp = bz_GetLFP(exChan,...
     'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
     'intervals',sponttimes);
 lfp.chanlayers = depthinfo.layer(exChanIDX);
-lfp.chandepths = -depthinfo.ndepth(exChans);
+lfp.chandepths = -depthinfo.ndepth(exChanIDX);
 %% Calculate Spectrogram on all channels
 clear spec
 dt = 0.1;
