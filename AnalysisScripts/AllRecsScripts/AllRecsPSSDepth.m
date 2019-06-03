@@ -60,11 +60,12 @@ for ww = 1:2
         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1,'k')
         end   
         
-
+        
         %ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
         %colorbar
         xlim([-pi 3*pi])
+        plot(pi*[1 1],get(gca,'ylim'),'k--')
         bz_piTickLabel('x')
         
         if ww == 2
@@ -182,7 +183,8 @@ for ll = 1:length(LAYERS)
         end   
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
         xlim([-pi 3*pi])
-        
+        plot(pi*[1 1],get(gca,'ylim'),'k--')
+        bz_piTickLabel('x')
         %title(genotypes{gg})
     crameri bilbao
         if ll == 6

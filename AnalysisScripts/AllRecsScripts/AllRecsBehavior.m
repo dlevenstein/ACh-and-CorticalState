@@ -64,6 +64,7 @@ ylim([-2 0.1])
 ColorbarWithAxis([-0.7 0.7],'Mean EMG')
 LogScale('c',10)
 LogScale('y',10)
+        bz_piTickLabel('x',0.5)
 title(genotypes{gg})
 xlabel('Pupil Phase');ylabel('Pupil Amplitude')
 
@@ -80,6 +81,8 @@ subplot(4,4,4+gi)
         %colorbar
         LogScale('y',10)
         xlim([-pi 3*pi])
+                plot(pi*[1 1],get(gca,'ylim'),'k--')
+        bz_piTickLabel('x')
         xlabel('Pupil Phase');ylabel('EMG')
         crameri bilbao
         
@@ -99,6 +102,8 @@ subplot(4,4,8+gi)
         %colorbar
         xlim([-pi 3*pi])
         LogScale('y',10)
+        plot(pi*[1 1],get(gca,'ylim'),'k--')
+        bz_piTickLabel('x')
         xlabel('Pupil Phase');ylabel('Duration (s)')
         crameri bilbao
         
@@ -115,6 +120,8 @@ subplot(4,4,12+gi)
         %colorbar
         xlim([-pi 3*pi])
         ylim([0 0.6])
+                plot(pi*[1 1],get(gca,'ylim'),'k--')
+        bz_piTickLabel('x')
         xlabel('Pupil Phase');ylabel('P[Whisk] (Hz)')
         crameri bilbao  
    
