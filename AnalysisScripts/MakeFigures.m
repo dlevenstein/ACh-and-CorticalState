@@ -3,12 +3,12 @@ function [  ] = MakeFigures(basePath,figfolder)
 %   Detailed explanation goes here
 %% Load Header
 %Initiate Paths
-reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
+%reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
-basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
+%basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
 %basePath = pwd;
-figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
+%figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
@@ -185,9 +185,10 @@ for ww =1:length(winsize)
     exwins(ww,:) = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize(ww));
 end
 
-whiskwin = [-5 5];
+whiskwin = [-4 4];
 %Long Whisk on dilation
-dilationwhisk = EMGwhisk.whisks.hipup & EMGwhisk.whisks.pupphase<0 & EMGwhisk.whisks.pupphase>-2 & EMGwhisk.whisks.dur>2;
+dilationwhisk = EMGwhisk.whisks.hipup & EMGwhisk.whisks.pupphase<-0.25 & ...
+    EMGwhisk.whisks.pupphase>-1.5 & EMGwhisk.whisks.dur>2 & EMGwhisk.whisks.pup>1.5;
 dilationwhisk = EMGwhisk.ints.Wh(dilationwhisk,1);
 exwins(ww+1,:) = randsample(dilationwhisk,1)+ whiskwin;
 %Whisk on constriction
@@ -216,9 +217,13 @@ figure
 subplot(8,1,1:2)
 plot(pupildilation.timestamps,pupildilation.data,'r','Linewidth',2)
 hold on
-plot(EMGwhisk.timestamps,EMGwhisk.EMG./50+0.05,'color',0.5.*[1 1 1])
-plot(EMGwhisk.timestamps,EMGwhisk.EMGsm./9+0.05,'b')
-ylim([0 2.5])
+plot(EMGwhisk.timestamps,EMGwhisk.EMG./50+0.25,'color',0.5.*[1 1 1])
+plot(EMGwhisk.timestamps,EMGwhisk.EMGsm./9+0.25,'k')
+ylim([0.2 2.4])
+if ww>7
+   plot(mean(timewin).*[1 1], ylim(gca),'k')
+end
+
 xlim(timewin)
 colorbar
 box off
@@ -231,6 +236,9 @@ ylim([-1 2.5])
 plot(PSS.timestamps,bz_NormToRange(PSS.data(:,exchan_PSS),[0 2.5]),'k','LineWidth',2)
 plot(lfp.timestamps(lfpinwin),bz_NormToRange(single(lfp.data(lfpinwin,exchan_spec)),[-1 -0.1]),'k','LineWidth',0.1)
 axis xy
+if ww>7
+   plot(mean(timewin).*[1 1], ylim(gca),'k')
+end
 LogScale('y',10)
         ColorbarWithAxis(speclim,'Power (med^-^1)')
        box off
@@ -250,7 +258,9 @@ ColorbarWithAxis(PSSrange,'Mean PSS')
 ylim([-1 -0.025]*depthscalefact)
     bz_ScaleBar('s')
     %crameri bamako
-    
+    if ww>7
+   plot(mean(timewin).*[1 1], ylim(gca),'k')
+end
 NiceSave(['ExampleWin',num2str(ww)],figfolder,baseName)
 
 end

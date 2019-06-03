@@ -35,7 +35,7 @@ chandist = [0:20:1275];
 %lnorm = [0 0.1 0.35 0.5 0.6 0.75 0.9 1]; %including 6a-6b division
 %lnorm = [0 0.1 0.35 0.5 0.6 0.75 1]; %proper 5b and 6 layers
 lnorm = [0 0.1 0.35 0.5 0.6 0.9 1]; %tentative given lack of 5b-6 boundary
-lnames = {'L1','L23','L4','L5a','L5b6','WM'};
+lnames = {'L1','L23','L4','L5a','L5b6','L6'};
 
 %% Loading data
 %[baseFolder,baseName] = fileparts(basePath);
