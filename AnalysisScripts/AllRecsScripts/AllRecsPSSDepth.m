@@ -45,6 +45,7 @@ colorrange = [-2.4 -1.2];
 
 for ff = 1:2
 figure
+
 for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
 for ww = 1:2
@@ -64,6 +65,7 @@ for ww = 1:2
         clim(colorrange)
         %colorbar
         xlim([-pi 3*pi])
+        bz_piTickLabel('x')
         
         if ww == 2
             xlabel('Pupil Phase');
@@ -113,6 +115,7 @@ end
 
 %%
 for ff = 1:2
+    
 figure
 for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
@@ -125,6 +128,9 @@ for gi=1:length(groups{ff})
 
     colorbar
     clim([0.6 1])
+    
+    
+    
     axis xy
     xlabel('Depth');ylabel('Depth')
     title('PSS Corr')
