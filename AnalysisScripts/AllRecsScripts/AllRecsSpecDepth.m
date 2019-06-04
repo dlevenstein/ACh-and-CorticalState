@@ -1,6 +1,6 @@
-analysisfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSpecbyDepthAnalysis';
+analysisfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPWavSpecbyDepthAnalysis';
 %analysisfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPWavSpecbyDepthAnalysis';
-SpecDepthAll = GetMatResults(analysisfolder,'LFPSpecbyDepthAnalysis');
+SpecDepthAll = GetMatResults(analysisfolder,'LFPWavSpecbyDepthAnalysis');
 %genotype = {PupilWhiskAll.genotype};
 %[genotypes,~,genotypeidx] = unique(genotype);
 %%
@@ -26,12 +26,12 @@ groupnames = {'KOs','WTctr'};
 for gg = 1:6
     SPECdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'mean',true);
     OSCdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.OSCdepth(genotypeidx==gg),3,'mean',true);
-    speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
+    %speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
 end
 
 SPECdepth.AllWT = bz_CollapseStruct(SpecDepth.SPECdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
 OSCdepth.AllWT = bz_CollapseStruct(SpecDepth.OSCdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
-speccorr.AllWT = bz_CollapseStruct(SpecDepth.speccorr(strcmp(WTKOtype,'WT')),3,'mean',true);
+%speccorr.AllWT = bz_CollapseStruct(SpecDepth.speccorr(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
 
@@ -39,12 +39,13 @@ ONOFF = {'WhOn','WhOFF'};
 WHNWH = {'Wh','NWh'};
 HILO = {'lopup','hipup'};
 LONGSHORT = {'long','short'};
-LAYERS = {'L1','L23','L4','L5a','L5b6','WM'};
+LAYERS = {'L1','L23','L4','L5a','L5b6','L6'};
 depthinfo.boundaries = [0 0.1 0.35 0.5 0.6 0.9 1];
 
 
 
 %%
+if exist('speccorr','var')
 %band = [0.5 2];
 for ff = 1:2
 figure
@@ -77,7 +78,7 @@ xlabel('f (Hz)');ylabel('Depth')
 
 end
 NiceSave('DepthFreqCorr',analysisfolder,groupnames{ff},'figtype','epsc')
-
+end
 end
 
 
@@ -317,5 +318,45 @@ end
 end
     
 NiceSave('DepthSPECandEMG',analysisfolder,groupnames{ff})
+
+end
+
+
+%%
+for ff = 1:2
+
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+    
+for dd = 1:6
+
+subplot(6,4,(dd-1)*4+gi)
+        a = imagesc( SPECdepth.(genotypes{gg}).(LAYERS{dd}).PSS.varbins,...
+            log10(SPECdepth.(genotypes{gg}).freqs),...
+            SPECdepth.(genotypes{gg}).(LAYERS{dd}).PSS.mean)
+        alpha(a,single(~isnan(SPECdepth.(genotypes{gg}).(LAYERS{dd}).PSS.mean)))
+        hold on; axis xy; box off
+        plot(SPECdepth.(genotypes{gg}).(LAYERS{dd}).PSS.varbins,SPECdepth.(genotypes{gg}).(LAYERS{dd}).PSS.vardist*10,'k','linewidth',2)
+        %plot(SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.varbins,SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.vardist*10,'w')
+        %plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
+        ColorbarWithAxis([0.8 1.2],'Power (med^-^1)')
+        crameri vik
+        ylim([0 2.5])
+        if gi == 1
+            ylabel({LAYERS{dd},'Freq'})
+        end
+        LogScale('y',10)
+                if dd == 6
+        xlabel('PSS')
+        end
+        if dd == 1
+        title(genotypes{gg})
+        end
+end
+
+end
+    
+NiceSave('DepthSPECandPSS',analysisfolder,groupnames{ff})
 
 end
