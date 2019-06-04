@@ -130,7 +130,7 @@ else
     load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
 end
 
-
+%%
 
 clear PSS
 [~,~,PSS.CTXchans] = intersect(CTXchans,PSpecSlope.Shortwin.channels,'stable');
@@ -140,8 +140,6 @@ PSS.samplingRate = 1/mean(diff(PSS.timestamps));
 PSS.winsize = PSpecSlope.Shortwin.movingwin(1);
 PSS.depth = CTXdepth;
 PSS.chan = PSpecSlope.Shortwin.channels(PSS.CTXchans);
-PSS.spec = PSpecSlope.Shortwin.SPEC(:,:,PSS.CTXchans);
-PSS.frac = PSpecSlope.Shortwin.FRAC(:,:,PSS.CTXchans);
 PSS.osci = PSpecSlope.Shortwin.OSCI(:,:,PSS.CTXchans);
 PSS.osci = shiftdim(PSS.osci,1);
 PSS.freqs = PSpecSlope.Shortwin.freqs;
@@ -298,7 +296,8 @@ end
 
 %% PSS example figure
 if strcmp(baseName,'171209_WT_EM1M3')
-    
+    PSS.spec = PSpecSlope.Shortwin.SPEC(:,:,PSS.CTXchans);
+    PSS.frac = PSpecSlope.Shortwin.FRAC(:,:,PSS.CTXchans);
 %exwins = [600 775];
 %exwins = [lfp.timestamps(1) lfp.timestamps(end)];
 %exwins = [600 666];
