@@ -3,12 +3,12 @@ function [  ] = MakeFigures(basePath,figfolder)
 %   Detailed explanation goes here
 %% Load Header
 %Initiate Paths
-reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
+%reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
-basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
+%basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
 %basePath = pwd;
-figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/MakeFigures'];
+%figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/MakeFigures'];
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
