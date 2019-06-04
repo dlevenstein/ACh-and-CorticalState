@@ -96,7 +96,7 @@ for bb = 1:length(BANDS)
     bb
     
     lfp.(BANDS{bb}) = bz_Filter(bz_DownsampleLFP( lfp, banddownsamples(bb) ),...
-        'passband',bandranges(bb,:),'filter','fir1','fast',true);
+        'passband',bandranges(bb,:),'filter','fir1','fast',false);
     lfp.(BANDS{bb}).amp = log10(lfp.(BANDS{bb}).amp);
 end
 
