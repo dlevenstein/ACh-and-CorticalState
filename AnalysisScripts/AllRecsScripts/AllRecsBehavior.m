@@ -66,7 +66,7 @@ ylim([-2 0.1])
 ColorbarWithAxis([-0.7 0.7],'Mean EMG')
 LogScale('c',10)
 LogScale('y',10)
-        bz_piTickLabel('x',0.5)
+        bz_piTickLabel('x')
 title(genotypes{gg})
 xlabel('Pupil Phase');ylabel('Pupil Amplitude')
 

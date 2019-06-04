@@ -49,7 +49,7 @@ figure
 for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
 for ww = 1:2
-    subplot(5,4,(ww-1)*4+gi)
+    subplot(4,4,(ww-1)*4+gi)
     
         for pp = 1:2
         imagesc( PSSdepth.(genotypes{gg}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
@@ -80,12 +80,12 @@ for ww = 1:2
             title(genotypes{gg})
         end
         
-    subplot(5,4,(ww-1)*4+gi+8)
+    subplot(4,4,(ww-1)*4+gi+8)
         imagesc( PSSdepth.(genotypes{gg}).pup.(WHNWH{ww}).varbins,...
              PSSdepth.(genotypes{gg}).depth,...
             PSSdepth.(genotypes{gg}).pup.(WHNWH{ww}).mean_interp)
         hold on; axis xy; box off
-        %ColorbarWithAxis(colorrange,'Mean PSS')
+       % ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
         plot([-pi 3*pi],-depthinfo.boundaries'*[1 1],'w')
         if ww == 2
@@ -97,7 +97,20 @@ for ww = 1:2
         end
 end
 
-subplot(5,4,gi+16)
+
+end
+NiceSave('DepthPSSandPup',analysisfolder,groupnames{ff},'figtype','pdf')
+end
+
+
+%%
+for ff = 1:2
+figure
+
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+
+subplot(4,4,gi)
         imagesc( PSSdepth.(genotypes{gg}).WhOn.all.varbins,...
             PSSdepth.(genotypes{gg}).depth,...
             PSSdepth.(genotypes{gg}).WhOn.all.mean_interp)
@@ -107,13 +120,24 @@ subplot(5,4,gi+16)
         %ColorbarWithAxis(colorrange,'Mean PSS')
         clim(colorrange)
         xlabel('t (s - relative to WhOn');ylabel('Depth')
+        
+        
+subplot(4,4,gi+8)
+        imagesc( PSSdepth.(genotypes{gg}).EMG.varbins,...
+            PSSdepth.(genotypes{gg}).depth,...
+            PSSdepth.(genotypes{gg}).EMG.mean_interp)
+        hold on; axis xy; box off
+        plot(PSSdepth.(genotypes{gg}).WhOn.all.varbins([1 end]),-depthinfo.boundaries'*[1 1],'w')
+        %ColorbarWithAxis(colorrange,'Mean PSS')
+        clim(colorrange)
+        xlabel('EMG');ylabel('Depth')
+        
 
 
 
 end
-NiceSave('DepthPSSandBeh',analysisfolder,groupnames{ff},'figtype','pdf')
+NiceSave('DepthPSSandWhisk',analysisfolder,groupnames{ff},'figtype','pdf')
 end
-
 %%
 for ff = 1:2
     
