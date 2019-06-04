@@ -1,6 +1,6 @@
-analysisfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPWavSpecbyDepthAnalysis';
+analysisfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPSpecbyDepthAnalysis';
 %analysisfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPWavSpecbyDepthAnalysis';
-SpecDepthAll = GetMatResults(analysisfolder,'LFPWavSpecbyDepthAnalysis');
+SpecDepthAll = GetMatResults(analysisfolder,'LFPSpecbyDepthAnalysis');
 %genotype = {PupilWhiskAll.genotype};
 %[genotypes,~,genotypeidx] = unique(genotype);
 %%
@@ -26,12 +26,12 @@ groupnames = {'KOs','WTctr'};
 for gg = 1:6
     SPECdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'mean',true);
     OSCdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.OSCdepth(genotypeidx==gg),3,'mean',true);
-    %speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
+    speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
 end
 
 SPECdepth.AllWT = bz_CollapseStruct(SpecDepth.SPECdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
 OSCdepth.AllWT = bz_CollapseStruct(SpecDepth.OSCdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
-%speccorr.AllWT = bz_CollapseStruct(SpecDepth.speccorr(strcmp(WTKOtype,'WT')),3,'mean',true);
+speccorr.AllWT = bz_CollapseStruct(SpecDepth.speccorr(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
 
@@ -45,7 +45,7 @@ depthinfo.boundaries = [0 0.1 0.35 0.5 0.6 0.9 1];
 
 
 %%
-%band = [
+%band = [0.5 2];
 for ff = 1:2
 figure
 for gi=1:length(groups{ff})
@@ -67,6 +67,7 @@ subplot(4,4,gi+4)
 imagesc(log10(speccorr.(genotypes{gg}).freqs),speccorr.(genotypes{gg}).interpdepth,speccorr.(genotypes{gg}).EMGinterp')
 hold on
 plot(log10(speccorr.(genotypes{gg}).freqs([1 end])),-depthinfo.boundaries'*[1 1],'k')
+%plot(log10([band; band]),[ylim(gca)', ylim(gca)'],'k')
 LogScale('x',10)
 axis xy
 ColorbarWithAxis([-0.4 0.3],'EMG Corr.')
