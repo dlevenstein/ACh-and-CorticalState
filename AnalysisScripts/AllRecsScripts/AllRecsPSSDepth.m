@@ -36,7 +36,7 @@ PSSdist.AllWT = bz_CollapseStruct(SlopeDepth.PSSdist(strcmp(WTKOtype,'WT')),3,'m
 
 WHNWH = {'Wh','NWh'};
 HILO = {'lopup','hipup'};
-LAYERS = {'L1','L23','L4','L5a','L5b6','WM'};
+LAYERS = {'L1','L23','L4','L5a','L5b6','L6'};
 depthinfo.boundaries = [0 0.1 0.35 0.5 1];
 %%
 cosx = linspace(-pi,pi,100);

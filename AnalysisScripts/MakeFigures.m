@@ -186,8 +186,12 @@ EMGwhisk.whisks.dur = diff(EMGwhisk.ints.Wh,[],2);
 EMGwhisk.whisks.hipup = log10(EMGwhisk.whisks.pupamp)>pupilcycle.pupthresh;
 EMGwhisk.whisks.lopup = ~EMGwhisk.whisks.hipup;
 
+%%
+LAYERS = {'L1','L23','L4','L5a','L5b6','L6'};
+depthinfo.boundaries = [0 0.1 0.35 0.5 1];
 %% Figure: long time scale (~100s)
 winsize = [20:20:140];
+winsize = reshape([winsize' winsize']',[],1);
 for ww =1:length(winsize)
     exwins(ww,:) = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize(ww));
 end
@@ -198,15 +202,18 @@ dilationwhisk = EMGwhisk.whisks.hipup & EMGwhisk.whisks.pupphase<-0.25 & ...
     EMGwhisk.whisks.pupphase>-1.5 & EMGwhisk.whisks.dur>2 & EMGwhisk.whisks.pup>1.5;
 dilationwhisk = EMGwhisk.ints.Wh(dilationwhisk,1);
 exwins(ww+1,:) = randsample(dilationwhisk,1)+ whiskwin;
+exwins(ww+2,:) = randsample(dilationwhisk,1)+ whiskwin;
 %Whisk on constriction
 constrictionwhisk = EMGwhisk.whisks.hipup & EMGwhisk.whisks.pupphase>0.25;
 constrictionwhisk = EMGwhisk.ints.Wh(constrictionwhisk,1);
-exwins(ww+2,:) = randsample(constrictionwhisk,1)+ whiskwin;
+exwins(ww+3,:) = randsample(constrictionwhisk,1)+ whiskwin;
+exwins(ww+4,:) = randsample(constrictionwhisk,1)+ whiskwin;
 
 %Whisk on tonic
 tonicwhisk = EMGwhisk.whisks.lopup & EMGwhisk.whisks.dur<1;
 tonicwhisk = EMGwhisk.ints.Wh(tonicwhisk,1);
-exwins(ww+3,:) = randsample(tonicwhisk,1)+ whiskwin;
+exwins(ww+5,:) = randsample(tonicwhisk,1)+ whiskwin;
+exwins(ww+6,:) = randsample(tonicwhisk,1)+ whiskwin;
 %%
 for ww = 1:length(exwins)
     timewin = exwins(ww,:);
@@ -220,34 +227,37 @@ speclim = [0.65 1.35]; %Med norm
 PSSrange = [-2.4 -1.2];
 %PSSrange = [-2.6 -0.8];
 
+if mod(ww,2)==1
 figure
-subplot(8,1,1:2)
+end
+subplot(8,2,[1 3]+mod(ww,2))
 plot(pupildilation.timestamps,pupildilation.data,'r','Linewidth',2)
 hold on
 plot(EMGwhisk.timestamps,EMGwhisk.EMG./50+0.25,'color',0.5.*[1 1 1])
 plot(EMGwhisk.timestamps,EMGwhisk.EMGsm./9+0.25,'k')
 ylim([0.2 2.4])
-if ww>7
+if ww>14
    plot(mean(timewin).*[1 1], ylim(gca),'k')
 end
 
 xlim(timewin)
-colorbar
+%colorbar
 box off
 bz_ScaleBar('s')
 
-subplot(8,1,3:4)
+subplot(8,2,[13 15]+mod(ww,2))
 imagesc(spec.timestamps,log10(spec.freqs),spec.data(:,:,exchan_spec)')
 hold on
 ylim([-1 2.5])
 plot(PSS.timestamps,bz_NormToRange(PSS.data(:,exchan_PSS),[0 2.5]),'k','LineWidth',2)
 plot(lfp.timestamps(lfpinwin),bz_NormToRange(single(lfp.data(lfpinwin,exchan_spec)),[-1 -0.1]),'k','LineWidth',0.1)
 axis xy
-if ww>7
+if ww>14
    plot(mean(timewin).*[1 1], ylim(gca),'k')
 end
 LogScale('y',10)
-        ColorbarWithAxis(speclim,'Power (med^-^1)')
+        %ColorbarWithAxis(speclim,'Power (med^-^1)')
+        clim(speclim)
        box off
        crameri vik
 xlim(timewin)
@@ -255,27 +265,31 @@ bz_ScaleBar('s')
 
 
 depthscalefact=0.5e5;
-if ww>7
-    lfpscalefact = 1.75;
+if ww>14
+    lfpscalefact = 1.5;
 else
     lfpscalefact = 1;
 end
-subplot(2,1,2)
+subplot(4,2,[3 5]+mod(ww,2))
 imagesc(PSS.timestamps,PSS.interpdepth*depthscalefact,PSS.depthinterp')
 axis xy
 hold on
 bz_MultiLFPPlot(lfp,'timewin',timewin,'LFPlabels',lfp.chanlayers,...
     'LFPmidpoints',lfp.chandepths*depthscalefact,'lfpcolor','k',...
     'lfpwidth',0.1,'scaleLFP',lfpscalefact);
-ColorbarWithAxis(PSSrange,'PSS')
+%ColorbarWithAxis(PSSrange,'PSS')
+hold on
+plot(timewin,-depthinfo.boundaries'*[1 1].*depthscalefact,'w')
+clim(PSSrange)
 ylim([-1.05 -0.025]*depthscalefact)
     bz_ScaleBar('s')
     %crameri bamako
-    if ww>7
+    if ww>14
    plot(mean(timewin).*[1 1], ylim(gca),'k')
-end
+    end
+if mod(ww,2)==0
 NiceSave(['ExampleWin',num2str(ww)],figfolder,baseName)
-
+end
 end
 
 %% PSS example figure
@@ -391,21 +405,34 @@ figure
         
         times = (0.5+timewin(1)):2:timewin(2);
         usefreqs = PSS.freqs>=1 & PSS.freqs<=100;
+        fracfreqs = PSS.freqs>=2 & PSS.freqs<=100;
        
     subplot(4,1,1)
     for tt = 1:length(times)
         hold on
         [~,timepoint] = min(abs(PSS.timestamps-(times(tt))));
-        plot(log10(PSS.freqs(usefreqs))+times(tt)-0.5,log10(PSS.spec(usefreqs,timepoint,exchan_PSS)),'k','linewidth',2)
+        
+        linefit.validfreq = PSS.freqs; linefit.frac = PSS.frac(:,timepoint,exchan_PSS)';
+        [linefit] = WaveIRASA_plawfit( linefit, [2.5 100] );
+        
+        plot(log10(PSS.freqs(usefreqs))+times(tt)-0.5,log10(PSS.spec(usefreqs,timepoint,exchan_PSS)),'k','linewidth',1)
+        plot(log10(linefit.fitFreq)+times(tt)-0.5,linefit.Beta*log10(linefit.fitFreq)+linefit.Cons,'r','linewidth',2)
+    
     end
+    %clim(PSSrange)
         axis tight
         box off
         xlabel('f (Hz)');ylabel('Power (dB)')
         %LogScale('x',10)
         xlim(timewin)
         %xlim(timewin)
+            NiceSave(['IllustrateExamplePSS',num2str(ww)],figfolder,baseName)   
+
 end  
-    NiceSave(['IllustrateExamplePSS',num2str(ww)],figfolder,baseName)   
 end
 end
+
+%%
+figure
+plot(log10(linefit.freq)+times(tt)-0.5,linefit.Beta*log10(linefit.freq)+linefit.Cons,'r','linewidth',2)
 end
