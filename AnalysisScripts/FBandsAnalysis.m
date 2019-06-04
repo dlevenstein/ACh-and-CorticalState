@@ -1,4 +1,4 @@
-function [ ] = FBandsAnalysis(basePath,figfolder)
+function [BANDdepth ] = FBandsAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -184,6 +184,7 @@ lfp.interpdepth = linspace(-1,0,100);
 %prepare for LFPspec....
 for bb = 1:length(BANDS)
 BANDdepth.(BANDS{bb}).depth = lfp.interpdepth;
+BANDdepth.range = bandranges(bb,:);
 for ww = 1:2
 [ ~,BANDdepth.(BANDS{bb}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( lfp.(BANDS{bb}).amp(lfp.(BANDS{bb}).(WHNWH{ww}),:),...
     log10(lfp.(BANDS{bb}).pup(lfp.(BANDS{bb}).(WHNWH{ww}),:)),'specparms','input',...
