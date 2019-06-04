@@ -190,7 +190,7 @@ EMGwhisk.whisks.lopup = ~EMGwhisk.whisks.hipup;
 LAYERS = {'L1','L23','L4','L5a','L5b6','L6'};
 depthinfo.boundaries = [0 0.1 0.35 0.5 1];
 %% Figure: long time scale (~100s)
-winsize = [20:20:140];
+winsize = [10:10:70];
 winsize = reshape([winsize' winsize']',[],1);
 for ww =1:length(winsize)
     exwins(ww,:) = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),winsize(ww));
@@ -239,11 +239,11 @@ ylim([0.2 2.4])
 if ww>14
    plot(mean(timewin).*[1 1], ylim(gca),'k')
 end
-
-xlim(timewin)
+ylabel('Pupil/EMG')
 %colorbar
 box off
-bz_ScaleBar('s')
+xlim(timewin)
+    bz_ScaleBar('s')
 
 subplot(8,2,[13 15]+mod(ww,2))
 imagesc(spec.timestamps,log10(spec.freqs),spec.data(:,:,exchan_spec)')
@@ -252,6 +252,7 @@ ylim([-1 2.5])
 plot(PSS.timestamps,bz_NormToRange(PSS.data(:,exchan_PSS),[0 2.5]),'k','LineWidth',2)
 plot(lfp.timestamps(lfpinwin),bz_NormToRange(single(lfp.data(lfpinwin,exchan_spec)),[-1 -0.1]),'k','LineWidth',0.1)
 axis xy
+ylabel('L5 LFP - f (Hz)')
 if ww>14
    plot(mean(timewin).*[1 1], ylim(gca),'k')
 end
@@ -262,6 +263,7 @@ LogScale('y',10)
        crameri vik
 xlim(timewin)
 bz_ScaleBar('s')
+
 
 
 depthscalefact=0.5e5;
@@ -279,14 +281,16 @@ bz_MultiLFPPlot(lfp,'timewin',timewin,'LFPlabels',lfp.chanlayers,...
     'lfpwidth',0.1,'scaleLFP',lfpscalefact);
 %ColorbarWithAxis(PSSrange,'PSS')
 hold on
-plot(timewin,-depthinfo.boundaries'*[1 1].*depthscalefact,'w')
+plot(timewin,-depthinfo.boundaries'*[1 1].*depthscalefact,'w','linewidth',1)
 clim(PSSrange)
 ylim([-1.05 -0.025]*depthscalefact)
-    bz_ScaleBar('s')
     %crameri bamako
     if ww>14
    plot(mean(timewin).*[1 1], ylim(gca),'k')
     end
+xlim(timewin)
+    bz_ScaleBar('s')
+    
 if mod(ww,2)==0
 NiceSave(['ExampleWin',num2str(ww)],figfolder,baseName)
 end
@@ -346,11 +350,12 @@ LogScale('y',10)
         clim(speclim);
        box off
        crameri vik
-xlim(timewin)
-bz_ScaleBar('s')
+
 yyaxis right
 plot(PSS.timestamps,PSS.data(:,exchan_PSS),'k','LineWidth',2)
 ylim([-3.5 -0.85])
+xlim(timewin)
+    bz_ScaleBar('s')
 
 depthscalefact=0.5e5;
 if ww>2
@@ -370,12 +375,14 @@ bz_MultiLFPPlot(lfp,'timewin',timewin,'LFPlabels',lfp.chanlayers,...
 %ColorbarWithAxis(PSSrange,'PSS')
 clim(PSSrange)
 ylim([-1.05 -0.025]*depthscalefact)
-    bz_ScaleBar('s')
+
     %crameri bamako
 if ww>7
    plot(mean(timewin).*[1 1], ylim(gca),'k')
 end    
-   
+xlim(timewin)
+    bz_ScaleBar('s')   
+
 NiceSave(['IllustrateExample',num2str(ww)],figfolder,baseName)
 
 if ww == 2
