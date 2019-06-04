@@ -274,9 +274,9 @@ for ww = 1:2
 
         
 end
-    
-end
 
+end
+NiceSave('FBandsPupil',figfolder,baseName)
 %%
 
 figure
@@ -310,7 +310,8 @@ subplot(5,4,(bb-1)*4+3)
         
         
 end
-%end
+NiceSave('FBandsWhisk',figfolder,baseName)
+
 
     
 %%
