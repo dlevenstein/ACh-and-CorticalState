@@ -28,12 +28,14 @@ for gg = 1:6
     EMGdur_std.(genotypes{gg}) = bz_CollapseStruct(Behavior.EMGdur(genotypeidx==gg),3,'std',true);
 
     pupilphaseEMG.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupilphaseEMG(genotypeidx==gg),3,'mean',true);
+    pupildpEMG.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupildpEMG(genotypeidx==gg),3,'mean',true);
 end
 
 EMGdist.AllWT = bz_CollapseStruct(Behavior.EMGdist(strcmp(WTKOtype,'WT')),3,'mean',true);
 EMGdur.AllWT = bz_CollapseStruct(Behavior.EMGdur(strcmp(WTKOtype,'WT')),3,'mean',true);
 EMGdur_std.AllWT = bz_CollapseStruct(Behavior.EMGdur(strcmp(WTKOtype,'WT')),3,'std',true);
 pupilphaseEMG.AllWT = bz_CollapseStruct(Behavior.pupilphaseEMG(strcmp(WTKOtype,'WT')),3,'mean',true);
+pupildpEMG.AllWT = bz_CollapseStruct(Behavior.pupildpEMG(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
 HILO = {'lopup','hipup'};
@@ -140,8 +142,22 @@ figure
 for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
 
-
 subplot(4,4,gi)
+    a = imagesc(pupildpEMG.(genotypes{gg}).Xbins,pupildpEMG.(genotypes{gg}).Ybins,pupildpEMG.(genotypes{gg}).meanZ');
+    hold on
+    alpha(a,double(~isnan(pupildpEMG.(genotypes{gg}).meanZ')))
+    plot(pupildpEMG.(genotypes{gg}).Xbins([1 end]),[0 0],'k--')
+    crameri lapaz
+    ColorbarWithAxis([-0.7 0.7],'Mean EMG')
+    LogScale('c',10)
+    axis xy
+    box off
+    LogScale('c',10)
+    LogScale('x',10)
+    xlabel('Pupil Size');ylabel('dp/dt')
+    
+
+subplot(4,4,4+gi)
 
         imagesc( EMGdist.(genotypes{gg}).pup.Xbins,...
             EMGdist.(genotypes{gg}).pup.Ybins,...
@@ -152,7 +168,7 @@ subplot(4,4,gi)
         xlabel('Pupil Size');ylabel('EMG')
    crameri bilbao
    
-subplot(4,4,4+gi)
+subplot(4,4,8+gi)
 
         imagesc( EMGdur.(genotypes{gg}).pup.Xbins,...
             EMGdur.(genotypes{gg}).pup.Ybins,...
@@ -165,7 +181,7 @@ subplot(4,4,4+gi)
         LogScale('y',10)
    crameri bilbao
 
-subplot(4,4,8+gi)
+subplot(4,4,12+gi)
 
         plot(EMGdur.(genotypes{gg}).pup.Xbins,EMGdur.(genotypes{gg}).pup.pWhisk,'k')
         errorshade(EMGdur.(genotypes{gg}).pup.Xbins,EMGdur.(genotypes{gg}).pup.pWhisk,...
@@ -184,3 +200,4 @@ end
 NiceSave('EMGbyPupilSize',analysisfolder,groupnames{ff},'figtype','pdf')
 
 end
+
