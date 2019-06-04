@@ -110,7 +110,7 @@ PSS.NWh = ~InIntervals(PSS.timestamps,EMGwhisk.ints.ExpWh);
 PSS.hipup = interp1(pupilcycle.timestamps,single(pupilcycle.highpup),PSS.timestamps,'nearest')==1;
 PSS.lopup = interp1(pupilcycle.timestamps,single(~pupilcycle.highpup),PSS.timestamps,'nearest')==1;
 
-%%
+
 PSS.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,PSS.timestamps,'nearest');
 PSS.pup = interp1(pupildilation.timestamps,pupildilation.data,PSS.timestamps,'nearest');
 PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,PSS.timestamps,'nearest');

@@ -1,4 +1,4 @@
-function [ EMGdur,EMGdist,pupilphaseEMG] = BehaviorAnalysis2(basePath,figfolder)
+function [ EMGdur,EMGdist,pupilphaseEMG,pupildpEMG] = BehaviorAnalysis2(basePath,figfolder)
 
 %Initiate Paths
 %reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
@@ -38,6 +38,7 @@ end
 smoothwin = 2; %s
 pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
 pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
+pupildilation.dpdt = [pupildilation.dpdt; nan]; %To align to timestamps
 pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 
 % Filtered Pupil
@@ -71,12 +72,15 @@ EMGwhisk.EMGenvelope = EMGwhisk.EMGenvelope(spontidx);
 EMGwhisk.EMG = EMGwhisk.EMG(spontidx);
 EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 
+EMGwhisk.iswhisk = InIntervals(EMGwhisk.timestamps,EMGwhisk.ints.Wh);
+
 %% Get rid of recording start/stop artifact
 
 maxtimejump = 1; %s
 pupilcycle.amp = NanPadJumps( pupilcycle.timestamps,pupilcycle.amp,maxtimejump );
 pupilcycle.phase = NanPadJumps( pupilcycle.timestamps,pupilcycle.phase,maxtimejump );
 pupildilation.data = NanPadJumps( pupildilation.timestamps,pupildilation.data,maxtimejump );
+pupildilation.dpdt = NanPadJumps( pupildilation.timestamps,pupildilation.dpdt,maxtimejump );
 EMGwhisk.EMGsm = NanPadJumps( EMGwhisk.timestamps,EMGwhisk.EMGsm,maxtimejump );
 
 
@@ -95,6 +99,7 @@ EMGwhisk.whisks.lopup = ~EMGwhisk.whisks.hipup;
 EMGwhisk.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,EMGwhisk.timestamps,'nearest');
 EMGwhisk.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.timestamps,'nearest');
 EMGwhisk.pup = interp1(pupildilation.timestamps,pupildilation.data,EMGwhisk.timestamps,'nearest');
+EMGwhisk.dpdt = interp1(pupildilation.timestamps,pupildilation.dpdt,EMGwhisk.timestamps,'nearest');
 EMGwhisk.hipup =  log10(EMGwhisk.pupamp)>pupilcycle.pupthresh;
 EMGwhisk.lopup = ~EMGwhisk.hipup;
 
@@ -102,11 +107,17 @@ HILO = {'lopup','hipup'};
 
 %% Mean EMG in pupil space
 
-[pupilphaseEMG.meanZ,pupilphaseEMG.N,pupilphaseEMG.Xbins,...
-    pupilphaseEMG.Ybins] = ConditionalHist3( EMGwhisk.pupphase(EMGwhisk.EMGsm~=0),...
+[pupilphaseEMG.meanZ,pupilphaseEMG.N,pupilphaseEMG.Xbins,pupilphaseEMG.Ybins] = ...
+    ConditionalHist3( EMGwhisk.pupphase(EMGwhisk.EMGsm~=0),...
     log10(EMGwhisk.pupamp(EMGwhisk.EMGsm~=0)),log10(EMGwhisk.EMGsm(EMGwhisk.EMGsm~=0)),...
     'minXY',500,'Xbounds',[-pi pi],'Ybounds',[-2.25 0.5],...
     'numXbins',30,'numYbins',30);
+
+[pupildpEMG.meanZ,pupildpEMG.N,pupildpEMG.Xbins,pupildpEMG.Ybins] = ...
+    ConditionalHist3( log10(EMGwhisk.pup(EMGwhisk.EMGsm~=0)),...
+    (EMGwhisk.dpdt(EMGwhisk.EMGsm~=0)),log10(EMGwhisk.EMGsm(EMGwhisk.EMGsm~=0)),...
+    'minXY',250,'Xbounds',[-0.5 0.5],'Ybounds',[-0.5 0.5],...
+    'numXbins',40,'numYbins',40);
 
 
 
@@ -148,7 +159,7 @@ figure
 
 
 subplot(3,2,1)
-a = imagesc(pupilphaseEMG.Xbins,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+a = imagesc(pupilphaseEMG.Xbins,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ');
 hold on
 alpha(a,double(~isnan(pupilphaseEMG.meanZ')))
 
@@ -165,13 +176,17 @@ LogScale('y',10)
 xlabel('Pupil Phase');ylabel('Pupil Amplitude')
 
 subplot(3,2,2)
-imagesc(pupilphaseEMG.Xbins,pupilphaseEMG.Ybins,log10(pupilphaseEMG.N)')
+a = imagesc(pupildpEMG.Xbins,pupildpEMG.Ybins,pupildpEMG.meanZ');
 hold on
-plot([-pi 3*pi],pupilcycle.pupthresh.*[1 1],'w--')
+alpha(a,double(~isnan(pupildpEMG.meanZ')))
+plot(pupildpEMG.Xbins([1 end]),[0 0],'k--')
+crameri lapaz
+ColorbarWithAxis([-0.7 0.7],'Mean EMG')
+LogScale('c',10)
 axis xy
 box off
-colorbar
 LogScale('c',10)
+LogScale('x',10)
 
 
 
@@ -234,3 +249,35 @@ subplot(3,2,6)
    
         NiceSave('EMGPupBehavior',figfolder,baseName)
 
+%% Example Figure
+windows(1,:) = [100 250];
+windows(2,:) = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),150);
+windows(3,:) = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),150);
+
+figure;
+for ww = 1:3
+subplot(3,1,ww);
+%plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2); hold on;
+scatter(pupildilation.timestamps,pupildilation.data,3,pupilcycle.phase,'filled')
+hold on
+%scatter(pupilcycle.timestamps,pupilcycle.amp,3,pupilcycle.phase,'filled')
+plot(EMGwhisk.timestamps,EMGwhisk.EMG./max(EMGwhisk.EMG),...
+    'color',[0.5 0.5 0.5],'linewidth',0.5);
+plot(EMGwhisk.timestamps,5*EMGwhisk.EMGsm./(max(EMGwhisk.EMG)),...
+    'color','k','linewidth',0.5);
+plot(pupilcycle.timestamps(pupilcycle.highpup),3*ones(sum(pupilcycle.highpup),1),'r.')
+plot(pupilcycle.timestamps(~pupilcycle.highpup),3*ones(sum(~pupilcycle.highpup),1),'k.')
+plot(EMGwhisk.timestamps(EMGwhisk.iswhisk),2.8*ones(sum(EMGwhisk.iswhisk),1),'b.')
+%plot(highpupildata.timestamps,highpupildata.data+nanmean(pupildilation.data),'r')
+colormap(gca,hsv)
+ColorbarWithAxis([min(pupilcycle.phase) max(pupilcycle.phase)],['pupil phase'])
+%h1 = plot(get(gca,'xlim'),[0 0],'k-');
+xlim(windows(ww,:)); ylim([-0.05 3]);
+bz_ScaleBar('s')
+ylabel('Pupil');
+%set(get(get(h1,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
+%legend({'diameter','phase','dPdt'},'location','northeast');
+
+end
+
+NiceSave('BehaviorExamples',figfolder,baseName)
