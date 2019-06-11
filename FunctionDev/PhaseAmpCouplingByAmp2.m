@@ -7,8 +7,8 @@ function [ amp1bins,phasebins,sig2powerskew,sig2prefangle,phaseamphist,...
 %
 %INPUTS
 %   sig1phase
-%   sig1amp
-%   sig2amp
+%   sig1amp             
+%   sig2amp             Note: sig2 amplitude should NOT be log transformed
 %
 %   (options)
 %       'numAmpbins'    default: 10
@@ -16,6 +16,7 @@ function [ amp1bins,phasebins,sig2powerskew,sig2prefangle,phaseamphist,...
 %       'AmpBounds'     default: [-2.5 2.5] for Z-normed amp
 %       'AmpZNorm'      default: true
 %       'showFig'       default: false
+%       'numshuff'      default: 100. number of shuffles for coupling significance
 %
 %OUTPUTS
 %   binsig          bin/threshsig are two structures with coupling and 
@@ -38,6 +39,7 @@ addParameter(p,'AmpBounds',[-2.5 2.5])
 addParameter(p,'AmpZNorm',true)
 addParameter(p,'shufflesig',true)
 addParameter(p,'showFig',false)
+addParameter(p,'numshuff',100)
 
 parse(p,varargin{:})
 numAmpbins = p.Results.numAmpbins;
@@ -46,6 +48,7 @@ AmpBounds = p.Results.AmpBounds;
 AmpZNorm = p.Results.AmpZNorm;
 SHOWFIG = p.Results.showFig;
 shufflesig = p.Results.shufflesig;
+numshuff = p.Results.numshuff;
 
 
 %%
@@ -68,6 +71,7 @@ powerhist = zeros(numAmpbins,numPhbins);
 sig2prefangle = zeros(numAmpbins,1);
 sig2powerskew = zeros(numAmpbins,1);
 for bb = 1:numAmpbins
+    bb
     thisampbin = sig1binpower==amp1bins(bb);
     for bbb = 1:numPhbins
         ampwintimes = sig2amp(thisampbin & sig1binphase==phasebins(bbb));
@@ -84,8 +88,8 @@ for bb = 1:numAmpbins
 	belowthreshcoupling(bb) = abs(mean(sig2amp(belowthresh).*exp(1i.*sig1phase(belowthresh))));
     
     if shufflesig
-        numshuff = 200;
         for ss = 1:numshuff
+            %ss
             shuffamps = randsample(sig2amp(thisampbin),length(sig2amp(thisampbin)),true);
             shuffskew(ss) = mean(shuffamps.*exp(1i.*sig1phase(thisampbin)));
             shuffskew(ss) = abs(shuffskew(ss));
@@ -113,30 +117,37 @@ for bb = 1:numAmpbins
   
 end
 
-sig_above = abovethreshcoupling>perc_above;
-sig_below = belowthreshcoupling>perc_below;
-sig_bin = sig2powerskew>perc_bin';
 
-sigthresh_type2 = max(amp1bins(sig_above & ~sig_below));
-sigthresh_type1 = min(amp1bins(sig_bin));
+if shufflesig
+    sig_above = abovethreshcoupling>perc_above;
+    sig_below = belowthreshcoupling>perc_below;
+    sig_bin = sig2powerskew>perc_bin';
+
+    sigthresh_type2 = max(amp1bins(sig_above & ~sig_below));
+    sigthresh_type1 = min(amp1bins(sig_bin));
+    
+    binsig.powerbin = amp1bins;
+    binsig.coupling = sig2powerskew;
+    binsig.perc_bin = perc_bin;
+    binsig.sigstdbin = sigstdbin;
+    binsig.sigthresh = sigthresh_type1;
+    binsig.sig_bin = sig_bin;
+    
+    threshsig.powerbin = amp1bins;
+    threshsig.coupling_above = abovethreshcoupling;
+    threshsig.coupling_below = belowthreshcoupling;
+    threshsig.perc_above = perc_above;
+    threshsig.perc_below = perc_below;
+    threshsig.sigstd_above = sigstdabove;
+    threshsig.sigstd_below = sigstdbelow;
+    threshsig.sig_above = sig_above;
+    threshsig.sig_below = sig_below;
+    threshsig.sigthresh = sigthresh_type2;
+end
 %%
-binsig.powerbin = amp1bins;
-binsig.coupling = sig2powerskew;
-binsig.perc_bin = perc_bin;
-binsig.sigstdbin = sigstdbin;
-binsig.sigthresh = sigthresh_type1;
-binsig.sig_bin = sig_bin;
 
-threshsig.powerbin = amp1bins;
-threshsig.coupling_above = abovethreshcoupling;
-threshsig.coupling_below = belowthreshcoupling;
-threshsig.perc_above = perc_above;
-threshsig.perc_below = perc_below;
-threshsig.sigstd_above = sigstdabove;
-threshsig.sigstd_below = sigstdbelow;
-threshsig.sig_above = sig_above;
-threshsig.sig_below = sig_below;
-threshsig.sigthresh = sigthresh_type2;
+
+
 
 
 

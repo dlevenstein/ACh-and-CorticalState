@@ -42,13 +42,15 @@ pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 
 % Filtered Pupil
 lowfilter = [0.01 0.1];
+lowfilter = [0.02 0.33];
 %highfilter = [0.3 0.8];
 
 pupil4filter = pupildilation;
-pupilcycle = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',3);
+pupilcycle = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',1);
 %highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
 pupilcycle.pupthresh = -0.8;
 pupilcycle.highpup = log10(pupilcycle.amp)>pupilcycle.pupthresh; 
+pupilcycle.lowpup = log10(pupilcycle.amp)<=pupilcycle.pupthresh; 
 
 % EMG
 EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
@@ -108,7 +110,7 @@ PSS.Wh = InIntervals(PSS.timestamps,EMGwhisk.ints.Wh);
 EMGwhisk.ints.ExpWh = bsxfun(@plus,EMGwhisk.ints.Wh,[-0.5 0.5]*PSS.winsize);
 PSS.NWh = ~InIntervals(PSS.timestamps,EMGwhisk.ints.ExpWh);
 PSS.hipup = interp1(pupilcycle.timestamps,single(pupilcycle.highpup),PSS.timestamps,'nearest')==1;
-PSS.lopup = interp1(pupilcycle.timestamps,single(~pupilcycle.highpup),PSS.timestamps,'nearest')==1;
+PSS.lopup = interp1(pupilcycle.timestamps,single(pupilcycle.lowpup),PSS.timestamps,'nearest')==1;
 
 
 PSS.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,PSS.timestamps,'nearest');

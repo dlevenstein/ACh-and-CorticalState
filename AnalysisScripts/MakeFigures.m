@@ -438,7 +438,4 @@ end
 end
 end
 
-%%
-figure
-plot(log10(linefit.freq)+times(tt)-0.5,linefit.Beta*log10(linefit.freq)+linefit.Cons,'r','linewidth',2)
 end

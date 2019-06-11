@@ -101,7 +101,7 @@ EMGwhisk.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.timestam
 EMGwhisk.pup = interp1(pupildilation.timestamps,pupildilation.data,EMGwhisk.timestamps,'nearest');
 EMGwhisk.dpdt = interp1(pupildilation.timestamps,pupildilation.dpdt,EMGwhisk.timestamps,'nearest');
 EMGwhisk.hipup =  log10(EMGwhisk.pupamp)>pupilcycle.pupthresh;
-EMGwhisk.lopup = ~EMGwhisk.hipup;
+EMGwhisk.lopup = log10(EMGwhisk.pupamp)<=pupilcycle.pupthresh;
 
 HILO = {'lopup','hipup'};
 
