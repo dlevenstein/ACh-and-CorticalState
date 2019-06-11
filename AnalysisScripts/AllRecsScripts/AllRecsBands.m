@@ -23,253 +23,136 @@ groups = {KOgeneotypes,WTgeneotypes};
 groupnames = {'KOs','WTctr'};
 %%
 for gg = 1:6
-    PSScomponents.(genotypes{gg}) = bz_CollapseStruct(FBands.PSScomponents(genotypeidx==gg),3,'mean',true);
-    PSSdepth.(genotypes{gg}) = bz_CollapseStruct(FBands.PSSdepth(genotypeidx==gg),3,'mean',true);
-    PSSdist.(genotypes{gg}) = bz_CollapseStruct(FBands.PSSdist(genotypeidx==gg),3,'mean',true);
+    BANDdepth.(genotypes{gg}) = bz_CollapseStruct(FBands.BANDdepth(genotypeidx==gg),3,'mean',true);
 end
 
-PSScomponents.AllWT = bz_CollapseStruct(FBands.PSScomponents(strcmp(WTKOtype,'WT')),3,'mean',true);
-PSSdepth.AllWT = bz_CollapseStruct(FBands.PSSdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
-PSSdist.AllWT = bz_CollapseStruct(FBands.PSSdist(strcmp(WTKOtype,'WT')),3,'mean',true);
+BANDdepth.AllWT = bz_CollapseStruct(FBands.BANDdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
+
 
 %%
 
 WHNWH = {'Wh','NWh'};
 HILO = {'lopup','hipup'};
-LAYERS = {'L1','L23','L4','L5a','L5b6','WM'};
+LAYERS = {'L1','L23','L4','L5a','L5b6','L6'};
 depthinfo.boundaries = [0 0.1 0.35 0.5 1];
+BANDS = {'HiGamma','LoGamma','Theta','Delta','Slow'};
+ONOFF = {'WhOn','WhOFF'};
+%bandranges = [[100 312];[30 55];[6 12];[2 5];[0.5 2]];
+
+
+
+
 %%
 cosx = linspace(-pi,pi,100);
-cospamp = [0.025 0.225];
-colorrange = [-2.4 -1.2];
+cospamp = [0.025 0.3];
+
+bandranges = [[1.7 2.05];[1.85 2.1];[2.15 2.6];[2.15 2.75];[2.2 2.75]];
+
+%gg = 7;
 
 for ff = 1:2
+    for bb = 1:length(BANDS)
 figure
 
 for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
-for ww = 1:2
-    subplot(5,4,(ww-1)*4+gi)
     
+    
+
+for ww = 1:2
+    subplot(4,4,(ww-1)*4+gi)
         for pp = 1:2
-        imagesc( PSSdepth.(genotypes{gg}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
-            PSSdepth.(genotypes{gg}).depth,...
-            PSSdepth.(genotypes{gg}).(HILO{pp}).(WHNWH{ww}).mean_interp)
+        imagesc( BANDdepth.(genotypes{gg}).(BANDS{bb}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
+            BANDdepth.(genotypes{gg}).(BANDS{bb}).depth,...
+            BANDdepth.(genotypes{gg}).(BANDS{bb}).(HILO{pp}).(WHNWH{ww}).mean_interp)
         hold on; axis xy; box off
-        plot([-pi 3*pi],-depthinfo.boundaries'*[1 1],'w')
         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1,'k')
         end   
-        
-        
-        %ColorbarWithAxis(colorrange,'Mean PSS')
-        clim(colorrange)
-        %colorbar
-        xlim([-pi 3*pi])
-        plot(pi*[1 1],get(gca,'ylim'),'k--')
-        bz_piTickLabel('x')
-        
-        if ww == 2
-            xlabel('Pupil Phase');
-        end
-        
-        if gi==1
-            ylabel({WHNWH{ww},'Depth'})
-        end
-
-        if ww == 1
-            title(genotypes{gg})
-        end
-        
-    subplot(5,4,(ww-1)*4+gi+8)
-        imagesc( PSSdepth.(genotypes{gg}).pup.(WHNWH{ww}).varbins,...
-             PSSdepth.(genotypes{gg}).depth,...
-            PSSdepth.(genotypes{gg}).pup.(WHNWH{ww}).mean_interp)
-        hold on; axis xy; box off
-        %ColorbarWithAxis(colorrange,'Mean PSS')
-        clim(colorrange)
+        ColorbarWithAxis(bandranges(bb,:),'Power (dB)')
         plot([-pi 3*pi],-depthinfo.boundaries'*[1 1],'w')
-        if ww == 2
-            xlabel('Pupil Size');
-        end
-        
-        if gi==1
+        colorbar
+        xlim([-pi 3*pi])
+        xlabel('Pupil Phase');
+        if gi == 1
             ylabel({WHNWH{ww},'Depth'})
         end
-end
-
-subplot(5,4,gi+16)
-        imagesc( PSSdepth.(genotypes{gg}).WhOn.all.varbins,...
-            PSSdepth.(genotypes{gg}).depth,...
-            PSSdepth.(genotypes{gg}).WhOn.all.mean_interp)
+        if ww == 1
+            title({BANDS{bb},genotypes{gg}})
+        end
+        
+        
+    subplot(4,4,(ww-1)*4+8+gi)
+        imagesc( BANDdepth.(genotypes{gg}).(BANDS{bb}).pup.(WHNWH{ww}).varbins,...
+            BANDdepth.(genotypes{gg}).(BANDS{bb}).depth,...
+            BANDdepth.(genotypes{gg}).(BANDS{bb}).pup.(WHNWH{ww}).mean_interp)
         hold on; axis xy; box off
-        plot(PSSdepth.(genotypes{gg}).WhOn.all.varbins([1 end]),-depthinfo.boundaries'*[1 1],'w')
+        plot(BANDdepth.(genotypes{gg}).(BANDS{bb}).pup.(WHNWH{ww}).varbins([1 end]),-depthinfo.boundaries'*[1 1],'w')
+        ColorbarWithAxis(bandranges(bb,:),'Power (dB)')
+        colorbar
+        xlabel('Pupil Size');ylabel('Depth')
+        
+        if gi == 1
+            ylabel({WHNWH{ww},'Depth'})
+        end
+
+        
+end
+end
+NiceSave(['FBandsPupil',(BANDS{bb})],analysisfolder,groupnames{ff},'figtype','pdf')
+
+    end
+end
+%%
+
+for ff = 1:2
+    for bb = 1:length(BANDS)
+figure
+
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+
+%for oo = 1:2
+oo=1;
+subplot(4,4,gi)
+        imagesc( BANDdepth.(genotypes{gg}).(BANDS{bb}).(ONOFF{oo}).all.varbins,...
+            BANDdepth.(genotypes{gg}).(BANDS{bb}).depth,...
+            BANDdepth.(genotypes{gg}).(BANDS{bb}).(ONOFF{oo}).all.mean_interp)
+        hold on; axis xy; box off
         plot([0 0],[-1 0],'w')
-        %ColorbarWithAxis(colorrange,'Mean PSS')
-        clim(colorrange)
-        xlabel('t (s - relative to WhOn');ylabel('Depth')
+       ColorbarWithAxis(bandranges(bb,:),'Power (dB)')
+        plot(BANDdepth.(genotypes{gg}).(BANDS{bb}).(ONOFF{oo}).all.varbins([1 end]),-depthinfo.boundaries'*[1 1],'w')
 
-
-
-end
-NiceSave('DepthPSSandBeh',analysisfolder,groupnames{ff},'figtype','pdf')
-end
-
-%%
-for ff = 1:2
-    
-figure
-for gi=1:length(groups{ff})
-    gg = groups{ff}(gi);
-    subplot(4,4,gi)
-    imagesc(PSScomponents.(genotypes{gg}).depth,PSScomponents.(genotypes{gg}).depth,...
-        PSScomponents.(genotypes{gg}).corr)
-    hold on
-    plot(PSScomponents.(genotypes{gg}).depth([1 end]),-depthinfo.boundaries'*[1 1],'w')
-    plot(-depthinfo.boundaries'*[1 1],PSScomponents.(genotypes{gg}).depth([1 end]),'w')
-
-    colorbar
-    clim([0.6 1])
-    
-    
-    
-    axis xy
-    xlabel('Depth');ylabel('Depth')
-    title('PSS Corr')
-    
-subplot(3,3,8)
-    plot(log10(PSScomponents.(genotypes{gg}).EV),'o-')
-    hold on
-    xlim([1 6]);ylim([-1 2])
-    xlabel('PC');ylabel('% EV')
-    LogScale('y',10)
-    %legend()
-
-subplot(3,4,4+gi)
-    plot(PSScomponents.(genotypes{gg}).depth,PSScomponents.(genotypes{gg}).PCAcoeff(:,1:3))
-    hold on
-    plot(PSScomponents.(genotypes{gg}).depth([1 end]),[0 0],'k--')
-    legend('PC1','PC2','PC3','location','southoutside')
-    xlabel('Deptah');ylabel('Weight')
-    ylim([-0.25 0.4])
-end
-
-NiceSave('PSSDepthComponents',analysisfolder,groupnames{ff},'figtype','pdf')
-end
-
-
-%%
-
-%%
-cosx = linspace(-pi,pi,100);
-cospamp = [0.05 0.5];
-
-
-for ff = 1:2
-    for ww = 1:2
-figure
-for gi=1:length(groups{ff})
-    gg = groups{ff}(gi);
-    
-for ll = 1:length(LAYERS)
-
-    subplot(6,4,(ll-1)*4+gi)
-        for pp = 1:2
-        imagesc( PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Xbins+2*pi*(pp-1),...
-            PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Ybins,...
-            PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).pYX')
-        hold on; axis xy; box off
-
-        plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-3,'k')
-        end   
-        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        xlim([-pi 3*pi])
-        plot(pi*[1 1],get(gca,'ylim'),'k--')
-        bz_piTickLabel('x')
-        %title(genotypes{gg})
-    crameri bilbao
-        if ll == 6
-        xlabel('Pupil Phase');
-        end
+        xlabel(['t - ',(ONOFF{oo})]);
+        %if oo == 1   
         if gi == 1
-            ylabel({LAYERS{ll},'PSS'})
+            ylabel('Depth')
         end
-        if ll == 1
-        title({WHNWH{ww},genotypes{gg}})
-        end
-end
-end
 
-NiceSave(['PSSDistPupCycle_',WHNWH{ww}],analysisfolder,groupnames{ff},'figtype','pdf')
+            title({BANDS{bb},genotypes{gg}})
 
-    end
-end
+        %end
+        xlim([-0.5 0.5])
 
-%%
-for ff = 1:2
-    for ww = 1:2
-figure
-for gi=1:length(groups{ff})
-    gg = groups{ff}(gi);
-    
-for ll = 1:length(LAYERS)
-    subplot(6,4,(ll-1)*4+gi)
-        imagesc( PSSdist.(genotypes{gg}).(LAYERS{ll}).pup.(WHNWH{ww}).Xbins,...
-            PSSdist.(genotypes{gg}).(LAYERS{ll}).(HILO{pp}).(WHNWH{ww}).Ybins,...
-            PSSdist.(genotypes{gg}).(LAYERS{ll}).pup.(WHNWH{ww}).pYX')
+%end
+ 
+subplot(4,4,gi+4)
+        imagesc( BANDdepth.(genotypes{gg}).(BANDS{bb}).EMG.varbins,...
+            BANDdepth.(genotypes{gg}).(BANDS{bb}).depth,...
+            BANDdepth.(genotypes{gg}).(BANDS{bb}).EMG.mean_interp)
         hold on; axis xy; box off
-        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        if ll == 6
-        xlabel('Pupil Size');
-        end
-        if gi == 1
-            ylabel({LAYERS{ll},'PSS'})
-        end
-        if ll == 1
-        title({WHNWH{ww},genotypes{gg}})
-        end
-   crameri bilbao
-      
-end
-end
+        plot(BANDdepth.(genotypes{gg}).(BANDS{bb}).EMG.varbins([1 end]),-depthinfo.boundaries'*[1 1],'w')
 
-NiceSave(['PSSDistPupSize_',WHNWH{ww}],analysisfolder,groupnames{ff},'figtype','pdf')
-
-    end
-end
-%%
-        
-for ff = 1:2
-
-figure
-for gi=1:length(groups{ff})
-    gg = groups{ff}(gi);
-    
-for ll = 1:length(LAYERS)
-    subplot(6,4,(ll-1)*4+gi)
-        imagesc( PSSdist.(genotypes{gg}).(LAYERS{ll}).EMG.Xbins,...
-            PSSdist.(genotypes{gg}).(LAYERS{ll}).EMG.Ybins,...
-            PSSdist.(genotypes{gg}).(LAYERS{ll}).EMG.pYX')
-        hold on; axis xy; box off
-        %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        %colorbar
-        xlim([-2 1])
-        LogScale('x',10)
-        if ll == 6
+        plot(BANDdepth.(genotypes{gg}).(BANDS{bb}).EMG.varbins,BANDdepth.(genotypes{gg}).(BANDS{bb}).EMG.vardist*10-1,'k')
+       ColorbarWithAxis(bandranges(bb,:),'Power (dB)')
         xlabel('EMG');
-        end
         if gi == 1
-            ylabel({LAYERS{ll},'PSS'})
-        end
-        if ll == 1
-        title(genotypes{gg})
+            ylabel('Depth')
         end
         
-    crameri bilbao
+        
+end
+NiceSave(['FBandsWhisk',(BANDS{bb})],analysisfolder,groupnames{ff},'figtype','pdf')
+
+    end
 end
 
-
-end
-NiceSave('PSSDistEMG',analysisfolder,groupnames{ff},'figtype','pdf')
-
-%NiceSave('LayerPSSandBehavior',analysisfolder,groupnames{ff})
-end

@@ -26,10 +26,14 @@ groupnames = {'KOs','WTctr'};
 for gg = 1:6
     SPECdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'mean',true);
     OSCdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.OSCdepth(genotypeidx==gg),3,'mean',true);
+    SPECdepth_std.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'std',true);
+
     %speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
 end
 
 SPECdepth.AllWT = bz_CollapseStruct(SpecDepth.SPECdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
+SPECdepth_std.AllWT = bz_CollapseStruct(SpecDepth.SPECdepth(strcmp(WTKOtype,'WT')),3,'std',true);
+
 OSCdepth.AllWT = bz_CollapseStruct(SpecDepth.OSCdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
 %speccorr.AllWT = bz_CollapseStruct(SpecDepth.speccorr(strcmp(WTKOtype,'WT')),3,'mean',true);
 
@@ -358,5 +362,47 @@ end
 end
     
 NiceSave('DepthSPECandPSS',analysisfolder,groupnames{ff})
+
+end
+
+
+%% Figure: PSS distributions
+
+genecolors = {[0 0 0],'r','b','g',[0.5 0 0],[0 0 0.5],[0 0.5 0]};
+
+for ff = 1:2
+
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+    
+for dd = 1:6
+
+subplot(6,4,(dd-1)*4+gi)
+        hold on; axis xy; box off
+        errorshade(SPECdepth.(genotypes{gg}).(LAYERS{dd}).PSS.varbins,SPECdepth.(genotypes{gg}).(LAYERS{dd}).PSS.vardist,...
+            SPECdepth_std.(genotypes{gg}).(LAYERS{dd}).PSS.vardist,SPECdepth_std.(genotypes{gg}).(LAYERS{dd}).PSS.vardist,genecolors{gi},'scalar')
+        plot(SPECdepth.(genotypes{7}).(LAYERS{dd}).PSS.varbins,SPECdepth.(genotypes{7}).(LAYERS{dd}).PSS.vardist,'k','linewidth',2)
+        plot(SPECdepth.(genotypes{gg}).(LAYERS{dd}).PSS.varbins,SPECdepth.(genotypes{gg}).(LAYERS{dd}).PSS.vardist,'color',genecolors{gi},'linewidth',2)
+
+        %plot(SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.varbins,SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.vardist*10,'w')
+        %plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
+        if gi == 1
+            ylabel({LAYERS{dd},'Occupancy'})
+        end
+        axis tight
+        ylim([0 0.1])
+        
+        if dd == 6
+        xlabel('PSS')
+        end
+        if dd == 1
+        title(genotypes{gg})
+        end
+end
+
+end
+    
+NiceSave('DepthPSSDists',analysisfolder,groupnames{ff})
 
 end
