@@ -46,7 +46,6 @@ pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 % EMG
 EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
 
-EMGwhisk.iswhisk = InIntervals(EMGwhisk.timestamps,EMGwhisk.ints.Wh);
 %%
 maxtimejump =1;
 %Restricting SPONT UP/DOWNs
@@ -57,7 +56,11 @@ sponttimes = [MergePoints.timestamps(sidx(1),1) MergePoints.timestamps(sidx(end)
 spontidx = find(EMGwhisk.timestamps < sponttimes(2));
 EMGwhisk.timestamps = EMGwhisk.timestamps(spontidx);
 EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
+EMGwhisk.EMG = EMGwhisk.EMG(spontidx);
 EMGwhisk.EMGsm = NanPadJumps( EMGwhisk.timestamps,EMGwhisk.EMGsm,maxtimejump );
+
+EMGwhisk.iswhisk = InIntervals(EMGwhisk.timestamps,EMGwhisk.ints.Wh);
+
 
 spontidx = find(EMGwhisk.ints.Wh(:,2) < sponttimes(2));
 EMGwhisk.ints.Wh = EMGwhisk.ints.Wh(spontidx,:);
