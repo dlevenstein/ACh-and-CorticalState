@@ -132,7 +132,7 @@ hold on
 axis xy
 plot(log10(trybounds(1)),log10(trybounds(2)),'r+')
 LogScale('xy',10)
-clim([0.1 0.3])
+clim([0.1 0.4])
 xlabel('Lower Bound (Hz)');ylabel('Upper Bounr (Hz)')
 colorbar
 title(num2str(oo))
@@ -186,7 +186,7 @@ figure
 cosx = linspace(-pi,pi,100);
 cospamp = [0.08 0.8];
 figure
-
+pp =1;
 
 subplot(3,2,1)
 a = imagesc(pupilphaseEMG.Xbins,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ');
