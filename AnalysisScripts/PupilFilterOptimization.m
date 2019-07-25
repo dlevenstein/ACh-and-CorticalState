@@ -82,6 +82,9 @@ orders = 1:4;
 
 %Filter the pupil
 amp2 = pupildilation.EMG./nanmean(pupildilation.EMG);
+PWcoupling.lowerbounds = lowerbounds;
+PWcoupling.upperbounds = upperbounds;
+PWcoupling.orders = orders;
 PWcoupling.EMG = nan(length(lowerbounds),length(upperbounds),length(orders));
 PWcoupling.dur = nan(length(lowerbounds),length(upperbounds),length(orders));
 for oo = orders
