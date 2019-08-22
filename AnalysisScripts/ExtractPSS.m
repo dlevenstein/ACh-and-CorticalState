@@ -6,7 +6,8 @@ function [  ] = ExtractPSS(basePath,figfolder)
 winsize = 2;
 dt = 0.1;
 frange = [4 100];
-[specslope,spec] = bz_PowerSpectrumSlope(lfp,winsize,dt,'IRASA',true,'Redetect',true,'frange',frange,'saveMat',true);
+[specslope,spec] = bz_PowerSpectrumSlope(lfp,winsize,dt,...
+    'IRASA',true,'Redetect',true,'frange',frange,'saveMat',basePath);
 
 
 
