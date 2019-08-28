@@ -125,25 +125,24 @@ spec.chanlayers = lfp.chanlayers;
 
 
 %% Load PSS and aligning behavior
-if strcmp(baseName,'171209_WT_EM1M3')
-    load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.mat']));
-else
+%if strcmp(baseName,'171209_WT_EM1M3')
+%    load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.mat']));
+%else
     load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
-end
+%end
 
 %%
 
 clear PSS
-[~,~,PSS.CTXchans] = intersect(CTXchans,PSpecSlope.Shortwin.channels,'stable');
-PSS.data = PSpecSlope.Shortwin.PSS(:,PSS.CTXchans);
-PSS.timestamps = PSpecSlope.Shortwin.timestamps;
-PSS.samplingRate = 1/mean(diff(PSS.timestamps));
-PSS.winsize = PSpecSlope.Shortwin.movingwin(1);
+[~,~,PSS.CTXchans] = intersect(CTXchans,specslope.channels,'stable');
+PSS.data = specslope.data(:,PSS.CTXchans);
+PSS.timestamps = specslope.timestamps;
+PSS.samplingRate = specslope.samplingRate;
+PSS.winsize = specslope.detectionparms.winsize;
 PSS.depth = CTXdepth;
-PSS.chan = PSpecSlope.Shortwin.channels(PSS.CTXchans);
-PSS.osci = PSpecSlope.Shortwin.OSCI(:,:,PSS.CTXchans);
-PSS.osci = shiftdim(PSS.osci,1);
-PSS.freqs = PSpecSlope.Shortwin.freqs;
+PSS.chan = specslope.channels(PSS.CTXchans);
+PSS.osci = specslope.resid(:,:,PSS.CTXchans);
+PSS.freqs = specslope.freqs;
 PSS.chanlayers = depthinfo.layer(inCTX);
 
 LAYERS = depthinfo.lnames;
@@ -224,6 +223,7 @@ exchan_PSS = find(spec.channels(exchan_spec)==PSS.chan);
 
 speclim = [0.65 1.35]; %Med norm
 PSSrange = [-2.4 -1.2];
+PSSrange = [-1.5 -0.25]; %new pss
 %PSSrange = [-2.6 -0.8];
 
 if mod(ww,2)==1
@@ -297,8 +297,8 @@ end
 
 %% PSS example figure
 if strcmp(baseName,'171209_WT_EM1M3')
-    PSS.spec = PSpecSlope.Shortwin.SPEC(:,:,PSS.CTXchans);
-    PSS.frac = PSpecSlope.Shortwin.FRAC(:,:,PSS.CTXchans);
+    PSS.spec = specslope.specgram(:,:,PSS.CTXchans);
+    %PSS.frac = PSpecSlope.Shortwin.FRAC(:,:,PSS.CTXchans);
 %exwins = [600 775];
 %exwins = [lfp.timestamps(1) lfp.timestamps(end)];
 %exwins = [600 666];
@@ -315,6 +315,7 @@ exchan_PSS = find(spec.channels(exchan_spec)==PSS.chan);
 
 speclim = [0.65 1.35]; %Med norm
 PSSrange = [-2.4 -1.2];
+PSSrange = [-1.5 -0.25]; %new pss
 %PSSrange = [-2.6 -0.8];
 
 figure
