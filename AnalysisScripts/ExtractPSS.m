@@ -3,9 +3,9 @@ function [  ] = ExtractPSS(basePath,figfolder)
 
 [lfp] = bz_GetLFP('all','basepath',basePath);
 %%
-winsize = 2;
+winsize = 1;
 dt = 0.1;
-frange = [4 100];
+frange = [2.5 100];
 [specslope] = bz_PowerSpectrumSlope(lfp,winsize,dt,...
     'IRASA',true,'Redetect',true,'frange',frange,'saveMat',basePath);
 
