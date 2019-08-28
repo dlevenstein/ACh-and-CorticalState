@@ -42,7 +42,7 @@ pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 
 % Filtered Pupil
 lowfilter = [0.01 0.1];
-lowfilter = [0.02 0.33];
+lowfilter = [0.02 0.2];
 %highfilter = [0.3 0.8];
 
 pupil4filter = pupildilation;
@@ -65,16 +65,17 @@ inCTX = find(~isnan(depthinfo.ndepth));
 CTXchans = depthinfo.channels(inCTX);
 CTXdepth = -depthinfo.ndepth(inCTX);
 clear PSS
-[~,~,PSS.CTXchans] = intersect(CTXchans,PSpecSlope.Shortwin.channels,'stable');
-PSS.data = PSpecSlope.Shortwin.PSS(:,PSS.CTXchans);
-PSS.timestamps = PSpecSlope.Shortwin.timestamps;
+%[~,~,PSS.CTXchans] = intersect(CTXchans,PSpecSlope.Shortwin.channels,'stable');
+[~,~,PSS.CTXchans] = intersect(CTXchans,specslope.channels,'stable');
+PSS.data = specslope.data(:,PSS.CTXchans);
+PSS.timestamps = specslope.timestamps;
 PSS.samplingRate = 1/mean(diff(PSS.timestamps));
-PSS.winsize = PSpecSlope.Shortwin.movingwin(1);
+PSS.winsize = specslope.detectionparms.winsize;
 PSS.depth = CTXdepth;
 
-PSS.osci = PSpecSlope.Shortwin.OSCI(:,:,PSS.CTXchans);
-PSS.osci = shiftdim(PSS.osci,1);
-PSS.freqs = PSpecSlope.Shortwin.freqs;
+PSS.osci = specslope.resid(:,:,PSS.CTXchans);
+%PSS.osci = shiftdim(PSS.osci,1);
+PSS.freqs = specslope.freqs;
 PSS.chanlayers = depthinfo.layer(inCTX);
 
 LAYERS = depthinfo.lnames;
@@ -269,7 +270,7 @@ subplot(2,1,1)
     xlim(xwin)
     axis xy
     ylim([-1.1 0])
-    ColorbarWithAxis([-2.75 -0.5],'PSS')
+    ColorbarWithAxis([-2 -0.25],'PSS')
     xlabel('t (s)');ylabel('Depth')
     
     subplot(2,2,3)
@@ -302,6 +303,7 @@ subplot(4,2,8)
 cosx = linspace(-pi,pi,100);
 cospamp = [0.025 0.3];
 
+meanPSSrange = [-1 -0.5];
 
 figure
 for ww = 1:2
@@ -313,7 +315,7 @@ for ww = 1:2
         hold on; axis xy; box off
         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1,'k')
         end   
-        ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        ColorbarWithAxis(meanPSSrange,'Mean PSS')
         xlim([-pi 3*pi])
         xlabel('Pupil Phase');ylabel({WHNWH{ww},'Depth'})
 
@@ -324,7 +326,7 @@ for ww = 1:2
             PSS.interpdepth,...
             PSSdepth.pup.(WHNWH{ww}).mean_interp)
         hold on; axis xy; box off
-        ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        ColorbarWithAxis(meanPSSrange,'Mean PSS')
         xlabel('Pupil Size');ylabel('Depth')
         
         
@@ -369,7 +371,7 @@ subplot(4,3,(ll-1)*3+oo)
             PSSdepth.(ONOFF{oo}).(LONGSHORT{ll}).mean_interp)
         hold on; axis xy; box off
         plot([0 0],[-1 0],'w')
-        ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        ColorbarWithAxis(meanPSSrange,'Mean PSS')
         xlabel(['t - ',(ONOFF{oo})]);ylabel('Depth')
     end
 end
@@ -381,7 +383,7 @@ subplot(4,3,6)
         hold on; axis xy; box off
         plot(PSSdepth.EMG.varbins,PSSdepth.EMG.vardist*10-1,'k')
         plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[-1 0],'k--')
-        ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
+        ColorbarWithAxis(meanPSSrange,'Mean PSS')
         xlabel('EMG');ylabel('Depth')
         
 for oo = 1:2
@@ -415,7 +417,7 @@ NiceSave('DepthPSSandWhisk',figfolder,baseName)
 %Get the best l5 channel
 
 PSSdist.depth = PSS.interpdepth;
-PSSrange = [-3 -0.5];
+PSSrange = [-1.5 0];
 
 %for cc = 1:length(PSSdist.depth)
 
@@ -448,7 +450,7 @@ PSSdist.(LAYERS{ll}).EMG  = ConditionalHist( log10(PSS.EMG),PSS.data(:,PSS.Lchan
 end
 
     
-%%
+
 %%
 cosx = linspace(-pi,pi,100);
 cospamp = [0.05 0.5];
