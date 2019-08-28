@@ -419,7 +419,7 @@ NiceSave('DepthPSSandWhisk',figfolder,baseName)
 %Get the best l5 channel
 
 PSSdist.depth = PSS.interpdepth;
-PSSrange = [-1.5 0];
+PSSrange = [-1.5 -0.25];
 
 %for cc = 1:length(PSSdist.depth)
 
