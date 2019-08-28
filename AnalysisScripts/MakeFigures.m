@@ -420,11 +420,11 @@ figure
         hold on
         [~,timepoint] = min(abs(PSS.timestamps-(times(tt))));
         
-        linefit.validfreq = PSS.freqs; linefit.frac = PSS.frac(:,timepoint,exchan_PSS)';
-        [linefit] = WaveIRASA_plawfit( linefit, [2.5 100] );
+        %linefit.validfreq = PSS.freqs; linefit.frac = PSS.frac(:,timepoint,exchan_PSS)';
+        %[linefit] = WaveIRASA_plawfit( linefit, [2.5 100] );
         
-        plot(log10(PSS.freqs(usefreqs))+times(tt)-0.5,log10(PSS.spec(usefreqs,timepoint,exchan_PSS)),'k','linewidth',1)
-        plot(log10(linefit.fitFreq)+times(tt)-0.5,linefit.Beta*log10(linefit.fitFreq)+linefit.Cons,'r','linewidth',2)
+        plot(log10(PSS.freqs(usefreqs))+times(tt)-0.5,(PSS.spec(timepoint,usefreqs,exchan_PSS)),'k','linewidth',1)
+        plot(log10(PSS.freqs(usefreqs))+times(tt)-0.5,specslope.data(timepoint,exchan_PSS)*log10(PSS.freqs(usefreqs))+specslope.intercept(timepoint,exchan_PSS),'r','linewidth',2)
     
     end
     %clim(PSSrange)
