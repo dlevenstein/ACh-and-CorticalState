@@ -183,8 +183,6 @@ end
 
 
 %%
-
-%%
 cosx = linspace(-pi,pi,100);
 cospamp = [0.05 0.5];
 
