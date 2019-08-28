@@ -41,8 +41,8 @@ pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.sampling
 pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 
 % Filtered Pupil
-lowfilter = [0.01 0.1];
-lowfilter = [0.02 0.2];
+lowfilter = [0.01 0.1]; %old. order 3
+lowfilter = [0.02 0.2]; %new: EMG coupled. order 1
 %highfilter = [0.3 0.8];
 
 pupil4filter = pupildilation;
@@ -88,6 +88,8 @@ end
 % Interpolate PSS to normalized depth
 PSS.interpdepth = linspace(-1,0,100);
 PSS.depthinterp = interp1(PSS.depth',PSS.data',PSS.interpdepth')';
+
+specslope = []; %clear memory
 %% Get rid of recording start/stop artifact and restrict to spontaneous behavior
 
 %Restricting SPONT UP/DOWNs
