@@ -223,7 +223,7 @@ exchan_PSS = find(spec.channels(exchan_spec)==PSS.chan);
 
 speclim = [0.65 1.35]; %Med norm
 PSSrange = [-2.4 -1.2];
-PSSrange = [-1.5 -0.25]; %new pss
+PSSrange = [-1.25 -0.25]; %new pss
 %PSSrange = [-2.6 -0.8];
 
 if mod(ww,2)==1
@@ -315,7 +315,7 @@ exchan_PSS = find(spec.channels(exchan_spec)==PSS.chan);
 
 speclim = [0.65 1.35]; %Med norm
 PSSrange = [-2.4 -1.2];
-PSSrange = [-1.5 -0.25]; %new pss
+PSSrange = [-1.25 -0.25]; %new pss
 %PSSrange = [-2.6 -0.8];
 
 figure
@@ -354,7 +354,7 @@ LogScale('y',10)
 
 yyaxis right
 plot(PSS.timestamps,PSS.data(:,exchan_PSS),'k','LineWidth',2)
-ylim([-3.5 -0.85])
+ylim(PSSrange+[-1 0])
 xlim(timewin)
     bz_ScaleBar('s')
 
@@ -408,7 +408,7 @@ figure
         bz_ScaleBar('s')
         yyaxis right
         plot(PSS.timestamps,PSS.data(:,exchan_PSS),'k','LineWidth',2)
-        ylim([-3.5 -0.85])
+        ylim(PSSrange+[-1 0])
     
         
         times = (0.5+timewin(1)):2:timewin(2);
