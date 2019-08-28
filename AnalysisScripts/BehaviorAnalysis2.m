@@ -44,10 +44,11 @@ pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 % Filtered Pupil
 lowfilter = [0.01 0.1]; %old. order 3
 lowfilter = [0.02 0.2]; %new: EMG coupled. order 1
+lowfilter = [0.033 0.33]; %new: dur coupled. order 2
 %highfilter = [0.3 0.8];
 
 pupil4filter = pupildilation;
-pupilcycle = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',1);
+pupilcycle = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',2);
 %highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
 pupilcycle.pupthresh = -0.8;
 pupilcycle.highpup = log10(pupilcycle.amp)>pupilcycle.pupthresh; 
