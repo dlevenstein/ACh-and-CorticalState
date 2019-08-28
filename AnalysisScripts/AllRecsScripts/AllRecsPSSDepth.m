@@ -41,7 +41,8 @@ depthinfo.boundaries = [0 0.1 0.35 0.5 1];
 %%
 cosx = linspace(-pi,pi,100);
 cospamp = [0.025 0.225];
-colorrange = [-2.4 -1.2];
+colorrange = [-2.4 -1.2]; %old PSS
+colorrange = [-1.15 -0.55];
 
 for ff = 1:2
 figure
