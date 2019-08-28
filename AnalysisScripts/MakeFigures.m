@@ -223,7 +223,7 @@ exchan_PSS = find(spec.channels(exchan_spec)==PSS.chan);
 
 speclim = [0.65 1.35]; %Med norm
 PSSrange = [-2.4 -1.2];
-PSSrange = [-1.25 -0.25]; %new pss
+PSSrange = [-1.25 -0.4]; %new pss
 %PSSrange = [-2.6 -0.8];
 
 if mod(ww,2)==1
