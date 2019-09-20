@@ -85,7 +85,7 @@ for cc =1:length(spec.channels)
 %     spec.timestamps = wavespec.timestamps(inspont,:);
 %     spec.freqs = wavespec.freqs; 
 %%
-    [specslope,~] = bz_PowerSpectrumSlope(lfp,10,0.005,'channels',spec.channels(cc),...
+    [specslope,~] = bz_PowerSpectrumSlope(lfp,10,0.01,'channels',spec.channels(cc),...
         'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes);
     spec.data(:,:,cc) = specslope.specgram;
     spec.osci(:,:,cc) = specslope.resid;
@@ -324,7 +324,7 @@ end
 
 [ ~,SPECdepth.(LAYERS{dd}).PSS ] = bz_LFPSpecToExternalVar( spec.Layer(:,:,dd),...
     spec.LayerPSS(:,dd),'specparms','input',...
-    'figparms',[],'numvarbins',40,'varlim',[-3 -0.5],'minX',500);
+    'figparms',[],'numvarbins',40,'varlim',[-2 0],'minX',500);
 end
 
 
@@ -580,7 +580,7 @@ end
 
 [ ~,OSCdepth.(LAYERS{dd}).PSS ] = bz_LFPSpecToExternalVar( spec.LayerOsci(:,:,dd),...
     spec.LayerPSS(:,dd),'specparms','input',...
-    'figparms',[],'numvarbins',40,'varlim',[-3 -0.5],'minX',500);
+    'figparms',[],'numvarbins',40,'varlim',[-2 0],'minX',500);
 end
 
   %%
