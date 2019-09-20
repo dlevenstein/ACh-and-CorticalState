@@ -22,33 +22,9 @@ sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 %% Loading behavior...
 % Pupil diameter
-pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
+%pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
+[ pupilcycle ] = ExtractPupilCycle( basePath );
 
-smoothwin = 0.5; %s
-pupildilation.data = smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving');
-nantimes = isnan(pupildilation.data);
-pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
-
-if length(pupildilation.data) < 1
-    warning('Not enough pupil data >)');
-    return
-end
-
-smoothwin = 2; %s
-pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
-pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
-pupildilation.timestamps = pupildilation.timestamps(~nantimes);
-
-% Filtered Pupil
-lowfilter = [0.01 0.1]; %old. order 3
-lowfilter = [0.02 0.2]; %new: EMG coupled. order 1
-%highfilter = [0.3 0.8];
-
-pupil4filter = pupildilation;
-pupilcycle = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',1);
-%highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
-pupilcycle.pupthresh = -0.8;
-pupilcycle.highpup = log10(pupilcycle.amp)>pupilcycle.pupthresh; 
 
 % EMG
 EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
@@ -69,16 +45,16 @@ CTXdepth = -depthinfo.ndepth(inCTX);
 
 
 %% Load only the cortex channels in the spontaneous time window
-% downsamplefactor = 2;
-% lfp = bz_GetLFP(CTXchans,...
-%     'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
-%     'intervals',sponttimes);
-% lfp.chanlayers = depthinfo.layer(inCTX);
+downsamplefactor = 2;
+lfp = bz_GetLFP(CTXchans,...
+    'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
+    'intervals',sponttimes);
+lfp.chanlayers = depthinfo.layer(inCTX);
 %% Calculate Spectrogram on all channels
 clear spec
 % %dt = 0.1;
 % spec.winsize = 1;
- spec.frange = [0.5 312]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
+ spec.frange = [2 128]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
  spec.nfreqs = 100;
 % 
 % % noverlap = spec.winsize-dt;
@@ -89,7 +65,7 @@ clear spec
 % spec.channels = lfp.channels;
 spec.channels = CTXchans;
 for cc =1:length(spec.channels)
-    cc
+    bz_Counter(cc,length(spec.channels),'Channel')
     %FFT
     %[temp,~,spec.timestamps] = spectrogram(single(lfp.data(:,cc)),winsize_sf,noverlap_sf,spec.freqs,lfp.samplingRate);
 %     spec.data(:,:,cc) = log10(abs(temp))';
@@ -103,81 +79,105 @@ for cc =1:length(spec.channels)
 %     spec.freqs = wavespec.freqs; 
 
     %Loaded Wavelets
-    load(fullfile(basePath,'WaveSpec_Downsampled',[baseName,'.',num2str(spec.channels(cc)),'.WaveSpec.lfp.mat']));
-    inspont = InIntervals(wavespec.timestamps,sponttimes);
-    spec.data(:,:,cc) = log10(abs(wavespec.data(inspont,:)));
-    spec.timestamps = wavespec.timestamps(inspont,:);
-    spec.freqs = wavespec.freqs; 
-
-    clear wavespec
+%     load(fullfile(basePath,'WaveSpec_Downsampled',[baseName,'.',num2str(spec.channels(cc)),'.WaveSpec.lfp.mat']));
+%     inspont = InIntervals(wavespec.timestamps,sponttimes);
+%     spec.data(:,:,cc) = log10(abs(wavespec.data(inspont,:)));
+%     spec.timestamps = wavespec.timestamps(inspont,:);
+%     spec.freqs = wavespec.freqs; 
+%%
+    [specslope,~] = bz_PowerSpectrumSlope(lfp,10,0.005,'channels',spec.channels(cc),...
+        'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes);
+    spec.data(:,:,cc) = specslope.specgram;
+    spec.osci(:,:,cc) = specslope.resid;
+    spec.PSS(:,cc) = specslope.data;
+    spec.timestamps = specslope.timestamps;
+    spec.freqs = specslope.freqs; 
+    clear specslope
 end
 %%
 spec.winsize = 1;
 spec.chanlayers = depthinfo.layer(inCTX);
+spec.osci(spec.osci<0) = 0;
 %% Take Mean Specgram by layer and calculate irasa
 
 LAYERS = depthinfo.lnames;
 
 for ll = 1:length(LAYERS)
     layerchans = strcmp(LAYERS{ll},spec.chanlayers);
+    repchan(ll) = round(median(find(layerchans)));
     spec.Layer(:,:,ll) = mean(spec.data(:,:,layerchans),3);
-    [~,spec.osci(:,:,ll),spec.oscifreqs] = WaveIRASA(spec.Layer(:,:,ll),...
-        'logamp',true,'freqs',spec.freqs);
+    spec.LayerOsci(:,:,ll) = mean(spec.osci(:,:,layerchans),3);
+    spec.LayerPSS(:,ll) = mean(spec.PSS(:,layerchans),2);
     % Median Normalize Spectrogram
     spec.Layer(:,:,ll) = NormToInt(spec.Layer(:,:,ll),'median');
 end
+spec = rmfield(spec,'data');
+spec = rmfield(spec,'osci');
+%%
 
+%%
+xwin = bz_RandomWindowInIntervals(spec.timestamps([1 end]),10);
+figure
+subplot(2,1,1)
+imagesc(spec.timestamps,log2(spec.freqs),spec.LayerOsci(:,:,4)')
+hold on
+plot(lfp.timestamps,bz_NormToRange(single(lfp.data(:,repchan(4)))),'w')
+axis xy
+colorbar
+caxis([0 0.7])
+LogScale('y',2)
+xlim(xwin)
 %% Get PSS by layer
-load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
-
-[~,~,PSS.CTXchans] = intersect(CTXchans,PSpecSlope.Shortwin.channels,'stable');
-PSS.data = PSpecSlope.Shortwin.PSS(:,PSS.CTXchans);
-PSS.timestamps = PSpecSlope.Shortwin.timestamps;
-PSS.samplingRate = 1/mean(diff(PSS.timestamps));
-PSS.winsize = PSpecSlope.Shortwin.movingwin(1);
-PSS.depth = CTXdepth;
-
-PSS.osci = PSpecSlope.Shortwin.OSCI(:,:,PSS.CTXchans);
-PSS.osci = shiftdim(PSS.osci,1);
-PSS.freqs = PSpecSlope.Shortwin.freqs;
-PSS.chanlayers = depthinfo.layer(inCTX);
-
-inspont = InIntervals(PSS.timestamps,sponttimes);
-PSS.timestamps = PSS.timestamps(inspont);
-PSS.data = PSS.data(inspont,:);
-
-for ll = 1:length(LAYERS)
-    PSS.Lchans.(LAYERS{ll}) = strcmp(LAYERS{ll},PSS.chanlayers);
-    PSS.Layer(:,ll) = (mean(PSS.data(:,PSS.Lchans.(LAYERS{ll})),2));
-    
-    %PSS at spec times
-    spec.LayerPSS(:,ll) = interp1(PSS.timestamps, PSS.Layer(:,ll),spec.timestamps,'nearest');
-end
-
-clear PSpecSlope
+% load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
+% 
+% [~,~,PSS.CTXchans] = intersect(CTXchans,PSpecSlope.Shortwin.channels,'stable');
+% PSS.data = PSpecSlope.Shortwin.PSS(:,PSS.CTXchans);
+% PSS.timestamps = PSpecSlope.Shortwin.timestamps;
+% PSS.samplingRate = 1/mean(diff(PSS.timestamps));
+% PSS.winsize = PSpecSlope.Shortwin.movingwin(1);
+% PSS.depth = CTXdepth;
+% 
+% PSS.osci = PSpecSlope.Shortwin.OSCI(:,:,PSS.CTXchans);
+% PSS.osci = shiftdim(PSS.osci,1);
+% PSS.freqs = PSpecSlope.Shortwin.freqs;
+% PSS.chanlayers = depthinfo.layer(inCTX);
+% 
+% inspont = InIntervals(PSS.timestamps,sponttimes);
+% PSS.timestamps = PSS.timestamps(inspont);
+% PSS.data = PSS.data(inspont,:);
+% 
+% for ll = 1:length(LAYERS)
+%     PSS.Lchans.(LAYERS{ll}) = strcmp(LAYERS{ll},PSS.chanlayers);
+%     PSS.Layer(:,ll) = (mean(PSS.data(:,PSS.Lchans.(LAYERS{ll})),2));
+%     
+%     %PSS at spec times
+%     spec.LayerPSS(:,ll) = interp1(PSS.timestamps, PSS.Layer(:,ll),spec.timestamps,'nearest');
+% end
+% 
+% clear PSpecSlope
 
 %% Align Specgram by behavior
 maxtimejump = 1; %s
 pupilcycle.amp = NanPadJumps( pupilcycle.timestamps,pupilcycle.amp,maxtimejump );
 pupilcycle.phase = NanPadJumps( pupilcycle.timestamps,pupilcycle.phase,maxtimejump );
-pupildilation.data = NanPadJumps( pupildilation.timestamps,pupildilation.data,maxtimejump );
+pupilcycle.data = NanPadJumps( pupilcycle.timestamps,pupilcycle.data,maxtimejump );
 EMGwhisk.EMGsm = NanPadJumps( EMGwhisk.timestamps,EMGwhisk.EMGsm,maxtimejump );
 
 spec.Wh = InIntervals(spec.timestamps,EMGwhisk.ints.Wh);
 EMGwhisk.ints.ExpWh = bsxfun(@plus,EMGwhisk.ints.Wh,[-0.5 0.5]*spec.winsize);
 spec.NWh = ~InIntervals(spec.timestamps,EMGwhisk.ints.ExpWh);
-spec.hipup = interp1(pupilcycle.timestamps,single(pupilcycle.highpup),spec.timestamps,'nearest')==1;
-spec.lopup = interp1(pupilcycle.timestamps,single(~pupilcycle.highpup),spec.timestamps,'nearest')==1;
+spec.hipup = interp1(pupilcycle.timestamps,single(pupilcycle.states==2),spec.timestamps,'nearest')==1;
+spec.lopup = interp1(pupilcycle.timestamps,single(pupilcycle.states==1),spec.timestamps,'nearest')==1;
 
 
 spec.Wh = InIntervals(spec.timestamps,EMGwhisk.ints.Wh);
 EMGwhisk.ints.ExpWh = bsxfun(@plus,EMGwhisk.ints.Wh,[-0.5 0.5]*spec.winsize);
 spec.NWh = ~InIntervals(spec.timestamps,EMGwhisk.ints.ExpWh);
-spec.hipup = interp1(pupilcycle.timestamps,single(pupilcycle.highpup),spec.timestamps,'nearest')==1;
-spec.lopup = interp1(pupilcycle.timestamps,single(~pupilcycle.highpup),spec.timestamps,'nearest')==1;
+spec.hipup = interp1(pupilcycle.timestamps,single(pupilcycle.states==2),spec.timestamps,'nearest')==1;
+spec.lopup = interp1(pupilcycle.timestamps,single(pupilcycle.states==1),spec.timestamps,'nearest')==1;
 
 spec.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,spec.timestamps,'nearest');
-spec.pup = interp1(pupildilation.timestamps,pupildilation.data,spec.timestamps,'nearest');
+spec.pup = interp1(pupilcycle.timestamps,pupilcycle.data,spec.timestamps,'nearest');
 spec.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,spec.timestamps,'nearest');
 
 
@@ -185,9 +185,9 @@ spec.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,spec.timestamps,'nearest')
 
 EMGwhisk.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.ints.Wh(:,1),'nearest');
-EMGwhisk.pup = interp1(pupildilation.timestamps,pupildilation.data,EMGwhisk.ints.Wh(:,1),'nearest');
+EMGwhisk.pup = interp1(pupilcycle.timestamps,pupilcycle.data,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.dur = diff(EMGwhisk.ints.Wh,[],2);
-EMGwhisk.hipup = log10(EMGwhisk.pupamp)>pupilcycle.pupthresh;
+EMGwhisk.hipup = log10(EMGwhisk.pupamp)>pupilcycle.detectionparms.pupthresh;
 EMGwhisk.lopup = ~EMGwhisk.hipup;
 
 %% Get relative time to nearest Wh onset
@@ -543,16 +543,16 @@ NiceSave('DepthSPECandWhisk',figfolder,baseName)
 
 %%  Mean depth spec by pupil size, phase and whisking
 %prepare for LFPspec....
-OSCdepth.freqs = spec.oscifreqs;
+OSCdepth.freqs = spec.freqs;
 for dd = 1:length(LAYERS)
 for ww = 1:2
-[ ~,OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( spec.osci(spec.(WHNWH{ww}),:,dd),...
+[ ~,OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( spec.LayerOsci(spec.(WHNWH{ww}),:,dd),...
     log10(spec.pup(spec.(WHNWH{ww}),:)),'specparms','input',...
     'figparms',[],'numvarbins',20,'varlim',[-0.25 0.25],'minX',500);
 
     for pp= 1:2
     [ ~,OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}) ] = bz_LFPSpecToExternalVar(...
-        spec.osci(spec.(WHNWH{ww})&spec.(HILO{pp}),:,dd),...
+        spec.LayerOsci(spec.(WHNWH{ww})&spec.(HILO{pp}),:,dd),...
         spec.pupphase(spec.(WHNWH{ww})&spec.(HILO{pp})),'specparms','input',...
         'figparms',[],'numvarbins',20,'varlim',[-pi pi],'minX',500);
 
@@ -562,23 +562,23 @@ end
 for oo = 1:2
     for ll = 1:2
         [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).(LONGSHORT{ll}) ] = bz_LFPSpecToExternalVar(...
-            spec.osci(spec.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
+            spec.LayerOsci(spec.(LONGSHORT{ll}).(ONOFF{oo}),:,dd),...
             spec.whtime.(ONOFF{oo})(spec.(LONGSHORT{ll}).(ONOFF{oo}),:),'specparms','input',...
             'figparms',[],'numvarbins',40,'varlim',[-window window],'minX',500);
     end
     
     [ ~,OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all ] = bz_LFPSpecToExternalVar(...
-        spec.osci(:,:,dd),...
+        spec.LayerOsci(:,:,dd),...
         spec.whtime.(ONOFF{oo}),'specparms','input',...
         'figparms',[],'numvarbins',400,'varlim',[-window window],'minX',500);
 end
 
     
-[ ~,OSCdepth.(LAYERS{dd}).EMG ] = bz_LFPSpecToExternalVar( spec.osci(:,:,dd),...
+[ ~,OSCdepth.(LAYERS{dd}).EMG ] = bz_LFPSpecToExternalVar( spec.LayerOsci(:,:,dd),...
     log10(spec.EMG),'specparms','input',...
     'figparms',[],'numvarbins',40,'varlim',[-1.7 0.9],'minX',500);
 
-[ ~,OSCdepth.(LAYERS{dd}).PSS ] = bz_LFPSpecToExternalVar( spec.osci(:,:,dd),...
+[ ~,OSCdepth.(LAYERS{dd}).PSS ] = bz_LFPSpecToExternalVar( spec.LayerOsci(:,:,dd),...
     spec.LayerPSS(:,dd),'specparms','input',...
     'figparms',[],'numvarbins',40,'varlim',[-3 -0.5],'minX',500);
 end
@@ -595,16 +595,17 @@ for ww = 1:2
     subplot(6,4,(dd-1)*4+ww)
         for pp = 1:2
         imagesc( OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
-            log10(OSCdepth.freqs),...
+            log2(OSCdepth.freqs),...
             OSCdepth.(LAYERS{dd}).(HILO{pp}).(WHNWH{ww}).mean)
         hold on; axis xy; box off
         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp),'w')
         end   
-        LogScale('y',10)
+        LogScale('y',2)
         
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([-0.2 0.2])
-        %colorbar
+        clim([0 0.3])
+        colorbar
+        ylim([1 7])
         xlim([-pi 3*pi])
         if dd == 6
         xlabel('Pupil Phase');
@@ -620,12 +621,14 @@ for ww = 1:2
         
     subplot(6,4,(dd-1)*4+ww+2)
         imagesc( OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}).varbins,...
-            log10(OSCdepth.freqs),...
+            log2(OSCdepth.freqs),...
             OSCdepth.(LAYERS{dd}).pup.(WHNWH{ww}).mean)
         hold on; axis xy; box off
-        LogScale('y',10)
+        LogScale('y',2)
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([-0.2 0.2])
+        clim([0 0.3])
+        %colorbar
+        ylim([1 7])
         if dd == 6
         xlabel('Pupil Size');
         end
@@ -655,7 +658,7 @@ subplot(6,4,(dd-1)*4+oo)
             OSCdepth.(LAYERS{dd}).(ONOFF{oo}).all.mean)
         hold on; axis xy; box off
         plot([0 0],[0 max(OSCdepth.freqs)],'w')
-        clim([-0.2 0.2])
+        clim([0 0.3])
          LogScale('y',10)
         if dd == 6
         xlabel(['t - ',(ONOFF{oo})])
@@ -675,7 +678,7 @@ subplot(6,4,(dd-1)*4+4)
         hold on; axis xy; box off
         plot(OSCdepth.(LAYERS{dd}).EMG.varbins,OSCdepth.(LAYERS{dd}).EMG.vardist*1000,'w')
         plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(OSCdepth.freqs)],'k--')
-        clim([-0.2 0.2])
+        clim([0 0.3])
         LogScale('y',10)
         ylabel('Freq');
                 if dd == 6

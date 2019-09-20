@@ -6,6 +6,7 @@ function [frac,osci,validfreq] = WaveIRASA(spec,varargin)
 %(options)
 %   'logamp'    true if spectrogram is already log-amplitude transformed
 %   'freqs'     enter freqs if not using structure input
+%   'frange'    limit your IRASA to a certain frequency range
 %
 %
 % R. Hardstone & W. Munoz - 2019
@@ -15,9 +16,11 @@ function [frac,osci,validfreq] = WaveIRASA(spec,varargin)
 p = inputParser;
 addParameter(p,'logamp',false)
 addParameter(p,'freqs',[])
+%addParameter(p,'frange',[])
 parse(p,varargin{:})
 logamp = p.Results.logamp;
 freqs = p.Results.freqs;
+%frange = p.Results.frange;
 
 %%
 %fs = spec.samplingRate;
@@ -79,6 +82,12 @@ end
 frac = resampledData(:,validFreqInds);
 validfreq = freqs(validFreqInds);
 
+%%
+% figure
+% plot(log10(validfreq),ampData(10,validFreqInds),'.')
+% hold on
+% plot(log10(validfreq),resampledData(10,validFreqInds),'.')
+% LogScale('x',10)
 %%
 % figure
 % for i_time = 1:800:size(datlfp.data,1)
