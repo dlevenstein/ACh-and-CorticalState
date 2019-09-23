@@ -81,7 +81,7 @@ xlabel('f (Hz)');ylabel('Depth')
 
 
 end
-NiceSave('DepthFreqCorr',analysisfolder,groupnames{ff},'figtype','epsc')
+NiceSave('DepthFreqCorr',analysisfolder,groupnames{ff})
 end
 end
 
@@ -193,10 +193,10 @@ for dd = 1:6
         LogScale('y',10)
         %crameri batlow
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([-0.15 0.15])
-        crameri('vik','pivot',0)
+        clim([0 0.25])
+        %crameri('vik','pivot',0)
         xlim([-pi 3*pi])
-        ylim([0 2.5])
+        %ylim([0 2.5])
                 plot(pi*[1 1],get(gca,'ylim'),'k--')
         bz_piTickLabel('x')
         if dd == 6
@@ -226,10 +226,10 @@ for dd = 1:6
             OSCdepth.(genotypes{gg}).(LAYERS{dd}).pup.(WHNWH{ww}).mean)
         hold on; axis xy; box off
         LogScale('y',10)
-        ylim([0 2.5])
+        %ylim([0 2.5])
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([-0.15 0.15])
-        crameri('vik','pivot',0)
+        clim([0 0.25])
+        %crameri('vik','pivot',0)
                 plot(pi*[1 1],get(gca,'ylim'),'k--')
         bz_piTickLabel('x')
         if dd == 6
@@ -327,6 +327,83 @@ end
 
 
 %%
+
+for ff = 1:2
+    for oo = 1:2
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+    
+for dd = 1:6
+
+
+subplot(6,4,(dd-1)*4+gi)
+        imagesc( OSCdepth.(genotypes{gg}).(LAYERS{dd}).(ONOFF{oo}).all.varbins,...
+            log10(OSCdepth.(genotypes{gg}).freqs),...
+            OSCdepth.(genotypes{gg}).(LAYERS{dd}).(ONOFF{oo}).all.mean)
+        hold on; axis xy; box off
+        plot([0 0],[0 max(OSCdepth.(genotypes{gg}).freqs)],'w')
+        %ColorbarWithAxis(speclim,'Power (med^-^1)')
+        caxis([0 0.25])
+        %crameri vik
+        LogScale('y',10)
+        %ylim([0 2.5])
+        if dd == 6
+        xlabel(['t - ',(ONOFF{oo})])
+        end
+        if gi == 1
+            ylabel({LAYERS{dd},'Freq'})
+        end
+        if dd == 1
+        title({genotypes{gg},ONOFF{oo}})
+        end
+end
+ 
+end
+
+NiceSave(['DepthOSCandWhisk',ONOFF{oo}],analysisfolder,groupnames{ff})
+
+    end
+end
+
+%%
+for ff = 1:2
+
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+    
+for dd = 1:6
+
+subplot(6,4,(dd-1)*4+gi)
+        imagesc( OSCdepth.(genotypes{gg}).(LAYERS{dd}).EMG.varbins,...
+            log10(OSCdepth.(genotypes{gg}).freqs),...
+            OSCdepth.(genotypes{gg}).(LAYERS{dd}).EMG.mean)
+        hold on; axis xy; box off
+        %plot(SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.varbins,SPECdepth.(genotypes{gg}).(LAYERS{dd}).EMG.vardist*10,'w')
+        %plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
+        %ColorbarWithAxis(speclim,'Power (med^-^1)')
+        %crameri vik
+        caxis([0 0.25])
+        %ylim([0 2.5])
+        if gi == 1
+            ylabel({LAYERS{dd},'Freq'})
+        end
+        LogScale('y',10)
+                if dd == 6
+        xlabel('EMG')
+        end
+        if dd == 1
+        title(genotypes{gg})
+        end
+end
+
+end
+    
+NiceSave('DepthOSCandEMG',analysisfolder,groupnames{ff})
+
+end
+%%
 for ff = 1:2
 
 figure
@@ -391,7 +468,7 @@ subplot(6,4,(dd-1)*4+gi)
             ylabel({LAYERS{dd},'Occupancy'})
         end
         axis tight
-        ylim([0 0.1])
+        %ylim([0 0.1])
         
         if dd == 6
         xlabel('PSS')
