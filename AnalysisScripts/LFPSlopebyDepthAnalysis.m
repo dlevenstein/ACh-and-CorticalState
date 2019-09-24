@@ -23,35 +23,8 @@ sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 %% Loading behavior...
 % Pupil diameter
-pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
+[ pupilcycle ] = ExtractPupilCycle( basePath );
 
-smoothwin = 0.5; %s
-pupildilation.data = smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving');
-nantimes = isnan(pupildilation.data);
-pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
-
-if length(pupildilation.data) < 1
-    warning('Not enough pupil data >)');
-    return
-end
-
-smoothwin = 2; %s
-pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
-pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
-pupildilation.timestamps = pupildilation.timestamps(~nantimes);
-
-% Filtered Pupil
-lowfilter = [0.01 0.1]; %old. order 3
-lowfilter = [0.02 0.2]; %new: EMG coupled. order 1
-lowfilter = [0.033 0.33]; %new: dur coupled. order 2
-%highfilter = [0.3 0.8];
-
-pupil4filter = pupildilation;
-pupilcycle = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',2);
-%highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
-pupilcycle.pupthresh = -0.8;
-pupilcycle.highpup = log10(pupilcycle.amp)>pupilcycle.pupthresh; 
-pupilcycle.lowpup = log10(pupilcycle.amp)<=pupilcycle.pupthresh; 
 
 % EMG
 EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
@@ -107,28 +80,28 @@ PSS.osci = PSS.osci(inspont,:,:);
 maxtimejump = 1; %s
 pupilcycle.amp = NanPadJumps( pupilcycle.timestamps,pupilcycle.amp,maxtimejump );
 pupilcycle.phase = NanPadJumps( pupilcycle.timestamps,pupilcycle.phase,maxtimejump );
-pupildilation.data = NanPadJumps( pupildilation.timestamps,pupildilation.data,maxtimejump );
+pupilcycle.data = NanPadJumps( pupilcycle.timestamps,pupilcycle.data,maxtimejump );
 EMGwhisk.EMGsm = NanPadJumps( EMGwhisk.timestamps,EMGwhisk.EMGsm,maxtimejump );
 
 PSS.Wh = InIntervals(PSS.timestamps,EMGwhisk.ints.Wh);
 EMGwhisk.ints.ExpWh = bsxfun(@plus,EMGwhisk.ints.Wh,[-0.5 0.5]*PSS.winsize);
 PSS.NWh = ~InIntervals(PSS.timestamps,EMGwhisk.ints.ExpWh);
-PSS.hipup = interp1(pupilcycle.timestamps,single(pupilcycle.highpup),PSS.timestamps,'nearest')==1;
-PSS.lopup = interp1(pupilcycle.timestamps,single(pupilcycle.lowpup),PSS.timestamps,'nearest')==1;
+PSS.hipup = InIntervals(PSS.timestamps,pupilcycle.ints.highpupstate);
+PSS.lopup = InIntervals(PSS.timestamps,pupilcycle.ints.lowpupstate);
 
 
 PSS.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,PSS.timestamps,'nearest');
-PSS.pup = interp1(pupildilation.timestamps,pupildilation.data,PSS.timestamps,'nearest');
+PSS.pup = interp1(pupilcycle.timestamps,pupilcycle.data,PSS.timestamps,'nearest');
 PSS.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,PSS.timestamps,'nearest');
 
 %% Whisk phase and duration
 
 EMGwhisk.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.ints.Wh(:,1),'nearest');
-EMGwhisk.pup = interp1(pupildilation.timestamps,pupildilation.data,EMGwhisk.ints.Wh(:,1),'nearest');
+EMGwhisk.pup = interp1(pupilcycle.timestamps,pupilcycle.data,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.dur = diff(EMGwhisk.ints.Wh,[],2);
-EMGwhisk.hipup = log10(EMGwhisk.pupamp)>pupilcycle.pupthresh;
-EMGwhisk.lopup = ~EMGwhisk.hipup;
+EMGwhisk.hipup = InIntervals(EMGwhisk.ints.Wh(:,1),pupilcycle.ints.highpupstate);
+EMGwhisk.lopup = InIntervals(EMGwhisk.ints.Wh(:,1),pupilcycle.ints.lowpupstate);
 
 %% Get relative time to nearest Wh onset
 ONOFF = {'WhOn','WhOFF'};
@@ -262,18 +235,18 @@ end
 
     
 %%
-xwinsize = 80;
+xwinsize = 60;
 xwin = bz_RandomWindowInIntervals(PSS.timestamps([1 end]),xwinsize);
 figure
 subplot(2,1,1)
     imagesc(PSS.timestamps,PSS.interpdepth,PSS.depthinterp')
     hold on
-    plot(pupildilation.timestamps,bz_NormToRange(pupildilation.data,[-1 -0.5]),'w','linewidth',2)
+    plot(pupilcycle.timestamps,bz_NormToRange(pupilcycle.data,[-1 -0.5]),'w','linewidth',2)
     plot(EMGwhisk.timestamps,bz_NormToRange(EMGwhisk.EMG,[-1.3 -0.8]),'k')
     xlim(xwin)
     axis xy
     ylim([-1.1 0])
-    ColorbarWithAxis([-2 -0.25],'PSS')
+    ColorbarWithAxis([-1.25 -0.25],'PSS')
     xlabel('t (s)');ylabel('Depth')
     
     subplot(2,2,3)
@@ -306,7 +279,7 @@ subplot(4,2,8)
 cosx = linspace(-pi,pi,100);
 cospamp = [0.025 0.3];
 
-meanPSSrange = [-1 -0.5];
+meanPSSrange = [-1.25 -0.5];
 
 figure
 for ww = 1:2

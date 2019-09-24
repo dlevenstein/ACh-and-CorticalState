@@ -3,7 +3,7 @@ function [ EMGdur,EMGdist,pupilphaseEMG,pupildpEMG] = BehaviorAnalysis2(basePath
 %Initiate Paths
 %reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
-%basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
+%basePath = '/mnt/proraidDL/Database/WMData/AChPupil/EM1M3/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
 %basePath = pwd;
 %figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
@@ -23,35 +23,37 @@ channels = sessionInfo.channels;
 
 %% Loading behavior...
 % Pupil diameter
-pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
+[ pupilcycle ] = ExtractPupilCycle( basePath );
 
-smoothwin = 0.5; %s
-pupildilation.data = smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving');
-nantimes = isnan(pupildilation.data);
-pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
-
-if length(pupildilation.data) < 1
-    warning('Not enough pupil data >)');
-    return
-end
-
-smoothwin = 2; %s
-pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
-pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
-pupildilation.dpdt = [pupildilation.dpdt; nan]; %To align to timestamps
-pupildilation.timestamps = pupildilation.timestamps(~nantimes);
-
-% Filtered Pupil
-lowfilter = [0.01 0.1]; %old. order 3
-lowfilter = [0.02 0.2]; %new: EMG coupled. order 1
-lowfilter = [0.033 0.33]; %new: dur coupled. order 2
-%highfilter = [0.3 0.8];
-
-pupil4filter = pupildilation;
-pupilcycle = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',2);
-%highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
-pupilcycle.pupthresh = -0.8;
-pupilcycle.highpup = log10(pupilcycle.amp)>pupilcycle.pupthresh; 
+% %pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
+% 
+% smoothwin = 0.5; %s
+% pupilcycle.data = smooth(pupilcycle.data,smoothwin.*pupilcycle.samplingRate,'moving');
+% nantimes = isnan(pupilcycle.data);
+% pupilcycle.data = pupilcycle.data(~isnan(pupilcycle.data));
+% 
+% if length(pupilcycle.data) < 1
+%     warning('Not enough pupil data >)');
+%     return
+% end
+% 
+% smoothwin = 2; %s
+% pupilcycle.dpdt = diff(smooth(pupilcycle.data,smoothwin.*pupilcycle.samplingRate,'moving')).*pupilcycle.samplingRate;
+% pupilcycle.dpdt = smooth(pupilcycle.dpdt,smoothwin.*pupilcycle.samplingRate,'moving');
+% pupilcycle.dpdt = [pupilcycle.dpdt; nan]; %To align to timestamps
+% pupilcycle.timestamps = pupilcycle.timestamps(~nantimes);
+% 
+% % Filtered Pupil
+% lowfilter = [0.01 0.1]; %old. order 3
+% lowfilter = [0.02 0.2]; %new: EMG coupled. order 1
+% lowfilter = [0.033 0.33]; %new: dur coupled. order 2
+% %highfilter = [0.3 0.8];
+% 
+% pupil4filter = pupilcycle;
+% pupilcycle = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',2);
+% %highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
+% pupilcycle.pupthresh = -0.8;
+% pupilcycle.highpup = log10(pupilcycle.amp)>pupilcycle.pupthresh; 
 
 % EMG
 EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
@@ -81,8 +83,8 @@ EMGwhisk.iswhisk = InIntervals(EMGwhisk.timestamps,EMGwhisk.ints.Wh);
 maxtimejump = 1; %s
 pupilcycle.amp = NanPadJumps( pupilcycle.timestamps,pupilcycle.amp,maxtimejump );
 pupilcycle.phase = NanPadJumps( pupilcycle.timestamps,pupilcycle.phase,maxtimejump );
-pupildilation.data = NanPadJumps( pupildilation.timestamps,pupildilation.data,maxtimejump );
-pupildilation.dpdt = NanPadJumps( pupildilation.timestamps,pupildilation.dpdt,maxtimejump );
+pupilcycle.data = NanPadJumps( pupilcycle.timestamps,pupilcycle.data,maxtimejump );
+pupilcycle.dpdt = NanPadJumps( pupilcycle.timestamps,pupilcycle.dpdt,maxtimejump );
 EMGwhisk.EMGsm = NanPadJumps( EMGwhisk.timestamps,EMGwhisk.EMGsm,maxtimejump );
 
 
@@ -93,17 +95,18 @@ EMGwhisk.EMGsm = NanPadJumps( EMGwhisk.timestamps,EMGwhisk.EMGsm,maxtimejump );
 
 EMGwhisk.whisks.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.whisks.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.ints.Wh(:,1),'nearest');
-EMGwhisk.whisks.pup = interp1(pupildilation.timestamps,pupildilation.data,EMGwhisk.ints.Wh(:,1),'nearest');
+EMGwhisk.whisks.pup = interp1(pupilcycle.timestamps,pupilcycle.data,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.whisks.dur = diff(EMGwhisk.ints.Wh,[],2);
-EMGwhisk.whisks.hipup = log10(EMGwhisk.whisks.pupamp)>pupilcycle.pupthresh;
-EMGwhisk.whisks.lopup = ~EMGwhisk.whisks.hipup;
+EMGwhisk.whisks.hipup = InIntervals(EMGwhisk.ints.Wh(:,1),pupilcycle.ints.highpupstate);
+EMGwhisk.whisks.lopup = InIntervals(EMGwhisk.ints.Wh(:,1),pupilcycle.ints.lowpupstate);
 
 EMGwhisk.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,EMGwhisk.timestamps,'nearest');
 EMGwhisk.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.timestamps,'nearest');
-EMGwhisk.pup = interp1(pupildilation.timestamps,pupildilation.data,EMGwhisk.timestamps,'nearest');
-EMGwhisk.dpdt = interp1(pupildilation.timestamps,pupildilation.dpdt,EMGwhisk.timestamps,'nearest');
-EMGwhisk.hipup =  log10(EMGwhisk.pupamp)>pupilcycle.pupthresh;
-EMGwhisk.lopup = log10(EMGwhisk.pupamp)<=pupilcycle.pupthresh;
+EMGwhisk.pup = interp1(pupilcycle.timestamps,pupilcycle.data,EMGwhisk.timestamps,'nearest');
+EMGwhisk.dpdt = interp1(pupilcycle.timestamps(1:end-1),pupilcycle.dpdt,EMGwhisk.timestamps,'nearest');
+EMGwhisk.hipup = InIntervals(EMGwhisk.timestamps,pupilcycle.ints.highpupstate);
+EMGwhisk.lopup = InIntervals(EMGwhisk.timestamps,pupilcycle.ints.lowpupstate);
+
 
 HILO = {'lopup','hipup'};
 
@@ -167,7 +170,7 @@ alpha(a,double(~isnan(pupilphaseEMG.meanZ')))
 
 %imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
 crameri lapaz
-plot([-pi 3*pi],pupilcycle.pupthresh.*[1 1],'w--')
+plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
 plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
 axis xy
 box off
@@ -253,22 +256,22 @@ subplot(3,2,6)
 
 %% Example Figure
 windows(1,:) = [100 250];
-windows(2,:) = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),150);
-windows(3,:) = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),150);
+windows(2,:) = bz_RandomWindowInIntervals(pupilcycle.timestamps([1 end]),150);
+windows(3,:) = bz_RandomWindowInIntervals(pupilcycle.timestamps([1 end]),150);
 
 figure;
 for ww = 1:3
 subplot(3,1,ww);
 %plot(pupildilation.timestamps,pupildilation.data,'k','linewidth',2); hold on;
-scatter(pupildilation.timestamps,pupildilation.data,3,pupilcycle.phase,'filled')
+scatter(pupilcycle.timestamps,pupilcycle.data,3,pupilcycle.phase,'filled')
 hold on
 %scatter(pupilcycle.timestamps,pupilcycle.amp,3,pupilcycle.phase,'filled')
 plot(EMGwhisk.timestamps,EMGwhisk.EMG./max(EMGwhisk.EMG),...
     'color',[0.5 0.5 0.5],'linewidth',0.5);
 plot(EMGwhisk.timestamps,5*EMGwhisk.EMGsm./(max(EMGwhisk.EMG)),...
     'color','k','linewidth',0.5);
-plot(pupilcycle.timestamps(pupilcycle.highpup),3*ones(sum(pupilcycle.highpup),1),'r.')
-plot(pupilcycle.timestamps(~pupilcycle.highpup),3*ones(sum(~pupilcycle.highpup),1),'k.')
+plot(pupilcycle.timestamps(pupilcycle.states==2),3*ones(sum(pupilcycle.states==2),1),'r.')
+plot(pupilcycle.timestamps(pupilcycle.states==1),3*ones(sum(pupilcycle.states==1),1),'k.')
 plot(EMGwhisk.timestamps(EMGwhisk.iswhisk),2.8*ones(sum(EMGwhisk.iswhisk),1),'b.')
 %plot(highpupildata.timestamps,highpupildata.data+nanmean(pupildilation.data),'r')
 colormap(gca,hsv)
