@@ -12,11 +12,25 @@ savefilename = fullfile(basePath,[baseName,'.pupilcycle.behavior.mat']);
 p = inputParser;
 addParameter(p,'redetect',false,@islogical);
 addParameter(p,'saveMat',true,@islogical);
+addParameter(p,'filterbounds',[0.02 0.2]); %Hz
+addParameter(p,'filterorder',1); %cycles
+addParameter(p,'smoothwin_pup',0.5); %s
+addParameter(p,'smoothwin_dpdt',2); %s
+addParameter(p,'hilothresh',-0.8);
+addParameter(p,'highpupdurthresh',5); %s
+addParameter(p,'lowpupdurthresh',5); %s
 
 parse(p,varargin{:})
 
 redetect = p.Results.redetect;
 saveMat = p.Results.saveMat;
+pupfilter = p.Results.filterbounds;
+filterorder = p.Results.filterorder;
+smoothwin_pup = p.Results.smoothwin_pup;
+smoothwin_dpdt = p.Results.smoothwin_dpdt;
+hilothresh = p.Results.hilothresh;
+highpupdurthresh = p.Results.highpupdurthresh;
+lowpupdurthresh = p.Results.lowpupdurthresh;
 %%
 if exist(savefilename,'file') & ~redetect
    display('Loading Pupil Cycle')
@@ -26,7 +40,6 @@ end
 %%
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
-smoothwin_pup = 0.5; %s
 pupildilation.data = smooth(pupildilation.data,smoothwin_pup.*pupildilation.samplingRate,'moving');
 nantimes = isnan(pupildilation.data);
 pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
@@ -36,19 +49,15 @@ if length(pupildilation.data) < 1
     return
 end
 
-smoothwin_dpdt = 2; %s
 pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin_dpdt.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
 pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin_dpdt.*pupildilation.samplingRate,'moving');
 pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 
-% Filtered Pupil
-lowfilter = [0.02 0.2]; %new: EMG coupled. order 1
-
 
 pupil4filter = pupildilation;
-filteredpupil = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',1);
+filteredpupil = bz_Filter(pupil4filter,'passband',pupfilter,'filter' ,'fir1','order',filterorder);
 %highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
-filteredpupil.pupthresh = -0.8;
+filteredpupil.pupthresh = hilothresh;
 filteredpupil.highpup = log10(filteredpupil.amp)>filteredpupil.pupthresh; 
 filteredpupil.lowpup = log10(filteredpupil.amp)<=filteredpupil.pupthresh; 
 
@@ -77,7 +86,6 @@ durhist.pre.high = hist(log10(pupilcycle.dur.highpup),durhist.bins);
 
 %% Merge short windows
 
-highpupdurthresh = 5; %s
 
 shortHIints = pupilcycle.dur.highpup<=highpupdurthresh;
 
@@ -89,7 +97,6 @@ pupilcycle.dur.highpup = diff(pupilcycle.ints.highpupstate,[],2);
 pupilcycle.dur.lowpup = diff(pupilcycle.ints.lowpupstate,[],2);
 
 
-lowpupdurthresh = 5; %s
 
 shortLOints = pupilcycle.dur.lowpup<=lowpupdurthresh;
 
