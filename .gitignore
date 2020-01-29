@@ -6,3 +6,4 @@ AnalysisScripts/LaminarCSDAnalysis.asv
 *.asv
 
 *.out
+.DS_Store
