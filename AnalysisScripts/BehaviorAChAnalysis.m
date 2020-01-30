@@ -18,7 +18,7 @@ baseName = bz_BasenameFromBasepath(basePath);
 %savefile = fullfile(basePath,[baseName,'.BehaviorAnalysis.mat']);
 %% Loading behavior...
 % Pupil diameter
-[ pupilcycle ] = ExtractPupilCycle( basePath,'redetect',true);
+[ pupilcycle ] = ExtractPupilCycle( basePath,'redetect',false);
 GACh = bz_LoadBehavior(basePath,'GACh');
 
 % %pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
@@ -88,11 +88,16 @@ pupilcycle.ints.highpupstate = pupilcycle.ints.highpupstate(spontidx,:);
 spontidx = find(pupilcycle.ints.lowpupstate(:,2) < sponttimes(2));
 pupilcycle.ints.lowpupstate = pupilcycle.ints.lowpupstate(spontidx,:);
 
+%Median-normalize GACh
+for mm = 1:length(MergePoints.filesmerged)
+    inrec = InIntervals(GACh.timestamps,MergePoints.timestamps(mm,:));
+    GACh.raw(inrec) = GACh.raw(inrec)./nanmedian(GACh.raw(inrec));
+end
+
 spontidx = find(GACh.timestamps < sponttimes(2));
 GACh.raw = GACh.raw(spontidx);
 GACh.timestamps = GACh.timestamps(spontidx);
 
-GACh.raw = GACh.raw./nanmedian(GACh.raw);
 %% Get rid of recording start/stop artifact
 
 maxtimejump = 1; %s
@@ -185,7 +190,7 @@ for oo = 1:2
         ConditionalHist3(GACh.whtime.(ONOFF{oo}), GACh.pupphase,...
         (GACh.raw),...
         'minXY',100,'Xbounds',[-5 5],'Ybounds',[-pi pi],...
-        'numXbins',80,'numYbins',40);
+        'numXbins',60,'numYbins',30);
 end
 
 %% GACh and pupil 
@@ -238,11 +243,13 @@ for oo = 1:2
     subplot(2,2,oo)
         imagesc(pupilphaseonsetGACh.Xbins,pupilphaseonsetGACh.Ybins,...
             pupilphaseonsetGACh.(ONOFF{oo}).meanZ')
+        alpha(single(~isnan(pupilphaseonsetGACh.(ONOFF{oo}).meanZ')))
         hold on
         axis xy
         plot([0 0],ylim(gca),'k--')
         xlabel(['t - aligned to ',(ONOFF{oo})]);ylabel('Pupil Phase')
-        ColorbarWithAxis([0.9 1.1],'Mean GACh')
+        ColorbarWithAxis([0.9 1.2],'Mean GACh')
+        crameri('berlin','pivot',1)
 end
    NiceSave('GAChWhisk_aligned',figfolder,baseName)
 
@@ -468,7 +475,7 @@ PAcoupling.corr = PAcorr;
 %%
 figure
 for oo = orders
-    subplot(2,4,oo)
+    subplot(2,3,oo)
 imagesc(log10(lowerbounds),log10(upperbounds),PAcoupling.coupling(:,:,oo)')
 hold on
 axis xy
@@ -480,7 +487,7 @@ colorbar
 title(num2str(oo))
 
 
-    subplot(2,4,oo+4)
+    subplot(2,3,oo+3)
 imagesc(log10(lowerbounds),log10(upperbounds),PAcoupling.corr(:,:,oo)')
 hold on
 axis xy
