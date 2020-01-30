@@ -23,7 +23,7 @@ channels = sessionInfo.channels;
 
 %% Loading behavior...
 % Pupil diameter
-[ pupilcycle ] = ExtractPupilCycle( basePath );
+[ pupilcycle ] = ExtractPupilCycle( basePath,'redetect',true );
 
 % %pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 % 
@@ -103,7 +103,7 @@ EMGwhisk.whisks.lopup = InIntervals(EMGwhisk.ints.Wh(:,1),pupilcycle.ints.lowpup
 EMGwhisk.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,EMGwhisk.timestamps,'nearest');
 EMGwhisk.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.timestamps,'nearest');
 EMGwhisk.pup = interp1(pupilcycle.timestamps,pupilcycle.data,EMGwhisk.timestamps,'nearest');
-EMGwhisk.dpdt = interp1(pupilcycle.timestamps(1:end-1),pupilcycle.dpdt,EMGwhisk.timestamps,'nearest');
+EMGwhisk.dpdt = interp1(pupilcycle.timestamps,pupilcycle.dpdt,EMGwhisk.timestamps,'nearest');
 EMGwhisk.hipup = InIntervals(EMGwhisk.timestamps,pupilcycle.ints.highpupstate);
 EMGwhisk.lopup = InIntervals(EMGwhisk.timestamps,pupilcycle.ints.lowpupstate);
 
