@@ -13,8 +13,8 @@ p = inputParser;
 addParameter(p,'redetect',false,@islogical);
 addParameter(p,'saveMat',true,@islogical);
 addParameter(p,'showFig',false,@islogical);
-addParameter(p,'filterbounds',[0.01 0.2]); %Hz
-addParameter(p,'filterorder',2); %cycles
+addParameter(p,'filterbounds',[0.02 0.2]); %Hz
+addParameter(p,'filterorder',1); %cycles
 addParameter(p,'smoothwin_pup',0.5); %s
 addParameter(p,'smoothwin_dpdt',2); %s
 addParameter(p,'hilothresh',-0.8);
