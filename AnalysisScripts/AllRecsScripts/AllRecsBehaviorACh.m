@@ -19,18 +19,22 @@ ONOFF = {'WhOn','WhOFF'};
 LONGSHORT = {'long','short'};
 GAChrange = [0.85 1.2];
 %%
+%%
 figure
 for oo = 1:2
     subplot(2,2,oo)
         imagesc(pupilphaseonsetGACh.Xbins,pupilphaseonsetGACh.Ybins,...
             pupilphaseonsetGACh.(ONOFF{oo}).meanZ')
+        alpha(single(~isnan(pupilphaseonsetGACh.(ONOFF{oo}).meanZ')))
         hold on
         axis xy
-        plot([0 0],ylim(gca),'k--')
+        plot([0 0],ylim(gca),'w--')
         xlabel(['t - aligned to ',(ONOFF{oo})]);ylabel('Pupil Phase')
-        ColorbarWithAxis([0.9 1.5],'Mean GACh')
+        ColorbarWithAxis([0.9 1.1],'Mean GACh')
+        crameri('berlin','pivot',1)
 end
- %  NiceSave('GAChWhisk_aligned',figfolder,baseName)
+NiceSave('GAChWhisk_aligned',analysisfolder,'')
+
  
  %%
  figure
@@ -69,7 +73,7 @@ end
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
         xlabel('EMG');ylabel('GACh')
    crameri bilbao
-  % NiceSave('GAChWhisk',figfolder,baseName)
+NiceSave('GAChWhisk',analysisfolder,'')
   
   
   %%
@@ -105,7 +109,7 @@ ColorbarWithAxis(GAChrange,'Mean GACh')
 %LogScale('c',10)
 axis xy
 box off
-LogScale('c',10)
+%LogScale('c',10)
 LogScale('x',10)
 
 
@@ -134,7 +138,7 @@ subplot(3,2,4)
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
         xlabel('Pupil Size');ylabel('GACh')
    crameri bilbao
-   %     NiceSave('GAChPupil',figfolder,baseName)
+NiceSave('GAChPupil',analysisfolder,'')
 
    %% Figure: whisk/nonwhisk
    figure
@@ -167,7 +171,7 @@ subplot(3,2,2+ww)
         
 end
    
-    %    NiceSave('GAChPupil_WhNWh',figfolder,baseName)
+NiceSave('GAChPupil_WhNWh',analysisfolder,'')
 %%
 %%
 figure
@@ -178,7 +182,7 @@ hold on
 axis xy
 %plot(log10(pupilcycle.detectionparms.filterparms.passband(1)),log10(pupilcycle.detectionparms.filterparms.passband(2)),'r+')
 LogScale('xy',10)
-%clim([0.25 0.7])
+clim([0.01 0.023])
 xlabel('Lower Bound (Hz)');ylabel('Upper Bound (Hz)')
 colorbar
 title(num2str(oo))
@@ -193,7 +197,8 @@ LogScale('xy',10)
 %clim([0.1 0.4])
 xlabel('Lower Bound (Hz)');ylabel('Upper Bound (Hz)')
 colorbar
+caxis([0.1 0.6])
 title(num2str(oo))
 end
 
-%NiceSave('FilterCompare',figfolder,baseName)
+NiceSave('FilterCompare',analysisfolder,'')
