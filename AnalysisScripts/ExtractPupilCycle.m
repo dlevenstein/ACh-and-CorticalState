@@ -12,7 +12,8 @@ savefilename = fullfile(basePath,[baseName,'.pupilcycle.behavior.mat']);
 p = inputParser;
 addParameter(p,'redetect',false,@islogical);
 addParameter(p,'saveMat',true,@islogical);
-addParameter(p,'filterbounds',[0.02 0.2]); %Hz
+addParameter(p,'showFig',false,@islogical);
+addParameter(p,'filterbounds',[0.01 0.2]); %Hz
 addParameter(p,'filterorder',1); %cycles
 addParameter(p,'smoothwin_pup',0.5); %s
 addParameter(p,'smoothwin_dpdt',2); %s
@@ -24,6 +25,7 @@ parse(p,varargin{:})
 
 redetect = p.Results.redetect;
 saveMat = p.Results.saveMat;
+showFig = p.Results.showFig;
 pupfilter = p.Results.filterbounds;
 filterorder = p.Results.filterorder;
 smoothwin_pup = p.Results.smoothwin_pup;
@@ -129,7 +131,7 @@ if saveMat
     save(savefilename,'pupilcycle')
 end
 %% Example Figure
-if saveMat
+if saveMat || showFig
 %windows(1,:) = [100 400];
 windows(2,:) = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),300);
 windows(3,:) = bz_RandomWindowInIntervals(pupildilation.timestamps([1 end]),300);
@@ -187,7 +189,9 @@ ylabel('Pupil');
 %legend({'diameter','phase','dPdt'},'location','northeast');
 
 end
-NiceSave('PupilCycle',figfolder,baseName)
+if saveMat
+    NiceSave('PupilCycle',figfolder,baseName)
+end
 end
 
 
