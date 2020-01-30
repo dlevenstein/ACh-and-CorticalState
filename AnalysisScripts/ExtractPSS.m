@@ -9,7 +9,7 @@ frange = [2.5 100];
 [~] = bz_PowerSpectrumSlope(lfp,winsize,dt,...
     'IRASA',true,'Redetect',true,'frange',frange,'saveMat',basePath);
 
-winsize = 6;
+winsize = 8;
 dt = 0.01;
 frange = [2 128];
 [~] = bz_PowerSpectrumSlope(lfp,winsize,dt,...
