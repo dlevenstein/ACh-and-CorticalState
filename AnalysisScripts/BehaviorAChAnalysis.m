@@ -1,12 +1,12 @@
-function [ ] = BehaviorAChAnalysis(basePath,figfolder)
+function [ PAcoupling, GAChdist, pupildpGACh, pupilphaseGACh,pupilphaseonsetGACh] = BehaviorAChAnalysis(basePath,figfolder)
 
 %Initiate Paths
-reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
+%reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/EM1M3/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
 %basePath = pwd;
-figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/BehaviorAChAnalysis'];
+%figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/BehaviorAChAnalysis'];
 
 
 %%
@@ -18,7 +18,7 @@ baseName = bz_BasenameFromBasepath(basePath);
 %savefile = fullfile(basePath,[baseName,'.BehaviorAnalysis.mat']);
 %% Loading behavior...
 % Pupil diameter
-[ pupilcycle ] = ExtractPupilCycle( basePath);
+[ pupilcycle ] = ExtractPupilCycle( basePath,'redetect',true);
 GACh = bz_LoadBehavior(basePath,'GACh');
 
 % %pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
@@ -118,14 +118,14 @@ EMGwhisk.whisks.lopup = InIntervals(EMGwhisk.ints.Wh(:,1),pupilcycle.ints.lowpup
 EMGwhisk.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,EMGwhisk.timestamps,'nearest');
 EMGwhisk.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.timestamps,'nearest');
 EMGwhisk.pup = interp1(pupilcycle.timestamps,pupilcycle.data,EMGwhisk.timestamps,'nearest');
-EMGwhisk.dpdt = interp1(pupilcycle.timestamps(1:end-1),pupilcycle.dpdt,EMGwhisk.timestamps,'nearest');
+EMGwhisk.dpdt = interp1(pupilcycle.timestamps,pupilcycle.dpdt,EMGwhisk.timestamps,'nearest');
 EMGwhisk.hipup = InIntervals(EMGwhisk.timestamps,pupilcycle.ints.highpupstate);
 EMGwhisk.lopup = InIntervals(EMGwhisk.timestamps,pupilcycle.ints.lowpupstate);
 
 GACh.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,GACh.timestamps,'nearest');
 GACh.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,GACh.timestamps,'nearest');
 GACh.pup = interp1(pupilcycle.timestamps,pupilcycle.data,GACh.timestamps,'nearest');
-GACh.dpdt = interp1(pupilcycle.timestamps(1:end-1),pupilcycle.dpdt,GACh.timestamps,'nearest');
+GACh.dpdt = interp1(pupilcycle.timestamps,pupilcycle.dpdt,GACh.timestamps,'nearest');
 GACh.hipup = InIntervals(GACh.timestamps,pupilcycle.ints.highpupstate);
 GACh.lopup = InIntervals(GACh.timestamps,pupilcycle.ints.lowpupstate);
 GACh.Wh = InIntervals(GACh.timestamps,EMGwhisk.ints.Wh);
@@ -178,8 +178,15 @@ end
     'minXY',250,'Xbounds',[-0.5 0.5],'Ybounds',[-0.5 0.5],...
     'numXbins',40,'numYbins',40);
 
-
-
+%% Whisking-aligned GACh by phpil phase
+for oo = 1:2
+    [pupilphaseonsetGACh.(ONOFF{oo}).meanZ,pupilphaseonsetGACh.(ONOFF{oo}).N,...
+        pupilphaseonsetGACh.Xbins,pupilphaseonsetGACh.Ybins] = ...
+        ConditionalHist3(GACh.whtime.(ONOFF{oo}), GACh.pupphase,...
+        (GACh.raw),...
+        'minXY',100,'Xbounds',[-5 5],'Ybounds',[-pi pi],...
+        'numXbins',80,'numYbins',40);
+end
 
 %% GACh and pupil 
 GAChrange = [0.85 1.2];
@@ -224,6 +231,21 @@ for oo = 1:2
                 'numXbins',100,'Xbounds',[-5 5],'Ybounds',GAChrange,'numYbins',80);
             
 end
+
+%%
+figure
+for oo = 1:2
+    subplot(2,2,oo)
+        imagesc(pupilphaseonsetGACh.Xbins,pupilphaseonsetGACh.Ybins,...
+            pupilphaseonsetGACh.(ONOFF{oo}).meanZ')
+        hold on
+        axis xy
+        plot([0 0],ylim(gca),'k--')
+        xlabel(['t - aligned to ',(ONOFF{oo})]);ylabel('Pupil Phase')
+        ColorbarWithAxis([0.9 1.1],'Mean GACh')
+end
+   NiceSave('GAChWhisk_aligned',figfolder,baseName)
+
 %%
 figure
 for oo = 1:2
@@ -398,15 +420,15 @@ NiceSave('BehaviorExamples',figfolder,baseName)
 %%
 %% Measure coupling with a range of lower/uppwer bounds, at a few different ncyc resolutions
 
-lowerbounds = logspace(-2,-1,16);
-upperbounds = logspace(-1.5,0,16);
+lowerbounds = logspace(-2.3,-1,24);
+upperbounds = logspace(-1.5,0,24);
 orders = 1:3;
 
 %For each combination of bands
 
 %Filter the pupil
 
-amp2 = interp1(GACh.timestamps,GACh.raw,pupilcycle.timestamps,'nearest');
+%amp2 = interp1(GACh.timestamps,GACh.raw,pupilcycle.timestamps,'nearest');
 PAcoupling.lowerbounds = lowerbounds;
 PAcoupling.upperbounds = upperbounds;
 PAcoupling.orders = orders;
@@ -424,14 +446,18 @@ for ll = 1:length(lowerbounds)
         end
         [ pupilcycle_filttest ] = ExtractPupilCycle( basePath,'redetect',true,'saveMat',false,...
             'filterbounds',[lowerbounds(ll) upperbounds(uu)],'filterorder',oo);
-
+        
+        spontidx = find(pupilcycle_filttest.timestamps < sponttimes(2));
+        pupilcycle_filttest.amp(spontidx);
+        pupilcycle_filttest.data(spontidx);
+        pupilcycle_filttest.timestamps(spontidx);
 
     %Normalize power to the median (mean?)
         amp1 = pupilcycle_filttest.amp./nanmean(pupilcycle_filttest.amp);
-        
+        amp2 = interp1(GACh.timestamps,GACh.raw,pupilcycle_filttest.timestamps,'nearest');
         %Calculate the coupling with EMG
         coupling(ll,uu,oo) = abs(nanmean(amp1.*amp2.*exp(1i.*pupilcycle_filttest.phase)));
-        PAcorr(ll,uu,oo) = corr(pupilcycle_filttest.data,amp2,'type','spearman','rows','pairwise');
+        PAcorr(ll,uu,oo) = corr(pupilcycle_filttest.filtdata,amp2,'type','spearman','rows','pairwise');
         
 
     end
@@ -446,7 +472,7 @@ for oo = orders
 imagesc(log10(lowerbounds),log10(upperbounds),PAcoupling.coupling(:,:,oo)')
 hold on
 axis xy
-%plot(log10(trybounds(1)),log10(trybounds(2)),'r+')
+plot(log10(pupilcycle.detectionparms.filterparms.passband(1)),log10(pupilcycle.detectionparms.filterparms.passband(2)),'r+')
 LogScale('xy',10)
 %clim([0.25 0.7])
 xlabel('Lower Bound (Hz)');ylabel('Upper Bound (Hz)')
@@ -458,7 +484,7 @@ title(num2str(oo))
 imagesc(log10(lowerbounds),log10(upperbounds),PAcoupling.corr(:,:,oo)')
 hold on
 axis xy
-%plot(log10(trybounds(1)),log10(trybounds(2)),'r+')
+plot(log10(pupilcycle.detectionparms.filterparms.passband(1)),log10(pupilcycle.detectionparms.filterparms.passband(2)),'r+')
 LogScale('xy',10)
 %clim([0.1 0.4])
 xlabel('Lower Bound (Hz)');ylabel('Upper Bound (Hz)')

@@ -42,7 +42,7 @@ pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
 pupildilation.data = smooth(pupildilation.data,smoothwin_pup.*pupildilation.samplingRate,'moving');
 nantimes = isnan(pupildilation.data);
-pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
+pupildilation.data = pupildilation.data(~nantimes);
 
 if length(pupildilation.data) < 1
     warning('Not enough pupil data >)');
@@ -53,6 +53,8 @@ pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin_dpdt.*pupildilatio
 pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin_dpdt.*pupildilation.samplingRate,'moving');
 pupildilation.timestamps = pupildilation.timestamps(~nantimes);
 
+pupildilation.data = pupildilation.data(1:end-1);
+pupildilation.timestamps = pupildilation.timestamps(1:end-1);
 
 pupil4filter = pupildilation;
 filteredpupil = bz_Filter(pupil4filter,'passband',pupfilter,'filter' ,'fir1','order',filterorder);
@@ -64,6 +66,7 @@ filteredpupil.lowpup = log10(filteredpupil.amp)<=filteredpupil.pupthresh;
 
 %%
 pupilcycle.data = pupildilation.data;
+pupilcycle.filtdata = filteredpupil.data;
 pupilcycle.timestamps = filteredpupil.timestamps;
 pupilcycle.dpdt = pupildilation.dpdt;
 pupilcycle.phase = filteredpupil.phase;
