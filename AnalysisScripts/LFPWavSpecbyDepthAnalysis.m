@@ -66,7 +66,7 @@ clear spec
 spec.channels = CTXchans;
 ncycles = 8; %prev 10
 for cc =1:length(spec.channels)
-  %  bz_Counter(cc,length(spec.channels),'Channel')
+    bz_Counter(cc,length(spec.channels),'Channel')
     %FFT
     %[temp,~,spec.timestamps] = spectrogram(single(lfp.data(:,cc)),winsize_sf,noverlap_sf,spec.freqs,lfp.samplingRate);
 %     spec.data(:,:,cc) = log10(abs(temp))';
