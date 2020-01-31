@@ -91,9 +91,10 @@ for bb = length(BANDS):-1:1
 lfp.(BANDS{bb}).Wh = InIntervals(lfp.(BANDS{bb}).timestamps,EMGwhisk.ints.Wh);
 EMGwhisk.ints.ExpWh = bsxfun(@plus,EMGwhisk.ints.Wh,[-0.5 0.5]*1);
 lfp.(BANDS{bb}).NWh = ~InIntervals(lfp.(BANDS{bb}).timestamps,EMGwhisk.ints.ExpWh);
-lfp.(BANDS{bb}).hipup = interp1(pupilcycle.timestamps,single(pupilcycle.highpup),lfp.(BANDS{bb}).timestamps,'nearest')==1;
-lfp.(BANDS{bb}).lopup = interp1(pupilcycle.timestamps,single(~pupilcycle.highpup),lfp.(BANDS{bb}).timestamps,'nearest')==1;
-
+lfp.(BANDS{bb}).hipup = InIntervals(lfp.(BANDS{bb}).timestamps,pupilcycle.ints.highpupstate);
+lfp.(BANDS{bb}).lopup = InIntervals(lfp.(BANDS{bb}).timestamps,pupilcycle.ints.lowpupstate);
+PSS.hipup = InIntervals(PSS.timestamps,pupilcycle.ints.highpupstate);
+PSS.lopup = InIntervals(PSS.timestamps,pupilcycle.ints.lowpupstate);
 
 lfp.(BANDS{bb}).pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,lfp.(BANDS{bb}).timestamps,'nearest');
 lfp.(BANDS{bb}).pup = interp1(pupilcycle.timestamps,pupilcycle.data,lfp.(BANDS{bb}).timestamps,'nearest');
@@ -110,8 +111,8 @@ EMGwhisk.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,EMGwhisk.ints
 EMGwhisk.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.pup = interp1(pupilcycle.timestamps,pupilcycle.data,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.dur = diff(EMGwhisk.ints.Wh,[],2);
-EMGwhisk.hipup = log10(EMGwhisk.pupamp)>pupilcycle.pupthresh;
-EMGwhisk.lopup = ~EMGwhisk.hipup;
+EMGwhisk.hipup = InIntervals(EMGwhisk.ints.Wh(:,1),pupilcycle.ints.highpupstate);
+EMGwhisk.lopup = InIntervals(EMGwhisk.ints.Wh(:,1),pupilcycle.ints.lowpupstate);
 
 
 
