@@ -93,8 +93,6 @@ EMGwhisk.ints.ExpWh = bsxfun(@plus,EMGwhisk.ints.Wh,[-0.5 0.5]*1);
 lfp.(BANDS{bb}).NWh = ~InIntervals(lfp.(BANDS{bb}).timestamps,EMGwhisk.ints.ExpWh);
 lfp.(BANDS{bb}).hipup = InIntervals(lfp.(BANDS{bb}).timestamps,pupilcycle.ints.highpupstate);
 lfp.(BANDS{bb}).lopup = InIntervals(lfp.(BANDS{bb}).timestamps,pupilcycle.ints.lowpupstate);
-PSS.hipup = InIntervals(PSS.timestamps,pupilcycle.ints.highpupstate);
-PSS.lopup = InIntervals(PSS.timestamps,pupilcycle.ints.lowpupstate);
 
 lfp.(BANDS{bb}).pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,lfp.(BANDS{bb}).timestamps,'nearest');
 lfp.(BANDS{bb}).pup = interp1(pupilcycle.timestamps,pupilcycle.data,lfp.(BANDS{bb}).timestamps,'nearest');
