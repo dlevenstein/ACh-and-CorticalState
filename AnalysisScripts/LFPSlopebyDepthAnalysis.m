@@ -23,7 +23,7 @@ sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 %% Loading behavior...
 % Pupil diameter
-[ pupilcycle ] = ExtractPupilCycle( basePath );
+[ pupilcycle ] = ExtractPupilCycle( basePath);
 
 
 % EMG
@@ -120,7 +120,7 @@ PSS.long.WhOFF = false(size(PSS.timestamps));
 PSS.short.WhOn = false(size(PSS.timestamps));
 PSS.short.WhOFF = false(size(PSS.timestamps));
 for wh = 2:(size(EMGwhisk.ints.Wh,1)-1)
-    %wh
+    bz_Counter(wh-1,(size(EMGwhisk.ints.Wh,1)-2),'Whisk');
     longwhisk = EMGwhisk.dur(wh)>durthresh;
     
     for oo = 1:2
