@@ -9,12 +9,12 @@ frange = [2.5 100];
 [~] = bz_PowerSpectrumSlope(lfp,winsize,dt,'nfreqs',100,...
     'IRASA',true,'Redetect',true,'frange',frange,'saveMat',basePath);
 
-% winsize = 8;
-% dt = 0.02;
-% frange = [2 128];
-% [~] = bz_PowerSpectrumSlope(lfp,winsize,dt,...
-%     'IRASA',true,'Redetect',true,'frange',frange,'saveMat',basePath,'saveName','_wav',...
-%     'spectype','wavelet','nfreqs',100);
+winsize = 8;
+dt = 0.02;
+frange = [2 128];
+[~] = bz_PowerSpectrumSlope(lfp,winsize,dt,...
+    'IRASA',true,'Redetect',true,'frange',frange,'saveMat',basePath,'saveName','_wav',...
+    'spectype','wavelet','nfreqs',100);
 
 %% PSS example figure
 % if strcmp(baseName,'171209_WT_EM1M3')
