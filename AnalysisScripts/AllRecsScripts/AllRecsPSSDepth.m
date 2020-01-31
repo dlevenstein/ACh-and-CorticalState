@@ -46,7 +46,9 @@ depthinfo.boundaries = [0 0.1 0.35 0.5 1];
 cosx = linspace(-pi,pi,100);
 cospamp = [0.025 0.225];
 colorrange = [-2.4 -1.2]; %old PSS
-colorrange = [-1.15 -0.55];
+%colorrange = [-1.15 -0.55];
+colorrange = [-1.125 -0.5];
+
 
 for ff = 1:2
 figure
@@ -108,10 +110,15 @@ NiceSave('DepthPSSandPup',analysisfolder,groupnames{ff},'figtype','pdf')
 end
 
 %% Wh-aligned PSS
-figure
-for ll = 1:length(LAYERS)
 for oo = 1:2
-    subplot(6,3,oo+(ll-1)*3)
+for ff = 1:2
+figure
+
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+for ll = 1:length(LAYERS)
+%for oo = 1:2
+    subplot(6,4,gi+(ll-1)*4)
         imagesc(PSSphaseWhaligned.(genotypes{gg}).Xbins,PSSphaseWhaligned.(genotypes{gg}).Ybins,...
             PSSphaseWhaligned.(genotypes{gg}).(LAYERS{ll}).(ONOFF{oo}).meanZ')
         alpha(single(~isnan(PSSphaseWhaligned.(genotypes{gg}).(LAYERS{ll}).(ONOFF{oo}).meanZ')))
@@ -121,14 +128,24 @@ for oo = 1:2
         if ll ==6
         xlabel(['t - aligned to ',(ONOFF{oo})]);
         end
-        if oo == 1
+        if gi == 1
         ylabel({(LAYERS{ll}),'Pupil Phase'})
         end
+        if ll == 1
+        	
+            title(genotypes{gg})
+
+        end
+        bz_piTickLabel('y')
         ColorbarWithAxis(colorrange,'Mean PSS')
-        %crameri('berlin','pivot',1)
+        crameri('tokyo')
+%end
 end
 end
-NiceSave('LayerPSSatWhiskbyPhase',analysisfolder,groupnames{ff},'figtype','pdf')
+NiceSave(['LayerPSSbyPhase_',(ONOFF{oo})],analysisfolder,groupnames{ff},'figtype','pdf')
+end
+end
+
 %%
 for ff = 1:2
 figure
