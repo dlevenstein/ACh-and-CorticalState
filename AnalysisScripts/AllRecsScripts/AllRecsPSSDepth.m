@@ -26,18 +26,22 @@ for gg = 1:6
     PSScomponents.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSScomponents(genotypeidx==gg),3,'mean',true);
     PSSdepth.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSSdepth(genotypeidx==gg),3,'mean',true);
     PSSdist.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSSdist(genotypeidx==gg),3,'mean',true);
+    PSSphaseWhaligned.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSSphaseWhaligned(genotypeidx==gg),3,'mean',true);
 end
 
 PSScomponents.AllWT = bz_CollapseStruct(SlopeDepth.PSScomponents(strcmp(WTKOtype,'WT')),3,'mean',true);
 PSSdepth.AllWT = bz_CollapseStruct(SlopeDepth.PSSdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
 PSSdist.AllWT = bz_CollapseStruct(SlopeDepth.PSSdist(strcmp(WTKOtype,'WT')),3,'mean',true);
+PSSphaseWhaligned.AllWT = bz_CollapseStruct(SlopeDepth.PSSphaseWhaligned(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
-
+ONOFF = {'WhOn','WhOFF'};
 WHNWH = {'Wh','NWh'};
 HILO = {'lopup','hipup'};
 LAYERS = {'L1','L23','L4','L5a','L5b6','L6'};
 depthinfo.boundaries = [0 0.1 0.35 0.5 1];
+
+
 %%
 cosx = linspace(-pi,pi,100);
 cospamp = [0.025 0.225];
@@ -103,7 +107,28 @@ end
 NiceSave('DepthPSSandPup',analysisfolder,groupnames{ff},'figtype','pdf')
 end
 
-
+%% Wh-aligned PSS
+figure
+for ll = 1:length(LAYERS)
+for oo = 1:2
+    subplot(6,3,oo+(ll-1)*3)
+        imagesc(PSSphaseWhaligned.(genotypes{gg}).Xbins,PSSphaseWhaligned.(genotypes{gg}).Ybins,...
+            PSSphaseWhaligned.(genotypes{gg}).(LAYERS{ll}).(ONOFF{oo}).meanZ')
+        alpha(single(~isnan(PSSphaseWhaligned.(genotypes{gg}).(LAYERS{ll}).(ONOFF{oo}).meanZ')))
+        hold on
+        axis xy
+        plot([0 0],ylim(gca),'k--')
+        if ll ==6
+        xlabel(['t - aligned to ',(ONOFF{oo})]);
+        end
+        if oo == 1
+        ylabel({(LAYERS{ll}),'Pupil Phase'})
+        end
+        ColorbarWithAxis(colorrange,'Mean PSS')
+        %crameri('berlin','pivot',1)
+end
+end
+NiceSave('LayerPSSatWhiskbyPhase',analysisfolder,groupnames{ff},'figtype','pdf')
 %%
 for ff = 1:2
 figure
