@@ -1,4 +1,4 @@
-function [ SPECdepth,OSCdepth] = LFPWavSpecbyDepthAnalysis(basePath,figfolder)
+function [ SPECdepth,OSCdepth,PSSphaseWhaligned] = LFPWavSpecbyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -64,8 +64,9 @@ clear spec
 % 
 % spec.channels = lfp.channels;
 spec.channels = CTXchans;
+ncycles = 8; %prev 10
 for cc =1:length(spec.channels)
-    bz_Counter(cc,length(spec.channels),'Channel')
+  %  bz_Counter(cc,length(spec.channels),'Channel')
     %FFT
     %[temp,~,spec.timestamps] = spectrogram(single(lfp.data(:,cc)),winsize_sf,noverlap_sf,spec.freqs,lfp.samplingRate);
 %     spec.data(:,:,cc) = log10(abs(temp))';
@@ -85,7 +86,8 @@ for cc =1:length(spec.channels)
 %     spec.timestamps = wavespec.timestamps(inspont,:);
 %     spec.freqs = wavespec.freqs; 
 %%
-    [specslope,~] = bz_PowerSpectrumSlope(lfp,10,0.01,'channels',spec.channels(cc),...
+    
+    [specslope,~] = bz_PowerSpectrumSlope(lfp,ncycles,0.01,'channels',spec.channels(cc),...
         'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes);
     spec.data(:,:,cc) = specslope.specgram;
     spec.osci(:,:,cc) = specslope.resid;
@@ -198,7 +200,7 @@ LONGSHORT = {'long','short'};
 
 %% Get Whisk On/Offset aligned spec, separated by long/short whisks
 
-window = 2; %s
+window = 5; %s
 durthresh = 1; %
 spec.whtime.WhOn = nan(size(spec.timestamps));
 spec.whtime.WhOFF = nan(size(spec.timestamps));
@@ -733,3 +735,39 @@ for dd = 1:6
         end 
 end
 NiceSave('DepthSPECandPSS',figfolder,baseName)
+
+
+%% Whisking-aligned PSS by phpil phase
+for ll = 1:length(LAYERS)
+    
+    for oo = 1:2
+        [PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).meanZ,PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).N,...
+            PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins] = ...
+            ConditionalHist3(spec.whtime.(ONOFF{oo}), spec.pupphase,...
+            (spec.LayerPSS(:,dd)),...
+            'minXY',10,'Xbounds',[-5 5],'Ybounds',[-pi pi],...
+            'numXbins',100,'numYbins',40);
+    end
+end
+%%
+figure
+for ll = 1:length(LAYERS)
+for oo = 1:2
+    subplot(6,3,oo+(ll-1)*3)
+        imagesc(PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins,...
+            PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).meanZ')
+        alpha(single(~isnan(PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).meanZ')))
+        hold on
+        axis xy
+        plot([0 0],ylim(gca),'k--')
+        if ll ==6
+        xlabel(['t - aligned to ',(ONOFF{oo})]);
+        end
+        if oo == 1
+        ylabel({(LAYERS{ll}),'Pupil Phase'})
+        end
+        %ColorbarWithAxis(PSSrange,'Mean PSS')
+        %crameri('berlin','pivot',1)
+end
+end
+NiceSave('LayerPSSatWhiskbyPhase',figfolder,baseName)

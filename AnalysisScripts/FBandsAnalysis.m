@@ -25,30 +25,8 @@ sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 % Pupil diameter
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 
-smoothwin = 0.5; %s
-pupildilation.data = smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving');
-nantimes = isnan(pupildilation.data);
-pupildilation.data = pupildilation.data(~isnan(pupildilation.data));
-
-if length(pupildilation.data) < 1
-    warning('Not enough pupil data >)');
-    return
-end
-
-smoothwin = 2; %s
-pupildilation.dpdt = diff(smooth(pupildilation.data,smoothwin.*pupildilation.samplingRate,'moving')).*pupildilation.samplingRate;
-pupildilation.dpdt = smooth(pupildilation.dpdt,smoothwin.*pupildilation.samplingRate,'moving');
-pupildilation.timestamps = pupildilation.timestamps(~nantimes);
-
-% Filtered Pupil
-lowfilter = [0.01 0.1];
-%highfilter = [0.3 0.8];
-
-pupil4filter = pupildilation;
-pupilcycle = bz_Filter(pupil4filter,'passband',lowfilter,'filter' ,'fir1','order',3);
-%highpupildata = bz_Filter(pupil4filter,'passband',highfilter,'filter' ,'fir1');
-pupilcycle.pupthresh = -0.8;
-pupilcycle.highpup = log10(pupilcycle.amp)>pupilcycle.pupthresh; 
+% Pupil diameter
+[ pupilcycle ] = ExtractPupilCycle( basePath );
 
 % EMG
 EMGwhisk = bz_LoadBehavior(basePath,'EMGwhisk');
@@ -104,8 +82,8 @@ end
 %% Pad for jumps
 maxtimejump = 1; %s
 pupilcycle.amp = NanPadJumps( pupilcycle.timestamps,pupilcycle.amp,maxtimejump );
+pupilcycle.data = NanPadJumps( pupilcycle.timestamps,pupilcycle.data,maxtimejump );
 pupilcycle.phase = NanPadJumps( pupilcycle.timestamps,pupilcycle.phase,maxtimejump );
-pupildilation.data = NanPadJumps( pupildilation.timestamps,pupildilation.data,maxtimejump );
 EMGwhisk.EMGsm = NanPadJumps( EMGwhisk.timestamps,EMGwhisk.EMGsm,maxtimejump );
 
 %Interpolate all behavioral variables at band timepoints
@@ -118,7 +96,7 @@ lfp.(BANDS{bb}).lopup = interp1(pupilcycle.timestamps,single(~pupilcycle.highpup
 
 
 lfp.(BANDS{bb}).pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,lfp.(BANDS{bb}).timestamps,'nearest');
-lfp.(BANDS{bb}).pup = interp1(pupildilation.timestamps,pupildilation.data,lfp.(BANDS{bb}).timestamps,'nearest');
+lfp.(BANDS{bb}).pup = interp1(pupilcycle.timestamps,pupilcycle.data,lfp.(BANDS{bb}).timestamps,'nearest');
 lfp.(BANDS{bb}).EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,lfp.(BANDS{bb}).timestamps,'nearest');
 
 end
@@ -130,7 +108,7 @@ end
 
 EMGwhisk.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.pupamp = interp1(pupilcycle.timestamps,pupilcycle.amp,EMGwhisk.ints.Wh(:,1),'nearest');
-EMGwhisk.pup = interp1(pupildilation.timestamps,pupildilation.data,EMGwhisk.ints.Wh(:,1),'nearest');
+EMGwhisk.pup = interp1(pupilcycle.timestamps,pupilcycle.data,EMGwhisk.ints.Wh(:,1),'nearest');
 EMGwhisk.dur = diff(EMGwhisk.ints.Wh,[],2);
 EMGwhisk.hipup = log10(EMGwhisk.pupamp)>pupilcycle.pupthresh;
 EMGwhisk.lopup = ~EMGwhisk.hipup;
@@ -145,7 +123,7 @@ LONGSHORT = {'long','short'};
 
 %% Get Whisk On/Offset aligned Band data, separated by long/short whisks
 
-window = 2; %s
+window = 5; %s
 durthresh = 1; %
 for bb = 1:length(BANDS)
 lfp.(BANDS{bb}).whtime.WhOn = nan(size(lfp.(BANDS{bb}).timestamps));
@@ -184,7 +162,7 @@ lfp.interpdepth = linspace(-1,0,100);
 %prepare for LFPspec....
 for bb = 1:length(BANDS)
 BANDdepth.(BANDS{bb}).depth = lfp.interpdepth;
-BANDdepth.(BANDS{bb})range = bandranges(bb,:);
+BANDdepth.(BANDS{bb}).range = bandranges(bb,:);
 for ww = 1:2
 [ ~,BANDdepth.(BANDS{bb}).pup.(WHNWH{ww}) ] = bz_LFPSpecToExternalVar( lfp.(BANDS{bb}).amp(lfp.(BANDS{bb}).(WHNWH{ww}),:),...
     log10(lfp.(BANDS{bb}).pup(lfp.(BANDS{bb}).(WHNWH{ww}),:)),'specparms','input',...
@@ -295,7 +273,7 @@ subplot(5,4,(bb-1)*4+oo)
         if oo == 1   
             ylabel({(BANDS{bb}),'Depth'})
         end
-        xlim([-1 1])
+        %xlim([-1 1])
 
 end
  
