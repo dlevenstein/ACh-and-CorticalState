@@ -1,4 +1,4 @@
-function [PSScomponents,PSSdepth,PSSdist ] = LFPSlopebyDepthAnalysis(basePath,figfolder)
+function [PSScomponents,PSSdepth,PSSdist,PSSphaseWhaligned] = LFPSlopebyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -23,7 +23,7 @@ sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 %% Loading behavior...
 % Pupil diameter
-[ pupilcycle ] = ExtractPupilCycle( basePath );
+[ pupilcycle ] = ExtractPupilCycle( basePath);
 
 
 % EMG
@@ -120,7 +120,7 @@ PSS.long.WhOFF = false(size(PSS.timestamps));
 PSS.short.WhOn = false(size(PSS.timestamps));
 PSS.short.WhOFF = false(size(PSS.timestamps));
 for wh = 2:(size(EMGwhisk.ints.Wh,1)-1)
-    %wh
+    bz_Counter(wh-1,(size(EMGwhisk.ints.Wh,1)-2),'Whisk');
     longwhisk = EMGwhisk.dur(wh)>durthresh;
     
     for oo = 1:2
@@ -182,7 +182,6 @@ PSScomponents.EV = EXPLAINED(1:nPC);
 % LogScale('y',10)
 % xlabel('Pupil Phase');ylabel('Duration')
 % xlim([-pi 3*pi])
-
 
 
 %% Mean depth activation by pupil size, phase and whisking
@@ -426,6 +425,51 @@ PSSdist.(LAYERS{ll}).EMG  = ConditionalHist( log10(PSS.EMG),PSS.data(:,PSS.Lchan
 end
 
     
+%% Whisking-aligned PSS by phpil phase
+for ll = 1:length(LAYERS)
+    PSS.layermean = mean(PSS.data(:,PSS.Lchans.(LAYERS{ll})),2);
+    for oo = 1:2
+        [PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).meanZ,PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).N,...
+            PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins] = ...
+            ConditionalHist3(PSS.whtime.(ONOFF{oo}), PSS.pupphase,...
+            (PSS.layermean),...
+            'minXY',15,'Xbounds',[-5 5],'Ybounds',[-pi pi],...
+            'numXbins',60,'numYbins',30);
+        
+        for pp= 1:2
+            
+             [PSSphaseWhaligned.(LAYERS{ll}).(HILO{pp}).(ONOFF{oo}).meanZ,...
+                 PSSphaseWhaligned.(LAYERS{ll}).(HILO{pp}).(ONOFF{oo}).N,...
+                PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins] = ...
+                ConditionalHist3(PSS.whtime.(ONOFF{oo})(PSS.(HILO{pp})),PSS.pupphase(PSS.(HILO{pp})),...
+                (PSS.layermean(PSS.(HILO{pp}))),...
+                'minXY',15,'Xbounds',[-5 5],'Ybounds',[-pi pi],...
+                'numXbins',60,'numYbins',30);
+        end
+    end
+end
+%%
+figure
+for ll = 1:length(LAYERS)
+for oo = 1:2
+    subplot(6,3,oo+(ll-1)*3)
+        imagesc(PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins,...
+            PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).meanZ')
+        alpha(single(~isnan(PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).meanZ')))
+        hold on
+        axis xy
+        plot([0 0],ylim(gca),'k--')
+        if ll ==6
+        xlabel(['t - aligned to ',(ONOFF{oo})]);
+        end
+        if oo == 1
+        ylabel({(LAYERS{ll}),'Pupil Phase'})
+        end
+        ColorbarWithAxis(PSSrange,'Mean PSS')
+        %crameri('berlin','pivot',1)
+end
+end
+NiceSave('LayerPSSatWhiskbyPhase',figfolder,baseName)
 
 %%
 cosx = linspace(-pi,pi,100);
