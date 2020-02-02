@@ -14,6 +14,8 @@ xml_electrode_type = rxml.child(1).child(4).value;
 switch(xml_electrode_type)
     case 'staggered'
         electrode_type = 'staggered';
+    case 'gizmo'
+        electrode_type = 'gizmo';
     case 'neurogrid'
         electrode_type = 'neurogrid';
     case 'grid'
@@ -24,7 +26,7 @@ switch(xml_electrode_type)
         electrode_type = 'poly5';
 end
 if ~exist('electrode_type')
-    electrode_type = 'staggered';
+    electrode_type = 'gizmo';
 end
 xcoords = [];
 ycoords = [];
@@ -49,6 +51,20 @@ switch(electrode_type)
                 end
             end
             x = x+a*200;
+            xcoords = cat(1,xcoords,x(:));
+            ycoords = cat(1,ycoords,y(:));
+        end
+    case 'gizmo'
+        for a= 1:ngroups %being super lazy and making this map with loops
+            x = [];
+            y = [];
+            tchannels  = tgroups{a};
+            for i =1:length(tchannels)
+                x(tgroups{a}(i)+1) = 0;%length(tchannels)-i;
+               % y(tgroups{a}(i)+1) = -i*20;
+                y(i) = -i*20;
+
+            end
             xcoords = cat(1,xcoords,x(:));
             ycoords = cat(1,ycoords,y(:));
         end
@@ -85,13 +101,13 @@ switch(electrode_type)
             x(find(polyline==4)+extrachannels) = 18;
             x(find(polyline==0)+extrachannels) = 2*18;
             x(1:extrachannels) = 18*(-1).^[1:extrachannels];
-            
+
             y(find(x == 2*18)) =  [1:length(find(x == 2*18))]*-28;
             y(find(x == 18)) =    [1:length(find(x == 18))]*-28-14;
             y(find(x == 0)) =     [1:length(find(x == 0))]*-28;
             y(find(x == -18)) =   [1:length(find(x == -18))]*-28-14;
             y(find(x == 2*-18)) = [1:length(find(x == 2*-18))]*-28;
-            
+
             x = x+a*200;
             xcoords = cat(1,xcoords,x(:));
             ycoords = cat(1,ycoords,y(:));
@@ -114,7 +130,7 @@ Nchannels = length(xcoords);
 
 kcoords = zeros(1,Nchannels);
 switch(electrode_type)
-    case {'staggered','poly3','poly5'}
+    case {'staggered','poly3','poly5','gizmo'}
         for a= 1:ngroups
             kcoords(tgroups{a}+1) = a;
         end
@@ -130,11 +146,11 @@ order = [par.AnatGrps.Channels];
 skip = find([par.AnatGrps.Skip]);
 connected(order(skip)+1) = false;
 
-chanMap     = 1:Nchannels;
+chanMap     = tgroups{a}+1;
 chanMap0ind = chanMap - 1;
-[~,I] =  sort(horzcat(tgroups{:}));
-xcoords = xcoords(I)';
-ycoords  = ycoords(I)';
+%[~,I] =  sort(horzcat(tgroups{:}));
+xcoords = xcoords';
+ycoords  = ycoords';
 
 save(fullfile(basepath,'chanMap.mat'), ...
     'chanMap','connected', 'xcoords', 'ycoords', 'kcoords', 'chanMap0ind')
