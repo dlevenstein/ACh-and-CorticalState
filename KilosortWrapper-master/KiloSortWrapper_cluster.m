@@ -40,10 +40,10 @@ switch nargin
     case 0
         [~,basename] = fileparts(cd);
         basepath = cd;
-        
+
     case 1
         [~,basename] = fileparts(basepath);
-        
+
     case 2
         if isempty(basepath)
             basepath = cd;
@@ -62,7 +62,7 @@ switch nargin
 end
 
 if ~exist([basepath '/' basename '.dat']) || ~exist([basepath '/' basename '.xml'])
-    
+
     error('Missing dat or xml file')
 end
 
@@ -72,7 +72,7 @@ cd(basepath)
 %% Creates a channel map file
 disp('Creating ChannelMapFile')
 XMLFilePath = fullfile(basepath, [basename '.xml']);
-createChannelMapFile_KSW(basepath,'staggered',XMLFilePath);
+createChannelMapFile_KSW(basepath,'gizmo',XMLFilePath);
 
 %% Loading configurations
 
@@ -85,9 +85,9 @@ if nargin < 3
 else
     disp('Running Kilosort with user specific settings')
     config_string = str2func(['KilosortConfiguration_' config_version]);
-    
+
     ops = config_string(XMLFilePath);
-    
+
     clear config_string;
 end
 
@@ -96,7 +96,7 @@ end
 %find SSD on linux machine
 
 if isunix
-    
+
     %fname = LinuxDir(basename,basepath,gpuDeviceNum);
     fname = [basepath '/' basename '_' num2str(gpuDeviceNum)];
     ops.fproc = fname;
@@ -111,7 +111,7 @@ end
 
 %%
 if ops.GPU
-    
+
     disp(['Initializing GPU: ' num2str(gpuDeviceNum)])
     gpuDevice(gpuDeviceNum); % initialize GPU (will erase any existing GPU arrays)
 end
@@ -169,4 +169,3 @@ disp('Kilosort Processing complete')
 %delete(ops.fproc)
 %rethrow(ME)
 end
-%end
