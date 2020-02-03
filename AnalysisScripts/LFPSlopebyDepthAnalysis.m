@@ -1,4 +1,4 @@
-function [PSScomponents,PSSdepth,PSSdist,PSSphaseWhaligned] = LFPSlopebyDepthAnalysis(basePath,figfolder)
+function [PSScomponents,PSSdepth,PSSdist,PSSphaseWhaligned,LFPbehcorr] = LFPSlopebyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -156,6 +156,59 @@ nPC = 10;
 PSScomponents.PCAcoeff = interp1(PSS.depth',COEFF(:,1:nPC),PSS.interpdepth');
 PSScomponents.EV = EXPLAINED(1:nPC);
 
+%% PSS/Osci-behavior correlation
+clear LFPbehcorr
+LFPbehcorr.freqs = PSS.freqs;
+LFPbehcorr.depth = PSS.interpdepth;
+for cc = 1:length(CTXchans)
+    bz_Counter(cc,length(CTXchans),'Calcualting Correlation Channel')
+    LFPbehcorr.EMG.osc(:,cc) = corr(PSS.osci(:,:,cc),PSS.EMG,'type','spearman','rows','pairwise');
+    LFPbehcorr.EMG.PSS(cc) = corr(PSS.data(:,cc),PSS.EMG,'type','spearman','rows','pairwise');
+    
+    for ww = 1:2
+        LFPbehcorr.Pupil.(WHNWH{ww}).osc(:,cc) = corr(PSS.osci(PSS.(WHNWH{ww}),:,cc),PSS.pup(PSS.(WHNWH{ww})),'type','spearman','rows','pairwise');
+        LFPbehcorr.Pupil.(WHNWH{ww}).PSS(cc) = corr(PSS.data(PSS.(WHNWH{ww}),cc),PSS.pup(PSS.(WHNWH{ww})),'type','spearman','rows','pairwise');
+    end
+end
+%%
+LFPbehcorr.EMG.osc_interp = interp1(PSS.depth',LFPbehcorr.EMG.osc',PSS.interpdepth');
+LFPbehcorr.EMG.PSS_interp = interp1(PSS.depth',LFPbehcorr.EMG.PSS',PSS.interpdepth');
+for ww = 1:2
+    LFPbehcorr.Pupil.(WHNWH{ww}).osc_interp = ...
+        interp1(PSS.depth',LFPbehcorr.Pupil.(WHNWH{ww}).osc',PSS.interpdepth');
+    LFPbehcorr.Pupil.(WHNWH{ww}).PSS_interp = ...
+        interp1(PSS.depth',LFPbehcorr.Pupil.(WHNWH{ww}).PSS',PSS.interpdepth');
+end
+
+%%
+figure
+subplot(3,3,1)
+    imagesc(log10(LFPbehcorr.freqs),LFPbehcorr.depth,LFPbehcorr.EMG.osc_interp)
+    hold on
+    axis xy
+    LogScale('x',10)
+    crameri('berlin','pivot',0)
+    caxis([-0.2 0.15])
+
+subplot(3,3,2)
+    plot(LFPbehcorr.EMG.PSS_interp,LFPbehcorr.depth,'k')
+    
+for ww = 1:2
+    subplot(3,3,ww+3)
+    imagesc(log10(LFPbehcorr.freqs),LFPbehcorr.depth,LFPbehcorr.Pupil.(WHNWH{ww}).osc_interp)
+    axis xy
+    LogScale('x',10)
+    crameri('berlin','pivot',0)
+    caxis([-0.2 0.15])
+    title((WHNWH{ww}))
+end
+
+subplot(3,3,6)
+    hold on
+    for ww = 1:2
+        plot(LFPbehcorr.Pupil.(WHNWH{ww}).PSS_interp,LFPbehcorr.depth)
+    end
+    legend(WHNWH)
 %%
 % figure
 % subplot(2,2,1)
@@ -429,24 +482,40 @@ end
 for ll = 1:length(LAYERS)
     PSS.layermean = mean(PSS.data(:,PSS.Lchans.(LAYERS{ll})),2);
     for oo = 1:2
-        [PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).meanZ,PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).N,...
-            PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins] = ...
-            ConditionalHist3(PSS.whtime.(ONOFF{oo}), PSS.pupphase,...
-            (PSS.layermean),...
-            'minXY',10,'Xbounds',[-5 5],'Ybounds',[-pi pi],...
-            'numXbins',60,'numYbins',30);
+        for pp= 1:2
+            [PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).(HILO{pp}).meanZ,...
+                PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).(HILO{pp}).N,...
+                PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins] = ...
+                ConditionalHist3(PSS.whtime.(ONOFF{oo})(PSS.(HILO{pp})), PSS.pupphase(PSS.(HILO{pp})),...
+                (PSS.layermean(PSS.(HILO{pp}))),...
+                'minXY',10,'Xbounds',[-5 5],'Ybounds',[-pi pi],...
+                'numXbins',50,'numYbins',25);
+        end
     end
 end
 %%
+%         for pp = 1:2
+%         imagesc( PSSdepth.(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
+%             PSS.interpdepth,...
+%             PSSdepth.(HILO{pp}).(WHNWH{ww}).std_interp)
+%         hold on; axis xy; box off
+%         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1,'k')
+%         end   
+
+
 figure
 for ll = 1:length(LAYERS)
 for oo = 1:2
     subplot(6,3,oo+(ll-1)*3)
-        imagesc(PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins,...
-            PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).meanZ')
-        alpha(single(~isnan(PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).meanZ')))
-        hold on
-        axis xy
+    hold on
+    for pp = 1:2
+        t=imagesc(PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins+2*pi*(pp-1),...
+            PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).(HILO{pp}).meanZ');
+        alpha(t,single(~isnan([PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).(HILO{pp}).meanZ'])))
+    
+        plot((cos(cosx)+1).*cospamp(pp)-1,cosx+2*pi*(pp-1),'k')
+    end
+        axis xy; axis tight
         plot([0 0],ylim(gca),'k--')
         if ll ==6
         xlabel(['t - aligned to ',(ONOFF{oo})]);
@@ -459,6 +528,7 @@ for oo = 1:2
 end
 end
 NiceSave('LayerPSSatWhiskbyPhase',figfolder,baseName)
+
 
 %%
 cosx = linspace(-pi,pi,100);
