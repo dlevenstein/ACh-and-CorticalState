@@ -37,7 +37,11 @@ lowpupdurthresh = p.Results.lowpupdurthresh;
 if exist(savefilename,'file') & ~redetect
    display('Loading Pupil Cycle')
    load(savefilename)
-   return
+   if ~exist('pupilcycle','var')
+       display('No pupilcycle variable in the file... redetecting')
+   else
+    return
+   end
 end
 %%
 pupildilation = bz_LoadBehavior(basePath,'pupildiameter');

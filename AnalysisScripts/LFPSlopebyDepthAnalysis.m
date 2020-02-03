@@ -494,13 +494,6 @@ for ll = 1:length(LAYERS)
     end
 end
 %%
-%         for pp = 1:2
-%         imagesc( PSSdepth.(HILO{pp}).(WHNWH{ww}).varbins+2*pi*(pp-1),...
-%             PSS.interpdepth,...
-%             PSSdepth.(HILO{pp}).(WHNWH{ww}).std_interp)
-%         hold on; axis xy; box off
-%         plot(cosx+2*pi*(pp-1),(cos(cosx)+1).*cospamp(pp)-1,'k')
-%         end   
 
 
 figure

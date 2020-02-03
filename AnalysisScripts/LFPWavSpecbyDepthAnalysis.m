@@ -66,7 +66,7 @@ clear spec
 spec.channels = CTXchans;
 ncycles = 8; %prev 10
 for cc =1:length(spec.channels)
-  %  bz_Counter(cc,length(spec.channels),'Channel')
+    bz_Counter(cc,length(spec.channels),'Channel')
     %FFT
     %[temp,~,spec.timestamps] = spectrogram(single(lfp.data(:,cc)),winsize_sf,noverlap_sf,spec.freqs,lfp.samplingRate);
 %     spec.data(:,:,cc) = log10(abs(temp))';
@@ -129,34 +129,6 @@ colorbar
 caxis([0 0.7])
 LogScale('y',2)
 xlim(xwin)
-%% Get PSS by layer
-% load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
-% 
-% [~,~,PSS.CTXchans] = intersect(CTXchans,PSpecSlope.Shortwin.channels,'stable');
-% PSS.data = PSpecSlope.Shortwin.PSS(:,PSS.CTXchans);
-% PSS.timestamps = PSpecSlope.Shortwin.timestamps;
-% PSS.samplingRate = 1/mean(diff(PSS.timestamps));
-% PSS.winsize = PSpecSlope.Shortwin.movingwin(1);
-% PSS.depth = CTXdepth;
-% 
-% PSS.osci = PSpecSlope.Shortwin.OSCI(:,:,PSS.CTXchans);
-% PSS.osci = shiftdim(PSS.osci,1);
-% PSS.freqs = PSpecSlope.Shortwin.freqs;
-% PSS.chanlayers = depthinfo.layer(inCTX);
-% 
-% inspont = InIntervals(PSS.timestamps,sponttimes);
-% PSS.timestamps = PSS.timestamps(inspont);
-% PSS.data = PSS.data(inspont,:);
-% 
-% for ll = 1:length(LAYERS)
-%     PSS.Lchans.(LAYERS{ll}) = strcmp(LAYERS{ll},PSS.chanlayers);
-%     PSS.Layer(:,ll) = (mean(PSS.data(:,PSS.Lchans.(LAYERS{ll})),2));
-%     
-%     %PSS at spec times
-%     spec.LayerPSS(:,ll) = interp1(PSS.timestamps, PSS.Layer(:,ll),spec.timestamps,'nearest');
-% end
-% 
-% clear PSpecSlope
 
 %% Align Specgram by behavior
 maxtimejump = 1; %s
