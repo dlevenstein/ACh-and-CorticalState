@@ -209,6 +209,9 @@ subplot(3,3,6)
         plot(LFPbehcorr.Pupil.(WHNWH{ww}).PSS_interp,LFPbehcorr.depth)
     end
     legend(WHNWH)
+
+    NiceSave('DepthPSSOscBehCorr',figfolder,baseName)
+
 %%
 % figure
 % subplot(2,2,1)
