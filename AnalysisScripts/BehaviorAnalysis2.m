@@ -133,19 +133,22 @@ HILO = {'lopup','hipup'};
     ConditionalHist3( EMGwhisk.pupphase(EMGwhisk.EMGsm~=0),...
     log10(EMGwhisk.pupamp(EMGwhisk.EMGsm~=0)),EMGwhisk.iswhisk(EMGwhisk.EMGsm~=0) ,...
     'minXY',500,'Xbounds',[-pi pi],'Ybounds',[-2.25 0.5],...
-    'numXbins',30,'numYbins',30);
+    'numXbins',25,'numYbins',25);
 
 %Mean Duration
 [pupilphaseWh.meanDur,pupilphaseWh.Num_WhOn,~,~] = ...
     ConditionalHist3( EMGwhisk.whisks.pupphase,...
     log10(EMGwhisk.whisks.pupamp),log10(EMGwhisk.whisks.dur),...
     'minXY',1,'Xbounds',[-pi pi],'Ybounds',[-2.25 0.5],...
-    'numXbins',30,'numYbins',30);
+    'numXbins',25,'numYbins',25);
 
 %Whisk onset rate from NWh
-pupilphaseWh.WhRate = pupilphaseWh.Num_WhOn./((1-pupilphaseWh.fracWh).*pupilphaseEMG.N./EMGwhisk.samplingRate);
+pupilphaseWh.NWhTimeOccupancy = ((1-pupilphaseWh.fracWh).*pupilphaseWh.N./EMGwhisk.samplingRate);
+pupilphaseWh.WhRate = pupilphaseWh.Num_WhOn./pupilphaseWh.NWhTimeOccupancy;
 
-
+%%
+figure
+scatter(EMGwhisk.whisks.pupphase,log10(EMGwhisk.whisks.pupamp),5,log10(EMGwhisk.whisks.dur))
 %% Conditional Distirbution of EMG/whisk dur as function of pupil 
 EMGrange = [-1.75 1.1];
 for pp= 1:2
