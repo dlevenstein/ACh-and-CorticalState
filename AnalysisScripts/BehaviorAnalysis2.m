@@ -1,4 +1,4 @@
-function [ EMGdur,EMGdist,pupilphaseEMG,pupildpEMG] = BehaviorAnalysis2(basePath,figfolder)
+function [ EMGdur,EMGdist,pupilphaseEMG,pupildpEMG,pupilphaseWh] = BehaviorAnalysis2(basePath,figfolder)
 
 %Initiate Paths
 %reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
@@ -23,7 +23,7 @@ channels = sessionInfo.channels;
 
 %% Loading behavior...
 % Pupil diameter
-[ pupilcycle ] = ExtractPupilCycle( basePath,'redetect',true );
+[ pupilcycle ] = ExtractPupilCycle( basePath,'redetect',false );
 
 % %pupildilation = bz_LoadBehavior(basePath,'pupildiameter');
 % 
@@ -77,6 +77,7 @@ EMGwhisk.EMG = EMGwhisk.EMG(spontidx);
 EMGwhisk.EMGsm = EMGwhisk.EMGsm(spontidx);
 
 EMGwhisk.iswhisk = InIntervals(EMGwhisk.timestamps,EMGwhisk.ints.Wh);
+EMGwhisk.isNWh = InIntervals(EMGwhisk.timestamps,EMGwhisk.ints.NWh);
 
 %% Get rid of recording start/stop artifact
 
@@ -125,9 +126,99 @@ HILO = {'lopup','hipup'};
     'numXbins',40,'numYbins',40);
 
 
+%% Whisking properties in pupil space
 
+%Proportion of time whisking
+[pupilphaseWh.fracWh,pupilphaseWh.N,pupilphaseWh.Xbins,pupilphaseWh.Ybins] = ...
+    ConditionalHist3( EMGwhisk.pupphase(EMGwhisk.EMGsm~=0),...
+    log10(EMGwhisk.pupamp(EMGwhisk.EMGsm~=0)),EMGwhisk.iswhisk(EMGwhisk.EMGsm~=0) ,...
+    'minXY',500,'Xbounds',[-pi pi],'Ybounds',[-2.25 0.5],...
+    'numXbins',30,'numYbins',30);
+
+%Mean Duration
+[pupilphaseWh.meanDur,pupilphaseWh.Num_WhOn,~,~] = ...
+    ConditionalHist3( EMGwhisk.whisks.pupphase,...
+    log10(EMGwhisk.whisks.pupamp),log10(EMGwhisk.whisks.dur),...
+    'minXY',1,'Xbounds',[-pi pi],'Ybounds',[-2.25 0.5],...
+    'numXbins',30,'numYbins',30);
+
+%Whisk onset rate from NWh
+pupilphaseWh.WhRate = pupilphaseWh.Num_WhOn./((1-pupilphaseWh.fracWh).*pupilphaseEMG.N./EMGwhisk.samplingRate);
 
 %%
+figure
+
+subplot(3,3,1)
+a = imagesc(pupilphaseEMG.Xbins,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ');
+hold on
+alpha(a,double(~isnan(pupilphaseEMG.meanZ')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
+axis xy
+box off
+%xlim([-pi 3*pi])
+ColorbarWithAxis([-0.7 0.7],'Mean EMG')
+LogScale('c',10)
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')
+
+subplot(3,3,2)
+a = imagesc(pupilphaseWh.Xbins,pupilphaseWh.Ybins,pupilphaseWh.fracWh');
+hold on
+alpha(a,double(~isnan(pupilphaseWh.fracWh')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
+axis xy
+box off
+%xlim([-pi 3*pi])
+ColorbarWithAxis([0 1],'Frac Wh')
+
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')
+
+subplot(3,3,4)
+a = imagesc(pupilphaseWh.Xbins,pupilphaseWh.Ybins,(pupilphaseWh.WhRate)');
+hold on
+alpha(a,double(~isnan(pupilphaseWh.WhRate') & ~isinf(pupilphaseWh.WhRate')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
+axis xy
+box off
+%xlim([-pi 3*pi])
+colorbar
+ColorbarWithAxis([0 5],'Wh Onset Rate')
+%LogScale('c',10)
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')
+
+
+subplot(3,3,5)
+a = imagesc(pupilphaseWh.Xbins,pupilphaseWh.Ybins,(pupilphaseWh.meanDur)');
+hold on
+alpha(a,double(~isnan(pupilphaseWh.meanDur')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
+axis xy
+box off
+%xlim([-pi 3*pi])
+ColorbarWithAxis([-0.5 0.5],'Mean Dur')
+LogScale('c',10)
+
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')
+%% Conditional Distirbution of EMG/whisk dur as function of pupil 
 EMGrange = [-1.75 1.1];
 for pp= 1:2
     EMGdist.(HILO{pp})  = ConditionalHist(...
