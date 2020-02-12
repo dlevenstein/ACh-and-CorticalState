@@ -145,79 +145,7 @@ HILO = {'lopup','hipup'};
 %Whisk onset rate from NWh
 pupilphaseWh.WhRate = pupilphaseWh.Num_WhOn./((1-pupilphaseWh.fracWh).*pupilphaseEMG.N./EMGwhisk.samplingRate);
 
-%%
-figure
 
-subplot(3,3,1)
-a = imagesc(pupilphaseEMG.Xbins,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ');
-hold on
-alpha(a,double(~isnan(pupilphaseEMG.meanZ')))
-
-%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
-crameri lapaz
-plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
-plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
-axis xy
-box off
-%xlim([-pi 3*pi])
-ColorbarWithAxis([-0.7 0.7],'Mean EMG')
-LogScale('c',10)
-LogScale('y',10)
-xlabel('Pupil Phase');ylabel('Pupil Amplitude')
-
-subplot(3,3,2)
-a = imagesc(pupilphaseWh.Xbins,pupilphaseWh.Ybins,pupilphaseWh.fracWh');
-hold on
-alpha(a,double(~isnan(pupilphaseWh.fracWh')))
-
-%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
-crameri lapaz
-plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
-plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
-axis xy
-box off
-%xlim([-pi 3*pi])
-ColorbarWithAxis([0 1],'Frac Wh')
-
-LogScale('y',10)
-xlabel('Pupil Phase');ylabel('Pupil Amplitude')
-
-subplot(3,3,4)
-a = imagesc(pupilphaseWh.Xbins,pupilphaseWh.Ybins,(pupilphaseWh.WhRate)');
-hold on
-alpha(a,double(~isnan(pupilphaseWh.WhRate') & ~isinf(pupilphaseWh.WhRate')))
-
-%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
-crameri lapaz
-plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
-plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
-axis xy
-box off
-%xlim([-pi 3*pi])
-colorbar
-ColorbarWithAxis([0 5],'Wh Onset Rate')
-%LogScale('c',10)
-LogScale('y',10)
-xlabel('Pupil Phase');ylabel('Pupil Amplitude')
-
-
-subplot(3,3,5)
-a = imagesc(pupilphaseWh.Xbins,pupilphaseWh.Ybins,(pupilphaseWh.meanDur)');
-hold on
-alpha(a,double(~isnan(pupilphaseWh.meanDur')))
-
-%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
-crameri lapaz
-plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
-plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
-axis xy
-box off
-%xlim([-pi 3*pi])
-ColorbarWithAxis([-0.5 0.5],'Mean Dur')
-LogScale('c',10)
-
-LogScale('y',10)
-xlabel('Pupil Phase');ylabel('Pupil Amplitude')
 %% Conditional Distirbution of EMG/whisk dur as function of pupil 
 EMGrange = [-1.75 1.1];
 for pp= 1:2
@@ -248,7 +176,7 @@ EMGdur.pup  = ConditionalHist( log10(EMGwhisk.whisks.pup),...
 EMGdur.pup.pWhisk = EMGdur.pup.Xhist./(EMGdist.pup.Xhist./EMGwhisk.samplingRate);
 
 
-%%
+%% EMG
 cosx = linspace(-pi,pi,100);
 cospamp = [0.08 0.8];
 figure
@@ -344,6 +272,82 @@ subplot(3,2,6)
    
    
         NiceSave('EMGPupBehavior',figfolder,baseName)
+
+%% Whisking Stats by Pupil Phase
+figure
+
+subplot(3,3,1)
+a = imagesc(pupilphaseEMG.Xbins,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ');
+hold on
+alpha(a,double(~isnan(pupilphaseEMG.meanZ')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
+axis xy
+box off
+%xlim([-pi 3*pi])
+ColorbarWithAxis([-0.7 0.7],'Mean EMG')
+LogScale('c',10)
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')
+
+subplot(3,3,2)
+a = imagesc(pupilphaseWh.Xbins,pupilphaseWh.Ybins,pupilphaseWh.fracWh');
+hold on
+alpha(a,double(~isnan(pupilphaseWh.fracWh')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
+axis xy
+box off
+%xlim([-pi 3*pi])
+ColorbarWithAxis([0 1],'Frac Wh')
+
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')
+
+subplot(3,3,4)
+a = imagesc(pupilphaseWh.Xbins,pupilphaseWh.Ybins,(pupilphaseWh.WhRate)');
+hold on
+alpha(a,double(~isnan(pupilphaseWh.WhRate') & ~isinf(pupilphaseWh.WhRate')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
+axis xy
+box off
+%xlim([-pi 3*pi])
+colorbar
+ColorbarWithAxis([0 5],'Wh Onset Rate')
+%LogScale('c',10)
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')
+
+
+subplot(3,3,5)
+a = imagesc(pupilphaseWh.Xbins,pupilphaseWh.Ybins,(pupilphaseWh.meanDur)');
+hold on
+alpha(a,double(~isnan(pupilphaseWh.meanDur')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.detectionparms.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(pp)-2,'k')
+axis xy
+box off
+%xlim([-pi 3*pi])
+ColorbarWithAxis([-0.5 0.5],'Mean Dur')
+LogScale('c',10)
+
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')  
+
+NiceSave('WhPupBehavior',figfolder,baseName)
 
 %% Example Figure
 windows(1,:) = [100 250];
