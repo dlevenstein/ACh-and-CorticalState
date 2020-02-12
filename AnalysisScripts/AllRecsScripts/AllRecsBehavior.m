@@ -29,6 +29,7 @@ for gg = 1:6
 
     pupilphaseEMG.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupilphaseEMG(genotypeidx==gg),3,'mean',true);
     pupildpEMG.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupildpEMG(genotypeidx==gg),3,'mean',true);
+    pupilphaseWh.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupilphaseWh(genotypeidx==gg),3,'mean',true);
 end
 
 EMGdist.AllWT = bz_CollapseStruct(Behavior.EMGdist(strcmp(WTKOtype,'WT')),3,'mean',true);
@@ -36,6 +37,7 @@ EMGdur.AllWT = bz_CollapseStruct(Behavior.EMGdur(strcmp(WTKOtype,'WT')),3,'mean'
 EMGdur_std.AllWT = bz_CollapseStruct(Behavior.EMGdur(strcmp(WTKOtype,'WT')),3,'std',true);
 pupilphaseEMG.AllWT = bz_CollapseStruct(Behavior.pupilphaseEMG(strcmp(WTKOtype,'WT')),3,'mean',true);
 pupildpEMG.AllWT = bz_CollapseStruct(Behavior.pupildpEMG(strcmp(WTKOtype,'WT')),3,'mean',true);
+pupilphaseWh.AllWT = bz_CollapseStruct(Behavior.pupilphaseWh(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
 HILO = {'lopup','hipup'};
@@ -134,7 +136,70 @@ end
 
 end
 
+%% Whisking Stats by Pupil Phase
+for ff = 1:2
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
 
+subplot(3,4,gi)
+a = imagesc(pupilphaseWh.(genotypes{gg}).Xbins,pupilphaseWh.(genotypes{gg}).Ybins,pupilphaseWh.(genotypes{gg}).fracWh');
+hold on
+alpha(a,double(~isnan(pupilphaseWh.(genotypes{gg}).fracWh')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(2)-2,'w')
+axis xy
+box off
+title(genotypes{gg})
+%xlim([-pi 3*pi])
+ColorbarWithAxis([0 1],'Frac Wh')
+
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')
+
+subplot(3,4,4+gi)
+a = imagesc(pupilphaseWh.(genotypes{gg}).Xbins,pupilphaseWh.(genotypes{gg}).Ybins,(pupilphaseWh.(genotypes{gg}).WhRate)');
+hold on
+alpha(a,double(~isnan(pupilphaseWh.(genotypes{gg}).WhRate') & ~isinf(pupilphaseWh.(genotypes{gg}).WhRate')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(2)-2,'w')
+axis xy
+box off
+%xlim([-pi 3*pi])
+colorbar
+ColorbarWithAxis([0 5],'Wh Onset Rate')
+%LogScale('c',10)
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')
+
+
+subplot(3,4,8+gi)
+a = imagesc(pupilphaseWh.(genotypes{gg}).Xbins,pupilphaseWh.(genotypes{gg}).Ybins,(pupilphaseWh.(genotypes{gg}).meanDur)');
+hold on
+alpha(a,double(~isnan(pupilphaseWh.(genotypes{gg}).meanDur')))
+
+%imagesc(pupilphaseEMG.Xbins+2*pi,pupilphaseEMG.Ybins,pupilphaseEMG.meanZ')
+crameri lapaz
+plot([-pi 3*pi],pupilcycle.pupthresh.*[1 1],'w--')
+plot(cosx,(cos(cosx)+1).*cospamp(2)-2,'w')
+axis xy
+box off
+%xlim([-pi 3*pi])
+ColorbarWithAxis([-0.5 0.5],'Mean Dur')
+LogScale('c',10)
+
+LogScale('y',10)
+xlabel('Pupil Phase');ylabel('Pupil Amplitude')  
+
+end
+NiceSave('WhPupBehavior',analysisfolder,groupnames{ff},'figtype','pdf')
+end
 %%
 
 for ff = 1:2
