@@ -27,12 +27,14 @@ for gg = 1:6
     PSSdepth.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSSdepth(genotypeidx==gg),3,'mean',true);
     PSSdist.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSSdist(genotypeidx==gg),3,'mean',true);
     PSSphaseWhaligned.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.PSSphaseWhaligned(genotypeidx==gg),3,'mean',true);
+    LFPbehcorr.(genotypes{gg}) = bz_CollapseStruct(SlopeDepth.LFPbehcorr(genotypeidx==gg),3,'mean',true);
 end
 
 PSScomponents.AllWT = bz_CollapseStruct(SlopeDepth.PSScomponents(strcmp(WTKOtype,'WT')),3,'mean',true);
 PSSdepth.AllWT = bz_CollapseStruct(SlopeDepth.PSSdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
 PSSdist.AllWT = bz_CollapseStruct(SlopeDepth.PSSdist(strcmp(WTKOtype,'WT')),3,'mean',true);
 PSSphaseWhaligned.AllWT = bz_CollapseStruct(SlopeDepth.PSSphaseWhaligned(strcmp(WTKOtype,'WT')),3,'mean',true);
+LFPbehcorr.AllWT = bz_CollapseStruct(SlopeDepth.LFPbehcorr(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
 ONOFF = {'WhOn','WhOFF'};
@@ -41,7 +43,46 @@ HILO = {'lopup','hipup'};
 LAYERS = {'L1','L23','L4','L5a','L5b6','L6'};
 depthinfo.boundaries = [0 0.1 0.35 0.5 1];
 
+%%
+for ff = 1:2
+figure
 
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+subplot(3,4,gi)
+    imagesc(log10(LFPbehcorr.(genotypes{gg}).freqs),LFPbehcorr.(genotypes{gg}).depth,...
+        LFPbehcorr.(genotypes{gg}).EMG.osc_interp)
+    hold on
+    plot(LFPbehcorr.(genotypes{gg}).EMG.PSS_interp+1,LFPbehcorr.(genotypes{gg}).depth,'w')
+    plot([1 1],ylim(gca),'w--')
+    axis xy
+    LogScale('x',10)
+    crameri('berlin','pivot',0)
+    caxis([-0.15 0.15])
+    title(genotypes{gg})
+
+    
+for ww = 1:2
+    subplot(3,4,ww*4+gi)
+    imagesc(log10(LFPbehcorr.(genotypes{gg}).freqs),LFPbehcorr.(genotypes{gg}).depth,...
+        LFPbehcorr.(genotypes{gg}).Pupil.(WHNWH{ww}).osc_interp)
+    axis xy
+    hold on
+    plot([1 1],ylim(gca),'w--')
+        plot(LFPbehcorr.(genotypes{gg}).Pupil.(WHNWH{ww}).PSS_interp+1,LFPbehcorr.(genotypes{gg}).depth,'w')
+
+    LogScale('x',10)
+    crameri('berlin','pivot',0)
+    caxis([-0.2 0.15])
+    title((WHNWH{ww}))
+end
+
+
+end
+
+NiceSave('DepthPSSOscBehCorr',analysisfolder,groupnames{ff},'figtype','pdf')
+
+end
 %%
 cosx = linspace(-pi,pi,100);
 cospamp = [0.025 0.225];
@@ -119,10 +160,15 @@ for gi=1:length(groups{ff})
 for ll = 1:length(LAYERS)
 %for oo = 1:2
     subplot(6,4,gi+(ll-1)*4)
-        imagesc(PSSphaseWhaligned.(genotypes{gg}).Xbins,PSSphaseWhaligned.(genotypes{gg}).Ybins,...
-            PSSphaseWhaligned.(genotypes{gg}).(LAYERS{ll}).(ONOFF{oo}).meanZ')
-        alpha(single(~isnan(PSSphaseWhaligned.(genotypes{gg}).(LAYERS{ll}).(ONOFF{oo}).meanZ')))
-        hold on
+    hold on
+    for pp = 1:2
+        t=imagesc(PSSphaseWhaligned.(genotypes{gg}).Xbins,PSSphaseWhaligned.(genotypes{gg}).Ybins+2*pi*(pp-1),...
+            PSSphaseWhaligned.(genotypes{gg}).(LAYERS{ll}).(ONOFF{oo}).(HILO{pp}).meanZ');
+        alpha(t,single(~isnan([PSSphaseWhaligned.(genotypes{gg}).(LAYERS{ll}).(ONOFF{oo}).(HILO{pp}).meanZ'])))
+    
+        plot((cos(cosx)+1).*5*cospamp(pp)-5,cosx+2*pi*(pp-1),'w','linewidth',1)
+    end
+        axis tight
         axis xy
         plot([0 0],ylim(gca),'k--')
         if ll ==6
@@ -145,6 +191,37 @@ end
 NiceSave(['LayerPSSbyPhase_',(ONOFF{oo})],analysisfolder,groupnames{ff},'figtype','pdf')
 end
 end
+
+
+%%
+
+
+figure
+for ll = 1:length(LAYERS)
+for oo = 1:2
+    subplot(6,3,oo+(ll-1)*3)
+    hold on
+    for pp = 1:2
+        t=imagesc(PSSphaseWhaligned.Xbins,PSSphaseWhaligned.Ybins+2*pi*(pp-1),...
+            PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).(HILO{pp}).meanZ');
+        alpha(t,single(~isnan([PSSphaseWhaligned.(LAYERS{ll}).(ONOFF{oo}).(HILO{pp}).meanZ'])))
+    
+        plot((cos(cosx)+1).*cospamp(pp)-1,cosx+2*pi*(pp-1),'k')
+    end
+        axis xy; axis tight
+        plot([0 0],ylim(gca),'k--')
+        if ll ==6
+        xlabel(['t - aligned to ',(ONOFF{oo})]);
+        end
+        if oo == 1
+        ylabel({(LAYERS{ll}),'Pupil Phase'})
+        end
+        ColorbarWithAxis(PSSrange,'Mean PSS')
+        %crameri('berlin','pivot',1)
+end
+end
+NiceSave('LayerPSSatWhiskbyPhase',figfolder,baseName)
+
 
 %%
 for ff = 1:2
