@@ -1,4 +1,4 @@
-function [ EMGdur,EMGdist,pupilphaseEMG,pupildpEMG,pupilphaseWh] = BehaviorAnalysis2(basePath,figfolder)
+function [ EMGdur,EMGdist,pupilphaseEMG,pupildpEMG,pupilphaseWh,couplingbyamp] = BehaviorAnalysis2(basePath,figfolder)
 
 %Initiate Paths
 %reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
@@ -145,6 +145,15 @@ HILO = {'lopup','hipup'};
 %Whisk onset rate from NWh
 pupilphaseWh.NWhTimeOccupancy = ((1-pupilphaseWh.fracWh).*pupilphaseWh.N./EMGwhisk.samplingRate);
 pupilphaseWh.WhRate = pupilphaseWh.Num_WhOn./pupilphaseWh.NWhTimeOccupancy;
+
+%% Whisking properties as function of pupamplitude
+for aa = 1:length(pupilphaseWh.Ybins)
+
+    couplingbyamp.fracWh(aa) = nanmean(pupilphaseWh.fracWh(:,aa).*exp(1i.*pupilphaseWh.Xbins')./nanmean(pupilphaseWh.fracWh(:,aa)));
+    couplingbyamp.meanDur(aa) = nanmean(pupilphaseWh.meanDur(:,aa).*exp(1i.*pupilphaseWh.Xbins')./nanmean(pupilphaseWh.meanDur(:,aa)));
+    couplingbyamp.WhRate(aa) = nanmean(pupilphaseWh.WhRate(:,aa).*exp(1i.*pupilphaseWh.Xbins')./nanmean(pupilphaseWh.WhRate(:,aa)));
+end
+
 
 %%
 % figure
@@ -349,6 +358,17 @@ LogScale('c',10)
 
 LogScale('y',10)
 xlabel('Pupil Phase');ylabel('Pupil Amplitude')  
+
+subplot(3,2,6)
+plot(pupilphaseWh.Ybins,couplingbyamp.fracWh)
+hold on
+plot(pupilphaseWh.Ybins,couplingbyamp.meanDur)
+plot(pupilphaseWh.Ybins,couplingbyamp.WhRate)
+plot(pupilphaseWh.Ybins([1 end]),[0 0],'k--')
+axis tight
+plot(pupilcycle.detectionparms.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+xlabel('Pupil Amplitude') ;ylabel('Phase Coupling')
+legend('frac','dur','rate','location','eastoutside')
 
 NiceSave('WhPupBehavior',figfolder,baseName)
 

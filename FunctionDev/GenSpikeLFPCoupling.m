@@ -94,7 +94,7 @@ jittersig = p.Results.jittersig;
 if isa(spiketimes,'tsdArray')
     numcells = length(spiketimes);
     for cc = 1:numcells
-        spiketimestemp{cc} = Range(spiketimes{cc},'s');
+        spiketimestemp{cc} = Range(spikpupilphaseWh.fracWhetimes{cc},'s');
     end
     spiketimes = spiketimestemp;
     clear spiketimestemp
