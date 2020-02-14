@@ -142,7 +142,7 @@ figure
 for gi=1:length(groups{ff})
     gg = groups{ff}(gi);
 
-subplot(3,4,gi)
+subplot(4,4,gi)
 a = imagesc(pupilphaseWh.(genotypes{gg}).Xbins,pupilphaseWh.(genotypes{gg}).Ybins,pupilphaseWh.(genotypes{gg}).fracWh');
 hold on
 alpha(a,double(~isnan(pupilphaseWh.(genotypes{gg}).fracWh')))
@@ -160,8 +160,8 @@ ColorbarWithAxis([0 1],'Frac Wh')
 LogScale('y',10)
 xlabel('Pupil Phase');ylabel('Pupil Amplitude')
 
-subplot(3,4,4+gi)
-a = imagesc(pupilphaseWh.(genotypes{gg}).Xbins,pupilphaseWh.(genotypes{gg}).Ybins,(pupilphaseWh.(genotypes{gg}).WhRate)');
+subplot(4,4,4+gi)
+a = imagesc(pupilphaseWh.(genotypes{gg}).Xbins,pupilphaseWh.(genotypes{gg}).Ybins,log10(pupilphaseWh.(genotypes{gg}).WhRate)');
 hold on
 alpha(a,double(~isnan(pupilphaseWh.(genotypes{gg}).WhRate') & ~isinf(pupilphaseWh.(genotypes{gg}).WhRate')))
 
@@ -173,13 +173,13 @@ axis xy
 box off
 %xlim([-pi 3*pi])
 colorbar
-ColorbarWithAxis([0 5],'Wh Onset Rate')
-%LogScale('c',10)
+ColorbarWithAxis([-0.5 0.5],'Wh Onset Rate')
+LogScale('c',10)
 LogScale('y',10)
 xlabel('Pupil Phase');ylabel('Pupil Amplitude')
 
 
-subplot(3,4,8+gi)
+subplot(4,4,8+gi)
 a = imagesc(pupilphaseWh.(genotypes{gg}).Xbins,pupilphaseWh.(genotypes{gg}).Ybins,(pupilphaseWh.(genotypes{gg}).meanDur)');
 hold on
 alpha(a,double(~isnan(pupilphaseWh.(genotypes{gg}).meanDur')))
