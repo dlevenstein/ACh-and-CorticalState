@@ -149,9 +149,9 @@ pupilphaseWh.WhRate = pupilphaseWh.Num_WhOn./pupilphaseWh.NWhTimeOccupancy;
 %% Whisking properties as function of pupamplitude
 for aa = 1:length(pupilphaseWh.Ybins)
 
-    couplingbyamp.fracWh(aa) = nanmean(pupilphaseWh.fracWh(:,aa).*exp(1i.*pupilphaseWh.Xbins')./nanmean(pupilphaseWh.fracWh(:,aa)));
-    couplingbyamp.meanDur(aa) = nanmean(pupilphaseWh.meanDur(:,aa).*exp(1i.*pupilphaseWh.Xbins')./nanmean(pupilphaseWh.meanDur(:,aa)));
-    couplingbyamp.WhRate(aa) = nanmean(pupilphaseWh.WhRate(:,aa).*exp(1i.*pupilphaseWh.Xbins')./nanmean(pupilphaseWh.WhRate(:,aa)));
+    couplingbyamp.fracWh(aa) = abs(nanmean(pupilphaseWh.fracWh(:,aa).*exp(1i.*pupilphaseWh.Xbins')./nanmean(pupilphaseWh.fracWh(:,aa))));
+    couplingbyamp.meanDur(aa) = abs(nanmean(pupilphaseWh.meanDur(:,aa).*exp(1i.*pupilphaseWh.Xbins')./nanmean(pupilphaseWh.meanDur(:,aa))));
+    couplingbyamp.WhRate(aa) = abs(nanmean(pupilphaseWh.WhRate(:,aa).*exp(1i.*pupilphaseWh.Xbins')./nanmean(pupilphaseWh.WhRate(:,aa))));
 end
 
 

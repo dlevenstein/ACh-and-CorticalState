@@ -30,6 +30,7 @@ for gg = 1:6
     pupilphaseEMG.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupilphaseEMG(genotypeidx==gg),3,'mean',true);
     pupildpEMG.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupildpEMG(genotypeidx==gg),3,'mean',true);
     pupilphaseWh.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupilphaseWh(genotypeidx==gg),3,'mean',true);
+    couplingbyamp.(genotypes{gg}) = bz_CollapseStruct(Behavior.couplingbyamp(genotypeidx==gg),3,'mean',true);
 end
 
 EMGdist.AllWT = bz_CollapseStruct(Behavior.EMGdist(strcmp(WTKOtype,'WT')),3,'mean',true);
@@ -38,6 +39,7 @@ EMGdur_std.AllWT = bz_CollapseStruct(Behavior.EMGdur(strcmp(WTKOtype,'WT')),3,'s
 pupilphaseEMG.AllWT = bz_CollapseStruct(Behavior.pupilphaseEMG(strcmp(WTKOtype,'WT')),3,'mean',true);
 pupildpEMG.AllWT = bz_CollapseStruct(Behavior.pupildpEMG(strcmp(WTKOtype,'WT')),3,'mean',true);
 pupilphaseWh.AllWT = bz_CollapseStruct(Behavior.pupilphaseWh(strcmp(WTKOtype,'WT')),3,'mean',true);
+couplingbyamp.AllWT = bz_CollapseStruct(Behavior.couplingbyamp(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
 HILO = {'lopup','hipup'};
@@ -196,6 +198,18 @@ LogScale('c',10)
 
 LogScale('y',10)
 xlabel('Pupil Phase');ylabel('Pupil Amplitude')  
+
+
+subplot(4,4,12+gi)
+plot(pupilphaseWh.(genotypes{gg}).Ybins,couplingbyamp.(genotypes{gg}).fracWh)
+hold on
+plot(pupilphaseWh.(genotypes{gg}).Ybins,couplingbyamp.(genotypes{gg}).meanDur)
+plot(pupilphaseWh.(genotypes{gg}).Ybins,couplingbyamp.(genotypes{gg}).WhRate)
+plot(pupilphaseWh.(genotypes{gg}).Ybins([1 end]),[0 0],'k--')
+axis tight
+plot(pupilcycle.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+xlabel('Pupil Amplitude') ;ylabel('Phase Coupling')
+legend('frac','dur','rate','location','eastoutside')
 
 end
 NiceSave('WhPupBehavior',analysisfolder,groupnames{ff},'figtype','pdf')
