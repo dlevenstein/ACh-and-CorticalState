@@ -1,4 +1,4 @@
-function [ SPECdepth,OSCdepth,PSSphaseWhaligned] = LFPWavSpecbyDepthAnalysis(basePath,figfolder)
+function [ SPECdepth,OSCdepth,PSSphaseWhaligned,LFPbehcorr] = LFPWavSpecbyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -13,6 +13,7 @@ function [ SPECdepth,OSCdepth,PSSphaseWhaligned] = LFPWavSpecbyDepthAnalysis(bas
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
+%basePath = '/Users/dlevenstein/Dropbox/research/Datasets/WMProbeData/171209_WT_EM1M3';
 %basePath = pwd;
 %figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
@@ -43,7 +44,11 @@ CTXchans = depthinfo.channels(inCTX);
 CTXdepth = -depthinfo.ndepth(inCTX);
 
 
+%For Piloting
+%CTXchans = CTXchans([1:5]);
+%CTXdepth = CTXdepth([1:5]);
 
+spec.depth = CTXdepth;
 %% Load only the cortex channels in the spontaneous time window
 downsamplefactor = 2;
 lfp = bz_GetLFP(CTXchans,...
@@ -114,7 +119,7 @@ for ll = 1:length(LAYERS)
     spec.Layer(:,:,ll) = NormToInt(spec.Layer(:,:,ll),'median');
 end
 spec = rmfield(spec,'data');
-spec = rmfield(spec,'osci');
+%spec = rmfield(spec,'osci');
 %%
 
 %%
@@ -199,7 +204,66 @@ for wh = 2:(size(EMGwhisk.ints.Wh,1)-1)
     
 end
 
+%% PSS/Osci-behavior correlation
+spec.interpdepth = linspace(-1,0,100);
 
+clear LFPbehcorr
+LFPbehcorr.freqs = spec.freqs;
+LFPbehcorr.depth = spec.interpdepth;
+for cc = 1:length(CTXchans)
+    bz_Counter(cc,length(CTXchans),'Calcualting Correlation Channel')
+    LFPbehcorr.EMG.osc(:,cc) = corr(spec.osci(:,:,cc),spec.EMG,'type','spearman','rows','pairwise');
+    LFPbehcorr.EMG.PSS(cc) = corr(spec.PSS(:,cc),spec.EMG,'type','spearman','rows','pairwise');
+    
+    for ww = 1:2
+        LFPbehcorr.Pupil.(WHNWH{ww}).osc(:,cc) = corr(spec.osci(spec.(WHNWH{ww}),:,cc),spec.pup(spec.(WHNWH{ww})),'type','spearman','rows','pairwise');
+        LFPbehcorr.Pupil.(WHNWH{ww}).PSS(cc) = corr(spec.data(spec.(WHNWH{ww}),cc),spec.pup(spec.(WHNWH{ww})),'type','spearman','rows','pairwise');
+    end
+end
+%%
+LFPbehcorr.EMG.osc_interp = interp1(spec.depth',LFPbehcorr.EMG.osc',spec.interpdepth');
+LFPbehcorr.EMG.PSS_interp = interp1(spec.depth',LFPbehcorr.EMG.PSS',spec.interpdepth');
+for ww = 1:2
+    LFPbehcorr.Pupil.(WHNWH{ww}).osc_interp = ...
+        interp1(spec.depth',LFPbehcorr.Pupil.(WHNWH{ww}).osc',spec.interpdepth');
+    LFPbehcorr.Pupil.(WHNWH{ww}).PSS_interp = ...
+        interp1(spec.depth',LFPbehcorr.Pupil.(WHNWH{ww}).PSS',spec.interpdepth');
+end
+
+
+%%
+figure
+subplot(3,3,1)
+    imagesc(log10(LFPbehcorr.freqs),LFPbehcorr.depth,LFPbehcorr.EMG.osc_interp)
+    hold on
+    axis xy
+    LogScale('x',10)
+    crameri('berlin','pivot',0)
+    caxis([-0.2 0.15])
+
+subplot(3,3,2)
+    plot(LFPbehcorr.EMG.PSS_interp,LFPbehcorr.depth,'k')
+    xlabel('EMG-PSS Corr')
+    
+for ww = 1:2
+    subplot(3,3,ww+3)
+    imagesc(log10(LFPbehcorr.freqs),LFPbehcorr.depth,LFPbehcorr.Pupil.(WHNWH{ww}).osc_interp)
+    axis xy
+    LogScale('x',10)
+    crameri('berlin','pivot',0)
+    caxis([-0.2 0.15])
+    title((WHNWH{ww}))
+end
+
+subplot(3,3,6)
+    hold on
+    for ww = 1:2
+        plot(LFPbehcorr.Pupil.(WHNWH{ww}).PSS_interp,LFPbehcorr.depth)
+    end
+    legend(WHNWH)
+     xlabel('Pupil-PSS Corr')
+
+    NiceSave('DepthPSSOscBehCorr',figfolder,baseName)
 %% Correlation with pupil
 %  speccorr.freqs = spec.freqs;
 %  speccorr.channels = spec.channels;
