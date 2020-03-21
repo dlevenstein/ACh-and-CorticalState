@@ -217,7 +217,7 @@ for cc = 1:length(CTXchans)
     
     for ww = 1:2
         LFPbehcorr.Pupil.(WHNWH{ww}).osc(:,cc) = corr(spec.osci(spec.(WHNWH{ww}),:,cc),spec.pup(spec.(WHNWH{ww})),'type','spearman','rows','pairwise');
-        LFPbehcorr.Pupil.(WHNWH{ww}).PSS(cc) = corr(spec.data(spec.(WHNWH{ww}),cc),spec.pup(spec.(WHNWH{ww})),'type','spearman','rows','pairwise');
+        LFPbehcorr.Pupil.(WHNWH{ww}).PSS(cc) = corr(spec.PSS(spec.(WHNWH{ww}),cc),spec.pup(spec.(WHNWH{ww})),'type','spearman','rows','pairwise');
     end
 end
 %%
