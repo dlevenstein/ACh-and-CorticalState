@@ -94,7 +94,8 @@ for cc =1:length(spec.channels)
 %%
     
     [specslope,~] = bz_PowerSpectrumSlope(lfp,ncycles,0.01,'channels',spec.channels(cc),...
-        'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes);
+        'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
+        'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))]);
     spec.data(:,:,cc) = specslope.specgram;
     spec.osci(:,:,cc) = specslope.resid;
     spec.PSS(:,cc) = specslope.data;
