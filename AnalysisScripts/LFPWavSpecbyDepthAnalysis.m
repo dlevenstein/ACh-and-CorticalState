@@ -48,7 +48,7 @@ CTXdepth = -depthinfo.ndepth(inCTX);
 %CTXchans = CTXchans([1:5]);
 %CTXdepth = CTXdepth([1:5]);
 
-spec.depth = CTXdepth;
+
 %% Load only the cortex channels in the spontaneous time window
 downsamplefactor = 2;
 lfp = bz_GetLFP(CTXchans,...
@@ -69,6 +69,7 @@ clear spec
 % 
 % spec.channels = lfp.channels;
 spec.channels = CTXchans;
+spec.depth = CTXdepth;
 ncycles = 8; %prev 10
 for cc =1:length(spec.channels)
     bz_Counter(cc,length(spec.channels),'Channel')
