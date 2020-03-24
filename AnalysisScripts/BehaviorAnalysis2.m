@@ -1,4 +1,4 @@
-function [ EMGdur,EMGdist,pupilphaseEMG,pupildpEMG,pupilphaseWh,couplingbyamp] = BehaviorAnalysis2(basePath,figfolder)
+function [ EMGdur,EMGdist,pupilphaseEMG,pupildpEMG,pupilphaseWh,couplingbyamp,ascdescWh] = BehaviorAnalysis2(basePath,figfolder)
 
 %Initiate Paths
 %reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
@@ -147,6 +147,27 @@ HILO = {'lopup','hipup'};
 pupilphaseWh.NWhTimeOccupancy = ((1-pupilphaseWh.fracWh).*pupilphaseWh.N./EMGwhisk.samplingRate);
 pupilphaseWh.WhRate = pupilphaseWh.Num_WhOn./pupilphaseWh.NWhTimeOccupancy;
 
+%ASC/DESC
+%Proportion of time whisking
+[ascdescWh.fracWh,ascdescWh.N,ascdescWh.Xbins,ascdescWh.Ybins] = ...
+    ConditionalHist3( EMGwhisk.pupphase(EMGwhisk.EMGsm~=0),...
+    log10(EMGwhisk.pupamp(EMGwhisk.EMGsm~=0)),EMGwhisk.iswhisk(EMGwhisk.EMGsm~=0) ,...
+    'minXY',250,'Xbounds',[-pi pi],'Ybounds',[-1.75 -0.25],...
+    'numXbins',2,'numYbins',15);
+
+%Mean Duration
+[ascdescWh.meanDur,ascdescWh.Num_WhOn,~,~] = ...
+    ConditionalHist3( EMGwhisk.whisks.pupphase,...
+    log10(EMGwhisk.whisks.pupamp),log10(EMGwhisk.whisks.dur),...
+    'minXY',4,'Xbounds',[-pi pi],'Ybounds',[-1.75 -0.25],...
+    'numXbins',2,'numYbins',15);
+
+%Whisk onset rate from NWh
+ascdescWh.NWhTimeOccupancy = ((1-ascdescWh.fracWh).*ascdescWh.N./EMGwhisk.samplingRate);
+ascdescWh.WhRate = ascdescWh.Num_WhOn./ascdescWh.NWhTimeOccupancy;
+ascdescWh.pTime = ascdescWh.N./sum(ascdescWh.N(:));
+
+ 
 %% Whisking properties as function of pupamplitude
 for aa = 1:length(pupilphaseWh.Ybins)
 
@@ -360,17 +381,47 @@ LogScale('c',10)
 LogScale('y',10)
 xlabel('Pupil Phase');ylabel('Pupil Amplitude')  
 
-subplot(3,2,6)
-plot(pupilphaseWh.Ybins,couplingbyamp.fracWh)
-hold on
-plot(pupilphaseWh.Ybins,couplingbyamp.meanDur)
-plot(pupilphaseWh.Ybins,couplingbyamp.WhRate)
-plot(pupilphaseWh.Ybins([1 end]),[0 0],'k--')
-axis tight
-plot(pupilcycle.detectionparms.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
-xlabel('Pupil Amplitude') ;ylabel('Phase Coupling')
-legend('frac','dur','rate','location','eastoutside')
+% subplot(3,2,6)
+% plot(pupilphaseWh.Ybins,couplingbyamp.fracWh)
+% hold on
+% plot(pupilphaseWh.Ybins,couplingbyamp.meanDur)
+% plot(pupilphaseWh.Ybins,couplingbyamp.WhRate)
+% plot(pupilphaseWh.Ybins([1 end]),[0 0],'k--')
+% axis tight
+% plot(pupilcycle.detectionparms.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+% xlabel('Pupil Amplitude') ;ylabel('Phase Coupling')
+% legend('frac','dur','rate','location','eastoutside')
 
+subplot(4,3,3)
+hold on
+    plot(ascdescWh.Ybins,ascdescWh.pTime,'linewidth',2)
+    plot(pupilcycle.detectionparms.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+    ylabel('P[t]')
+    legend('Asc.','Desc.','location','northwest')
+    
+subplot(4,3,6)
+hold on
+    plot(ascdescWh.Ybins,ascdescWh.fracWh,'linewidth',2)
+    plot(pupilcycle.detectionparms.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+    ylabel('frac Wh')
+    
+subplot(4,3,9)
+hold on
+    plot(ascdescWh.Ybins,(ascdescWh.WhRate),'linewidth',2)
+    plot(pupilcycle.detectionparms.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+   % axis tight
+   % LogScale('y',10)
+   ylabel('Wh Rate (s^-^1)')
+
+subplot(4,3,12)
+hold on
+    plot(ascdescWh.Ybins,ascdescWh.meanDur,'linewidth',2)
+    plot(pupilcycle.detectionparms.pupthresh.*[1 1],ylim(gca),'r--')
+    %axis tight
+    LogScale('y',10)
+    ylabel('Duration (s)')
+    
+    
 NiceSave('WhPupBehavior',figfolder,baseName)
 
 %% Example Figure
