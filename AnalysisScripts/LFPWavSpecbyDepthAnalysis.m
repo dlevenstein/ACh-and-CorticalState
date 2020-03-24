@@ -247,6 +247,7 @@ subplot(3,3,1)
     LogScale('x',10)
     crameri('berlin','pivot',0)
     caxis([-0.2 0.15])
+    colorbar
 
 subplot(3,3,2)
     plot(LFPbehcorr.EMG.PSS_interp,LFPbehcorr.depth,'k')
@@ -260,6 +261,7 @@ for ww = 1:2
     crameri('berlin','pivot',0)
     caxis([-0.2 0.15])
     title((WHNWH{ww}))
+    colorbar
 end
 
 subplot(3,3,6)
@@ -280,6 +282,7 @@ for ww = 1:2
     crameri('berlin','pivot',0)
     %caxis([-0.2 0.15])
     title((WHNWH{ww}))
+    colorbar
 end
 
 subplot(3,3,9)
