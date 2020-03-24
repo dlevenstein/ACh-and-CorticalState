@@ -1,4 +1,4 @@
-function [ SPECdepth,OSCdepth,PSSphaseWhaligned,LFPbehcorr] = LFPWavSpecbyDepthAnalysis(basePath,figfolder)
+function [ SPECdepth,OSCdepth,PSSphaseWhaligned,LFPbehcorr,meanOSCPSS] = LFPWavSpecbyDepthAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -212,6 +212,10 @@ spec.interpdepth = linspace(-1,0,100);
 clear LFPbehcorr
 LFPbehcorr.freqs = spec.freqs;
 LFPbehcorr.depth = spec.interpdepth;
+
+meanOSCPSS.freqs = spec.freqs;
+meanOSCPSS.depth = spec.interpdepth;
+
 for cc = 1:length(CTXchans)
     bz_Counter(cc,length(CTXchans),'Calcualting Correlation Channel')
     LFPbehcorr.EMG.osc(:,cc) = corr(spec.osci(:,:,cc),spec.EMG,'type','spearman','rows','pairwise');
@@ -220,6 +224,9 @@ for cc = 1:length(CTXchans)
     for ww = 1:2
         LFPbehcorr.Pupil.(WHNWH{ww}).osc(:,cc) = corr(spec.osci(spec.(WHNWH{ww}),:,cc),spec.pup(spec.(WHNWH{ww})),'type','spearman','rows','pairwise');
         LFPbehcorr.Pupil.(WHNWH{ww}).PSS(cc) = corr(spec.PSS(spec.(WHNWH{ww}),cc),spec.pup(spec.(WHNWH{ww})),'type','spearman','rows','pairwise');
+        
+        meanOSCPSS.(WHNWH{ww}).osc(:,cc) = nanmean(spec.osci(spec.(WHNWH{ww}),:,cc),1);
+        meanOSCPSS.(WHNWH{ww}).PSS(cc) = nanmean(spec.PSS(spec.(WHNWH{ww}),cc),1);
     end
 end
 %%
@@ -230,6 +237,11 @@ for ww = 1:2
         interp1(spec.depth',LFPbehcorr.Pupil.(WHNWH{ww}).osc',spec.interpdepth');
     LFPbehcorr.Pupil.(WHNWH{ww}).PSS_interp = ...
         interp1(spec.depth',LFPbehcorr.Pupil.(WHNWH{ww}).PSS',spec.interpdepth');
+    
+    meanOSCPSS.(WHNWH{ww}).osc_interp = ...
+        interp1(spec.depth',meanOSCPSS.(WHNWH{ww}).osc',spec.interpdepth');
+    meanOSCPSS.(WHNWH{ww}).PSS_interp = ...
+        interp1(spec.depth',meanOSCPSS.(WHNWH{ww}).PSS',spec.interpdepth');
 end
 
 
@@ -264,6 +276,26 @@ subplot(3,3,6)
     end
     legend(WHNWH)
      xlabel('Pupil-PSS Corr')
+     
+     
+     
+for ww = 1:2
+    subplot(3,3,ww+6)
+    imagesc(log10(meanOSCPSS.freqs),meanOSCPSS.depth,meanOSCPSS.(WHNWH{ww}).osc_interp)
+    axis xy
+    LogScale('x',10)
+    crameri('berlin','pivot',0)
+    %caxis([-0.2 0.15])
+    title((WHNWH{ww}))
+end
+
+subplot(3,3,6)
+    hold on
+    for ww = 1:2
+        plot(meanOSCPSS.(WHNWH{ww}).PSS_interp,meanOSCPSS.depth)
+    end
+    legend(WHNWH)
+     xlabel('Mean PSS')
 
     NiceSave('DepthPSSOscBehCorr',figfolder,baseName)
 %% Correlation with pupil
