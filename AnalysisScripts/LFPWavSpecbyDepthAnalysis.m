@@ -150,13 +150,6 @@ spec.NWh = ~InIntervals(spec.timestamps,EMGwhisk.ints.ExpWh);
 spec.hipup = interp1(pupilcycle.timestamps,single(pupilcycle.states==2),spec.timestamps,'nearest')==1;
 spec.lopup = interp1(pupilcycle.timestamps,single(pupilcycle.states==1),spec.timestamps,'nearest')==1;
 
-
-spec.Wh = InIntervals(spec.timestamps,EMGwhisk.ints.Wh);
-EMGwhisk.ints.ExpWh = bsxfun(@plus,EMGwhisk.ints.Wh,[-0.5 0.5]*spec.winsize);
-spec.NWh = ~InIntervals(spec.timestamps,EMGwhisk.ints.ExpWh);
-spec.hipup = interp1(pupilcycle.timestamps,single(pupilcycle.states==2),spec.timestamps,'nearest')==1;
-spec.lopup = interp1(pupilcycle.timestamps,single(pupilcycle.states==1),spec.timestamps,'nearest')==1;
-
 spec.pupphase = interp1(pupilcycle.timestamps,pupilcycle.phase,spec.timestamps,'nearest');
 spec.pup = interp1(pupilcycle.timestamps,pupilcycle.data,spec.timestamps,'nearest');
 spec.EMG = interp1(EMGwhisk.timestamps,EMGwhisk.EMGsm,spec.timestamps,'nearest');
@@ -289,7 +282,7 @@ for ww = 1:2
     title((WHNWH{ww}))
 end
 
-subplot(3,3,6)
+subplot(3,3,9)
     hold on
     for ww = 1:2
         plot(meanOSCPSS.(WHNWH{ww}).PSS_interp,meanOSCPSS.depth)
