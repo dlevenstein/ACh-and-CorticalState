@@ -31,6 +31,7 @@ for gg = 1:6
     pupildpEMG.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupildpEMG(genotypeidx==gg),3,'mean',true);
     pupilphaseWh.(genotypes{gg}) = bz_CollapseStruct(Behavior.pupilphaseWh(genotypeidx==gg),3,'mean',true);
     couplingbyamp.(genotypes{gg}) = bz_CollapseStruct(Behavior.couplingbyamp(genotypeidx==gg),3,'justcat',true);
+    ascdescWh.(genotypes{gg}) = bz_CollapseStruct(Behavior.ascdescWh(genotypeidx==gg),3,'justcat',true);
 end
 
 EMGdist.AllWT = bz_CollapseStruct(Behavior.EMGdist(strcmp(WTKOtype,'WT')),3,'mean',true);
@@ -40,7 +41,7 @@ pupilphaseEMG.AllWT = bz_CollapseStruct(Behavior.pupilphaseEMG(strcmp(WTKOtype,'
 pupildpEMG.AllWT = bz_CollapseStruct(Behavior.pupildpEMG(strcmp(WTKOtype,'WT')),3,'mean',true);
 pupilphaseWh.AllWT = bz_CollapseStruct(Behavior.pupilphaseWh(strcmp(WTKOtype,'WT')),3,'mean',true);
 couplingbyamp.AllWT = bz_CollapseStruct(Behavior.couplingbyamp(strcmp(WTKOtype,'WT')),3,'justcat',true);
-
+ascdescWh.AllWT = bz_CollapseStruct(Behavior.ascdescWh(strcmp(WTKOtype,'WT')),3,'justcat',true);
 %%
 HILO = {'lopup','hipup'};
 pupilcycle.pupthresh = -0.8;
@@ -214,6 +215,55 @@ legend('frac','dur','rate','location','northwest')
 end
 NiceSave('WhPupBehavior',analysisfolder,groupnames{ff},'figtype','pdf')
 end
+
+%%
+for ff = 1:2
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+
+subplot(4,4,gi)
+    hold on
+    plot(nanmean(ascdescWh.(genotypes{gg}).Ybins,3),nanmean(ascdescWh.(genotypes{gg}).pTime,3),'linewidth',2)
+    plot(pupilcycle.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+    ylabel('P[t]')
+    legend('Asc.','Desc.','location','northwest')
+    title(genotypes{gg})
+
+    
+    
+subplot(4,4,4+gi)
+    hold on
+    plot(nanmean(ascdescWh.(genotypes{gg}).Ybins,3),nanmean(ascdescWh.(genotypes{gg}).fracWh,3),'linewidth',2)
+    plot(pupilcycle.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+    ylabel('frac Wh')
+    
+
+
+subplot(4,4,8+gi)
+    hold on
+    plot(nanmean(ascdescWh.(genotypes{gg}).Ybins,3),nanmean(ascdescWh.(genotypes{gg}).WhRate,3),'linewidth',2)
+    plot(pupilcycle.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+   % axis tight
+   % LogScale('y',10)
+   ylabel('Wh Rate (s^-^1)')
+
+
+subplot(4,4,12+gi)
+    hold on
+    plot(nanmean(ascdescWh.(genotypes{gg}).Ybins,3),10.^nanmean(ascdescWh.(genotypes{gg}).meanDur,3),'linewidth',2)
+    plot(pupilcycle.pupthresh.*[1 1],ylim(gca).*[0 1],'r--')
+    %axis tight
+   % LogScale('y',10)
+    ylabel('Duration (s)')
+
+end
+NiceSave('AscDescWisk',analysisfolder,groupnames{ff},'figtype','pdf')
+end
+
+
+
+
 %%
 
 for ff = 1:2
