@@ -245,8 +245,9 @@ subplot(3,3,1)
     hold on
     axis xy
     LogScale('x',10)
-    crameri('berlin','pivot',0)
     caxis([-0.2 0.15])
+    crameri('berlin','pivot',0)
+    
     colorbar
 
 subplot(3,3,2)
@@ -258,8 +259,8 @@ for ww = 1:2
     imagesc(log10(LFPbehcorr.freqs),LFPbehcorr.depth,LFPbehcorr.Pupil.(WHNWH{ww}).osc_interp)
     axis xy
     LogScale('x',10)
-    crameri('berlin','pivot',0)
     caxis([-0.2 0.15])
+    crameri('berlin','pivot',0)
     title((WHNWH{ww}))
     colorbar
 end
@@ -280,7 +281,7 @@ for ww = 1:2
     axis xy
     LogScale('x',10)
     crameri('tokyo')
-    caxis([0 0.35])
+    caxis([0.05 0.3])
     title((WHNWH{ww}))
     colorbar
 end
@@ -746,7 +747,7 @@ subplot(6,4,(dd-1)*4+4)
         hold on; axis xy; box off
         plot(OSCdepth.(LAYERS{dd}).EMG.varbins,OSCdepth.(LAYERS{dd}).EMG.vardist*1000,'w')
         plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(OSCdepth.freqs)],'k--')
-        clim([0 0.3])
+        clim([0.05 0.3])
         LogScale('y',10)
         ylabel('Freq');
                 if dd == 6
