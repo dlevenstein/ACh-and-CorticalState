@@ -5,6 +5,7 @@ function [ EMGdur,EMGdist,pupilphaseEMG,pupildpEMG,pupilphaseWh,couplingbyamp] =
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/EM1M3/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
+%basePath = '/Users/dlevenstein/Dropbox/research/Datasets/WMProbeData/171209_WT_EM1M3';
 %basePath = pwd;
 %figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 

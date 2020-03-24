@@ -279,8 +279,8 @@ for ww = 1:2
     imagesc(log10(meanOSCPSS.freqs),meanOSCPSS.depth,meanOSCPSS.(WHNWH{ww}).osc_interp)
     axis xy
     LogScale('x',10)
-    crameri('berlin','pivot',0)
-    %caxis([-0.2 0.15])
+    crameri('tokyo')
+    caxis([0 0.35])
     title((WHNWH{ww}))
     colorbar
 end
