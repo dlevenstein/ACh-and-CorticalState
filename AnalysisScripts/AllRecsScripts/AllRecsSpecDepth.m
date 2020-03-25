@@ -27,7 +27,9 @@ for gg = 1:6
     SPECdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'mean',true);
     OSCdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.OSCdepth(genotypeidx==gg),3,'mean',true);
     SPECdepth_std.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'std',true);
-
+    
+    LFPbehcorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.LFPbehcorr(genotypeidx==gg),3,'mean',true);
+    meanOSCPSS.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.meanOSCPSS(genotypeidx==gg),3,'mean',true);
     %speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
 end
 
@@ -35,18 +37,125 @@ SPECdepth.AllWT = bz_CollapseStruct(SpecDepth.SPECdepth(strcmp(WTKOtype,'WT')),3
 SPECdepth_std.AllWT = bz_CollapseStruct(SpecDepth.SPECdepth(strcmp(WTKOtype,'WT')),3,'std',true);
 
 OSCdepth.AllWT = bz_CollapseStruct(SpecDepth.OSCdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
+LFPbehcorr.AllWT = bz_CollapseStruct(SpecDepth.LFPbehcorr(strcmp(WTKOtype,'WT')),3,'mean',true);
+meanOSCPSS.AllWT = bz_CollapseStruct(SpecDepth.meanOSCPSS(strcmp(WTKOtype,'WT')),3,'mean',true);
 %speccorr.AllWT = bz_CollapseStruct(SpecDepth.speccorr(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
 
 ONOFF = {'WhOn','WhOFF'};
-WHNWH = {'Wh','NWh'};
+WHNWH = {'NWh','Wh'};
 HILO = {'lopup','hipup'};
 LONGSHORT = {'long','short'};
 LAYERS = {'L1','L23','L4','L5a','L5b6','L6'};
-depthinfo.boundaries = [0 0.1 0.35 0.5 0.6 0.9 1];
+%depthinfo.boundaries = [0 0.1 0.35 0.5 0.6 0.9 1];
+depthinfo.boundaries = [0 0.1 0.35 0.5 1];
 
 
+%%
+for ff = 1:2
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+subplot(4,4,gi+4)
+    imagesc(log10(LFPbehcorr.(genotypes{gg}).freqs),LFPbehcorr.(genotypes{gg}).depth,...
+        LFPbehcorr.(genotypes{gg}).EMG.osc_interp)
+    hold on
+    plot(xlim(gca),-depthinfo.boundaries'*[1 1],'w')
+    axis xy
+    LogScale('x',10)
+    caxis([-0.2 0.15])
+    crameri('berlin','pivot',0)
+    if gi == 1
+    ylabel({'EMG','Depth'})
+    end
+    colorbar
+
+subplot(4,4,gi)
+hold on
+    plot(LFPbehcorr.(genotypes{gg}).EMG.PSS_interp,LFPbehcorr.(genotypes{gg}).depth,'k','linewidth',2)
+    for ww = 1:2
+        plot(LFPbehcorr.(genotypes{gg}).Pupil.(WHNWH{ww}).PSS_interp,...
+            LFPbehcorr.(genotypes{gg}).depth,'linewidth',2)
+    end
+    xlim([-0.1 0.5])
+    plot(xlim(gca),-depthinfo.boundaries'*[1 1],'k')
+    if gi == 4
+        legend('EMG',['Pup. - ',WHNWH{1}],['Pup. - ',WHNWH{2}],'location','southwest') 
+    end
+    if gi == 1
+        ylabel('Depth')
+    end
+    plot([0 0],ylim(gca),'k--')
+     xlabel('Beh-PSS Corr')
+     title(genotypes{gg})
+     
+     
+    
+for ww = 1:2
+    subplot(4,4,gi+8+(ww-1)*4)
+    imagesc(log10(LFPbehcorr.(genotypes{gg}).freqs),LFPbehcorr.(genotypes{gg}).depth,...
+        LFPbehcorr.(genotypes{gg}).Pupil.(WHNWH{ww}).osc_interp)
+    axis xy
+    hold on
+    plot(xlim(gca),-depthinfo.boundaries'*[1 1],'w')
+    LogScale('x',10)
+    caxis([-0.2 0.15])
+    crameri('berlin','pivot',0)
+    title((WHNWH{ww}))
+    colorbar
+    if gi == 1
+    ylabel({'Pupil','Depth'})
+    end
+    if ww == 1
+        xlabel('f (Hz)')
+    end
+end
+
+
+
+     
+     
+end
+NiceSave('DepthPSSOscBehCorr',analysisfolder,groupnames{ff})
+end
+     
+%%  
+for ff = 1:2
+figure
+for gi=1:length(groups{ff})
+    gg = groups{ff}(gi);
+    
+for ww = 1:2
+    subplot(4,4,gi+4+(ww-1)*4)
+    imagesc(log10(meanOSCPSS.(genotypes{gg}).freqs),meanOSCPSS.(genotypes{gg}).depth,...
+        meanOSCPSS.(genotypes{gg}).(WHNWH{ww}).osc_interp)
+    axis xy
+    hold on
+    plot(xlim(gca),-depthinfo.boundaries'*[1 1],'w')
+    LogScale('x',10)
+    crameri('tokyo')
+    caxis([0.05 0.25])
+    title((WHNWH{ww}))
+    colorbar
+end
+
+subplot(4,4,gi)
+    hold on
+    for ww = 1:2
+        plot(meanOSCPSS.(genotypes{gg}).(WHNWH{ww}).PSS_interp,meanOSCPSS.(genotypes{gg}).depth)
+    end
+    plot(xlim(gca),-depthinfo.boundaries'*[1 1],'k')
+    if gi == 4
+    legend(WHNWH)
+    end
+     xlabel('Mean PSS')
+     title(genotypes{gg})
+
+end
+    NiceSave('MeanOSC',analysisfolder,groupnames{ff})
+end
+  %  
 
 %%
 if exist('speccorr','var')
