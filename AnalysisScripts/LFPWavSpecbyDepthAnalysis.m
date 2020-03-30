@@ -70,7 +70,7 @@ clear spec
 % spec.channels = lfp.channels;
 spec.channels = CTXchans;
 spec.depth = CTXdepth;
-ncycles = 8; %prev 10
+ncycles = 12; %prev 10
 for cc =1:length(spec.channels)
     bz_Counter(cc,length(spec.channels),'Channel')
     %FFT
@@ -95,7 +95,8 @@ for cc =1:length(spec.channels)
     
     specslope = bz_PowerSpectrumSlope(lfp,ncycles,0.01,'channels',spec.channels(cc),...
         'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
-        'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))]);
+        'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
+        'Redetect',true);
     spec.data(:,:,cc) = specslope.specgram;
     spec.osci(:,:,cc) = specslope.resid;
     spec.PSS(:,cc) = specslope.data;

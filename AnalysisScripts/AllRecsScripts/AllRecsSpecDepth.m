@@ -1,4 +1,4 @@
-analysisfolder = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPWavSpecbyDepthAnalysis';
+analysisfolder = '/Users/dl2820/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPWavSpecbyDepthAnalysis';
 %analysisfolder = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/LFPWavSpecbyDepthAnalysis';
 SpecDepthAll = GetMatResults(analysisfolder,'LFPWavSpecbyDepthAnalysis');
 %genotype = {PupilWhiskAll.genotype};
@@ -28,8 +28,8 @@ for gg = 1:6
     OSCdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.OSCdepth(genotypeidx==gg),3,'mean',true);
     SPECdepth_std.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'std',true);
     
-    LFPbehcorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.LFPbehcorr(genotypeidx==gg),3,'mean',true);
-    meanOSCPSS.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.meanOSCPSS(genotypeidx==gg),3,'mean',true);
+    LFPbehcorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.LFPbehcorr(genotypeidx==gg),3,'median',true);
+    meanOSCPSS.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.meanOSCPSS(genotypeidx==gg),3,'median',true);
     %speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
 end
 
@@ -37,8 +37,8 @@ SPECdepth.AllWT = bz_CollapseStruct(SpecDepth.SPECdepth(strcmp(WTKOtype,'WT')),3
 SPECdepth_std.AllWT = bz_CollapseStruct(SpecDepth.SPECdepth(strcmp(WTKOtype,'WT')),3,'std',true);
 
 OSCdepth.AllWT = bz_CollapseStruct(SpecDepth.OSCdepth(strcmp(WTKOtype,'WT')),3,'mean',true);
-LFPbehcorr.AllWT = bz_CollapseStruct(SpecDepth.LFPbehcorr(strcmp(WTKOtype,'WT')),3,'mean',true);
-meanOSCPSS.AllWT = bz_CollapseStruct(SpecDepth.meanOSCPSS(strcmp(WTKOtype,'WT')),3,'mean',true);
+LFPbehcorr.AllWT = bz_CollapseStruct(SpecDepth.LFPbehcorr(strcmp(WTKOtype,'WT')),3,'median',true);
+meanOSCPSS.AllWT = bz_CollapseStruct(SpecDepth.meanOSCPSS(strcmp(WTKOtype,'WT')),3,'median',true);
 %speccorr.AllWT = bz_CollapseStruct(SpecDepth.speccorr(strcmp(WTKOtype,'WT')),3,'mean',true);
 
 %%
@@ -100,7 +100,7 @@ for ww = 1:2
     hold on
     plot(xlim(gca),-depthinfo.boundaries'*[1 1],'w')
     LogScale('x',10)
-    caxis([-0.2 0.15])
+    caxis([-0.15 0.1])
     crameri('berlin','pivot',0)
     title((WHNWH{ww}))
     colorbar
