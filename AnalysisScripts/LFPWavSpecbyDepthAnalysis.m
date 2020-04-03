@@ -73,25 +73,6 @@ spec.depth = CTXdepth;
 ncycles = 15; %prev 10
 for cc =1:length(spec.channels)
     bz_Counter(cc,length(spec.channels),'Channel')
-    %FFT
-    %[temp,~,spec.timestamps] = spectrogram(single(lfp.data(:,cc)),winsize_sf,noverlap_sf,spec.freqs,lfp.samplingRate);
-%     spec.data(:,:,cc) = log10(abs(temp))';
-%     spec.timestamps = spec.timestamps';
-
-    %Wavelets - recalculate
-%     [wavespec] = bz_WaveSpec(lfp,'frange',spec.frange,'nfreqs',spec.nfreqs,...
-%         'chanID',lfp.channels(cc),'ncyc',12); 
-%     spec.data(:,:,cc) = log10(abs(downsample(wavespec.data,5)));
-%     spec.timestamps = downsample(wavespec.timestamps,5);
-%     spec.freqs = wavespec.freqs; 
-
-    %Loaded Wavelets
-%     load(fullfile(basePath,'WaveSpec_Downsampled',[baseName,'.',num2str(spec.channels(cc)),'.WaveSpec.lfp.mat']));
-%     inspont = InIntervals(wavespec.timestamps,sponttimes);
-%     spec.data(:,:,cc) = log10(abs(wavespec.data(inspont,:)));
-%     spec.timestamps = wavespec.timestamps(inspont,:);
-%     spec.freqs = wavespec.freqs; 
-%%
     
     specslope = bz_PowerSpectrumSlope(lfp,ncycles,0.01,'channels',spec.channels(cc),...
         'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
