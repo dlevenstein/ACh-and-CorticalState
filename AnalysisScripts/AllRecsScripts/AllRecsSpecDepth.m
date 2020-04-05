@@ -28,8 +28,8 @@ for gg = 1:6
     OSCdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.OSCdepth(genotypeidx==gg),3,'mean',true);
     SPECdepth_std.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'std',true);
     
-    LFPbehcorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.LFPbehcorr(genotypeidx==gg),3,'median',true);
-    meanOSCPSS.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.meanOSCPSS(genotypeidx==gg),3,'median',true);
+    LFPbehcorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.LFPbehcorr(genotypeidx==gg),3,'mean',true);
+    meanOSCPSS.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.meanOSCPSS(genotypeidx==gg),3,'mean',true);
     %speccorr.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.speccorr(genotypeidx==gg),3,'mean',true);
 end
 

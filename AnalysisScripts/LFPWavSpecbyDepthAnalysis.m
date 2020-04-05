@@ -70,7 +70,7 @@ clear spec
 % spec.channels = lfp.channels;
 spec.channels = CTXchans;
 spec.depth = CTXdepth;
-ncycles = 15; %prev 10
+ncycles = 10; %prev 10
 for cc =1:length(spec.channels)
     bz_Counter(cc,length(spec.channels),'Channel')
     
