@@ -13,11 +13,11 @@ function [ SPECdepth,OSCdepth,PSSphaseWhaligned,LFPbehcorr,meanOSCPSS] = LFPWavS
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
 reporoot = '/gpfs/data/buzsakilab/DL/ACh-and-CorticalState/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
-basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
+basePath = '/gpfs/data/rudylab/William/171209_WT_EM1M3';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
 %basePath = '/Users/dlevenstein/Dropbox/research/Datasets/WMProbeData/171209_WT_EM1M3';
 %basePath = pwd;
-%figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
+figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
@@ -52,11 +52,13 @@ CTXdepth = -depthinfo.ndepth(inCTX);
 
 
 %% Load only the cortex channels in the spontaneous time window
-downsamplefactor = 2;
+downsamplefactor = 32; %.dat to 625 to match .lfp
 lfp = bz_GetLFP(CTXchans,...
     'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
-    'intervals',sponttimes);
+    'intervals',sponttimes,'fromDat',true);
 lfp.chanlayers = depthinfo.layer(inCTX);
+%% 
+
 %% Calculate Spectrogram on all channels
 clear spec
 % %dt = 0.1;
@@ -78,7 +80,7 @@ for cc =1:length(spec.channels)
     
     specslope = bz_PowerSpectrumSlope(lfp,ncycles,0.01,'channels',spec.channels(cc),...
         'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
-        'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
+        'saveMat',false,'saveName',['wav',num2str(spec.channels(cc))],...
         'Redetect',true);
     spec.data(:,:,cc) = specslope.specgram;
     spec.osci(:,:,cc) = specslope.resid;
@@ -223,7 +225,7 @@ end
 
 
 %%
-figure
+figure('visible','off')
 subplot(3,3,1)
     imagesc(log10(LFPbehcorr.freqs),LFPbehcorr.depth,LFPbehcorr.EMG.osc_interp)
     hold on
