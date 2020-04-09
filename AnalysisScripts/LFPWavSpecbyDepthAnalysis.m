@@ -392,7 +392,7 @@ cospamp = [0.025 0.3]*2;
 speclim = [2 4];
 speclim = [0.9 1.1];
 
-figure
+figure('visible','off')
 for dd = 1:6
 for ww = 1:2
     subplot(6,4,(dd-1)*4+ww)
@@ -449,7 +449,7 @@ NiceSave('DepthSPECandPup',figfolder,baseName)
 
 %%
 
-figure
+figure('visible','off')
 for dd = 1:6
 for oo = 1:2
 
@@ -644,7 +644,7 @@ end
 cospamp = [0.025 0.3]*2;
 
 
-figure
+figure('visible','off')
 for dd = 1:6
 for ww = 1:2
     subplot(6,4,(dd-1)*4+ww)
@@ -703,7 +703,7 @@ NiceSave('DepthOSCandPup',figfolder,baseName)
 
 %%
 
-figure
+figure('visible','off')
 for dd = 1:6
 for oo = 1:2
 
@@ -747,7 +747,7 @@ NiceSave('DepthOSCandWhisk',figfolder,baseName)
 %%
 %%
 speclim = [0.8 1.2];
-figure
+figure('visible','off')
 for dd = 1:6
    subplot(6,3,(dd-1)*3+1)
         a = imagesc( SPECdepth.(LAYERS{dd}).PSS.varbins,...
@@ -803,7 +803,7 @@ for ll = 1:length(LAYERS)
     end
 end
 %%
-figure
+figure('visible','off')
 for ll = 1:length(LAYERS)
 for oo = 1:2
     subplot(6,3,oo+(ll-1)*3)
