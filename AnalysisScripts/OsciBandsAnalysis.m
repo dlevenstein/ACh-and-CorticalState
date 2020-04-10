@@ -10,14 +10,14 @@ function [ SPECdepth,OSCdepth,PSSphaseWhaligned,LFPbehcorr,meanOSCPSS] = LFPWavS
 %% Load Header
 %Initiate Paths
 %reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
-%reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
+reporoot = '/Users/dl2820/Project Repos/ACh-and-CorticalState/';
 %reporoot = '/gpfs/data/buzsakilab/DL/ACh-and-CorticalState/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/gpfs/data/rudylab/William/171209_WT_EM1M3';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
-%basePath = '/Users/dlevenstein/Dropbox/research/Datasets/WMProbeData/171209_WT_EM1M3';
+basePath = '/Users/dl2820/Dropbox/research/Datasets/WMProbeData/171209_WT_EM1M3';
 %basePath = pwd;
-%figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
+figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
@@ -52,36 +52,22 @@ CTXdepth = -depthinfo.ndepth(inCTX);
 
 
 %% Load only the cortex channels in the spontaneous time window
-downsamplefactor = 16; %32 for .dat to 625 to match .lfp
-lfp = bz_GetLFP(CTXchans,...
-    'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
-    'intervals',sponttimes,'fromDat',true);
-lfp.chanlayers = depthinfo.layer(inCTX);
+% downsamplefactor = 2; %32 for .dat to 625 to match .lfp
+% lfp = bz_GetLFP(CTXchans,...
+%     'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
+%     'intervals',sponttimes,'fromDat',false);
+% lfp.chanlayers = depthinfo.layer(inCTX);
 %% 
 
-%% Calculate Spectrogram on all channels
-clear spec
-% %dt = 0.1;
-% spec.winsize = 1;
- spec.frange = [2 256]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
- spec.nfreqs = 200;
-% 
-% % noverlap = spec.winsize-dt;
-% % spec.freqs = logspace(log10(spec.frange(1)),log10(spec.frange(2)),spec.nfreqs);
-% % winsize_sf = round(spec.winsize .*lfp.samplingRate);
-% % noverlap_sf = round(noverlap.*lfp.samplingRate);
-% 
-% spec.channels = lfp.channels;
 spec.channels = CTXchans;
 spec.depth = CTXdepth;
-ncycles = 10; %prev 10
-for cc =1:length(spec.channels)
-    bz_Counter(cc,length(spec.channels),'Channel')
+
+for cc =1:length(CTXchans)
+    bz_Counter(cc,length(CTXchans),'Channel')
     
-    specslope = bz_PowerSpectrumSlope(lfp,ncycles,0.01,'channels',spec.channels(cc),...
-        'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
+    specslope = bz_PowerSpectrumSlope([],[],[],...
         'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
-        'Redetect',true);
+        'Redetect',false);
     spec.data(:,:,cc) = specslope.specgram;
     spec.osci(:,:,cc) = specslope.resid;
     spec.PSS(:,cc) = specslope.data;
@@ -89,39 +75,84 @@ for cc =1:length(spec.channels)
     spec.freqs = specslope.freqs; 
     clear specslope
 end
-%%
+
 spec.winsize = 1;
 spec.chanlayers = depthinfo.layer(inCTX);
-spec.osci(spec.osci<0) = 0;
+%spec.osci(spec.osci<0) = 0;
+%% 
+bands.timestamps = spec.timestamps;
+
+%Deep PSS
+bands.deepPSS.depthrange = [-1 -0.6];
+bands.deepPSS.freqrange = 'PSS';
+
+%Superficial PSS
+bands.supPSS.depthrange = [-0.5 -0.1];
+bands.supPSS.freqrange = 'PSS';
+
+%Deep Delta
+bands.deepDelta.depthrange = [-1 -0.5];
+bands.deepDelta.freqrange = [3 6];
+
+%Superficial Theta/Alpoha
+bands.supTheta.depthrange = [-0.5 -0.1];
+bands.supTheta.freqrange = [6 10];
+
+%Deep Gamma
+bands.deepGamma.depthrange = [-1 -0.75];
+bands.deepGamma.freqrange = [25 50];
+
+%Deep HiGamma
+bands.deepHiGamma.depthrange = [-1 -0.75];
+bands.deepHiGamma.freqrange = [50 100];
+
+%Superficial beta/gamma
+bands.supBeta.depthrange = [-0.5 -0.1];
+bands.supBeta.freqrange = [10 25];
+
+bands.bandnames = {'deepPSS','supPSS','deepDelta','supTheta','deepGamma','deepHiGamma','supBeta'};
+%%
+
+%%
+for bb = 1:length(bands.bandnames)
+[bands.(bands.bandnames{bb}).power] = GetBandFromOsci(spec,...
+    bands.(bands.bandnames{bb}).freqrange,bands.(bands.bandnames{bb}).depthrange);
+end
+%%
+figure
+plot(bands.supTheta.power,bands.deepPSS.power,'.','markersize',0.1)
+xlabel('sup Theta');ylabel('deep PSS')
+
+
 %% Take Mean Specgram by layer and calculate irasa
 
-LAYERS = depthinfo.lnames;
-
-for ll = 1:length(LAYERS)
-    layerchans = strcmp(LAYERS{ll},spec.chanlayers);
-    repchan(ll) = round(median(find(layerchans)));
-    spec.Layer(:,:,ll) = mean(spec.data(:,:,layerchans),3);
-    spec.LayerOsci(:,:,ll) = mean(spec.osci(:,:,layerchans),3);
-    spec.LayerPSS(:,ll) = mean(spec.PSS(:,layerchans),2);
-    % Median Normalize Spectrogram
-    spec.Layer(:,:,ll) = NormToInt(spec.Layer(:,:,ll),'median');
-end
-spec = rmfield(spec,'data');
+% LAYERS = depthinfo.lnames;
+% 
+% for ll = 1:length(LAYERS)
+%     layerchans = strcmp(LAYERS{ll},spec.chanlayers);
+%     repchan(ll) = round(median(find(layerchans)));
+%     spec.Layer(:,:,ll) = mean(spec.data(:,:,layerchans),3);
+%     spec.LayerOsci(:,:,ll) = mean(spec.osci(:,:,layerchans),3);
+%     spec.LayerPSS(:,ll) = mean(spec.PSS(:,layerchans),2);
+%     % Median Normalize Spectrogram
+%     spec.Layer(:,:,ll) = NormToInt(spec.Layer(:,:,ll),'median');
+% end
+% spec = rmfield(spec,'data');
 %spec = rmfield(spec,'osci');
 %%
 
 %%
-xwin = bz_RandomWindowInIntervals(spec.timestamps([1 end]),10);
-figure
-subplot(2,1,1)
-imagesc(spec.timestamps,log2(spec.freqs),spec.LayerOsci(:,:,4)')
-hold on
-plot(lfp.timestamps,bz_NormToRange(single(lfp.data(:,repchan(4)))),'w')
-axis xy
-colorbar
-caxis([0 0.7])
-LogScale('y',2)
-xlim(xwin)
+% xwin = bz_RandomWindowInIntervals(spec.timestamps([1 end]),10);
+% figure
+% subplot(2,1,1)
+% imagesc(spec.timestamps,log2(spec.freqs),spec.LayerOsci(:,:,4)')
+% hold on
+% plot(lfp.timestamps,bz_NormToRange(single(lfp.data(:,repchan(4)))),'w')
+% axis xy
+% colorbar
+% caxis([0 0.7])
+% LogScale('y',2)
+% xlim(xwin)
 
 %% Align Specgram by behavior
 maxtimejump = 1; %s
@@ -155,6 +186,14 @@ ONOFF = {'WhOn','WhOFF'};
 WHNWH = {'Wh','NWh'};
 HILO = {'lopup','hipup'};
 LONGSHORT = {'long','short'};
+
+
+
+%%
+figure
+scatter(bands.supTheta.power(spec.NWh),bands.deepPSS.power(spec.NWh),1,log10(spec.pup(spec.NWh)))
+colorbar
+xlabel('Sup Theta');ylabel('Deep PSS')
 
 %% Get Whisk On/Offset aligned spec, separated by long/short whisks
 
