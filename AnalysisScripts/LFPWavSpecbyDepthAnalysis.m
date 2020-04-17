@@ -63,8 +63,8 @@ lfp.chanlayers = depthinfo.layer(inCTX);
 clear spec
 % %dt = 0.1;
 % spec.winsize = 1;
- spec.frange = [2 256]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
- spec.nfreqs = 150;
+ spec.frange = [2 128]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
+ spec.nfreqs = 1;
 % 
 % % noverlap = spec.winsize-dt;
 % % spec.freqs = logspace(log10(spec.frange(1)),log10(spec.frange(2)),spec.nfreqs);
