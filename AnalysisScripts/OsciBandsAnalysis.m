@@ -44,7 +44,7 @@ depthinfo = rescaleCx(basePath);
 inCTX = find(~isnan(depthinfo.ndepth));
 CTXchans = depthinfo.channels(inCTX);
 CTXdepth = -depthinfo.ndepth(inCTX);
-
+CTXlayer = depthinfo.layer(inCTX);
 
 %For Piloting
 %CTXchans = CTXchans([1:5]);
@@ -59,8 +59,15 @@ CTXdepth = -depthinfo.ndepth(inCTX);
 % lfp.chanlayers = depthinfo.layer(inCTX);
 %% 
 
+
+
 spec.channels = CTXchans;
 spec.depth = CTXdepth;
+spec.winsize = 1;
+spec.dt = 0.2;
+
+ spec.frange = [2 128]; %Frequency lower than can be assessed for window because IRASA... but maybe this is bad for IRASA too
+ spec.nfreqs = 150;
 
 for cc =1:length(CTXchans)
     bz_Counter(cc,length(CTXchans),'Channel')
@@ -68,6 +75,9 @@ for cc =1:length(CTXchans)
     specslope = bz_PowerSpectrumSlope([],[],[],...
         'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
         'Redetect',false);
+%     specslope = bz_PowerSpectrumSlope(lfp,spec.winsize,spec.dt,...
+%         'channels',spec.channels(cc),...
+%         'frange',spec.frange,'spectype','fft','nfreqs',spec.nfreqs,'ints',sponttimes);
     spec.data(:,:,cc) = specslope.specgram;
     spec.osci(:,:,cc) = specslope.resid;
     spec.PSS(:,cc) = specslope.data;
@@ -79,6 +89,68 @@ end
 spec.winsize = 1;
 spec.chanlayers = depthinfo.layer(inCTX);
 %spec.osci(spec.osci<0) = 0;
+
+%% Run large correlation (osci power and slopes)
+%ICA
+reshape4corr = reshape(spec.osci,[],size(spec.osci,2)*size(spec.osci,3));
+bigcorr = corr(reshape4corr(spec.NWh,:),'type','spearman');
+%%
+allcorr = reshape(bigcorr,size(spec.osci,2),size(spec.osci,3),size(spec.osci,2),size(spec.osci,3));
+
+%%
+for ll1 = 1:length(depthinfo.lnames)
+    for ll2 = 1:length(depthinfo.lnames)
+        ll1chans = (strcmp(CTXlayer,depthinfo.lnames{ll1}));
+        ll2chans = (strcmp(CTXlayer,depthinfo.lnames{ll2}));
+        layercorrs(:,:,ll1,ll2) = mean(allcorr(:,ll1chans,:,ll2chans),[2 4]);
+    end
+end
+%%
+figure
+for ll1 = 1:length(depthinfo.lnames)
+    for ll2 = ll1:length(depthinfo.lnames)
+        subplot(length(depthinfo.lnames),length(depthinfo.lnames),(ll1-1).*6+ll2)
+            imagesc(log10(spec.freqs),log10(spec.freqs),layercorrs(:,:,ll1,ll2))
+            axis xy
+            %colorbar
+            caxis([-0.2 0.2])
+            crameri('berlin','pivot',0)
+            LogScale('xy',10)
+            if ll1==ll2
+               ylabel({depthinfo.lnames{ll1},'f (Hz)'});xlabel('f (Hz)') 
+            end
+            if ll1 ==1
+                title(depthinfo.lnames{ll2})
+            end
+        
+    end
+end
+
+NiceSave('LayerOsciComod',figfolder,baseName)
+
+%%
+oscihist.bins = linspace(-2,1,100);
+%oscihist.median = 
+for cc =1:length(CTXchans)
+    for ff = 1:length(spec.freqs)
+        oscihist.hist(:,ff,cc) = hist(spec.osci(:,ff,cc),oscihist.bins);
+        oscihist.median(ff,cc) = mean(spec.osci(:,ff,cc),1);
+        oscihist.std(ff,cc) = std(spec.osci(:,ff,cc),[],1);
+    end
+end
+
+%%
+chan = 10;
+figure
+imagesc(oscihist.bins,log10(spec.freqs),oscihist.hist(:,:,chan)')
+hold on
+plot(oscihist.median(:,chan),log10(spec.freqs),'r.')
+plot(oscihist.median(:,chan)+oscihist.std(:,chan),log10(spec.freqs),'r--')
+axis xy
+xlabel('Osci');ylabel('f (Hz)')
+LogScale('y',10)
+title(CTXlayer{chan})
+
 %% 
 bands.timestamps = spec.timestamps;
 
@@ -110,7 +182,7 @@ bands.deepHiGamma.freqrange = [50 100];
 bands.supBeta.depthrange = [-0.5 -0.1];
 bands.supBeta.freqrange = [10 25];
 
-bands.bandnames = {'deepPSS','supPSS','deepDelta','supTheta','deepGamma','deepHiGamma','supBeta'};
+bands.bandnames = {'deepPSS','supPSS','deepGamma','deepHiGamma','deepDelta','supTheta','supBeta'};
 %%
 
 %%
@@ -118,6 +190,53 @@ for bb = 1:length(bands.bandnames)
 [bands.(bands.bandnames{bb}).power] = GetBandFromOsci(spec,...
     bands.(bands.bandnames{bb}).freqrange,bands.(bands.bandnames{bb}).depthrange);
 end
+
+
+%%
+allbandsmat = [];
+allbandsmat_NWh = [];
+allbandsmat_Wh = [];
+for bb = 1:length(bands.bandnames)
+    allbandsmat = [allbandsmat bands.(bands.bandnames{bb}).power];
+    allbandsmat_NWh = [allbandsmat_NWh bands.(bands.bandnames{bb}).power(spec.NWh)];
+    allbandsmat_Wh = [allbandsmat_Wh bands.(bands.bandnames{bb}).power(spec.Wh)];
+    
+end
+%%
+bandscorr = corr(allbandsmat,'type','spearman');
+bandscorr_NWh = corr(allbandsmat_NWh,'type','spearman');
+bandscorr_Wh = corr(allbandsmat_Wh,'type','spearman');
+%%
+figure
+subplot(2,2,1)
+imagesc(bandscorr)
+caxis([-0.4 0.4])
+crameri('berlin','pivot',0)
+set(gca,'yticklabels',bands.bandnames)
+set(gca,'xticklabels',bands.bandnames)
+colorbar
+title('All time')
+
+
+subplot(2,2,3)
+imagesc(bandscorr_NWh)
+caxis([-0.4 0.4])
+crameri('berlin','pivot',0)
+set(gca,'yticklabels',bands.bandnames)
+set(gca,'xticklabels',bands.bandnames)
+colorbar
+title('NWh')
+
+subplot(2,2,4)
+imagesc(bandscorr_Wh)
+caxis([-0.4 0.4])
+crameri('berlin','pivot',0)
+set(gca,'yticklabels',bands.bandnames)
+set(gca,'xticklabels',bands.bandnames)
+colorbar
+title('Wh')
+NiceSave('BandComod',figfolder,baseName)
+
 %%
 figure
 plot(bands.supTheta.power,bands.deepPSS.power,'.','markersize',0.1)
