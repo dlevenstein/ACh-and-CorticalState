@@ -129,7 +129,7 @@ end
 NiceSave('LayerOsciComod',figfolder,baseName)
 
 %%
-oscihist.bins = linspace(-2,1,100);
+oscihist.bins = linspace(-1.5,1.5,100);
 %oscihist.median = 
 for cc =1:length(CTXchans)
     for ff = 1:length(spec.freqs)
@@ -140,9 +140,11 @@ for cc =1:length(CTXchans)
 end
 
 %%
-chan = 10;
+chan = 35;
 figure
 imagesc(oscihist.bins,log10(spec.freqs),oscihist.hist(:,:,chan)')
+alpha(single(oscihist.hist(:,:,chan)'>5))
+
 hold on
 plot(oscihist.median(:,chan),log10(spec.freqs),'r.')
 plot(oscihist.median(:,chan)+oscihist.std(:,chan),log10(spec.freqs),'r--')
