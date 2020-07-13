@@ -57,17 +57,16 @@ CTXdepth = -depthinfo.ndepth(inCTX);
 %CTXchans = CTXchans([1:5]);
 %CTXdepth = CTXdepth([1:5]);
 %%
+MapIntNames = {'Spont','NWh','Wh'};
 MapInts.Spont = sponttimes;
 MapInts.Wh = EMGwhisk.ints.Wh;
 MapInts.NWh =EMGwhisk.ints.NWh;
 %%
 [ISILFPMap] = bz_ISILFPMap(basePath,'groups',{CTXchans},'ints',MapInts,...
-    'figfolder',figfolder,'nfreqs',200,'dt',0.25,'forceRedetect',true);
+    'figfolder',figfolder,'nfreqs',200,'dt',0.25,'forceRedetect',false);
 
-
+ISILFPMap.MapIntNames = MapIntNames;
 %% Now: interpolate to depth
-
-
 
 ISILFPMap.interpdepth = linspace(-1,0,100);
 
@@ -75,7 +74,46 @@ ISILFPMap.interp.Wh = interp1(CTXdepth',ISILFPMap.NA.Wh.AllCells(:,ISILFPMap.NA.
 ISILFPMap.interp.NWh = interp1(CTXdepth',ISILFPMap.NA.NWh.AllCells(:,ISILFPMap.NA.SGorder)',ISILFPMap.interpdepth');
 ISILFPMap.interp.AllTime = interp1(CTXdepth',ISILFPMap.NA.Spont.AllCells(:,ISILFPMap.NA.SGorder)',ISILFPMap.interpdepth');
 
+%%
 
+spikes = bz_GetSpikes('basePath',basePath,'noPrompts',true);
+depthinfo_allchans = rescaleCx(basePath,'BADOUT',false);
+for cc = 1:spikes.numcells
+    spikes.layer(cc) = depthinfo_allchans.layer(depthinfo_allchans.channels==spikes.maxWaveformCh(cc));
+    ISILFPMap.NA.layer(cc) = spikes.layer(cc);
+end
+
+%%
+LAYERS = depthinfo.lnames;
+
+for ii = 1:length(MapIntNames)
+for ll = 1:length(LAYERS)
+    layercells = strcmp(LAYERS{ll},spikes.layer);
+    Layermap.(MapIntNames{ii})(:,:,ll) = nanmedian(ISILFPMap.NA.(MapIntNames{ii}).AllUnits(:,:,layercells),3);
+end
+end
+%[~,~,spikes.layer] = intersect(depthinfo.channels,spikes.maxWaveformCh);
+%%
+figure
+for ii = 1:length(MapIntNames)
+    for ll = 1:length(LAYERS)
+        subplot(6,3,ii+(ll-1)*3)
+            imagesc(log10(ISILFPMap.freqs),[-1 0],Layermap.(MapIntNames{ii})(:,ISILFPMap.NA.SGorder,ll)')
+            
+            LogScale('x',10)
+            if ll == 1
+                title(MapIntNames{ii})
+            elseif ll == 6
+                xlabel('freq (Hz)')
+            end
+            
+            if ii == 1
+                ylabel(LAYERS{ll})
+            end
+    end 
+end
+NiceSave('LayerISIMod',figfolder,baseName)
+%spikes.layer = depthinfo.layer(spikes.layer);
 %% Plot with layer dividers
 % figure
 % subplot(2,3,1)
