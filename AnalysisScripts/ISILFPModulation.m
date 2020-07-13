@@ -11,7 +11,7 @@ function [ISILFPMap] = ISILFPModulation(basePath,figfolder)
 %Initiate Paths
 %reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dl2820/Project Repos/ACh-and-CorticalState/';
-%reporoot = '/gpfs/data/buzsakilab/DL/ACh-and-CorticalState/';
+reporoot = '/gpfs/data/buzsakilab/DL/ACh-and-CorticalState/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/gpfs/data/rudylab/William/171209_WT_EM1M3';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
@@ -62,9 +62,11 @@ MapInts.Spont = sponttimes;
 MapInts.Wh = EMGwhisk.ints.Wh;
 MapInts.NWh =EMGwhisk.ints.NWh;
 %%
-[ISILFPMap] = bz_ISILFPMap(basePath,'groups',{CTXchans},'ints',MapInts,...
-    'figfolder',figfolder,'nfreqs',200,'dt',0.25,'forceRedetect',false);
-
+% [ISILFPMap] = bz_ISILFPMap(basePath,'groups',{CTXchans},'ints',MapInts,...
+%     'figfolder',figfolder,'nfreqs',200,'dt',0.25,'forceRedetect',false,...
+%     'savechaninfo',true);
+analysisfile = [reporoot,'AnalysisScripts/AnalysisFigs/ISILFPModulation/',baseName,'.AnalysisResults.ISILFPModulation.mat'];
+load(analysisfile)
 ISILFPMap.MapIntNames = MapIntNames;
 %% Now: interpolate to depth
 
