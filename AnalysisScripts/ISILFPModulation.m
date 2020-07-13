@@ -74,7 +74,12 @@ ISILFPMap.interpdepth = linspace(-1,0,100);
 
 ISILFPMap.interp.Wh = interp1(CTXdepth',ISILFPMap.NA.Wh.AllCells(:,ISILFPMap.NA.SGorder)',ISILFPMap.interpdepth');
 ISILFPMap.interp.NWh = interp1(CTXdepth',ISILFPMap.NA.NWh.AllCells(:,ISILFPMap.NA.SGorder)',ISILFPMap.interpdepth');
-ISILFPMap.interp.AllTime = interp1(CTXdepth',ISILFPMap.NA.Spont.AllCells(:,ISILFPMap.NA.SGorder)',ISILFPMap.interpdepth');
+ISILFPMap.interp.Spont = interp1(CTXdepth',ISILFPMap.NA.Spont.AllCells(:,ISILFPMap.NA.SGorder)',ISILFPMap.interpdepth');
+
+ISILFPMap.interp_cells.Wh = interp1(CTXdepth',permute(ISILFPMap.NA.Wh.AllUnits(:,ISILFPMap.NA.SGorder,:),[2 1 3]),ISILFPMap.interpdepth');
+ISILFPMap.interp_cells.NWh = interp1(CTXdepth',permute(ISILFPMap.NA.NWh.AllUnits(:,ISILFPMap.NA.SGorder,:),[2 1 3]),ISILFPMap.interpdepth');
+ISILFPMap.interp_cells.Spont = interp1(CTXdepth',permute(ISILFPMap.NA.Spont.AllUnits(:,ISILFPMap.NA.SGorder,:),[2 1 3]),ISILFPMap.interpdepth');
+
 
 %%
 
@@ -91,7 +96,7 @@ LAYERS = depthinfo.lnames;
 for ii = 1:length(MapIntNames)
 for ll = 1:length(LAYERS)
     layercells = strcmp(LAYERS{ll},spikes.layer);
-    Layermap.(MapIntNames{ii})(:,:,ll) = nanmedian(ISILFPMap.NA.(MapIntNames{ii}).AllUnits(:,:,layercells),3);
+    Layermap.(MapIntNames{ii})(:,:,ll) = nanmedian(ISILFPMap.interp_cells.(MapIntNames{ii})(:,:,layercells),3);
 end
 end
 %[~,~,spikes.layer] = intersect(depthinfo.channels,spikes.maxWaveformCh);
@@ -100,7 +105,8 @@ figure
 for ii = 1:length(MapIntNames)
     for ll = 1:length(LAYERS)
         subplot(6,3,ii+(ll-1)*3)
-            imagesc(log10(ISILFPMap.freqs),[-1 0],Layermap.(MapIntNames{ii})(:,ISILFPMap.NA.SGorder,ll)')
+            imagesc(log10(ISILFPMap.freqs),[-1 0],Layermap.(MapIntNames{ii})(:,:,ll))
+            axis xy
             
             LogScale('x',10)
             if ll == 1
