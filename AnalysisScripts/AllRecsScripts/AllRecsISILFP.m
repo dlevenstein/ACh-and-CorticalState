@@ -25,10 +25,49 @@ groupnames = {'KOs','WTctr'};
 for gg = 1:2
     ISILFPMap.(genotypes{gg}) = bz_CollapseStruct(ISILFP.ISILFPMap(genotypeidx==gg),3);
     ISILFPMap.(genotypes{gg}).interp = bz_CollapseStruct(ISILFPMap.(genotypes{gg}).interp,3,'mean',true);
+    
+    ISILFPMap.(genotypes{gg}).interp_cells = bz_CollapseStruct(ISILFPMap.(genotypes{gg}).interp_cells,3);
+    ISILFPMap.(genotypes{gg}).NA = bz_CollapseStruct(ISILFPMap.(genotypes{gg}).NA);
 end
 
 %%
+LAYERS = {'L1','L23','L4','L5a','L5b6','L6'};
+MapIntNames = ISILFPMap.WT_EM1M3.MapIntNames(1,:,1);
+for gg = 1:2 
+for ii = 1:length(MapIntNames)
+for ll = 1:length(LAYERS)
+    layercells = strcmp(LAYERS{ll},ISILFPMap.(genotypes{gg}).NA.layer);
+    Layermap.(genotypes{gg}).(MapIntNames{ii})(:,:,ll) = nanmedian(ISILFPMap.(genotypes{gg}).interp_cells.(MapIntNames{ii})(:,:,layercells),3);
+end
+end
+end
+%%
+for gg = 1:2
+figure
+for ii = 1:length(MapIntNames)
+    for ll = 1:length(LAYERS)
+        subplot(6,3,ii+(ll-1)*3)
+            imagesc(log2(ISILFPMap.(genotypes{gg}).freqs(1,:,1)),[-1 0],Layermap.(genotypes{gg}).(MapIntNames{ii})(:,:,ll))
+            axis xy
+            caxis([0.1e-3 2e-3])
+            LogScale('x',2)
+            if ll == 1
+                title(MapIntNames{ii})
+            elseif ll == 6
+                xlabel('freq (Hz)')
+            end
+            
+            if ii == 1
+                ylabel(LAYERS{ll})
+            end
+    end 
+end
+NiceSave('LayerLFPISIMod',analysisfolder,(genotypes{gg}),'figtype','pdf')
+
+end
+%%
 WHNWH = {'AllTime','NWh','Wh'};
+WHNWH = MapIntNames;
 depthinfo.boundaries = [0 0.1 0.35 0.5 1];
 %%
 figure
@@ -43,7 +82,7 @@ plot([-pi 3*pi],-depthinfo.boundaries'*[1 1],'w')
 LogScale('x',2)
 %axis xy
 colorbar
-caxis([0.1e-3 1e-3])
+caxis([0 1e-3])
 if ww ==1
    title(genotypes{gg})
 end

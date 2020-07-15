@@ -62,11 +62,11 @@ MapInts.Spont = sponttimes;
 MapInts.Wh = EMGwhisk.ints.Wh;
 MapInts.NWh =EMGwhisk.ints.NWh;
 %%
-% [ISILFPMap] = bz_ISILFPMap(basePath,'groups',{CTXchans},'ints',MapInts,...
-%     'figfolder',figfolder,'nfreqs',200,'dt',0.25,'forceRedetect',false,...
-%     'savechaninfo',true);
-analysisfile = [reporoot,'AnalysisScripts/AnalysisFigs/ISILFPModulation/',baseName,'.AnalysisResults.ISILFPModulation.mat'];
-load(analysisfile)
+[ISILFPMap] = bz_ISILFPMap(basePath,'groups',{CTXchans},'ints',MapInts,...
+    'figfolder',figfolder,'nfreqs',200,'dt',0.25,'forceRedetect',false,...
+    'savechaninfo',true);
+% analysisfile = [reporoot,'AnalysisScripts/AnalysisFigs/ISILFPModulation/',baseName,'.AnalysisResults.ISILFPModulation.mat'];
+% load(analysisfile)
 ISILFPMap.MapIntNames = MapIntNames;
 %% Now: interpolate to depth
 
