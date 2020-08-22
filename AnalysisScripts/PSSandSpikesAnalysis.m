@@ -1,4 +1,4 @@
-function [] = LFPSlopebyDepthAnalysis(basePath,figfolder)
+function [PSSConsitionalISI,ConditionalRate] = PSSandSpikesAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -11,19 +11,19 @@ function [] = LFPSlopebyDepthAnalysis(basePath,figfolder)
 %Initiate Paths
 %reporoot = '/home/dlevenstein/ProjectRepos/ACh-and-CorticalState/';
 %reporoot = '/Users/dlevenstein/Project Repos/ACh-and-CorticalState/';
-reporoot = '/Users/dl2820/Project Repos/ACh-and-CorticalState/';
+%reporoot = '/Users/dl2820/Project Repos/ACh-and-CorticalState/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
-basePath = '/Users/dl2820/Dropbox/research/Datasets/WMProbeData/171209_WT_EM1M3';
+%basePath = '/Users/dl2820/Dropbox/research/Datasets/WMProbeData/171209_WT_EM1M3';
 %basePath = pwd;
-figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
+%figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
 
 %Load Stuff
 sessionInfo = bz_getSessionInfo(basePath,'noPrompts',true);
 
 
-
+CellClass = bz_LoadCellinfo(basePath,'CellClass');
 
 
 %% Loading behavior...
@@ -110,7 +110,7 @@ end
 
 %% Spike Rate
 dt = 0.01;
-binsize = 0.08;
+binsize = 0.05;
 
 spkmat = bz_SpktToSpkmat(spikes.times,'dt',dt,'binsize',binsize,...
     'win',sponttimes,'units','rate','bintype','gaussian');
@@ -128,8 +128,8 @@ end
 minX = 40;
 for sll = 1:length(LAYERS)
     for pll = 1:length(LAYERS)
-[ ConditionalRate(sll,pll)] = ConditionalHist(spkmat.PSS.(LAYERS{pll}),spkmat.poprate.(LAYERS{sll}),...
-        'Xbounds',[-1.6 0],'numXbins',40,'Ybounds',[0 20],'numYbins',30,'minX',minX);
+[ ConditionalRate.(LAYERS{pll}).(LAYERS{sll})] = ConditionalHist(spkmat.PSS.(LAYERS{pll}),spkmat.poprate.(LAYERS{sll}),...
+        'Xbounds',[-1.75 0],'numXbins',40,'Ybounds',[0 20],'numYbins',40,'minX',minX);
     end
 end
     %%
@@ -137,7 +137,7 @@ figure
 for sll = 1:length(LAYERS)
     for pll = 1:length(LAYERS)
         subplot(6,6,pll+(sll-1)*6)
-    imagesc(ConditionalRate(sll,pll).Xbins,ConditionalRate(sll,pll).Ybins,ConditionalRate(sll,pll).pYX')
+    imagesc(ConditionalRate.(LAYERS{pll}).(LAYERS{sll}).Xbins,ConditionalRate.(LAYERS{pll}).(LAYERS{sll}).Ybins,ConditionalRate.(LAYERS{pll}).(LAYERS{sll}).pYX')
     axis xy
     crameri bilbao
     if sll==6
@@ -165,7 +165,8 @@ for pll = 1:length(LAYERS)
     end
     
 end
-
+PSSConditionalISI.celllayers = spikes.layer;
+PSSConsitionalISI.CellClass = CellClass;
 %%
 figure
 for sll = 1:length(LAYERS)
