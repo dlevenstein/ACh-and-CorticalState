@@ -1,4 +1,4 @@
-function [PSSConsitionalISI,ConditionalRate] = PSSandSpikesAnalysis(basePath,figfolder)
+function [PSSConditionalISI,ConditionalRate] = PSSandSpikesAnalysis(basePath,figfolder)
 % Date XX/XX/20XX
 %
 %Question: 
@@ -77,8 +77,13 @@ for cc =1:length(spec.channels)
         'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
         'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
         'Redetect',false,'suppressText',true);
-    spec.PSS(:,cc) = specslope.data;
     spec.timestamps = specslope.timestamps;
+    try
+    spec.PSS(:,cc) = specslope.data; %Issue here: Unable to perform assignment because the size of the left side is 809294-by-1
+    catch
+        display(['Issue: channel ',num2str(spec.channels(cc))])
+        spec.PSS(:,cc) = nan(size(spec.timestamps))
+    end
     spec.freqs = specslope.freqs; 
     clear specslope
 end
@@ -92,7 +97,7 @@ LAYERS = depthinfo.lnames;
 for ll = 1:length(LAYERS)
     layerchans = strcmp(LAYERS{ll},spec.chanlayers);
     repchan(ll) = round(median(find(layerchans)));
-    spec.LayerPSS(:,ll) = mean(spec.PSS(:,layerchans),2);
+    spec.LayerPSS(:,ll) = nanmean(spec.PSS(:,layerchans),2);
     % Median Normalize Spectrogram
     %spec.Layer(:,:,ll) = NormToInt(spec.Layer(:,:,ll),'median');
 end
@@ -110,7 +115,7 @@ end
 
 %% Spike Rate
 dt = 0.01;
-binsize = 0.05;
+binsize = 0.06;
 
 spkmat = bz_SpktToSpkmat(spikes.times,'dt',dt,'binsize',binsize,...
     'win',sponttimes,'units','rate','bintype','gaussian');
@@ -125,11 +130,17 @@ for ll = 1:length(LAYERS)
     %spkmat.PSS.(LAYERS{ll}) = NormToInt(spkmat.PSS.(LAYERS{ll}),'percentile')
 end
 %%
-minX = 40;
+minX = 100;
 for sll = 1:length(LAYERS)
     for pll = 1:length(LAYERS)
 [ ConditionalRate.(LAYERS{pll}).(LAYERS{sll})] = ConditionalHist(spkmat.PSS.(LAYERS{pll}),spkmat.poprate.(LAYERS{sll}),...
         'Xbounds',[-1.75 0],'numXbins',40,'Ybounds',[0 20],'numYbins',40,'minX',minX);
+    
+[ ConditionalRate.log.(LAYERS{pll}).(LAYERS{sll})] = ConditionalHist(spkmat.PSS.(LAYERS{pll}),log10(spkmat.poprate.(LAYERS{sll})),...
+        'Xbounds',[-1.75 0],'numXbins',40,'Ybounds',[-0.5 1.5],'numYbins',40,'minX',minX);
+    
+    %Ints: NWh/Wh
+    %Pupil/Whisk onset? (other script)
     end
 end
     %%
@@ -137,14 +148,20 @@ figure
 for sll = 1:length(LAYERS)
     for pll = 1:length(LAYERS)
         subplot(6,6,pll+(sll-1)*6)
-    imagesc(ConditionalRate.(LAYERS{pll}).(LAYERS{sll}).Xbins,ConditionalRate.(LAYERS{pll}).(LAYERS{sll}).Ybins,ConditionalRate.(LAYERS{pll}).(LAYERS{sll}).pYX')
+    imagesc(ConditionalRate.log.(LAYERS{pll}).(LAYERS{sll}).Xbins,...
+        ConditionalRate.log.(LAYERS{pll}).(LAYERS{sll}).Ybins,...
+        ConditionalRate.log.(LAYERS{pll}).(LAYERS{sll}).pYX')
+    alpha(gca,single(ConditionalRate.log.(LAYERS{pll}).(LAYERS{sll}).pYX'>1e-4))
     axis xy
-    crameri bilbao
+    clim([0 0.1])
+    colorbar
+    crameri turku
+    LogScale('y',10)
     if sll==6
         xlabel(['PSS, ',(LAYERS{pll})])
     end
     if pll==1
-        ylabel({(LAYERS{sll}),'Pop Rate'})
+        ylabel({(LAYERS{sll}),'Pop Rate (Hz)'})
     end
     
     end
@@ -160,13 +177,13 @@ for pll = 1:length(LAYERS)
         'showfig',false,'ISIDist',true);%,'ints',ints.(states{ss}));%,...
     
     for ll = 1:length(LAYERS)
-        layercells = strcmp(LAYERS{ll},spikes.layer);
+        layercells = strcmp(LAYERS{ll},spikes.layer) & CellClass.pE;
         layermean.(LAYERS{pll}).(LAYERS{ll}) = nanmean(PSSConditionalISI.(LAYERS{pll}).Dist.pYX(:,:,layercells),3);
     end
     
 end
 PSSConditionalISI.celllayers = spikes.layer;
-PSSConsitionalISI.CellClass = CellClass;
+PSSConditionalISI.CellClass = CellClass;
 %%
 figure
 for sll = 1:length(LAYERS)
