@@ -77,12 +77,13 @@ for cc =1:length(spec.channels)
         'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
         'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
         'Redetect',false,'suppressText',true);
-    spec.timestamps = specslope.timestamps;
+    
     try
     spec.PSS(:,cc) = specslope.data; %Issue here: Unable to perform assignment because the size of the left side is 809294-by-1
+    spec.timestamps = specslope.timestamps;
     catch
         display(['Issue: channel ',num2str(spec.channels(cc))])
-        spec.PSS(:,cc) = nan(size(spec.timestamps))
+        spec.PSS(:,cc) = nan(size(spec.timestamps));
     end
     spec.freqs = specslope.freqs; 
     clear specslope
@@ -119,6 +120,7 @@ binsize = 0.06;
 
 spkmat = bz_SpktToSpkmat(spikes.times,'dt',dt,'binsize',binsize,...
     'win',sponttimes,'units','rate','bintype','gaussian');
+spkmat.NWh = InIntervals(spkmat.timestamps,EMGwhisk.ints.NWh);
 
 spkmat.poprate.All = mean(spkmat.data,2);
 for ll = 1:length(LAYERS)
@@ -139,6 +141,10 @@ for sll = 1:length(LAYERS)
 [ ConditionalRate.log.(LAYERS{pll}).(LAYERS{sll})] = ConditionalHist(spkmat.PSS.(LAYERS{pll}),log10(spkmat.poprate.(LAYERS{sll})),...
         'Xbounds',[-1.75 0],'numXbins',40,'Ybounds',[-0.5 1.5],'numYbins',40,'minX',minX);
     
+    
+[ ConditionalRate.NWh.(LAYERS{pll}).(LAYERS{sll})] = ConditionalHist(spkmat.PSS.(LAYERS{pll})(spkmat.NWh),...
+    log10(spkmat.poprate.(LAYERS{sll})(spkmat.NWh)),...
+        'Xbounds',[-1.75 0],'numXbins',40,'Ybounds',[-0.5 1.5],'numYbins',40,'minX',minX);
     %Ints: NWh/Wh
     %Pupil/Whisk onset? (other script)
     end

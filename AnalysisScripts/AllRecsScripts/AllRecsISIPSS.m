@@ -27,7 +27,7 @@ for gg = 1:2
 %     
 %     ISILFPMap.(genotypes{gg}).interp_cells = bz_CollapseStruct(ISILFPMap.(genotypes{gg}).interp_cells,3);
 %     ISILFPMap.(genotypes{gg}).NA = bz_CollapseStruct(ISILFPMap.(genotypes{gg}).NA);
-    PSSConsitionalISI.(genotypes{gg}) = bz_CollapseStruct(ISIPSS.PSSConsitionalISI(genotypeidx==gg),3);
+    PSSConditionalISI.(genotypes{gg}) = bz_CollapseStruct(ISIPSS.PSSConditionalISI(genotypeidx==gg),3);
 end
 
 %%
@@ -39,13 +39,15 @@ figure
 for sll = 1:length(LAYERS)
     for pll = 1:length(LAYERS)
         subplot(6,6,pll+(sll-1)*6)
-    imagesc(ConditionalRate.(genotypes{gg}).(LAYERS{pll}).(LAYERS{sll}).Xbins,...
-        ConditionalRate.(genotypes{gg}).(LAYERS{pll}).(LAYERS{sll}).Ybins,...
-        log10(ConditionalRate.(genotypes{gg}).(LAYERS{pll}).(LAYERS{sll}).pYX)')
-    alpha(gca,single(ConditionalRate.(genotypes{gg}).(LAYERS{pll}).(LAYERS{sll}).pYX'>1e-4))
+    imagesc(ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).Xbins,...
+        ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).Ybins,...
+        (ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).pYX)')
+    alpha(gca,single(ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).pYX'>1e-4))
     axis xy
-    clim([-3 -0.5])
+    clim([0 0.1])
+    colorbar
     crameri turku
+    LogScale('y',10)
     if sll==6
         xlabel(['PSS, ',(LAYERS{pll})])
     end
@@ -67,13 +69,15 @@ for gg = 1:2
 for sll = 2:length(LAYERS)
     for pll = [2 4]
         subplot(5,4,(pll-2)+(sll-2)*4+gg)
-    imagesc(ConditionalRate.(genotypes{gg}).(LAYERS{pll}).(LAYERS{sll}).Xbins,...
-        ConditionalRate.(genotypes{gg}).(LAYERS{pll}).(LAYERS{sll}).Ybins,...
-        log10(ConditionalRate.(genotypes{gg}).(LAYERS{pll}).(LAYERS{sll}).pYX)')
-    alpha(gca,single(ConditionalRate.(genotypes{gg}).(LAYERS{pll}).(LAYERS{sll}).pYX'>1e-4))
+    imagesc(ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).Xbins,...
+        ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).Ybins,...
+        (ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).pYX)')
+    alpha(gca,single(ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).pYX'>1e-4))
     axis xy
-    clim([-3 -0.5])
+    clim([0 0.1])
+    colorbar
     crameri turku
+    LogScale('y',10)
     if sll==6
         xlabel(['PSS, ',(LAYERS{pll})])
     end
