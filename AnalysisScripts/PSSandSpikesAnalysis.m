@@ -122,9 +122,9 @@ spkmat = bz_SpktToSpkmat(spikes.times,'dt',dt,'binsize',binsize,...
     'win',sponttimes,'units','rate','bintype','gaussian');
 spkmat.NWh = InIntervals(spkmat.timestamps,EMGwhisk.ints.NWh);
 
-spkmat.poprate.All = mean(spkmat.data,2);
+spkmat.poprate.All = mean(spkmat.data(:,CellClass.pE),2);
 for ll = 1:length(LAYERS)
-    layercells = strcmp(LAYERS{ll},spikes.layer);
+    layercells = strcmp(LAYERS{ll},spikes.layer & CellClass.pE);
     spkmat.poprate.(LAYERS{ll}) = mean(spkmat.data(:,layercells),2);
 end
 for ll = 1:length(LAYERS)
