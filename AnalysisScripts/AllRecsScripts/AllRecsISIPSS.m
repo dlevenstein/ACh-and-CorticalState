@@ -68,7 +68,7 @@ figure
 for gg = 1:2
 for sll = 2:length(LAYERS)
     for pll = [2 5]
-        subplot(5,4,(pll-2)+(sll-2)*4+gg)
+        subplot(5,5,(pll-2)+(sll-2)*5+gg)
     imagesc(ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).Xbins,...
         ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).Ybins,...
         (ConditionalRate.(genotypes{gg}).log.(LAYERS{pll}).(LAYERS{sll}).pYX)')

@@ -97,11 +97,11 @@ for cc =1:length(spec.channels)
             specslope.resid = specslope.osci_fractalWeighted;
             specslope.specgram = specslope.osci;
     end
-    spec.data(:,:,cc) = specslope.specgram;
-    spec.osci(:,:,cc) = specslope.resid;
-    spec.PSS(:,cc) = specslope.data;
-    spec.timestamps = specslope.timestamps;
-    spec.freqs = specslope.freqs; 
+    spec.data(:,:,cc) = single(specslope.specgram);
+    spec.osci(:,:,cc) = single(specslope.resid);
+    spec.PSS(:,cc) = single(specslope.data);
+    spec.timestamps = single(specslope.timestamps);
+    spec.freqs = single(specslope.freqs); 
     clear specslope specslopeMean
 end
 %%
