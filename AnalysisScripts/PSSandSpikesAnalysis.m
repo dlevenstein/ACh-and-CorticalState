@@ -69,25 +69,46 @@ clear spec
 % spec.channels = lfp.channels;
 spec.channels = CTXchans;
 spec.depth = CTXdepth;
+
+PSStype = 'FFT';
+figfolder = fullfile(figfolder,PSStype);
+if strcmp(PSStype,'FFT')
+    load(fullfile(basePath,[baseName,'.PowerSpectrumSlope.lfp.mat']));
+end
+
 ncycles = 10; %prev 10
 for cc =1:length(spec.channels)
     bz_Counter(cc,length(spec.channels),'Channel')
     
-    specslope = bz_PowerSpectrumSlope([],ncycles,0.01,'channels',spec.channels(cc),...
-        'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
-        'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
-        'Redetect',false,'suppressText',true);
+    switch PSStype
+        case 'wav'
+            specslope = bz_PowerSpectrumSlope([],ncycles,0.01,'channels',spec.channels(cc),...
+                'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
+                'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
+                'Redetect',false,'suppressText',true);
     
-    try
-    spec.PSS(:,cc) = specslope.data; %Issue here: Unable to perform assignment because the size of the left side is 809294-by-1
-    spec.timestamps = specslope.timestamps;
-    catch
-        display(['Issue: channel ',num2str(spec.channels(cc))])
-        spec.PSS(:,cc) = nan(size(spec.timestamps));
+    
+            try
+            spec.PSS(:,cc) = specslope.data; %Issue here: Unable to perform assignment because the size of the left side is 809294-by-1
+            spec.timestamps = specslope.timestamps;
+            catch
+                display(['Issue: channel ',num2str(spec.channels(cc))])
+                spec.PSS(:,cc) = nan(size(spec.timestamps));
+            end
+            
+            spec.freqs = specslope.freqs;
+            clear specslope
+        case 'FFT'
+            thischannel =  specslope.channels == spec.channels(cc);
+            spec.PSS(:,cc) = specslope.data(:,thischannel); %Issue here: Unable to perform assignment because the size of the left side is 809294-by-1
+            spec.timestamps = specslope.timestamps;
+            spec.freqs = specslope.freqs; 
+
     end
-    spec.freqs = specslope.freqs; 
-    clear specslope
+    
+    
 end
+clear specslope
 %%
 spec.winsize = 1;
 spec.chanlayers = depthinfo.layer(inCTX);
