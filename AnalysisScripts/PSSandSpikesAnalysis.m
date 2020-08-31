@@ -124,7 +124,7 @@ spkmat.NWh = InIntervals(spkmat.timestamps,EMGwhisk.ints.NWh);
 
 spkmat.poprate.All = mean(spkmat.data(:,CellClass.pE),2);
 for ll = 1:length(LAYERS)
-    layercells = strcmp(LAYERS{ll},spikes.layer & CellClass.pE);
+    layercells = strcmp(LAYERS{ll},spikes.layer) & CellClass.pE;
     spkmat.poprate.(LAYERS{ll}) = mean(spkmat.data(:,layercells),2);
 end
 for ll = 1:length(LAYERS)
