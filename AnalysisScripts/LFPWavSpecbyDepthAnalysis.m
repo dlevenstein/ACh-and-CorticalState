@@ -52,14 +52,19 @@ CTXdepth = -depthinfo.ndepth(inCTX);
 
 
 %% Load only the cortex channels in the spontaneous time window
-downsamplefactor = 16; %32 for .dat to 625 to match .lfp
-lfp = bz_GetLFP(CTXchans,...
-    'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
-    'intervals',sponttimes,'fromDat',true);
-lfp.chanlayers = depthinfo.layer(inCTX);
+whichPSS = 'wavPSS';
+switch whichPSS
+    case 'buzcodePSS'
+        downsamplefactor = 16; %32 for .dat to 625 to match .lfp
+        lfp = bz_GetLFP(CTXchans,...
+            'basepath',basePath,'noPrompts',true,'downsample',downsamplefactor,...
+            'intervals',sponttimes,'fromDat',true);
+        lfp.chanlayers = depthinfo.layer(inCTX);
+end
 %% 
 
 %% Calculate Spectrogram on all channels
+
 clear spec
 % %dt = 0.1;
 % spec.winsize = 1;
@@ -79,12 +84,12 @@ for cc =1:length(spec.channels)
     bz_Counter(cc,length(spec.channels),'Channel')
     
     switch whichPSS
-        case buzcodePSS
+        case 'buzcodePSS'
         specslope = bz_PowerSpectrumSlope(lfp,ncycles,0.01,'channels',spec.channels(cc),...
             'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
             'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
             'Redetect',true);
-        case wavPSS
+        case 'wavPSS'
             whichchannel = ['Channel',num2str(inCTX(cc))];
             filename = [whichchannel,'_10Cyc_Orig.WaveletIRASA.mat'];
             fullfilename = fullfile(basePath,'Channels',whichchannel,filename);
@@ -120,17 +125,17 @@ spec = rmfield(spec,'data');
 %%
 
 %%
-xwin = bz_RandomWindowInIntervals(spec.timestamps([1 end]),10);
-figure
-subplot(2,1,1)
-imagesc(spec.timestamps,log2(spec.freqs),spec.LayerOsci(:,:,4)')
-hold on
-plot(lfp.timestamps,bz_NormToRange(single(lfp.data(:,repchan(4)))),'w')
-axis xy
-colorbar
-caxis([0 0.7])
-LogScale('y',2)
-xlim(xwin)
+% xwin = bz_RandomWindowInIntervals(spec.timestamps([1 end]),10);
+% figure
+% subplot(2,1,1)
+% imagesc(spec.timestamps,log2(spec.freqs),spec.LayerOsci(:,:,4)')
+% hold on
+% plot(lfp.timestamps,bz_NormToRange(single(lfp.data(:,repchan(4)))),'w')
+% axis xy
+% colorbar
+% caxis([0 0.7])
+% LogScale('y',2)
+% xlim(xwin)
 
 %% Align Specgram by behavior
 maxtimejump = 1; %s
