@@ -15,7 +15,7 @@ function [ SPECdepth,OSCdepth,PSSphaseWhaligned,LFPbehcorr,meanOSCPSS] = LFPWavS
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/171209_WT_EM1M3/';
 %basePath = '/gpfs/data/rudylab/William/171209_WT_EM1M3';
 %basePath = '/mnt/proraidDL/Database/WMData/AChPupil/180706_WT_EM1M3/';
-%basePath = '/Users/dlevenstein/Dropbox/research/Datasets/WMProbeData/171209_WT_EM1M3';
+%basePath = '/Users/dl2820/Dropbox/research/Datasets/WMProbeData/171209_WT_EM1M3';
 %basePath = pwd;
 %figfolder = [reporoot,'AnalysisScripts/AnalysisFigs/DailyAnalysis'];
 baseName = bz_BasenameFromBasepath(basePath);
@@ -78,16 +78,25 @@ ncycles = 10; %prev 10
 for cc =1:length(spec.channels)
     bz_Counter(cc,length(spec.channels),'Channel')
     
-    specslope = bz_PowerSpectrumSlope(lfp,ncycles,0.01,'channels',spec.channels(cc),...
-        'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
-        'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
-        'Redetect',true);
+    switch whichPSS
+        case buzcodePSS
+        specslope = bz_PowerSpectrumSlope(lfp,ncycles,0.01,'channels',spec.channels(cc),...
+            'frange',spec.frange,'spectype','wavelet','nfreqs',spec.nfreqs,'ints',sponttimes,...
+            'saveMat',basePath,'saveName',['wav',num2str(spec.channels(cc))],...
+            'Redetect',true);
+        case wavPSS
+            whichchannel = ['Channel',num2str(inCTX(cc))];
+            filename = [whichchannel,'_10Cyc_Orig.WaveletIRASA.mat'];
+            fullfilename = fullfile(basePath,'Channels',whichchannel,filename);
+            load(fullfilename)
+            specslope.resid = specslope.osci_fractalWeighted;
+    end
     spec.data(:,:,cc) = specslope.specgram;
     spec.osci(:,:,cc) = specslope.resid;
     spec.PSS(:,cc) = specslope.data;
     spec.timestamps = specslope.timestamps;
     spec.freqs = specslope.freqs; 
-    clear specslope
+    clear specslope specslopeMean
 end
 %%
 spec.winsize = 1;
