@@ -95,6 +95,7 @@ for cc =1:length(spec.channels)
             fullfilename = fullfile(basePath,'Channels',whichchannel,filename);
             load(fullfilename)
             specslope.resid = specslope.osci_fractalWeighted;
+            specslope.specgram = specslope.osci;
     end
     spec.data(:,:,cc) = specslope.specgram;
     spec.osci(:,:,cc) = specslope.resid;
