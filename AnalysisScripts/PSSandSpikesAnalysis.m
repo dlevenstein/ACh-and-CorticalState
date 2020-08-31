@@ -137,7 +137,7 @@ end
 
 %% Spike Rate
 dt = 0.01;
-binsize = 0.06;
+binsize = 0.075;
 
 spkmat = bz_SpktToSpkmat(spikes.times,'dt',dt,'binsize',binsize,...
     'win',sponttimes,'units','rate','bintype','gaussian');
