@@ -23,7 +23,7 @@ KOgeneotypes = [7,KOgeneotypes]; %add allWT to KO comparison
 groups = {KOgeneotypes,WTgeneotypes};
 groupnames = {'KOs','WTctr'};
 %%
-for gg = 1:6
+for gg = [1 2]
     SPECdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'mean',true);
     OSCdepth.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.OSCdepth(genotypeidx==gg),3,'mean',true);
     SPECdepth_std.(genotypes{gg}) = bz_CollapseStruct(SpecDepth.SPECdepth(genotypeidx==gg),3,'std',true);
@@ -64,7 +64,8 @@ subplot(4,4,gi+4)
     plot(xlim(gca),-depthinfo.boundaries'*[1 1],'w')
     axis xy
     LogScale('x',10)
-    caxis([-0.2 0.15])
+    %caxis([-0.2 0.15])
+    caxis([-0.1 0.1])
     crameri('berlin','pivot',0)
     if gi == 1
     ylabel({'EMG','Depth'})
@@ -100,7 +101,8 @@ for ww = 1:2
     hold on
     plot(xlim(gca),-depthinfo.boundaries'*[1 1],'w')
     LogScale('x',10)
-    caxis([-0.15 0.1])
+    %caxis([-0.15 0.1])
+    caxis([-0.075 0.07])
     crameri('berlin','pivot',0)
     title((WHNWH{ww}))
     colorbar
@@ -135,7 +137,8 @@ for ww = 1:2
     plot(xlim(gca),-depthinfo.boundaries'*[1 1],'w')
     LogScale('x',10)
     crameri('tokyo')
-    caxis([0.05 0.25])
+    %caxis([0.05 0.25]) %old
+        caxis([0.05 0.35])
     title((WHNWH{ww}))
     colorbar
 end
@@ -302,7 +305,8 @@ for dd = 1:6
         LogScale('y',10)
         %crameri batlow
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([0 0.25])
+        %caxis([0 0.25]) %old
+        caxis([0 0.4])
         %crameri('vik','pivot',0)
         xlim([-pi 3*pi])
         %ylim([0 2.5])
@@ -337,7 +341,8 @@ for dd = 1:6
         LogScale('y',10)
         %ylim([0 2.5])
         %ColorbarWithAxis([-2.4 -1.2],'Mean PSS')
-        clim([0 0.25])
+        %caxis([0 0.25]) %old
+        caxis([0 0.4])
         %crameri('vik','pivot',0)
                 plot(pi*[1 1],get(gca,'ylim'),'k--')
         bz_piTickLabel('x')
@@ -453,7 +458,8 @@ subplot(6,4,(dd-1)*4+gi)
         hold on; axis xy; box off
         plot([0 0],[0 max(OSCdepth.(genotypes{gg}).freqs)],'w')
         %ColorbarWithAxis(speclim,'Power (med^-^1)')
-        caxis([0 0.25])
+        %caxis([0 0.25]) %old
+        caxis([0 0.4])
         %crameri vik
         LogScale('y',10)
         %ylim([0 2.5])
@@ -493,7 +499,8 @@ subplot(6,4,(dd-1)*4+gi)
         %plot(log10(EMGwhisk.detectorparms.Whthreshold).*[1 1],[0 max(SPECdepth.freqs)],'k--')
         %ColorbarWithAxis(speclim,'Power (med^-^1)')
         %crameri vik
-        caxis([0 0.25])
+        %caxis([0 0.25]) %old
+        caxis([0 0.4])
         %ylim([0 2.5])
         if gi == 1
             ylabel({LAYERS{dd},'Freq'})

@@ -1,5 +1,7 @@
-figfolder = '/Users/dl2820/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/PSSandSpikesAnalysis';
-ISIPSSAll = GetMatResults(figfolder,'PSSandSpikesAnalysis');
+figfolder = '/Users/dl2820/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/PSSandSpikesAnalysis/FFT';
+matfolder = '/Users/dl2820/Project Repos/ACh-and-CorticalState/AnalysisScripts/AnalysisFigs/PSSandSpikesAnalysis';
+
+ISIPSSAll = GetMatResults(matfolder,'PSSandSpikesAnalysis');
 %genotype = {PupilWhiskAll.genotype};
 %[genotypes,~,genotypeidx] = unique(genotype);
 %%
